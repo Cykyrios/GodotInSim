@@ -1,142 +1,12 @@
 extends MarginContainer
 
 
-enum PacketIdentifier {
-	ISP_NONE,
-	ISP_ISI,
-	ISP_VER,
-	ISP_TINY,
-	ISP_SMALL,
-	ISP_STA,
-	ISP_SCH,
-	ISP_SFP,
-	ISP_SCC,
-	ISP_CPP,
-	ISP_ISM,
-	ISP_MSO,
-	ISP_III,
-	ISP_MST,
-	ISP_MTC,
-	ISP_MOD,
-	ISP_VTN,
-	ISP_RST,
-	ISP_NCN,
-	ISP_CNL,
-	ISP_CPR,
-	ISP_NPL,
-	ISP_PLP,
-	ISP_PLL,
-	ISP_LAP,
-	ISP_SPX,
-	ISP_PIT,
-	ISP_PSF,
-	ISP_PLA,
-	ISP_CCH,
-	ISP_PEN,
-	ISP_TOC,
-	ISP_FLG,
-	ISP_PFL,
-	ISP_FIN,
-	ISP_RES,
-	ISP_REO,
-	ISP_NLP,
-	ISP_MCI,
-	ISP_MSX,
-	ISP_MSL,
-	ISP_CRS,
-	ISP_BFN,
-	ISP_AXI,
-	ISP_AXO,
-	ISP_BTN,
-	ISP_BTC,
-	ISP_BTT,
-	ISP_RIP,
-	ISP_SSH,
-	ISP_CON,
-	ISP_OBH,
-	ISP_HLV,
-	ISP_PLC,
-	ISP_AXM,
-	ISP_ACR,
-	ISP_HCP,
-	ISP_NCI,
-	ISP_JRR,
-	ISP_UCO,
-	ISP_OCO,
-	ISP_TTC,
-	ISP_SLC,
-	ISP_CSC,
-	ISP_CIM,
-	ISP_MAL,
-	ISP_PLH,
-}
-enum ISFFlag {
-	ISF_RES_0 = 1,
-	ISF_RES_1 = 2,
-	ISF_LOCAL = 4,
-	ISF_MSO_COLS = 8,
-	ISF_NLP = 16,
-	ISF_MCI = 32,
-	ISF_CON = 64,
-	ISF_OBH = 128,
-	ISF_HLV = 256,
-	ISF_AXM_LOAD = 512,
-	ISF_AXM_EDIT = 1024,
-	ISF_REQ_JOIN = 2048,
-}
-enum TinyPacket {
-	NONE,
-	VER,
-	CLOSE,
-	PING,
-	REPLY,
-	VTC,
-	SCP,
-	SST,
-	GTH,
-	MPE,
-	ISM,
-	REN,
-	CLR,
-	NCN,
-	NPL,
-	RES,
-	NLP,
-	MCI,
-	REO,
-	RST,
-	AXI,
-	AXC,
-	RIP,
-	NCI,
-	ALC,
-	AXM,
-	SLC,
-	MAL,
-	PLH,
-}
-enum SmallPacket {
-	NONE,
-	SSP,
-	SSG,
-	VTA,
-	TMS,
-	STP,
-	RTP,
-	NLI,
-	ALC,
-	LCS,
-	LCL,
-}
-
 @export var address := "127.0.0.1"
 @export var insim_port := 29_999
 @export var outgauge_port := 29_998
 @export var outsim_port := 29_997
 
-var insim_version := 9
-
-var insim_socket: PacketPeerUDP = null
+var insim: InSim = null
 var outgauge_socket: PacketPeerUDP = null
 var outsim_socket: PacketPeerUDP = null
 
@@ -145,53 +15,18 @@ var outsim_socket: PacketPeerUDP = null
 
 
 func _ready() -> void:
-	#initialize_insim()
+	insim = InSim.new()
+	insim.initialize()
 	initialize_outgauge_socket()
 	initialize_outsim_socket()
-	#start_sending_gauges()
+	#insim.start_sending_gauges()
 	#await get_tree().create_timer(10).timeout
-	#close_insim()
+	#insim.close()
 
 
 func _process(_delta: float) -> void:
 	update_outgauge()
 	update_outsim()
-
-
-func initialize_insim() -> void:
-	insim_socket = PacketPeerUDP.new()
-	var error := insim_socket.set_dest_address(address, insim_port)
-	print(error)
-	error = insim_socket.bind(insim_port, address)
-	print(error)
-
-	var insim_initialization_packet := PackedByteArray()
-	insim_initialization_packet.resize(44)
-	insim_initialization_packet.fill(0)
-
-	insim_initialization_packet.encode_u8(0, 11)
-	insim_initialization_packet.encode_u8(1, PacketIdentifier.ISP_ISI)
-	insim_initialization_packet.encode_u8(2, 0)
-	insim_initialization_packet.encode_u8(3, 0)
-
-	insim_initialization_packet.encode_u16(4, 0)
-	insim_initialization_packet.encode_u16(6, ISFFlag.ISF_LOCAL+ISFFlag.ISF_MSO_COLS+ISFFlag.ISF_MCI)
-
-	var encode_string := func encode_string(text: String, offset: int, length: int) -> void:
-		var buffer := text.to_utf8_buffer()
-		buffer.resize(length)
-		for i in buffer.size():
-			insim_initialization_packet.encode_u8(offset + i, buffer[i])
-
-	insim_initialization_packet.encode_u8(8, insim_version)
-	encode_string.call("", 9, 1)
-	insim_initialization_packet.encode_u16(10, 0)
-
-	encode_string.call("password", 12, 16)
-	encode_string.call("Super Test", 28, 16)
-
-	print(insim_initialization_packet)
-	insim_socket.put_packet(insim_initialization_packet)
 
 
 func initialize_outgauge_socket() -> void:
@@ -206,31 +41,6 @@ func initialize_outsim_socket() -> void:
 	var error := outsim_socket.bind(outsim_port, address)
 	if error != OK:
 		push_error(error)
-
-
-func start_sending_gauges() -> void:
-	if not insim_socket:
-		return
-	var packet := PackedByteArray()
-	packet.resize(8)
-	packet.encode_u8(0, 2)
-	packet.encode_u8(1, PacketIdentifier.ISP_SMALL)
-	packet.encode_u8(2, 0)
-	packet.encode_u8(3, SmallPacket.SSG)
-	packet.encode_u32(4, 1)
-	insim_socket.put_packet(packet)
-
-
-func close_insim() -> void:
-	if not insim_socket:
-		return
-	var packet := PackedByteArray()
-	packet.resize(4)
-	packet.encode_u8(0, 1)
-	packet.encode_u8(1, PacketIdentifier.ISP_TINY)
-	packet.encode_u8(2, 0)
-	packet.encode_u8(3, TinyPacket.CLOSE)
-	insim_socket.put_packet(packet)
 
 
 func update_outgauge() -> void:
