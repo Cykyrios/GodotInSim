@@ -101,6 +101,10 @@ func add_float(data: float) -> void:
 	data_offset += 4
 
 
+func update_req_i() -> void:
+	buffer.encode_u8(2, req_i)
+
+
 func resize_buffer(new_size: int) -> void:
 	size = new_size
 	_adjust_packet_size()
