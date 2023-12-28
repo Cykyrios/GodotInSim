@@ -6,7 +6,7 @@ const HEADER_SIZE := 4
 
 var buffer := PackedByteArray()
 var size := 4
-var type := InSim.PacketIdentifier.ISP_NONE
+var type := InSim.Packet.ISP_NONE
 var req_i := 0
 var data_offset := 0
 

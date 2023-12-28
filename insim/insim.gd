@@ -2,7 +2,7 @@ class_name InSim
 extends RefCounted
 
 
-enum PacketIdentifier {
+enum Packet {
 	ISP_NONE,
 	ISP_ISI,
 	ISP_VER,
@@ -71,7 +71,7 @@ enum PacketIdentifier {
 	ISP_MAL,
 	ISP_PLH,
 }
-enum ISFFlag {
+enum Flag {
 	ISF_RES_0 = 1,
 	ISF_RES_1 = 2,
 	ISF_LOCAL = 4,
@@ -85,49 +85,55 @@ enum ISFFlag {
 	ISF_AXM_EDIT = 1024,
 	ISF_REQ_JOIN = 2048,
 }
-enum TinyPacket {
-	NONE,
-	VER,
-	CLOSE,
-	PING,
-	REPLY,
-	VTC,
-	SCP,
-	SST,
-	GTH,
-	MPE,
-	ISM,
-	REN,
-	CLR,
-	NCN,
-	NPL,
-	RES,
-	NLP,
-	MCI,
-	REO,
-	RST,
-	AXI,
-	AXC,
-	RIP,
-	NCI,
-	ALC,
-	AXM,
-	SLC,
-	MAL,
-	PLH,
+enum Tiny {
+	TINY_NONE,
+	TINY_VER,
+	TINY_CLOSE,
+	TINY_PING,
+	TINY_REPLY,
+	TINY_VTC,
+	TINY_SCP,
+	TINY_SST,
+	TINY_GTH,
+	TINY_MPE,
+	TINY_ISM,
+	TINY_REN,
+	TINY_CLR,
+	TINY_NCN,
+	TINY_NPL,
+	TINY_RES,
+	TINY_NLP,
+	TINY_MCI,
+	TINY_REO,
+	TINY_RST,
+	TINY_AXI,
+	TINY_AXC,
+	TINY_RIP,
+	TINY_NCI,
+	TINY_ALC,
+	TINY_AXM,
+	TINY_SLC,
+	TINY_MAL,
+	TINY_PLH,
 }
-enum SmallPacket {
-	NONE,
-	SSP,
-	SSG,
-	VTA,
-	TMS,
-	STP,
-	RTP,
-	NLI,
-	ALC,
-	LCS,
-	LCL,
+enum Small {
+	SMALL_NONE,
+	SMALL_SSP,
+	SMALL_SSG,
+	SMALL_VTA,
+	SMALL_TMS,
+	SMALL_STP,
+	SMALL_RTP,
+	SMALL_NLI,
+	SMALL_ALC,
+	SMALL_LCS,
+	SMALL_LCL,
+}
+enum TTC {
+	TTC_NONE,
+	TTC_SEL,
+	TTC_SEL_START,
+	TTC_SEL_STOP,
 }
 
 const VERSION := 9
@@ -159,9 +165,9 @@ func start_sending_gauges() -> void:
 	var packet := PackedByteArray()
 	packet.resize(8)
 	packet.encode_u8(0, 2)
-	packet.encode_u8(1, PacketIdentifier.ISP_SMALL)
+	packet.encode_u8(1, Packet.ISP_SMALL)
 	packet.encode_u8(2, 0)
-	packet.encode_u8(3, SmallPacket.SSG)
+	packet.encode_u8(3, Small.SMALL_SSG)
 	packet.encode_u32(4, 1)
 	socket.put_packet(packet)
 
@@ -172,7 +178,7 @@ func close() -> void:
 	var packet := PackedByteArray()
 	packet.resize(4)
 	packet.encode_u8(0, 1)
-	packet.encode_u8(1, PacketIdentifier.ISP_TINY)
+	packet.encode_u8(1, Packet.ISP_TINY)
 	packet.encode_u8(2, 0)
-	packet.encode_u8(3, TinyPacket.CLOSE)
+	packet.encode_u8(3, Tiny.TINY_CLOSE)
 	socket.put_packet(packet)
