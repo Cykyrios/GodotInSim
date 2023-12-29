@@ -16,7 +16,7 @@ var i_name := ""
 func _init(version: int) -> void:
 	size = 44
 	type = InSim.Packet.ISP_ISI
-	req_i = 0
+	req_i = 1
 	super()
 	insim_version = version
 
