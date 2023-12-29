@@ -105,6 +105,53 @@ func update_req_i() -> void:
 	buffer.encode_u8(2, req_i)
 
 
+func read_char(packet: PackedByteArray) -> String:
+	return read_string(packet, 1)
+
+
+func read_string(packet: PackedByteArray, length: int) -> String:
+	var temp_buffer := packet.slice(data_offset, data_offset + length)
+	var result := temp_buffer.get_string_from_utf8()
+	data_offset += length
+	return result
+
+
+func read_byte(packet: PackedByteArray) -> int:
+	var result := packet.decode_u8(data_offset)
+	data_offset += 1
+	return result
+
+
+func read_word(packet: PackedByteArray) -> int:
+	var result := packet.decode_u16(data_offset)
+	data_offset += 2
+	return result
+
+
+func read_short(packet: PackedByteArray) -> int:
+	var result := packet.decode_u16(data_offset)
+	data_offset += 2
+	return result
+
+
+func read_unsigned(packet: PackedByteArray) -> int:
+	var result := packet.decode_u32(data_offset)
+	data_offset += 4
+	return result
+
+
+func read_int(packet: PackedByteArray) -> int:
+	var result := packet.decode_u32(data_offset)
+	data_offset += 4
+	return result
+
+
+func read_float(packet: PackedByteArray) -> float:
+	var result := packet.decode_float(data_offset)
+	data_offset += 4
+	return result
+
+
 func resize_buffer(new_size: int) -> void:
 	size = new_size
 	_adjust_packet_size()
