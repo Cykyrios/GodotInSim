@@ -21,7 +21,7 @@ func _init(version: int) -> void:
 	insim_version = version
 
 
-func fill_buffer() -> void:
+func _fill_buffer() -> void:
 	data_offset = HEADER_SIZE
 	add_word(udp_port)
 	add_word(flags)

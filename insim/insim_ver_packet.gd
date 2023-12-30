@@ -14,7 +14,7 @@ func _init() -> void:
 	super()
 
 
-func decode_packet(packet: PackedByteArray) -> void:
+func _decode_packet(packet: PackedByteArray) -> void:
 	var packet_size := packet.size()
 	if packet_size != size:
 		push_error("ISP_VER packet expected size %d, got %d." % [size, packet_size])

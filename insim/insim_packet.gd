@@ -164,3 +164,20 @@ func resize_buffer(new_size: int) -> void:
 func _adjust_packet_size() -> void:
 	var remainder := size % 4
 	size += remainder
+
+
+func fill_buffer() -> void:
+	_fill_buffer()
+
+
+func _fill_buffer() -> void:
+	pass
+
+
+func decode_packet(packet_buffer: PackedByteArray) -> void:
+	_decode_packet(packet_buffer)
+
+
+@warning_ignore("unused_parameter")
+func _decode_packet(packet_buffer: PackedByteArray) -> void:
+	pass
