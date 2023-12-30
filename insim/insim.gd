@@ -152,6 +152,7 @@ func initialize() -> void:
 	var initialization_packet := InSimISIPacket.new(VERSION)
 	fill_in_initialization_packet(initialization_packet)
 	socket.put_packet(initialization_packet.buffer)
+	wait_for_version_packet()
 
 
 func fill_in_initialization_packet(initialization_packet: InSimISIPacket) -> void:
@@ -182,3 +183,23 @@ func close() -> void:
 	packet.encode_u8(2, 0)
 	packet.encode_u8(3, Tiny.TINY_CLOSE)
 	socket.put_packet(packet)
+
+
+func wait_for_version_packet() -> void:
+	var packet := PackedByteArray()
+	var packet_type := Packet.ISP_NONE
+	while packet_type != Packet.ISP_VER:
+		while socket.get_available_packet_count() > 0:
+			packet = socket.get_packet()
+			packet_type = packet.decode_u8(1) as Packet
+			if packet_type != Packet.ISP_NONE:
+				print("Received %s packet:" % [Packet.keys()[packet_type]])
+				print(packet)
+	var version_packet := InSimVERPacket.new()
+	version_packet.decode_packet(packet)
+	if version_packet.insim_ver != VERSION:
+		print("Host InSim version (%d) is different from local version (%d)." % \
+				[version_packet.insim_ver, VERSION] + "\nClosing InSim connection.")
+		close()
+		return
+	print("Host InSim version matches local version (%d)." % [VERSION])
