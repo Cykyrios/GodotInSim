@@ -10,7 +10,7 @@ var prefix := ""
 var interval := 0
 
 var admin := ""
-var i_name := ""
+var i_name := "Godot InSim"
 
 
 func _init() -> void:
