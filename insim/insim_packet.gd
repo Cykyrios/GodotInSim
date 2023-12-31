@@ -78,7 +78,7 @@ func write_header() -> void:
 	add_byte(size / 4)
 	add_byte(type)
 	add_byte(req_i)
-	add_byte(0)
+	add_byte(zero)
 	data_offset = HEADER_SIZE
 
 
