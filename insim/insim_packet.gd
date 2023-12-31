@@ -42,6 +42,42 @@ func get_dictionary() -> Dictionary:
 	return dict
 
 
+static func create_packet_from_buffer(packet_buffer: PackedByteArray) -> InSimPacket:
+	var packet_type := InSimPacket.decode_packet_type(packet_buffer)
+	var packet: InSimPacket = null
+	match packet_type:
+		InSim.Packet.ISP_NONE:
+			packet = InSimPacket.new()
+		InSim.Packet.ISP_ISI:
+			packet = InSimISIPacket.new()
+		InSim.Packet.ISP_VER:
+			packet = InSimVERPacket.new()
+	packet.decode_packet(packet_buffer)
+	return packet
+
+
+static func decode_packet_type(packet_buffer: PackedByteArray) -> InSim.Packet:
+	var packet_type := InSim.Packet.ISP_NONE
+	if packet_buffer.size() < 4:
+		push_error("Packet is smaller than InSim packet header.")
+	packet_type = packet_buffer.decode_u8(1) as InSim.Packet
+	return packet_type
+
+
+func decode_header(packet_buffer: PackedByteArray) -> void:
+	if packet_buffer.size() < HEADER_SIZE:
+		push_error("Buffer is smaller than InSim packet header.")
+		return
+	data_offset = 0
+	size = read_byte(packet_buffer) * 4
+	type = read_byte(packet_buffer) as InSim.Packet
+	req_i = read_byte(packet_buffer)
+	zero = read_byte(packet_buffer)
+	if zero != 0:
+		push_error("Packet header is not compatible with InSim.")
+	data_offset = HEADER_SIZE
+
+
 func add_char(data: String) -> void:
 	add_string(1, data)
 
@@ -199,6 +235,5 @@ func decode_packet(packet_buffer: PackedByteArray) -> void:
 	_decode_packet(packet_buffer)
 
 
-@warning_ignore("unused_parameter")
 func _decode_packet(packet_buffer: PackedByteArray) -> void:
-	pass
+	decode_header(packet_buffer)
