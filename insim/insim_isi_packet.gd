@@ -20,6 +20,19 @@ func _init() -> void:
 	super()
 
 
+func _get_data_dictionary() -> Dictionary:
+	var data := {
+		"UDPPort": udp_port,
+		"Flags": flags,
+		"InSimVer": insim_version,
+		"Prefix": prefix,
+		"Interval": interval,
+		"Admin": admin,
+		"IName": i_name,
+	}
+	return data
+
+
 func _fill_buffer() -> void:
 	data_offset = HEADER_SIZE
 	add_word(udp_port)

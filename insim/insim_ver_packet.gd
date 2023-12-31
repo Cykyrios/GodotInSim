@@ -14,6 +14,16 @@ func _init() -> void:
 	super()
 
 
+func _get_data_dictionary() -> Dictionary:
+	var data := {
+		"Version": version,
+		"Product": product,
+		"InSimVer": insim_ver,
+		"Spare": 0,
+	}
+	return data
+
+
 func _decode_packet(packet: PackedByteArray) -> void:
 	var packet_size := packet.size()
 	if packet_size != size:

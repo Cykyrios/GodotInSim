@@ -22,6 +22,26 @@ func _init() -> void:
 	data_offset = HEADER_SIZE
 
 
+func _to_string() -> String:
+	return "%s: %s" % [InSim.Packet.keys()[type], buffer]
+
+
+func _get_data_dictionary() -> Dictionary:
+	return {}
+
+
+func get_dictionary() -> Dictionary:
+	var data := _get_data_dictionary()
+	var dict := {
+		"Size": size,
+		"Type": type,
+		"ReqI": req_i,
+		"Zero": zero,
+	}
+	dict.merge(data)
+	return dict
+
+
 func add_char(data: String) -> void:
 	add_string(1, data)
 

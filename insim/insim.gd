@@ -194,9 +194,11 @@ func wait_for_version_packet() -> void:
 			packet_type = packet.decode_u8(1) as Packet
 			if packet_type != Packet.ISP_NONE:
 				print("Received %s packet:" % [Packet.keys()[packet_type]])
-				print(packet)
+				var insim_packet := InSimPacket.create_packet_from_buffer(packet)
+				print(insim_packet)
 	var version_packet := InSimVERPacket.new()
 	version_packet.decode_packet(packet)
+	print(version_packet.get_dictionary())
 	if version_packet.insim_ver != VERSION:
 		print("Host InSim version (%d) is different from local version (%d)." % \
 				[version_packet.insim_ver, VERSION] + "\nClosing InSim connection.")
