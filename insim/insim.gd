@@ -87,6 +87,24 @@ enum Flag {
 	ISF_AXM_EDIT = 1024,
 	ISF_REQ_JOIN = 2048,
 }
+enum State {
+	ISS_GAME = 1,
+	ISS_REPLAY = 2,
+	ISS_PAUSED = 4,
+	ISS_SHIFTU = 8,
+	ISS_DIALOG = 16,
+	ISS_SHIFTU_FOLLOW = 32,
+	ISS_SHIFTU_NO_OPT = 64,
+	ISS_SHOW_2D = 128,
+	ISS_FRONT_END = 256,
+	ISS_MULTI = 512,
+	ISS_MPSPEEDUP = 1024,
+	ISS_WINDOWED = 2048,
+	ISS_SOUND_MUTE = 4096,
+	ISS_VIEW_OVERRIDE = 8192,
+	ISS_VISIBLE = 16384,
+	ISS_TEXT_ENTRY = 32768,
+}
 enum Tiny {
 	TINY_NONE,
 	TINY_VER,
@@ -201,6 +219,10 @@ func read_incoming_packets() -> void:
 			packet_received.emit(insim_packet)
 
 
+func read_state_packet(packet: InSimSTAPacket) -> void:
+	pass
+
+
 func read_version_packet(packet: InSimVERPacket) -> void:
 	print(packet.get_dictionary())
 	if packet.insim_ver != VERSION:
@@ -209,6 +231,13 @@ func read_version_packet(packet: InSimVERPacket) -> void:
 		close()
 		return
 	print("Host InSim version matches local version (%d)." % [VERSION])
+
+
+func send_request_state_packet() -> void:
+	var packet := InSimTinyPacket.new(1)
+	packet.sub_type = Tiny.TINY_SST
+	packet.fill_buffer()
+	socket.put_packet(packet.buffer)
 
 
 func start_sending_gauges() -> void:
@@ -228,3 +257,5 @@ func _on_packet_received(packet: InSimPacket) -> void:
 	match packet.type:
 		Packet.ISP_VER:
 			read_version_packet(packet)
+		Packet.ISP_STA:
+			read_state_packet(packet)
