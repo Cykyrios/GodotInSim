@@ -1,6 +1,8 @@
 class_name InSim
-extends RefCounted
+extends Node
 
+
+signal packet_received(packet: InSimPacket)
 
 enum Packet {
 	ISP_NONE,
@@ -137,11 +139,36 @@ enum TTC {
 }
 
 const VERSION := 9
+const PACKET_READ_INTERVAL := 0.01
 
 var address := "127.0.0.1"
 var insim_port := 29_999
 
 var socket: PacketPeerUDP = null
+var packet_timer := 0.0
+
+
+func _ready() -> void:
+	packet_received.connect(_on_packet_received)
+
+
+func _process(delta: float) -> void:
+	packet_timer += delta
+	if delta >= PACKET_READ_INTERVAL:
+		packet_timer = 0
+		read_incoming_packets()
+
+
+func close() -> void:
+	if not socket:
+		return
+	var packet := PackedByteArray()
+	packet.resize(4)
+	packet.encode_u8(0, 1)
+	packet.encode_u8(1, Packet.ISP_TINY)
+	packet.encode_u8(2, 0)
+	packet.encode_u8(3, Tiny.TINY_CLOSE)
+	socket.put_packet(packet)
 
 
 func initialize() -> void:
@@ -152,12 +179,38 @@ func initialize() -> void:
 	var initialization_packet := InSimISIPacket.new()
 	fill_in_initialization_packet(initialization_packet)
 	socket.put_packet(initialization_packet.buffer)
-	wait_for_version_packet()
 
 
 func fill_in_initialization_packet(initialization_packet: InSimISIPacket) -> void:
 	# TODO: Add GUI options to fill buffer
 	initialization_packet.fill_buffer()
+
+
+func read_incoming_packets() -> void:
+	var packet_buffer := PackedByteArray()
+	var packet_type := Packet.ISP_NONE
+	while socket.get_available_packet_count() > 0:
+		packet_buffer = socket.get_packet()
+		var err := socket.get_packet_error()
+		if err != OK:
+			push_error("Error reading incoming packet: %s" % [err])
+			continue
+		packet_type = packet_buffer.decode_u8(1) as Packet
+		if packet_type != Packet.ISP_NONE:
+			print("Received %s packet:" % [Packet.keys()[packet_type]])
+			var insim_packet := InSimPacket.create_packet_from_buffer(packet_buffer)
+			print(insim_packet)
+			packet_received.emit(insim_packet)
+
+
+func read_version_packet(packet: InSimVERPacket) -> void:
+	print(packet.get_dictionary())
+	if packet.insim_ver != VERSION:
+		print("Host InSim version (%d) is different from local version (%d)." % \
+				[packet.insim_ver, VERSION] + "\nClosing InSim connection.")
+		close()
+		return
+	print("Host InSim version matches local version (%d)." % [VERSION])
 
 
 func start_sending_gauges() -> void:
@@ -173,35 +226,7 @@ func start_sending_gauges() -> void:
 	socket.put_packet(packet)
 
 
-func close() -> void:
-	if not socket:
-		return
-	var packet := PackedByteArray()
-	packet.resize(4)
-	packet.encode_u8(0, 1)
-	packet.encode_u8(1, Packet.ISP_TINY)
-	packet.encode_u8(2, 0)
-	packet.encode_u8(3, Tiny.TINY_CLOSE)
-	socket.put_packet(packet)
-
-
-func wait_for_version_packet() -> void:
-	var packet := PackedByteArray()
-	var packet_type := Packet.ISP_NONE
-	while packet_type != Packet.ISP_VER:
-		while socket.get_available_packet_count() > 0:
-			packet = socket.get_packet()
-			packet_type = packet.decode_u8(1) as Packet
-			if packet_type != Packet.ISP_NONE:
-				print("Received %s packet:" % [Packet.keys()[packet_type]])
-				var insim_packet := InSimPacket.create_packet_from_buffer(packet)
-				print(insim_packet)
-	var version_packet := InSimVERPacket.new()
-	version_packet.decode_packet(packet)
-	print(version_packet.get_dictionary())
-	if version_packet.insim_ver != VERSION:
-		print("Host InSim version (%d) is different from local version (%d)." % \
-				[version_packet.insim_ver, VERSION] + "\nClosing InSim connection.")
-		close()
-		return
-	print("Host InSim version matches local version (%d)." % [VERSION])
+func _on_packet_received(packet: InSimPacket) -> void:
+	match packet.type:
+		Packet.ISP_VER:
+			read_version_packet(packet)

@@ -9,6 +9,10 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_km0u1")
+address = null
+insim_port = null
+outgauge_port = null
+outsim_port = null
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 2

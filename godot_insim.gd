@@ -16,6 +16,7 @@ var outsim_socket: PacketPeerUDP = null
 
 func _ready() -> void:
 	insim = InSim.new()
+	add_child(insim)
 	insim.initialize()
 	initialize_outgauge_socket()
 	initialize_outsim_socket()
