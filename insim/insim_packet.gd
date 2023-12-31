@@ -8,6 +8,7 @@ var buffer := PackedByteArray()
 var size := 4
 var type := InSim.Packet.ISP_NONE
 var req_i := 0
+var zero := 0
 var data_offset := 0
 
 
