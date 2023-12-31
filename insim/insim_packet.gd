@@ -13,13 +13,7 @@ var data_offset := 0
 
 
 func _init() -> void:
-	resize_buffer(size)
-	@warning_ignore("integer_division")
-	add_byte(size / 4)
-	add_byte(type)
-	add_byte(req_i)
-	add_byte(0)
-	data_offset = HEADER_SIZE
+	write_header()
 
 
 func _to_string() -> String:
@@ -75,6 +69,16 @@ func decode_header(packet_buffer: PackedByteArray) -> void:
 	zero = read_byte(packet_buffer)
 	if zero != 0:
 		push_error("Packet header is not compatible with InSim.")
+	data_offset = HEADER_SIZE
+
+
+func write_header() -> void:
+	resize_buffer(size)
+	@warning_ignore("integer_division")
+	add_byte(size / 4)
+	add_byte(type)
+	add_byte(req_i)
+	add_byte(0)
 	data_offset = HEADER_SIZE
 
 
