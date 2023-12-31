@@ -5,7 +5,7 @@ extends InSimPacket
 var udp_port := 0
 var flags := 0
 
-var insim_version := 0
+var insim_version := InSim.VERSION
 var prefix := ""
 var interval := 0
 
@@ -13,12 +13,11 @@ var admin := ""
 var i_name := ""
 
 
-func _init(version: int) -> void:
+func _init() -> void:
 	size = 44
 	type = InSim.Packet.ISP_ISI
 	req_i = 1
 	super()
-	insim_version = version
 
 
 func _fill_buffer() -> void:

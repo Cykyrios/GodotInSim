@@ -149,7 +149,7 @@ func initialize() -> void:
 	var error := socket.connect_to_host(address, insim_port)
 	if error != OK:
 		push_error(error)
-	var initialization_packet := InSimISIPacket.new(VERSION)
+	var initialization_packet := InSimISIPacket.new()
 	fill_in_initialization_packet(initialization_packet)
 	socket.put_packet(initialization_packet.buffer)
 	wait_for_version_packet()
