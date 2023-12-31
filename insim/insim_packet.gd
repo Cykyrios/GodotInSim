@@ -33,6 +33,8 @@ func get_dictionary() -> Dictionary:
 		"Zero": zero,
 	}
 	dict.merge(data)
+	if type in [InSim.Packet.ISP_TINY, InSim.Packet.ISP_SMALL, InSim.Packet.ISP_TTC]:
+		dict.erase("Zero")
 	return dict
 
 
@@ -46,6 +48,12 @@ static func create_packet_from_buffer(packet_buffer: PackedByteArray) -> InSimPa
 			packet = InSimISIPacket.new()
 		InSim.Packet.ISP_VER:
 			packet = InSimVERPacket.new()
+		InSim.Packet.ISP_TINY:
+			packet = InSimTinyPacket.new()
+		InSim.Packet.ISP_SMALL:
+			packet = InSimSmallPacket.new()
+		InSim.Packet.ISP_TTC:
+			packet = InSimTTCPacket.new()
 	packet.decode_packet(packet_buffer)
 	return packet
 

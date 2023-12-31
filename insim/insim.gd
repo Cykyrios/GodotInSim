@@ -162,13 +162,11 @@ func _process(delta: float) -> void:
 func close() -> void:
 	if not socket:
 		return
-	var packet := PackedByteArray()
-	packet.resize(4)
-	packet.encode_u8(0, 1)
-	packet.encode_u8(1, Packet.ISP_TINY)
-	packet.encode_u8(2, 0)
-	packet.encode_u8(3, Tiny.TINY_CLOSE)
-	socket.put_packet(packet)
+	var packet := InSimTinyPacket.new()
+	packet.sub_type = Tiny.TINY_CLOSE
+	packet.fill_buffer()
+	socket.put_packet(packet.buffer)
+	print("Closing InSim connection.")
 
 
 func initialize() -> void:
@@ -207,7 +205,7 @@ func read_version_packet(packet: InSimVERPacket) -> void:
 	print(packet.get_dictionary())
 	if packet.insim_ver != VERSION:
 		print("Host InSim version (%d) is different from local version (%d)." % \
-				[packet.insim_ver, VERSION] + "\nClosing InSim connection.")
+				[packet.insim_ver, VERSION])
 		close()
 		return
 	print("Host InSim version matches local version (%d)." % [VERSION])
