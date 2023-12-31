@@ -40,7 +40,7 @@ func get_dictionary() -> Dictionary:
 
 static func create_packet_from_buffer(packet_buffer: PackedByteArray) -> InSimPacket:
 	var packet_type := InSimPacket.decode_packet_type(packet_buffer)
-	var packet: InSimPacket = null
+	var packet := InSimPacket.new()
 	match packet_type:
 		InSim.Packet.ISP_NONE:
 			packet = InSimPacket.new()
@@ -54,6 +54,9 @@ static func create_packet_from_buffer(packet_buffer: PackedByteArray) -> InSimPa
 			packet = InSimSmallPacket.new()
 		InSim.Packet.ISP_TTC:
 			packet = InSimTTCPacket.new()
+		_:
+			push_error("%s packets are not supported at this time." % [InSim.Packet.keys()[packet_type]])
+			return packet
 	packet.decode_packet(packet_buffer)
 	return packet
 
