@@ -33,9 +33,13 @@ func _get_data_dictionary() -> Dictionary:
 
 func _decode_packet(packet: PackedByteArray) -> void:
 	var packet_size := packet.size()
-	if packet_size < PACKET_MIN_SIZE or packet_size > PACKET_MAX_SIZE or packet_size % 4 != 0:
+	if (
+		packet_size < PACKET_MIN_SIZE
+		or packet_size > PACKET_MAX_SIZE
+		or packet_size % SIZE_MULTIPLIER != 0
+	):
 		push_error("ISP_MSO packet expected size [%d..%d step %d], got %d." % \
-				[PACKET_MIN_SIZE, PACKET_MAX_SIZE, 4, packet_size])
+				[PACKET_MIN_SIZE, PACKET_MAX_SIZE, SIZE_MULTIPLIER, packet_size])
 		return
 	ucid = read_byte(packet)
 	admin = read_byte(packet)

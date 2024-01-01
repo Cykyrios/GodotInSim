@@ -2,10 +2,11 @@ class_name InSimPacket
 extends RefCounted
 
 
+const SIZE_MULTIPLIER := 4
 const HEADER_SIZE := 4
 
 var buffer := PackedByteArray()
-var size := 4
+var size := HEADER_SIZE
 var type := InSim.Packet.ISP_NONE
 var req_i := 0
 var zero := 0
@@ -75,7 +76,7 @@ static func create_packet_from_buffer(packet_buffer: PackedByteArray) -> InSimPa
 
 static func decode_packet_type(packet_buffer: PackedByteArray) -> InSim.Packet:
 	var packet_type := InSim.Packet.ISP_NONE
-	if packet_buffer.size() < 4:
+	if packet_buffer.size() < HEADER_SIZE:
 		push_error("Packet is smaller than InSim packet header.")
 	packet_type = packet_buffer.decode_u8(1) as InSim.Packet
 	return packet_type
@@ -86,7 +87,7 @@ func decode_header(packet_buffer: PackedByteArray) -> void:
 		push_error("Buffer is smaller than InSim packet header.")
 		return
 	data_offset = 0
-	size = read_byte(packet_buffer) * 4
+	size = read_byte(packet_buffer) * SIZE_MULTIPLIER
 	type = read_byte(packet_buffer) as InSim.Packet
 	req_i = read_byte(packet_buffer)
 	zero = read_byte(packet_buffer)
@@ -98,7 +99,7 @@ func decode_header(packet_buffer: PackedByteArray) -> void:
 func write_header() -> void:
 	resize_buffer(size)
 	@warning_ignore("integer_division")
-	add_byte(size / 4)
+	add_byte(size / SIZE_MULTIPLIER)
 	add_byte(type)
 	add_byte(req_i)
 	add_byte(zero)
@@ -241,12 +242,12 @@ func resize_buffer(new_size: int) -> void:
 	_adjust_packet_size()
 	buffer.resize(size)
 	@warning_ignore("integer_division")
-	buffer.encode_u8(0, size / 4)
+	buffer.encode_u8(0, size / SIZE_MULTIPLIER)
 
 
 # All packets have a size equal to a multiple of 4
 func _adjust_packet_size() -> void:
-	var remainder := size % 4
+	var remainder := size % SIZE_MULTIPLIER
 	size += remainder
 
 

@@ -41,9 +41,9 @@ func _fill_buffer() -> void:
 	if text_length >= TEXT_MAX_LENGTH:
 		text = text.left(TEXT_MAX_LENGTH - 1)  # last byte must be zero
 		text_length = TEXT_MAX_LENGTH
-	var remainder := text_length % 4
+	var remainder := text_length % SIZE_MULTIPLIER
 	text_length += remainder
 	if remainder == 0 and text_length < TEXT_MAX_LENGTH:
-		text_length += 4
+		text_length += SIZE_MULTIPLIER
 	add_string(text_length, text)
 	buffer.encode_u8(size - 1, 0)  # last byte must be zero
