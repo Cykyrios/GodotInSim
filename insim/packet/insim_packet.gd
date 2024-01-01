@@ -54,6 +54,16 @@ static func create_packet_from_buffer(packet_buffer: PackedByteArray) -> InSimPa
 			packet = InSimSmallPacket.new()
 		InSim.Packet.ISP_STA:
 			packet = InSimSTAPacket.new()
+		InSim.Packet.ISP_SFP:
+			packet = InSimSFPPacket.new()
+		InSim.Packet.ISP_MOD:
+			packet = InSimMODPacket.new()
+		InSim.Packet.ISP_MSO:
+			packet = InSimMSOPacket.new()
+		InSim.Packet.ISP_III:
+			packet = InSimIIIPacket.new()
+		InSim.Packet.ISP_ACR:
+			packet = InSimACRPacket.new()
 		InSim.Packet.ISP_TTC:
 			packet = InSimTTCPacket.new()
 		_:
