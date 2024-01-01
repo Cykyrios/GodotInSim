@@ -70,6 +70,7 @@ static func create_packet_from_buffer(packet_buffer: PackedByteArray) -> InSimPa
 		_:
 			push_error("%s packets are not supported at this time." % [InSim.Packet.keys()[packet_type]])
 			return packet
+	packet.buffer = packet_buffer
 	packet.decode_packet(packet_buffer)
 	return packet
 
