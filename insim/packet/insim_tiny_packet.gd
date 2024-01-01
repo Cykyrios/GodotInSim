@@ -2,29 +2,30 @@ class_name InSimTinyPacket
 extends InSimPacket
 
 
+const PACKET_SIZE := 4
+const PACKET_TYPE := InSim.Packet.ISP_TINY
 var sub_type := InSim.Tiny.TINY_NONE
 
 
-func _init(req := 0) -> void:
-	size = 4
-	type = InSim.Packet.ISP_TINY
+func _init(req := 0, subt := InSim.Tiny.TINY_NONE) -> void:
+	size = PACKET_SIZE
+	type = PACKET_TYPE
 	req_i = req
-	super()
+	sub_type = subt
 
 
 func _decode_packet(packet: PackedByteArray) -> void:
 	var packet_size := packet.size()
-	if packet_size != size:
-		push_error("ISP_TINY packet expected size %d, got %d." % [size, packet_size])
+	if packet_size != PACKET_SIZE:
+		push_error("%s packet expected size %d, got %d." % [InSim.Packet.keys()[type], size, packet_size])
 		return
 	super(packet)
-	data_offset = HEADER_SIZE - 1
 	sub_type = read_byte(packet) as InSim.Tiny
 
 
 func _fill_buffer() -> void:
+	super()
 	update_req_i()
-	data_offset = HEADER_SIZE - 1
 	add_byte(sub_type)
 
 

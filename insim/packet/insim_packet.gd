@@ -9,12 +9,11 @@ var buffer := PackedByteArray()
 var size := HEADER_SIZE
 var type := InSim.Packet.ISP_NONE
 var req_i := 0
-var zero := 0
 var data_offset := 0
 
 
 func _init() -> void:
-	write_header()
+	pass
 
 
 func _to_string() -> String:
@@ -31,11 +30,8 @@ func get_dictionary() -> Dictionary:
 		"Size": size,
 		"Type": type,
 		"ReqI": req_i,
-		"Zero": zero,
 	}
 	dict.merge(data)
-	if type in [InSim.Packet.ISP_TINY, InSim.Packet.ISP_SMALL, InSim.Packet.ISP_TTC]:
-		dict.erase("Zero")
 	return dict
 
 
@@ -91,10 +87,6 @@ func decode_header(packet_buffer: PackedByteArray) -> void:
 	size = read_byte(packet_buffer) * SIZE_MULTIPLIER
 	type = read_byte(packet_buffer) as InSim.Packet
 	req_i = read_byte(packet_buffer)
-	zero = read_byte(packet_buffer)
-	if zero != 0:
-		push_error("Packet header is not compatible with InSim.")
-	data_offset = HEADER_SIZE
 
 
 func write_header() -> void:
@@ -103,8 +95,8 @@ func write_header() -> void:
 	add_byte(size / SIZE_MULTIPLIER)
 	add_byte(type)
 	add_byte(req_i)
-	add_byte(zero)
-	data_offset = HEADER_SIZE
+	add_byte(0)
+	data_offset = HEADER_SIZE - 1
 
 
 func add_char(data: String) -> void:
@@ -257,7 +249,7 @@ func fill_buffer() -> void:
 
 
 func _fill_buffer() -> void:
-	pass
+	write_header()
 
 
 func decode_packet(packet_buffer: PackedByteArray) -> void:

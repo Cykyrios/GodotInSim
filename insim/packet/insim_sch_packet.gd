@@ -2,6 +2,11 @@ class_name InSimSCHPacket
 extends InSimPacket
 
 
+const PACKET_SIZE := 8
+const PACKET_TYPE := InSim.Packet.ISP_SCH
+
+var zero := 0
+
 var char_byte := 0
 var flags := 0
 var spare2 := 0
@@ -9,13 +14,13 @@ var spare3 := 0
 
 
 func _init() -> void:
-	size = 8
-	type = InSim.Packet.ISP_SCH
-	super()
+	size = PACKET_SIZE
+	type = PACKET_TYPE
 
 
 func _get_data_dictionary() -> Dictionary:
 	var data := {
+		"Zero": zero,
 		"CharB": char_byte,
 		"Flags": flags,
 		"Spare2": spare2,
@@ -25,7 +30,8 @@ func _get_data_dictionary() -> Dictionary:
 
 
 func _fill_buffer() -> void:
-	data_offset = HEADER_SIZE
+	super()
+	add_byte(zero)
 	add_byte(char_byte)
 	add_byte(flags)
 	add_byte(spare2)

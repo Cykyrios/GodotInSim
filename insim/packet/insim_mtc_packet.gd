@@ -4,7 +4,10 @@ extends InSimPacket
 
 const PACKET_MIN_SIZE := 12
 const PACKET_MAX_SIZE := 136
+const PACKET_TYPE := InSim.Packet.ISP_MTC
 const TEXT_MAX_LENGTH := 128  # last byte must be zero, actual length is one character shorter
+
+var sound := InSim.Sound.SND_SILENT
 
 var ucid := 0
 var player_id := 0
@@ -16,12 +19,12 @@ var text := ""
 
 func _init() -> void:
 	size = PACKET_MAX_SIZE
-	type = InSim.Packet.ISP_MTC
-	super()
+	type = PACKET_TYPE
 
 
 func _get_data_dictionary() -> Dictionary:
 	var data := {
+		"Sound": sound,
 		"UCID": ucid,
 		"PLID": player_id,
 		"Sp2": sp2,
@@ -32,7 +35,8 @@ func _get_data_dictionary() -> Dictionary:
 
 
 func _fill_buffer() -> void:
-	data_offset = HEADER_SIZE
+	super()
+	add_byte(sound)
 	add_byte(ucid)
 	add_byte(player_id)
 	add_byte(sp2)
@@ -47,3 +51,12 @@ func _fill_buffer() -> void:
 		text_length += SIZE_MULTIPLIER
 	add_string(text_length, text)
 	buffer.encode_u8(size - 1, 0)  # last byte must be zero
+	trim_packet_size()
+
+
+func trim_packet_size() -> void:
+	for i in TEXT_MAX_LENGTH:
+		if buffer[PACKET_MAX_SIZE - i - 1] != 0:
+			size = PACKET_MAX_SIZE - i
+			@warning_ignore("integer_division")
+			buffer.encode_u8(0, size / SIZE_MULTIPLIER)

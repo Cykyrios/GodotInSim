@@ -2,27 +2,29 @@ class_name InSimTTCPacket
 extends InSimPacket
 
 
+const PACKET_SIZE := 8
+const PACKET_TYPE := InSim.Packet.ISP_TTC
 var sub_type := InSim.TTC.TTC_NONE
+
 var ucid := 0
 var b1 := 0
 var b2 := 0
 var b3 := 0
 
 
-func _init(req := 0) -> void:
-	size = 8
-	type = InSim.Packet.ISP_TTC
+func _init(req := 0, subt := InSim.TTC.TTC_NONE) -> void:
+	size = PACKET_SIZE
+	type = PACKET_TYPE
 	req_i = req
-	super()
+	sub_type = subt
 
 
 func _decode_packet(packet: PackedByteArray) -> void:
 	var packet_size := packet.size()
-	if packet_size != size:
-		push_error("ISP_TTC packet expected size %d, got %d." % [size, packet_size])
+	if packet_size != PACKET_SIZE:
+		push_error("%s packet expected size %d, got %d." % [InSim.Packet.keys()[type], size, packet_size])
 		return
 	super(packet)
-	data_offset = HEADER_SIZE - 1
 	sub_type = read_byte(packet) as InSim.TTC
 	ucid = read_byte(packet)
 	b1 = read_byte(packet)
@@ -31,10 +33,9 @@ func _decode_packet(packet: PackedByteArray) -> void:
 
 
 func _fill_buffer() -> void:
+	super()
 	update_req_i()
-	data_offset = 3
 	add_byte(sub_type)
-	data_offset = HEADER_SIZE
 	add_unsigned(ucid)
 	add_unsigned(b1)
 	add_unsigned(b2)

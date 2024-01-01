@@ -2,6 +2,11 @@ class_name InSimISIPacket
 extends InSimPacket
 
 
+const PACKET_SIZE := 44
+const PACKET_TYPE := InSim.Packet.ISP_ISI
+const REQ_I := 1
+var zero := 0
+
 var udp_port := 0
 var flags := 0
 
@@ -14,14 +19,14 @@ var i_name := "Godot InSim"
 
 
 func _init() -> void:
-	size = 44
-	type = InSim.Packet.ISP_ISI
-	req_i = 1
-	super()
+	size = PACKET_SIZE
+	type = PACKET_TYPE
+	req_i = REQ_I
 
 
 func _get_data_dictionary() -> Dictionary:
 	var data := {
+		"Zero": zero,
 		"UDPPort": udp_port,
 		"Flags": flags,
 		"InSimVer": insim_version,
@@ -34,7 +39,8 @@ func _get_data_dictionary() -> Dictionary:
 
 
 func _fill_buffer() -> void:
-	data_offset = HEADER_SIZE
+	super()
+	add_byte(zero)
 	add_word(udp_port)
 	add_word(flags)
 
