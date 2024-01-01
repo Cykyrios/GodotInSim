@@ -152,7 +152,7 @@ func add_short(data: int) -> void:
 	if data < min_value:
 		push_error("Data too small for short integer, min %d, got %d." % [min_value, data])
 		return
-	buffer.encode_u16(data_offset, data)
+	buffer.encode_s16(data_offset, data)
 	data_offset += 2
 
 
@@ -165,7 +165,7 @@ func add_unsigned(data: int) -> void:
 	if data < min_value:
 		push_error("Data cannot be negative, got %d." % [data])
 		return
-	buffer.encode_u16(data_offset, data)
+	buffer.encode_u32(data_offset, data)
 	data_offset += 4
 
 
@@ -178,7 +178,7 @@ func add_int(data: int) -> void:
 	if data < min_value:
 		push_error("Data too small for signed integer, min %d, got %d." % [min_value, data])
 		return
-	buffer.encode_u16(data_offset, data)
+	buffer.encode_s32(data_offset, data)
 	data_offset += 4
 
 
@@ -215,7 +215,7 @@ func read_word(packet: PackedByteArray) -> int:
 
 
 func read_short(packet: PackedByteArray) -> int:
-	var result := packet.decode_u16(data_offset)
+	var result := packet.decode_s16(data_offset)
 	data_offset += 2
 	return result
 
@@ -227,7 +227,7 @@ func read_unsigned(packet: PackedByteArray) -> int:
 
 
 func read_int(packet: PackedByteArray) -> int:
-	var result := packet.decode_u32(data_offset)
+	var result := packet.decode_s32(data_offset)
 	data_offset += 4
 	return result
 
