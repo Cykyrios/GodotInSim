@@ -91,6 +91,7 @@ func decode_header(packet_buffer: PackedByteArray) -> void:
 
 func write_header() -> void:
 	resize_buffer(size)
+	data_offset = 0
 	@warning_ignore("integer_division")
 	add_byte(size / SIZE_MULTIPLIER)
 	add_byte(type)
