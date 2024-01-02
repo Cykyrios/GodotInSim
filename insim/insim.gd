@@ -273,8 +273,31 @@ func read_incoming_packets() -> void:
 			packet_received.emit(insim_packet)
 
 
+func read_small_packet(packet: InSimSmallPacket) -> void:
+	match packet.sub_type:
+		_:
+			push_error("%s with subtype %s is not supported at this time." % \
+					[Packet.keys()[packet.type], Small.keys()[packet.sub_type]])
+
+
 func read_state_packet(packet: InSimSTAPacket) -> void:
 	pass
+
+
+func read_tiny_packet(packet: InSimTinyPacket) -> void:
+	match packet.sub_type:
+		Tiny.TINY_NONE:
+			send_keep_alive_packet()
+		_:
+			push_error("%s with subtype %s is not supported at this time." % \
+					[Packet.keys()[packet.type], Tiny.keys()[packet.sub_type]])
+
+
+func read_ttc_packet(packet: InSimTTCPacket) -> void:
+	match packet.sub_type:
+		_:
+			push_error("%s with subtype %s is not supported at this time." % \
+					[Packet.keys()[packet.type], TTC.keys()[packet.sub_type]])
 
 
 func read_version_packet(packet: InSimVERPacket) -> void:
@@ -285,6 +308,10 @@ func read_version_packet(packet: InSimVERPacket) -> void:
 		close()
 		return
 	print("Host InSim version matches local version (%d)." % [VERSION])
+
+
+func send_keep_alive_packet() -> void:
+	send_packet(InSimTinyPacket.new(0, Tiny.TINY_NONE))
 
 
 func send_packet(packet: InSimPacket) -> void:
@@ -319,3 +346,9 @@ func _on_packet_received(packet: InSimPacket) -> void:
 			read_version_packet(packet)
 		Packet.ISP_STA:
 			read_state_packet(packet)
+		Packet.ISP_TINY:
+			read_tiny_packet(packet)
+		Packet.ISP_SMALL:
+			read_small_packet(packet)
+		Packet.ISP_TTC:
+			read_ttc_packet(packet)
