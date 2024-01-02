@@ -3,6 +3,7 @@ extends Node
 
 
 signal packet_received(packet: InSimPacket)
+signal packet_sent(packet: InSimPacket)
 
 enum Packet {
 	ISP_NONE,
@@ -277,6 +278,12 @@ func read_version_packet(packet: InSimVERPacket) -> void:
 		close()
 		return
 	print("Host InSim version matches local version (%d)." % [VERSION])
+
+
+func send_packet(packet: InSimPacket) -> void:
+	packet.fill_buffer()
+	socket.put_packet(packet.buffer)
+	packet_sent.emit(packet)
 
 
 func send_request_state_packet() -> void:
