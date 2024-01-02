@@ -17,10 +17,10 @@ var outsim_socket: PacketPeerUDP = null
 func _ready() -> void:
 	insim = InSim.new()
 	add_child(insim)
-	insim.initialize()
+	var initialization_data := InSimInitializationData.new()
+	insim.initialize(initialization_data)
 	initialize_outgauge_socket()
 	initialize_outsim_socket()
-	#insim.start_sending_gauges()
 	#await get_tree().create_timer(10).timeout
 	#insim.close()
 

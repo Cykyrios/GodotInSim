@@ -214,6 +214,8 @@ var packet_timer := 0.0
 
 
 func _ready() -> void:
+	socket = PacketPeerUDP.new()
+
 	packet_received.connect(_on_packet_received)
 
 
@@ -232,21 +234,26 @@ func close() -> void:
 	packet.fill_buffer()
 	socket.put_packet(packet.buffer)
 	print("Closing InSim connection.")
+	socket.close()
 
 
-func initialize() -> void:
-	socket = PacketPeerUDP.new()
+func initialize(initialization_data: InSimInitializationData) -> void:
 	var error := socket.connect_to_host(address, insim_port)
 	if error != OK:
 		push_error(error)
+	var initialization_packet := create_initialization_packet(initialization_data)
+	send_packet(initialization_packet)
+
+
+func create_initialization_packet(initialization_data: InSimInitializationData) -> InSimISIPacket:
 	var initialization_packet := InSimISIPacket.new()
-	fill_in_initialization_packet(initialization_packet)
-	socket.put_packet(initialization_packet.buffer)
-
-
-func fill_in_initialization_packet(initialization_packet: InSimISIPacket) -> void:
-	# TODO: Add GUI options to fill buffer
-	initialization_packet.fill_buffer()
+	initialization_packet.udp_port = initialization_data.udp_port
+	initialization_packet.flags = initialization_data.flags
+	initialization_packet.prefix = initialization_data.prefix
+	initialization_packet.interval = initialization_data.interval
+	initialization_packet.admin = initialization_data.admin
+	initialization_packet.i_name = initialization_data.i_name
+	return initialization_packet
 
 
 func read_incoming_packets() -> void:
