@@ -58,5 +58,4 @@ func trim_packet_size() -> void:
 	for i in TEXT_MAX_LENGTH:
 		if buffer[PACKET_MAX_SIZE - i - 1] != 0:
 			size = PACKET_MAX_SIZE - i
-			@warning_ignore("integer_division")
-			buffer.encode_u8(0, size / SIZE_MULTIPLIER)
+			resize_buffer(size)
