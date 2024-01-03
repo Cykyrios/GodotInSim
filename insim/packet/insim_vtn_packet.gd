@@ -17,17 +17,6 @@ func _init() -> void:
 	type = PACKET_TYPE
 
 
-func _get_data_dictionary() -> Dictionary:
-	var data := {
-		"Zero": zero,
-		"UCID": ucid,
-		"Action": action,
-		"Spare2": spare2,
-		"Spare3": spare3,
-	}
-	return data
-
-
 func _decode_packet(packet: PackedByteArray) -> void:
 	var packet_size := packet.size()
 	if packet_size != PACKET_SIZE:
@@ -39,3 +28,13 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	action = read_byte(packet)
 	spare2 = read_byte(packet)
 	spare3 = read_byte(packet)
+
+
+func _get_data_dictionary() -> Dictionary:
+	return {
+		"Zero": zero,
+		"UCID": ucid,
+		"Action": action,
+		"Spare2": spare2,
+		"Spare3": spare3,
+	}

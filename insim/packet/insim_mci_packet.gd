@@ -16,14 +16,6 @@ func _init() -> void:
 	type = PACKET_TYPE
 
 
-func _get_data_dictionary() -> Dictionary:
-	var data := {
-		"NumC": num_cars,
-		"Info": info,
-	}
-	return data
-
-
 func _decode_packet(packet: PackedByteArray) -> void:
 	var packet_size := packet.size()
 	if (
@@ -43,3 +35,10 @@ func _decode_packet(packet: PackedByteArray) -> void:
 		car_info.set_from_buffer(packet.slice(data_offset, data_offset + struct_size))
 		data_offset += struct_size
 		info.append(car_info)
+
+
+func _get_data_dictionary() -> Dictionary:
+	return {
+		"NumC": num_cars,
+		"Info": info,
+	}

@@ -30,7 +30,6 @@ func _fill_buffer() -> void:
 
 
 func _get_data_dictionary() -> Dictionary:
-	var dict := {
+	return {
 		"SubT": sub_type,
 	}
-	return dict

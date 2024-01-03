@@ -17,20 +17,19 @@ func _init() -> void:
 		car_hcp[i] = CarHCP.new()
 
 
-func _get_data_dictionary() -> Dictionary:
-	var data := {
-		"Zero": zero,
-		"CarHCP": car_hcp,
-	}
-	return data
-
-
 func _fill_buffer() -> void:
 	super()
 	add_byte(zero)
 	for i in car_hcp.size():
 		add_byte(car_hcp[i].h_mass)
 		add_byte(car_hcp[i].h_tres)
+
+
+func _get_data_dictionary() -> Dictionary:
+	return {
+		"Zero": zero,
+		"CarHCP": car_hcp,
+	}
 
 
 class CarHCP extends RefCounted:

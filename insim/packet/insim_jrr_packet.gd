@@ -32,7 +32,7 @@ func _fill_buffer() -> void:
 
 
 func _get_data_dictionary() -> Dictionary:
-	var data := {
+	return {
 		"PLID": player_id,
 		"UCID": ucid,
 		"Action": action,
@@ -40,4 +40,3 @@ func _get_data_dictionary() -> Dictionary:
 		"Sp3": sp3,
 		"StartPos": start_pos,
 	}
-	return data

@@ -18,17 +18,6 @@ func _init() -> void:
 	type = PACKET_TYPE
 
 
-func _get_data_dictionary() -> Dictionary:
-	var data := {
-		"Zero": zero,
-		"AXStart": ax_start,
-		"NumCP": num_checkpoints,
-		"NumO": num_objects,
-		"LName": layout_name,
-	}
-	return data
-
-
 func _decode_packet(packet: PackedByteArray) -> void:
 	var packet_size := packet.size()
 	if packet_size != PACKET_SIZE:
@@ -40,3 +29,13 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	num_checkpoints = read_byte(packet)
 	num_objects = read_word(packet)
 	layout_name = read_string(packet, 32)
+
+
+func _get_data_dictionary() -> Dictionary:
+	return {
+		"Zero": zero,
+		"AXStart": ax_start,
+		"NumCP": num_checkpoints,
+		"NumO": num_objects,
+		"LName": layout_name,
+	}

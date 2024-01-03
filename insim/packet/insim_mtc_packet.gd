@@ -22,18 +22,6 @@ func _init() -> void:
 	type = PACKET_TYPE
 
 
-func _get_data_dictionary() -> Dictionary:
-	var data := {
-		"Sound": sound,
-		"UCID": ucid,
-		"PLID": player_id,
-		"Sp2": sp2,
-		"Sp3": sp3,
-		"Text": text,
-	}
-	return data
-
-
 func _fill_buffer() -> void:
 	super()
 	add_byte(sound)
@@ -52,6 +40,17 @@ func _fill_buffer() -> void:
 	add_string(text_length, text)
 	buffer.encode_u8(size - 1, 0)  # last byte must be zero
 	trim_packet_size()
+
+
+func _get_data_dictionary() -> Dictionary:
+	return {
+		"Sound": sound,
+		"UCID": ucid,
+		"PLID": player_id,
+		"Sp2": sp2,
+		"Sp3": sp3,
+		"Text": text,
+	}
 
 
 func trim_packet_size() -> void:

@@ -22,18 +22,6 @@ func _init() -> void:
 	type = PACKET_TYPE
 
 
-func _get_data_dictionary() -> Dictionary:
-	var data := {
-		"Zero": zero,
-		"UCID": ucid,
-		"PLID": player_id,
-		"Sp2": sp2,
-		"Sp3": sp3,
-		"Msg": msg,
-	}
-	return data
-
-
 func _decode_packet(packet: PackedByteArray) -> void:
 	var packet_size := packet.size()
 	if (
@@ -51,3 +39,14 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	sp2 = read_byte(packet)
 	sp3 = read_byte(packet)
 	msg = read_string(packet, packet_size - data_offset)
+
+
+func _get_data_dictionary() -> Dictionary:
+	return {
+		"Zero": zero,
+		"UCID": ucid,
+		"PLID": player_id,
+		"Sp2": sp2,
+		"Sp3": sp3,
+		"Msg": msg,
+	}

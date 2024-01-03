@@ -39,8 +39,7 @@ func _fill_buffer() -> void:
 
 
 func _get_data_dictionary() -> Dictionary:
-	var data := {
+	return {
 		"PLID": num_players,
 		"NumP": player_ids,
 	}
-	return data

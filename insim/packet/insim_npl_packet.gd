@@ -44,33 +44,6 @@ func _init() -> void:
 	type = PACKET_TYPE
 
 
-func _get_data_dictionary() -> Dictionary:
-	var data := {
-		"PLID": player_id,
-		"UCID": ucid,
-		"PType": player_type,
-		"Flags": flags,
-		"PName": player_name,
-		"Plate": plate,
-		"CName": car_name,
-		"SName": skin_name,
-		"Tyres": tyres,
-		"H_Mass": h_mass,
-		"H_TRes": h_tres,
-		"Model": model,
-		"Pass": passengers,
-		"RWAdj": rw_adjust,
-		"FWAdj": fw_adjust,
-		"Sp2": sp2,
-		"Sp3": sp3,
-		"SetF": setup_flags,
-		"NumP": num_players,
-		"Config": config,
-		"Fuel": fuel,
-	}
-	return data
-
-
 func _decode_packet(packet: PackedByteArray) -> void:
 	var packet_size := packet.size()
 	if packet_size != PACKET_SIZE:
@@ -100,3 +73,29 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	num_players = read_byte(packet)
 	config = read_byte(packet)
 	fuel = read_byte(packet)
+
+
+func _get_data_dictionary() -> Dictionary:
+	return {
+		"PLID": player_id,
+		"UCID": ucid,
+		"PType": player_type,
+		"Flags": flags,
+		"PName": player_name,
+		"Plate": plate,
+		"CName": car_name,
+		"SName": skin_name,
+		"Tyres": tyres,
+		"H_Mass": h_mass,
+		"H_TRes": h_tres,
+		"Model": model,
+		"Pass": passengers,
+		"RWAdj": rw_adjust,
+		"FWAdj": fw_adjust,
+		"Sp2": sp2,
+		"Sp3": sp3,
+		"SetF": setup_flags,
+		"NumP": num_players,
+		"Config": config,
+		"Fuel": fuel,
+	}

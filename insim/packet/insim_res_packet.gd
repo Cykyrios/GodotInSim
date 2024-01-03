@@ -32,28 +32,6 @@ func _init() -> void:
 	type = PACKET_TYPE
 
 
-func _get_data_dictionary() -> Dictionary:
-	var data := {
-		"PLID": player_id,
-		"UName": username,
-		"PName": player_name,
-		"Plate": plate,
-		"CName": car_name,
-		"TTime": total_time,
-		"BTime": best_lap,
-		"SpA": sp_a,
-		"NumStops": num_stops,
-		"Confirm": confirm,
-		"SpB": sp_b,
-		"LapsDone": laps_done,
-		"Flags": flags,
-		"ResultNum": result_num,
-		"NumRes": num_results,
-		"PSeconds": penalty_seconds,
-	}
-	return data
-
-
 func _decode_packet(packet: PackedByteArray) -> void:
 	var packet_size := packet.size()
 	if packet_size != PACKET_SIZE:
@@ -76,3 +54,24 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	result_num = read_byte(packet)
 	num_results = read_byte(packet)
 	penalty_seconds = read_word(packet)
+
+
+func _get_data_dictionary() -> Dictionary:
+	return {
+		"PLID": player_id,
+		"UName": username,
+		"PName": player_name,
+		"Plate": plate,
+		"CName": car_name,
+		"TTime": total_time,
+		"BTime": best_lap,
+		"SpA": sp_a,
+		"NumStops": num_stops,
+		"Confirm": confirm,
+		"SpB": sp_b,
+		"LapsDone": laps_done,
+		"Flags": flags,
+		"ResultNum": result_num,
+		"NumRes": num_results,
+		"PSeconds": penalty_seconds,
+	}

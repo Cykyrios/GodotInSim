@@ -38,7 +38,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 
 
 func _get_data_dictionary() -> Dictionary:
-	var data := {
+	return {
 		"PLID": player_id,
 		"Sp0": sp0,
 		"CSCAction": csc_action,
@@ -47,4 +47,3 @@ func _get_data_dictionary() -> Dictionary:
 		"Time": time,
 		"C": object,
 	}
-	return data

@@ -32,28 +32,6 @@ func _init() -> void:
 	type = PACKET_TYPE
 
 
-func _get_data_dictionary() -> Dictionary:
-	var data := {
-		"Zero": zero,
-		"ReplaySpeed": replay_speed,
-		"Flags": flags,
-		"InGameCam": ingame_cam,
-		"ViewPLID": view_player_id,
-		"NumP": num_players,
-		"NumConns": num_connections,
-		"NumFinished": num_finished,
-		"RaceInProg": race_in_progress,
-		"QualMins": qual_mins,
-		"RaceLaps": race_laps,
-		"Sp2": sp2,
-		"ServerStatus": server_status,
-		"Track": track,
-		"Weather": weather,
-		"Wind": wind,
-	}
-	return data
-
-
 func _decode_packet(packet: PackedByteArray) -> void:
 	var packet_size := packet.size()
 	if packet_size != PACKET_SIZE:
@@ -80,3 +58,24 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	track = read_string(packet, 6)
 	weather = read_byte(packet)
 	wind = read_byte(packet)
+
+
+func _get_data_dictionary() -> Dictionary:
+	return {
+		"Zero": zero,
+		"ReplaySpeed": replay_speed,
+		"Flags": flags,
+		"InGameCam": ingame_cam,
+		"ViewPLID": view_player_id,
+		"NumP": num_players,
+		"NumConns": num_connections,
+		"NumFinished": num_finished,
+		"RaceInProg": race_in_progress,
+		"QualMins": qual_mins,
+		"RaceLaps": race_laps,
+		"Sp2": sp2,
+		"ServerStatus": server_status,
+		"Track": track,
+		"Weather": weather,
+		"Wind": wind,
+	}

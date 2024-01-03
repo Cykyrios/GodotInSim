@@ -19,18 +19,6 @@ func _init() -> void:
 	type = PACKET_TYPE
 
 
-func _get_data_dictionary() -> Dictionary:
-	var data := {
-		"Zero": zero,
-		"UCID": ucid,
-		"Sp1": sp1,
-		"Sp2": sp2,
-		"Sp3": sp3,
-		"Cars": cars,
-	}
-	return data
-
-
 func _fill_buffer() -> void:
 	super()
 	add_byte(zero)
@@ -39,3 +27,14 @@ func _fill_buffer() -> void:
 	add_byte(sp2)
 	add_byte(sp3)
 	add_unsigned(cars)
+
+
+func _get_data_dictionary() -> Dictionary:
+	return {
+		"Zero": zero,
+		"UCID": ucid,
+		"Sp1": sp1,
+		"Sp2": sp2,
+		"Sp3": sp3,
+		"Cars": cars,
+	}

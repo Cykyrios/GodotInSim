@@ -53,7 +53,7 @@ func _fill_buffer() -> void:
 
 
 func _get_data_dictionary() -> Dictionary:
-	var dict := {
+	return {
 		"NumM": num_mods,
 		"UCID": ucid,
 		"Flags": flags,
@@ -61,4 +61,3 @@ func _get_data_dictionary() -> Dictionary:
 		"Sp3": sp3,
 		"SkinID": skin_id,
 	}
-	return dict

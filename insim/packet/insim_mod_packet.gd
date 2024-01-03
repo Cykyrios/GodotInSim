@@ -17,17 +17,6 @@ func _init() -> void:
 	type = PACKET_TYPE
 
 
-func _get_data_dictionary() -> Dictionary:
-	var data := {
-		"Zero": zero,
-		"Bits16": bits16,
-		"RR": refresh_rate,
-		"Width": width,
-		"Height": height,
-	}
-	return data
-
-
 func _fill_buffer() -> void:
 	super()
 	add_byte(zero)
@@ -35,3 +24,13 @@ func _fill_buffer() -> void:
 	add_int(refresh_rate)
 	add_int(width)
 	add_int(height)
+
+
+func _get_data_dictionary() -> Dictionary:
+	return {
+		"Zero": zero,
+		"Bits16": bits16,
+		"RR": refresh_rate,
+		"Width": width,
+		"Height": height,
+	}

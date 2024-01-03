@@ -24,20 +24,6 @@ func _init() -> void:
 	req_i = REQ_I
 
 
-func _get_data_dictionary() -> Dictionary:
-	var data := {
-		"Zero": zero,
-		"UDPPort": udp_port,
-		"Flags": flags,
-		"InSimVer": insim_version,
-		"Prefix": prefix,
-		"Interval": interval,
-		"Admin": admin,
-		"IName": i_name,
-	}
-	return data
-
-
 func _fill_buffer() -> void:
 	super()
 	add_byte(zero)
@@ -50,3 +36,16 @@ func _fill_buffer() -> void:
 
 	add_string(16, admin)
 	add_string(16, i_name)
+
+
+func _get_data_dictionary() -> Dictionary:
+	return {
+		"Zero": zero,
+		"UDPPort": udp_port,
+		"Flags": flags,
+		"InSimVer": insim_version,
+		"Prefix": prefix,
+		"Interval": interval,
+		"Admin": admin,
+		"IName": i_name,
+	}

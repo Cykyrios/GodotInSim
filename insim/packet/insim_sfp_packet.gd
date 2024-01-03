@@ -16,19 +16,18 @@ func _init() -> void:
 	type = PACKET_TYPE
 
 
-func _get_data_dictionary() -> Dictionary:
-	var data := {
-		"Zero": zero,
-		"Flag": flag,
-		"OffOn": off_on,
-		"Sp3": sp3,
-	}
-	return data
-
-
 func _fill_buffer() -> void:
 	super()
 	add_byte(zero)
 	add_word(flag)
 	add_byte(off_on)
 	add_byte(sp3)
+
+
+func _get_data_dictionary() -> Dictionary:
+	return {
+		"Zero": zero,
+		"Flag": flag,
+		"OffOn": off_on,
+		"Sp3": sp3,
+	}

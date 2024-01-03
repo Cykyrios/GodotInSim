@@ -31,11 +31,10 @@ func _decode_packet(packet: PackedByteArray) -> void:
 
 
 func _get_data_dictionary() -> Dictionary:
-	var data := {
+	return {
 		"Zero": zero,
 		"OCOAction": oco_action,
 		"Index": index,
 		"Identifier": identifier,
 		"Data": data,
 	}
-	return data

@@ -28,26 +28,6 @@ func _init() -> void:
 	type = PACKET_TYPE
 
 
-func _get_data_dictionary() -> Dictionary:
-	var data := {
-		"Zero": zero,
-		"RaceLaps": race_laps,
-		"QualMins": qual_mins,
-		"NumP": num_players,
-		"Timing": timing,
-		"Track": track,
-		"Weather": weather,
-		"Wind": wind,
-		"Flags": flags,
-		"NumNodes": num_nodes,
-		"Finish": finish,
-		"Split1": split1,
-		"Split2": split2,
-		"Split3": split3,
-	}
-	return data
-
-
 func _decode_packet(packet: PackedByteArray) -> void:
 	var packet_size := packet.size()
 	if packet_size != PACKET_SIZE:
@@ -68,3 +48,22 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	split1 = read_word(packet)
 	split2 = read_word(packet)
 	split3 = read_word(packet)
+
+
+func _get_data_dictionary() -> Dictionary:
+	return {
+		"Zero": zero,
+		"RaceLaps": race_laps,
+		"QualMins": qual_mins,
+		"NumP": num_players,
+		"Timing": timing,
+		"Track": track,
+		"Weather": weather,
+		"Wind": wind,
+		"Flags": flags,
+		"NumNodes": num_nodes,
+		"Finish": finish,
+		"Split1": split1,
+		"Split2": split2,
+		"Split3": split3,
+	}

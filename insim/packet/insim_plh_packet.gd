@@ -52,11 +52,10 @@ func _fill_buffer() -> void:
 
 
 func _get_data_dictionary() -> Dictionary:
-	var dict := {
+	return {
 		"NumP": nump,
 		"HCaps": hcaps,
 	}
-	return dict
 
 
 func remove_unused_data() -> void:

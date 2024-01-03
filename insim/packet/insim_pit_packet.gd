@@ -27,22 +27,6 @@ func _init() -> void:
 	type = PACKET_TYPE
 
 
-func _get_data_dictionary() -> Dictionary:
-	var data := {
-		"PLID": player_id,
-		"LapsDone": laps_done,
-		"Flags": flags,
-		"FuelAdd": fuel_add,
-		"Penalty": penalty,
-		"NumStops": num_stops,
-		"Sp3": sp3,
-		"Tyres": tyres,
-		"Work": work,
-		"Spare": spare,
-	}
-	return data
-
-
 func _decode_packet(packet: PackedByteArray) -> void:
 	var packet_size := packet.size()
 	if packet_size != PACKET_SIZE:
@@ -61,3 +45,18 @@ func _decode_packet(packet: PackedByteArray) -> void:
 		tyres.append(read_byte(packet))
 	work = read_unsigned(packet)
 	spare = read_unsigned(packet)
+
+
+func _get_data_dictionary() -> Dictionary:
+	return {
+		"PLID": player_id,
+		"LapsDone": laps_done,
+		"Flags": flags,
+		"FuelAdd": fuel_add,
+		"Penalty": penalty,
+		"NumStops": num_stops,
+		"Sp3": sp3,
+		"Tyres": tyres,
+		"Work": work,
+		"Spare": spare,
+	}

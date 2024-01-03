@@ -17,17 +17,6 @@ func _init() -> void:
 	type = PACKET_TYPE
 
 
-func _get_data_dictionary() -> Dictionary:
-	var data := {
-		"PLID": player_id,
-		"OldPen": old_penalty,
-		"NewPen": new_penalty,
-		"Reason": reason,
-		"Sp3": sp3,
-	}
-	return data
-
-
 func _decode_packet(packet: PackedByteArray) -> void:
 	var packet_size := packet.size()
 	if packet_size != PACKET_SIZE:
@@ -39,3 +28,13 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	new_penalty = read_byte(packet) as InSim.Penalty
 	reason = read_byte(packet) as InSim.PenaltyReason
 	sp3 = read_byte(packet)
+
+
+func _get_data_dictionary() -> Dictionary:
+	return {
+		"PLID": player_id,
+		"OldPen": old_penalty,
+		"NewPen": new_penalty,
+		"Reason": reason,
+		"Sp3": sp3,
+	}
