@@ -37,7 +37,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	num_mods = read_byte(packet)
 	skin_id.clear()
 	for i in num_mods:
-		skin_id[i] = read_unsigned(packet)
+		skin_id.append(read_unsigned(packet))
 
 
 func _fill_buffer() -> void:
