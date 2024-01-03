@@ -2,43 +2,6 @@ class_name InSimCIMPacket
 extends InSimPacket
 
 
-enum Mode {
-	CIM_NORMAL,
-	CIM_OPTIONS,
-	CIM_HOST_OPTIONS,
-	CIM_GARAGE,
-	CIM_CAR_SELECT,
-	CIM_TRACK_SELECT,
-	CIM_SHIFTU,
-	CIM_NUM
-}
-enum SubmodeNormal {
-	NRM_NORMAL,
-	NRM_WHEEL_TEMPS,
-	NRM_WHEEL_DAMAGE,
-	NRM_LIVE_SETTINGS,
-	NRM_PIT_INSTRUCTIONS,
-	NRM_NUM
-}
-enum SubmodeGarage {
-	GRG_INFO,
-	GRG_COLOURS,
-	GRG_BRAKE_TC,
-	GRG_SUSP,
-	GRG_STEER,
-	GRG_DRIVE,
-	GRG_TYRES,
-	GRG_AERO,
-	GRG_PASS,
-	GRG_NUM
-}
-enum SubmodeShiftU {
-	FVM_PLAIN,
-	FVM_BUTTONS,
-	FVM_EDIT,
-	FVM_NUM
-}
-
 const MARSH_IS_CP := 252
 const MARSH_IS_AREA := 253
 const MARSH_MARSHAL := 254
@@ -48,7 +11,7 @@ const PACKET_SIZE := 8
 const PACKET_TYPE := InSim.Packet.ISP_CIM
 var ucid := 0
 
-var mode := 0
+var mode := InSim.InterfaceMode.CIM_NUM
 var submode := 0
 var sel_type := 0
 var sp3 := 0
@@ -77,7 +40,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 		return
 	super(packet)
 	ucid = read_byte(packet)
-	mode = read_word(packet)
+	mode = read_word(packet) as InSim.InterfaceMode
 	submode = read_byte(packet)
 	sel_type = read_byte(packet)
 	sp3 = read_byte(packet)

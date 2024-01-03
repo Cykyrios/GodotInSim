@@ -7,7 +7,7 @@ const PACKET_MAX_SIZE := 136
 const PACKET_TYPE := InSim.Packet.ISP_MTC
 const TEXT_MAX_LENGTH := 128  # last byte must be zero, actual length is one character shorter
 
-var sound := InSim.Sound.SND_SILENT
+var sound := InSim.MessageSound.SND_SILENT
 
 var ucid := 0
 var player_id := 0

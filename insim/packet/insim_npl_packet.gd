@@ -21,7 +21,7 @@ var plate := ""
 
 var car_name := ""
 var skin_name := ""
-var tyres: Array[int] = []
+var tyres: Array[InSim.Tyre] = []
 
 var h_mass := 0
 var h_tres := 0

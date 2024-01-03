@@ -6,7 +6,7 @@ const PACKET_SIZE := 132
 const PACKET_TYPE := InSim.Packet.ISP_MSL
 const MSG_MAX_LENGTH := 128  # last byte must be zero, actual length is one character shorter
 
-var sound := InSim.Sound.SND_SILENT
+var sound := InSim.MessageSound.SND_SILENT
 
 var msg := ""
 

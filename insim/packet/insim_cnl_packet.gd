@@ -2,25 +2,11 @@ class_name InSimCNLPacket
 extends InSimPacket
 
 
-enum LeaveReason {
-	LEAVR_DISCO,
-	LEAVR_TIMEOUT,
-	LEAVR_LOSTCONN,
-	LEAVR_KICKED,
-	LEAVR_BANNED,
-	LEAVR_SECURITY,
-	LEAVR_CPW,
-	LEAVR_OOS,
-	LEAVR_JOOS,
-	LEAVR_HACK,
-	LEAVR_NUM
-}
-
 const PACKET_SIZE := 8
 const PACKET_TYPE := InSim.Packet.ISP_CNL
 var ucid := 0
 
-var reason := LeaveReason.LEAVR_NUM
+var reason := InSim.LeaveReason.LEAVR_NUM
 var total := 0
 var sp2 := 0
 var sp3 := 0
@@ -49,7 +35,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 		return
 	super(packet)
 	ucid = read_byte(packet)
-	reason = read_byte(packet) as LeaveReason
+	reason = read_byte(packet) as InSim.LeaveReason
 	total = read_byte(packet)
 	sp2 = read_byte(packet)
 	sp3 = read_byte(packet)
