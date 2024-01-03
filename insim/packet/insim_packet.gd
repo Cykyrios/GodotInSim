@@ -63,6 +63,36 @@ static func create_packet_from_buffer(packet_buffer: PackedByteArray) -> InSimPa
 			packet = InSimACRPacket.new()
 		InSim.Packet.ISP_TTC:
 			packet = InSimTTCPacket.new()
+		InSim.Packet.ISP_ISM:
+			packet = InSimISMPacket.new()
+		InSim.Packet.ISP_PLH:
+			packet = InSimPLHPacket.new()
+		InSim.Packet.ISP_VTN:
+			packet = InSimVTNPacket.new()
+		InSim.Packet.ISP_NCN:
+			packet = InSimNCNPacket.new()
+		InSim.Packet.ISP_NCI:
+			packet = InSimNCIPacket.new()
+		InSim.Packet.ISP_RST:
+			packet = InSimRSTPacket.new()
+		InSim.Packet.ISP_SLC:
+			packet = InSimSLCPacket.new()
+		InSim.Packet.ISP_MAL:
+			packet = InSimMALPacket.new()
+		InSim.Packet.ISP_CIM:
+			packet = InSimCIMPacket.new()
+		InSim.Packet.ISP_CNL:
+			packet = InSimCNLPacket.new()
+		InSim.Packet.ISP_CPR:
+			packet = InSimCPRPacket.new()
+		InSim.Packet.ISP_NPL:
+			packet = InSimNPLPacket.new()
+		InSim.Packet.ISP_PLP:
+			packet = InSimPLPPacket.new()
+		InSim.Packet.ISP_PLL:
+			packet = InSimPLLPacket.new()
+		InSim.Packet.ISP_CRS:
+			packet = InSimCRSPacket.new()
 		_:
 			push_error("%s packets are not supported at this time." % [InSim.Packet.keys()[packet_type]])
 			return packet
