@@ -29,7 +29,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 		return
 	super(packet)
 	ucid = read_byte(packet)
-	mode = read_word(packet) as InSim.InterfaceMode
+	mode = read_byte(packet) as InSim.InterfaceMode
 	submode = read_byte(packet)
 	sel_type = read_byte(packet)
 	sp3 = read_byte(packet)
