@@ -3,8 +3,8 @@ extends InSimPacket
 
 
 const MAX_CARS := 40
-const PACKET_MIN_SIZE := 4 + NodeLap.STRUCT_SIZE + (NodeLap.STRUCT_SIZE % SIZE_MULTIPLIER)
-const PACKET_MAX_SIZE := 4 + MAX_CARS * NodeLap.STRUCT_SIZE + (NodeLap.STRUCT_SIZE % SIZE_MULTIPLIER)
+const PACKET_MIN_SIZE := 4 + NodeLap.STRUCT_SIZE + 2
+const PACKET_MAX_SIZE := 4 + MAX_CARS * NodeLap.STRUCT_SIZE
 const PACKET_TYPE := InSim.Packet.ISP_NLP
 
 var num_players := 0

@@ -3,8 +3,8 @@ extends InSimPacket
 
 
 const MAX_CARS := 16
-const PACKET_MIN_SIZE := 4 + CompCar.STRUCT_SIZE + (CompCar.STRUCT_SIZE % SIZE_MULTIPLIER)
-const PACKET_MAX_SIZE := 4 + MAX_CARS * CompCar.STRUCT_SIZE + (CompCar.STRUCT_SIZE % SIZE_MULTIPLIER)
+const PACKET_MIN_SIZE := 4 + CompCar.STRUCT_SIZE
+const PACKET_MAX_SIZE := 4 + MAX_CARS * CompCar.STRUCT_SIZE
 const PACKET_TYPE := InSim.Packet.ISP_MCI
 
 var num_cars := 0
