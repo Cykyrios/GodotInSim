@@ -1,5 +1,5 @@
 class_name OutSimPacket
-extends RefCounted
+extends LFSPacket
 
 
 const SIZE_WITHOUT_ID := 64
@@ -27,13 +27,21 @@ func decode_packet(packet: PackedByteArray) -> void:
 		push_error("OutGauge packet size incorrect: expected %d or %d, got %d." % \
 				[SIZE_WITHOUT_ID, SIZE_WITH_ID, packet_size])
 		return
-	time = packet.decode_u32(0)
-	ang_vel = Vector3(packet.decode_float(4), packet.decode_float(8), packet.decode_float(12))
-	heading = packet.decode_float(16)
-	pitch = packet.decode_float(20)
-	roll = packet.decode_float(24)
-	accel = Vector3(packet.decode_float(28), packet.decode_float(32), packet.decode_float(36))
-	vel = Vector3(packet.decode_float(40), packet.decode_float(44), packet.decode_float(48))
-	pos = Vector3i(packet.decode_u32(52), packet.decode_u32(56), packet.decode_u32(60))
+	time = read_unsigned(packet)
+	ang_vel.x = read_float(packet)
+	ang_vel.y = read_float(packet)
+	ang_vel.z = read_float(packet)
+	heading = read_float(packet)
+	pitch = read_float(packet)
+	roll = read_float(packet)
+	accel.x = read_float(packet)
+	accel.y = read_float(packet)
+	accel.z = read_float(packet)
+	vel.x = read_float(packet)
+	vel.y = read_float(packet)
+	vel.z = read_float(packet)
+	pos.x = read_int(packet)
+	pos.y = read_int(packet)
+	pos.z = read_int(packet)
 	if packet_size == SIZE_WITH_ID:
-		id = packet.decode_u32(SIZE_WITHOUT_ID)
+		id = read_int(packet)
