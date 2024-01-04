@@ -3,6 +3,66 @@ extends Node
 
 
 signal packet_received(packet: InSimPacket)
+signal isp_ver_received(packet: InSimVERPacket)
+signal isp_tiny_received(packet: InSimTinyPacket)
+signal isp_small_received(packet: InSimSmallPacket)
+signal isp_sta_received(packet: InSimSTAPacket)
+signal isp_cpp_received(packet: InSimCPPPacket)
+signal isp_ism_received(packet: InSimISMPacket)
+signal isp_mso_received(packet: InSimMSOPacket)
+signal isp_iii_received(packet: InSimIIIPacket)
+signal isp_vtn_received(packet: InSimVTNPacket)
+signal isp_rst_received(packet: InSimRSTPacket)
+signal isp_ncn_received(packet: InSimNCNPacket)
+signal isp_cnl_received(packet: InSimCNLPacket)
+signal isp_cpr_received(packet: InSimCPRPacket)
+signal isp_npl_received(packet: InSimNPLPacket)
+signal isp_plp_received(packet: InSimPLPPacket)
+signal isp_pll_received(packet: InSimPLLPacket)
+signal isp_lap_received(packet: InSimLAPPacket)
+signal isp_spx_received(packet: InSimSPXPacket)
+signal isp_pit_received(packet: InSimPITPacket)
+signal isp_psf_received(packet: InSimPSFPacket)
+signal isp_pla_received(packet: InSimPLAPacket)
+signal isp_cch_received(packet: InSimCCHPacket)
+signal isp_pen_received(packet: InSimPENPacket)
+signal isp_toc_received(packet: InSimTOCPacket)
+signal isp_flg_received(packet: InSimFLGPacket)
+signal isp_pfl_received(packet: InSimPFLPacket)
+signal isp_fin_received(packet: InSimFINPacket)
+signal isp_res_received(packet: InSimRESPacket)
+signal isp_reo_received(packet: InSimREOPacket)
+signal isp_nlp_received(packet: InSimNLPPacket)
+signal isp_mci_received(packet: InSimMCIPacket)
+signal isp_crs_received(packet: InSimCRSPacket)
+signal isp_bfn_received(packet: InSimBFNPacket)
+signal isp_axi_received(packet: InSimAXIPacket)
+signal isp_axo_received(packet: InSimAXOPacket)
+signal isp_btc_received(packet: InSimBTCPacket)
+signal isp_btt_received(packet: InSimBTTPacket)
+signal isp_rip_received(packet: InSimRIPPacket)
+signal isp_ssh_received(packet: InSimSSHPacket)
+signal isp_con_received(packet: InSimCONPacket)
+signal isp_obh_received(packet: InSimOBHPacket)
+signal isp_hlv_received(packet: InSimHLVPacket)
+signal isp_axm_received(packet: InSimAXMPacket)
+signal isp_acr_received(packet: InSimACRPacket)
+signal isp_nci_received(packet: InSimNCIPacket)
+signal isp_uco_received(packet: InSimUCOPacket)
+signal isp_slc_received(packet: InSimSLCPacket)
+signal isp_csc_received(packet: InSimCSCPacket)
+signal isp_cim_received(packet: InSimCIMPacket)
+signal isp_mal_received(packet: InSimMALPacket)
+signal isp_plh_received(packet: InSimPLHPacket)
+signal small_vta_received(packet: InSimSmallPacket)
+signal small_rtp_received(packet: InSimSmallPacket)
+signal small_alc_received(packet: InSimSmallPacket)
+signal tiny_reply_received(packet: InSimTinyPacket)
+signal tiny_vtc_received(packet: InSimTinyPacket)
+signal tiny_mpe_received(packet: InSimTinyPacket)
+signal tiny_ren_received(packet: InSimTinyPacket)
+signal tiny_clr_received(packet: InSimTinyPacket)
+signal tiny_axc_received(packet: InSimTinyPacket)
 signal packet_sent(packet: InSimPacket)
 
 enum Packet {
@@ -470,6 +530,8 @@ func _ready() -> void:
 	socket = PacketPeerUDP.new()
 
 	packet_received.connect(_on_packet_received)
+	isp_tiny_received.connect(_on_tiny_packet_received)
+	isp_small_received.connect(_on_small_packet_received)
 
 
 func _process(delta: float) -> void:
@@ -526,33 +588,6 @@ func read_incoming_packets() -> void:
 			packet_received.emit(insim_packet)
 
 
-func read_small_packet(packet: InSimSmallPacket) -> void:
-	match packet.sub_type:
-		_:
-			push_error("%s with subtype %s is not supported at this time." % \
-					[Packet.keys()[packet.type], Small.keys()[packet.sub_type]])
-
-
-func read_state_packet(packet: InSimSTAPacket) -> void:
-	pass
-
-
-func read_tiny_packet(packet: InSimTinyPacket) -> void:
-	match packet.sub_type:
-		Tiny.TINY_NONE:
-			send_keep_alive_packet()
-		_:
-			push_error("%s with subtype %s is not supported at this time." % \
-					[Packet.keys()[packet.type], Tiny.keys()[packet.sub_type]])
-
-
-func read_ttc_packet(packet: InSimTTCPacket) -> void:
-	match packet.sub_type:
-		_:
-			push_error("%s with subtype %s is not supported at this time." % \
-					[Packet.keys()[packet.type], TTC.keys()[packet.sub_type]])
-
-
 func read_version_packet(packet: InSimVERPacket) -> void:
 	print(packet.get_dictionary())
 	if packet.insim_ver != VERSION:
@@ -596,12 +631,140 @@ func start_sending_gauges() -> void:
 func _on_packet_received(packet: InSimPacket) -> void:
 	match packet.type:
 		Packet.ISP_VER:
-			read_version_packet(packet)
-		Packet.ISP_STA:
-			read_state_packet(packet)
+			isp_ver_received.emit(packet)
 		Packet.ISP_TINY:
-			read_tiny_packet(packet)
+			isp_tiny_received.emit(packet)
 		Packet.ISP_SMALL:
-			read_small_packet(packet)
-		Packet.ISP_TTC:
-			read_ttc_packet(packet)
+			isp_small_received.emit(packet)
+		Packet.ISP_STA:
+			isp_sta_received.emit(packet)
+		Packet.ISP_CPP:
+			isp_cpp_received.emit(packet)
+		Packet.ISP_ISM:
+			isp_ism_received.emit(packet)
+		Packet.ISP_MSO:
+			isp_mso_received.emit(packet)
+		Packet.ISP_III:
+			isp_iii_received.emit(packet)
+		Packet.ISP_VTN:
+			isp_vtn_received.emit(packet)
+		Packet.ISP_RST:
+			isp_rst_received.emit(packet)
+		Packet.ISP_NCN:
+			isp_ncn_received.emit(packet)
+		Packet.ISP_CNL:
+			isp_cnl_received.emit(packet)
+		Packet.ISP_CPR:
+			isp_cpr_received.emit(packet)
+		Packet.ISP_NPL:
+			isp_npl_received.emit(packet)
+		Packet.ISP_PLP:
+			isp_plp_received.emit(packet)
+		Packet.ISP_PLL:
+			isp_pll_received.emit(packet)
+		Packet.ISP_LAP:
+			isp_lap_received.emit(packet)
+		Packet.ISP_SPX:
+			isp_spx_received.emit(packet)
+		Packet.ISP_PIT:
+			isp_pit_received.emit(packet)
+		Packet.ISP_PSF:
+			isp_psf_received.emit(packet)
+		Packet.ISP_PLA:
+			isp_pla_received.emit(packet)
+		Packet.ISP_CCH:
+			isp_cch_received.emit(packet)
+		Packet.ISP_PEN:
+			isp_pen_received.emit(packet)
+		Packet.ISP_TOC:
+			isp_toc_received.emit(packet)
+		Packet.ISP_FLG:
+			isp_flg_received.emit(packet)
+		Packet.ISP_PFL:
+			isp_pfl_received.emit(packet)
+		Packet.ISP_FIN:
+			isp_fin_received.emit(packet)
+		Packet.ISP_RES:
+			isp_res_received.emit(packet)
+		Packet.ISP_REO:
+			isp_reo_received.emit(packet)
+		Packet.ISP_NLP:
+			isp_nlp_received.emit(packet)
+		Packet.ISP_MCI:
+			isp_mci_received.emit(packet)
+		Packet.ISP_CRS:
+			isp_crs_received.emit(packet)
+		Packet.ISP_BFN:
+			isp_bfn_received.emit(packet)
+		Packet.ISP_AXI:
+			isp_axi_received.emit(packet)
+		Packet.ISP_AXO:
+			isp_axo_received.emit(packet)
+		Packet.ISP_BTC:
+			isp_btc_received.emit(packet)
+		Packet.ISP_BTT:
+			isp_btt_received.emit(packet)
+		Packet.ISP_RIP:
+			isp_rip_received.emit(packet)
+		Packet.ISP_SSH:
+			isp_ssh_received.emit(packet)
+		Packet.ISP_CON:
+			isp_con_received.emit(packet)
+		Packet.ISP_OBH:
+			isp_obh_received.emit(packet)
+		Packet.ISP_HLV:
+			isp_hlv_received.emit(packet)
+		Packet.ISP_AXM:
+			isp_axm_received.emit(packet)
+		Packet.ISP_ACR:
+			isp_acr_received.emit(packet)
+		Packet.ISP_NCI:
+			isp_nci_received.emit(packet)
+		Packet.ISP_UCO:
+			isp_uco_received.emit(packet)
+		Packet.ISP_SLC:
+			isp_slc_received.emit(packet)
+		Packet.ISP_CSC:
+			isp_csc_received.emit(packet)
+		Packet.ISP_CIM:
+			isp_cim_received.emit(packet)
+		Packet.ISP_MAL:
+			isp_mal_received.emit(packet)
+		Packet.ISP_PLH:
+			isp_plh_received.emit(packet)
+		_:
+			push_error("Packet type %s is not supported at this time." % [Packet.keys()[packet.type]])
+
+
+func _on_small_packet_received(packet: InSimSmallPacket) -> void:
+	match packet.sub_type:
+		Small.SMALL_VTA:
+			small_vta_received.emit(packet)
+		Small.SMALL_RTP:
+			small_rtp_received.emit(packet)
+		Small.SMALL_ALC:
+			small_alc_received.emit(packet)
+		_:
+			push_error("%s with subtype %s is not supported at this time." % \
+					[Packet.keys()[packet.type], Small.keys()[packet.sub_type]])
+
+
+func _on_tiny_packet_received(packet: InSimTinyPacket) -> void:
+	match packet.sub_type:
+		Tiny.TINY_NONE:
+			send_keep_alive_packet()
+		Tiny.TINY_REPLY:
+			tiny_reply_received.emit(packet)
+		Tiny.TINY_VTC:
+			tiny_vtc_received.emit(packet)
+		Tiny.TINY_MPE:
+			tiny_mpe_received.emit(packet)
+		Tiny.TINY_REN:
+			tiny_ren_received.emit(packet)
+		Tiny.TINY_CLR:
+			tiny_clr_received.emit(packet)
+		Tiny.TINY_AXC:
+			tiny_axc_received.emit(packet)
+		_:
+			push_error("%s with subtype %s is not supported at this time." % \
+					[Packet.keys()[packet.type], Tiny.keys()[packet.sub_type]])
