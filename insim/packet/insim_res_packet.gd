@@ -2,7 +2,7 @@ class_name InSimRESPacket
 extends InSimPacket
 
 
-const PACKET_SIZE := 20
+const PACKET_SIZE := 84
 const PACKET_TYPE := InSim.Packet.ISP_RES
 var player_id := 0
 
