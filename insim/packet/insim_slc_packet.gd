@@ -21,7 +21,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 		return
 	super(packet)
 	ucid = read_byte(packet)
-	car_name = read_string(packet, 4)
+	car_name = read_car_name(packet)
 
 
 func _get_data_dictionary() -> Dictionary:

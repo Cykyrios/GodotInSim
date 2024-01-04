@@ -56,7 +56,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	flags = read_word(packet)
 	player_name = read_string(packet, 24)
 	plate = read_string(packet, 8)
-	car_name = read_string(packet, 4)
+	car_name = read_car_name(packet)
 	skin_name = read_string(packet, 16)
 	tyres.clear()
 	for i in MAX_TYRES:

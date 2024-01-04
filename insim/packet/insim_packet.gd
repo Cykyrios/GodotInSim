@@ -280,6 +280,35 @@ func update_req_i() -> void:
 	buffer.encode_u8(2, req_i)
 
 
+func read_car_name(packet: PackedByteArray) -> String:
+	var is_alphanumeric := func is_alphanumeric(character: int) -> bool:
+		var string := String.chr(character)
+		if (
+			string >= "0" and string <= "9"
+			or string >= "A" and string <= "Z"
+			or string >= "a" and string <= "z"
+		):
+			return true
+		return false
+
+	const CAR_NAME_LENGTH := 4
+	var car_name_buffer := packet.slice(data_offset, data_offset + CAR_NAME_LENGTH)
+	data_offset += CAR_NAME_LENGTH
+	var car_name := ""
+	if (
+		car_name_buffer[-1] == 0
+		and is_alphanumeric.call(car_name_buffer[0])
+		and is_alphanumeric.call(car_name_buffer[1])
+		and is_alphanumeric.call(car_name_buffer[2])
+	):
+		car_name = car_name_buffer.get_string_from_utf8()
+	else:
+		car_name_buffer.resize(3)
+		car_name_buffer.reverse()
+		car_name = car_name_buffer.hex_encode().to_upper()
+	return car_name
+
+
 func read_char(packet: PackedByteArray) -> String:
 	return read_string(packet, 1)
 
