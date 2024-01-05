@@ -12,11 +12,15 @@ var b2 := 0
 var b3 := 0
 
 
-func _init(req := 0, subt := InSim.TTC.TTC_NONE) -> void:
+func _init(req := 0, subt := InSim.TTC.TTC_NONE, _ucid := 0, _b1 := 0, _b2 := 0, _b3 := 0) -> void:
 	size = PACKET_SIZE
 	type = PACKET_TYPE
 	req_i = req
 	sub_type = subt
+	ucid = _ucid
+	b1 = _b1
+	b2 = _b2
+	b3 = _b3
 
 
 func _decode_packet(packet: PackedByteArray) -> void:

@@ -8,11 +8,12 @@ var sub_type := InSim.Small.SMALL_NONE
 var value := 0
 
 
-func _init(req := 0, subt := InSim.Small.SMALL_NONE) -> void:
+func _init(req := 0, subt := InSim.Small.SMALL_NONE, uval := 0) -> void:
 	size = PACKET_SIZE
 	type = PACKET_TYPE
 	req_i = req
 	sub_type = subt
+	value = uval
 
 
 func _decode_packet(packet: PackedByteArray) -> void:
