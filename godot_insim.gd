@@ -1,33 +1,58 @@
 extends MarginContainer
 
 
-var insim: InSim = null
-var outgauge: OutGauge = null
-var outsim: OutSim = null
-
 @onready var outgauge_label := %OutGaugeLabel
 @onready var outsim_label := %OutSimLabel
 
 
 func _ready() -> void:
-	insim = InSim.new()
-	add_child(insim)
 	var initialization_data := InSimInitializationData.new()
-	insim.initialize(initialization_data)
-	outgauge = OutGauge.new()
-	add_child(outgauge)
-	outgauge.initialize()
-	outsim = OutSim.new()
-	add_child(outsim)
-	outsim.initialize(0x1ff)
-	var _discard := outgauge.packet_received.connect(update_outgauge)
-	_discard = outsim.packet_received.connect(update_outsim)
+	GISInSim.initialize(initialization_data)
+	GISOutGauge.initialize()
+	GISOutSim.initialize(0x1ff)
+	var _discard := GISOutGauge.packet_received.connect(update_outgauge)
+	_discard = GISOutSim.packet_received.connect(update_outsim)
+	var timer := Timer.new()
+	add_child(timer)
+	_discard = timer.timeout.connect(send_random_lights)
+	_discard = timer.timeout.connect(send_random_switches)
+	timer.start(0.1)
 
 
 func _exit_tree() -> void:
-	insim.close()
-	outgauge.close()
-	outsim.close()
+	GISInSim.close()
+	GISOutGauge.close()
+	GISOutSim.close()
+
+
+func send_random_lights() -> void:
+	var lcl := CarLights.new()
+	lcl.set_signals = true
+	lcl.set_lights = true
+	lcl.set_fog_rear = true
+	lcl.set_fog_front = true
+	lcl.set_extra = true
+	lcl.signals = randi() % 4
+	lcl.lights = randi() % 4
+	lcl.fog_rear = randi() % 2
+	lcl.fog_front = randi() % 2
+	lcl.extra = randi() % 2
+	GISInSim.send_local_car_lights(lcl)
+
+
+func send_random_switches() -> void:
+	var lcs := CarSwitches.new()
+	lcs.set_signals = false
+	lcs.set_flash = true
+	lcs.set_headlights = false
+	lcs.set_horn = true
+	lcs.set_siren = true
+	lcs.signals = randi() % 4
+	lcs.flash = randi() % 2
+	lcs.headlights = randi() % 2
+	lcs.horn = randi() % 6
+	lcs.siren = randi() % 3
+	GISInSim.send_local_car_switches(lcs)
 
 
 func update_outgauge(outgauge_packet: OutGaugePacket) -> void:
