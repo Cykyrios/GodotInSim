@@ -1,5 +1,5 @@
 class_name OutGaugePacket
-extends RefCounted
+extends LFSPacket
 
 
 enum OGFlags {
@@ -74,27 +74,27 @@ func decode_packet(packet: PackedByteArray) -> void:
 		push_error("OutGauge packet size incorrect: expected %d or %d, got %d." % \
 				[SIZE_WITHOUT_ID, SIZE_WITH_ID, packet_size])
 		return
-	time = packet.decode_u32(0)
-	car_name = packet.slice(4, 8).get_string_from_utf8()
-	flags = packet.decode_u16(8)
-	gear = packet.decode_u8(10)
-	player_id = packet.decode_u8(11)
-	speed = packet.decode_float(12)
-	rpm = packet.decode_float(16)
-	turbo = packet.decode_float(20)
-	engine_temp = packet.decode_float(24)
-	fuel = packet.decode_float(28)
-	oil_pres = packet.decode_float(32)
-	oil_temp = packet.decode_float(36)
-	dash_lights = packet.decode_u32(40)
-	show_lights = packet.decode_u32(44)
-	throttle = packet.decode_float(48)
-	brake = packet.decode_float(52)
-	clutch = packet.decode_float(56)
-	display1 = packet.slice(60, 76).get_string_from_utf8()
-	display2 = packet.slice(76, 92).get_string_from_utf8()
+	time = read_unsigned(packet)
+	car_name = read_car_name(packet)
+	flags = read_word(packet)
+	gear = read_byte(packet)
+	player_id = read_byte(packet)
+	speed = read_float(packet)
+	rpm = read_float(packet)
+	turbo = read_float(packet)
+	engine_temp = read_float(packet)
+	fuel = read_float(packet)
+	oil_pres = read_float(packet)
+	oil_temp = read_float(packet)
+	dash_lights = read_unsigned(packet)
+	show_lights = read_unsigned(packet)
+	throttle = read_float(packet)
+	brake = read_float(packet)
+	clutch = read_float(packet)
+	display1 = read_string(packet, 16)
+	display2 = read_string(packet, 16)
 	if packet_size == SIZE_WITH_ID:
-		id = packet.decode_u32(SIZE_WITHOUT_ID)
+		id = read_int(packet)
 
 
 func get_flags_array() -> Array[int]:
