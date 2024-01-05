@@ -346,6 +346,22 @@ enum Language {
 	LFS_ROMANIAN,
 	LFS_NUM_LANG
 }
+enum LocalCarLights {
+	LCL_SET_SIGNALS = 1,
+	LCL_SPARE_2 = 2,
+	LCL_SET_LIGHTS = 4,
+	LCL_SPARE_8 = 8,
+	LCL_SET_FOG_REAR = 0x10,
+	LCL_SET_FOG_FRONT = 0x20,
+	LCL_SET_EXTRA = 0x40,
+}
+enum LocalCarSwitches {
+	LCS_SET_SIGNALS = 1,
+	LCS_SET_FLASH = 2,
+	LCS_SET_HEADLIGHTS = 4,
+	LCS_SET_HORN = 8,
+	LCS_SET_SIREN = 16,
+}
 enum LeaveReason {
 	LEAVR_DISCO,
 	LEAVR_TIMEOUT,
@@ -544,10 +560,7 @@ func _process(delta: float) -> void:
 func close() -> void:
 	if not socket:
 		return
-	var packet := InSimTinyPacket.new()
-	packet.sub_type = Tiny.TINY_CLOSE
-	packet.fill_buffer()
-	socket.put_packet(packet.buffer)
+	send_packet(InSimTinyPacket.new(0, Tiny.TINY_CLOSE))
 	print("Closing InSim connection.")
 	socket.close()
 
@@ -556,8 +569,7 @@ func initialize(initialization_data: InSimInitializationData) -> void:
 	var error := socket.connect_to_host(address, insim_port)
 	if error != OK:
 		push_error(error)
-	var initialization_packet := create_initialization_packet(initialization_data)
-	send_packet(initialization_packet)
+	send_packet(create_initialization_packet(initialization_data))
 
 
 func create_initialization_packet(initialization_data: InSimInitializationData) -> InSimISIPacket:
@@ -598,8 +610,72 @@ func read_version_packet(packet: InSimVERPacket) -> void:
 	print("Host InSim version matches local version (%d)." % [VERSION])
 
 
+func send_autocross_info_request() -> void:
+	send_packet(InSimTinyPacket.new(1, Tiny.TINY_AXI))
+
+
+func send_autocross_layout_objects_request() -> void:
+	send_packet(InSimTinyPacket.new(1, Tiny.TINY_AXM))
+
+
+func send_autocross_editor_selection_request(ucid := 0) -> void:
+	send_packet(InSimTTCPacket.new(1, TTC.TTC_SEL, ucid))
+
+
+func send_camera_position_request() -> void:
+	send_packet(InSimTinyPacket.new(1, Tiny.TINY_SCP))
+
+
+func send_change_nlp_mci_rate(interval: int) -> void:
+	send_packet(InSimSmallPacket.new(1, Small.SMALL_NLI, interval))
+
+
+func send_connection_info_request() -> void:
+	send_packet(InSimTinyPacket.new(1, Tiny.TINY_NCI))
+
+
+func send_connection_list_request() -> void:
+	send_packet(InSimTinyPacket.new(1, Tiny.TINY_NCN))
+
+
+func send_current_time_request() -> void:
+	send_packet(InSimTinyPacket.new(1, Tiny.TINY_GTH))
+
+
+func send_get_allowed_cars() -> void:
+	send_packet(InSimTinyPacket.new(1, Tiny.TINY_ALC))
+
+
+func send_get_allowed_mods() -> void:
+	send_packet(InSimTinyPacket.new(1, Tiny.TINY_MAL))
+
+
+func send_grid_order_request() -> void:
+	send_packet(InSimTinyPacket.new(1, Tiny.TINY_REO))
+
+
+func send_insim_multi_request() -> void:
+	send_packet(InSimTinyPacket.new(1, Tiny.TINY_ISM))
+
+
 func send_keep_alive_packet() -> void:
 	send_packet(InSimTinyPacket.new(0, Tiny.TINY_NONE))
+
+
+func send_local_car_lights(lcl: CarLights) -> void:
+	send_packet(InSimSmallPacket.new(0, Small.SMALL_LCL, lcl.get_value()))
+
+
+func send_local_car_switches(lcs: CarSwitches) -> void:
+	send_packet(InSimSmallPacket.new(0, Small.SMALL_LCS, lcs.get_value()))
+
+
+func send_mci_request() -> void:
+	send_packet(InSimTinyPacket.new(1, Tiny.TINY_MCI))
+
+
+func send_nlp_request() -> void:
+	send_packet(InSimTinyPacket.new(1, Tiny.TINY_NLP))
 
 
 func send_packet(packet: InSimPacket) -> void:
@@ -608,24 +684,68 @@ func send_packet(packet: InSimPacket) -> void:
 	packet_sent.emit(packet)
 
 
-func send_request_state_packet() -> void:
-	var packet := InSimTinyPacket.new(1)
-	packet.sub_type = Tiny.TINY_SST
-	packet.fill_buffer()
-	socket.put_packet(packet.buffer)
+func send_ping() -> void:
+	send_packet(InSimTinyPacket.new(1, Tiny.TINY_PING))
 
 
-func start_sending_gauges() -> void:
+func send_player_handicaps_request() -> void:
+	send_packet(InSimTinyPacket.new(1, Tiny.TINY_PLH))
+
+
+func send_player_list_request() -> void:
+	send_packet(InSimTinyPacket.new(1, Tiny.TINY_NPL))
+
+
+func send_race_start_request() -> void:
+	send_packet(InSimTinyPacket.new(1, Tiny.TINY_RST))
+
+
+func send_result_request() -> void:
+	send_packet(InSimTinyPacket.new(1, Tiny.TINY_RES))
+
+
+func send_replay_information_request() -> void:
+	send_packet(InSimTinyPacket.new(1, Tiny.TINY_RIP))
+
+
+func send_selected_car_request() -> void:
+	send_packet(InSimTinyPacket.new(1, Tiny.TINY_SLC))
+
+
+func send_set_allowed_cars(allowed_cars: int) -> void:
+	send_packet(InSimSmallPacket.new(0, Small.SMALL_ALC, allowed_cars))
+
+
+func send_state_request() -> void:
+	send_packet(InSimTinyPacket.new(1, Tiny.TINY_SST))
+
+
+func send_time_step_request(step: int) -> void:
+	send_packet(InSimSmallPacket.new(1, Small.SMALL_TMS, step))
+
+
+func send_time_stop_request(stop: int) -> void:
+	send_packet(InSimSmallPacket.new(1, Small.SMALL_TMS, stop))
+
+
+func send_version_request() -> void:
+	send_packet(InSimTinyPacket.new(1, Tiny.TINY_VER))
+
+
+func send_vote_cancel() -> void:
+	send_packet(InSimTinyPacket.new(0, Tiny.TINY_VTC))
+
+
+func send_outgauge_request(interval := 1) -> void:
 	if not socket:
 		return
-	var packet := PackedByteArray()
-	packet.resize(8)
-	packet.encode_u8(0, 2)
-	packet.encode_u8(1, Packet.ISP_SMALL)
-	packet.encode_u8(2, 0)
-	packet.encode_u8(3, Small.SMALL_SSG)
-	packet.encode_u32(4, 1)
-	socket.put_packet(packet)
+	send_packet(InSimSmallPacket.new(0, Small.SMALL_SSG, interval))
+
+
+func send_outsim_request(interval := 1) -> void:
+	if not socket:
+		return
+	send_packet(InSimSmallPacket.new(0, Small.SMALL_SSP, interval))
 
 
 func _on_packet_received(packet: InSimPacket) -> void:
