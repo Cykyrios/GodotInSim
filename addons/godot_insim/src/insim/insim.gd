@@ -730,7 +730,7 @@ func send_state_request() -> void:
 
 
 func send_time_step_request(step: int) -> void:
-	send_packet(InSimSmallPacket.new(1, Small.SMALL_TMS, step))
+	send_packet(InSimSmallPacket.new(1, Small.SMALL_STP, step))
 
 
 func send_time_stop_request(stop: int) -> void:
