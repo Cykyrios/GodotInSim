@@ -9,6 +9,9 @@ enum Flag {
 	OBH_ON_SPOT = 8,
 }
 
+const CLOSING_SPEED_MASK := 0x0fff
+const CLOSING_SPEED_MULTIPLIER := 10.0
+
 const PACKET_SIZE := 24
 const PACKET_TYPE := InSim.Packet.ISP_OBH
 var player_id := 0
@@ -26,6 +29,8 @@ var sp1 := 0
 var index := 0
 var obh_flags := 0
 
+var closing_speed := 0.0
+
 
 func _init() -> void:
 	size = PACKET_SIZE
@@ -40,6 +45,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	super(packet)
 	player_id = read_byte(packet)
 	sp_close = read_word(packet)
+	closing_speed = (sp_close & CLOSING_SPEED_MASK) / CLOSING_SPEED_MULTIPLIER
 	time = read_word(packet)
 	var struct_size := CarContObj.STRUCT_SIZE
 	object.set_from_buffer(packet.slice(data_offset, data_offset + struct_size))
