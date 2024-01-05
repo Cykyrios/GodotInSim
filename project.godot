@@ -15,6 +15,16 @@ run/main_scene="res://godot_insim.tscn"
 config/features=PackedStringArray("4.3", "GL Compatibility")
 config/icon="res://icon.svg"
 
+[autoload]
+
+GISInSim="*res://addons/godot_insim/src/insim/insim.gd"
+GISOutSim="*res://addons/godot_insim/src/outsim/outsim.gd"
+GISOutGauge="*res://addons/godot_insim/src/outgauge/outgauge.gd"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/godot_insim/plugin.cfg")
+
 [rendering]
 
 renderer/rendering_method="gl_compatibility"
