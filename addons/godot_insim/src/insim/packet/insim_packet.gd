@@ -199,7 +199,7 @@ func update_req_i() -> void:
 func resize_buffer(new_size: int) -> void:
 	size = new_size
 	_adjust_packet_size()
-	buffer.resize(size)
+	var _discard := buffer.resize(size)
 	@warning_ignore("integer_division")
 	buffer.encode_u8(0, size / SIZE_MULTIPLIER)
 

@@ -2,14 +2,16 @@ class_name InSimInitializationData
 extends RefCounted
 
 
+const PREFIX_LENGTH := 1
+
 var udp_port := 0
 var flags := 0
 
 var prefix := "":
 	set(text):
 		text = prefix
-		if text.length() > 1:
-			prefix = text.left(1)
+		if text.length() > PREFIX_LENGTH:
+			prefix = text.left(PREFIX_LENGTH)
 var interval := 0:
 	set(value):
 		interval = value

@@ -2,6 +2,9 @@ class_name InSimVERPacket
 extends InSimPacket
 
 
+const VERSION_LENGTH := 8
+const PRODUCT_LENGTH := 6
+
 const PACKET_SIZE := 20
 const PACKET_TYPE := InSim.Packet.ISP_VER
 var zero := 0
@@ -24,8 +27,8 @@ func _decode_packet(packet: PackedByteArray) -> void:
 		return
 	super(packet)
 	zero = read_byte(packet)
-	version = read_string(packet, 8)
-	product = read_string(packet, 6)
+	version = read_string(packet, VERSION_LENGTH)
+	product = read_string(packet, PRODUCT_LENGTH)
 	insim_ver = read_byte(packet)
 	spare = read_byte(packet)
 

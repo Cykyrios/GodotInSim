@@ -2,6 +2,8 @@ class_name InSimHCPPacket
 extends InSimPacket
 
 
+const MAX_CARS := 32
+
 const PACKET_SIZE := 68
 const PACKET_TYPE := InSim.Packet.ISP_HCP
 var zero := 0
@@ -12,7 +14,7 @@ var car_hcp: Array[CarHandicap] = []
 func _init() -> void:
 	size = PACKET_SIZE
 	type = PACKET_TYPE
-	car_hcp.resize(32)
+	var _discard := car_hcp.resize(MAX_CARS)
 	for i in car_hcp.size():
 		car_hcp[i] = CarHandicap.new()
 

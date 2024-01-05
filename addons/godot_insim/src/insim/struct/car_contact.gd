@@ -32,7 +32,7 @@ func _to_string() -> String:
 
 func get_buffer() -> PackedByteArray:
 	var buffer := PackedByteArray()
-	buffer.resize(STRUCT_SIZE)
+	var _discard := buffer.resize(STRUCT_SIZE)
 	buffer.encode_u8(0, player_id)
 	buffer.encode_u8(1, info)
 	buffer.encode_u8(2, sp2)

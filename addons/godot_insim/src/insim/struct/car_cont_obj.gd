@@ -20,7 +20,7 @@ func _to_string() -> String:
 
 func get_buffer() -> PackedByteArray:
 	var buffer := PackedByteArray()
-	buffer.resize(STRUCT_SIZE)
+	var _discard := buffer.resize(STRUCT_SIZE)
 	buffer.encode_u8(0, direction)
 	buffer.encode_u8(1, heading)
 	buffer.encode_u8(2, speed)

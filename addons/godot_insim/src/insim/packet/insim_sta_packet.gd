@@ -2,6 +2,8 @@ class_name InSimSTAPacket
 extends InSimPacket
 
 
+const TRACK_NAME_LENGTH := 6
+
 const PACKET_SIZE := 28
 const PACKET_TYPE := InSim.Packet.ISP_STA
 var zero := 0
@@ -55,7 +57,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	sp2 = read_byte(packet)
 	server_status = read_byte(packet)
 
-	track = read_string(packet, 6)
+	track = read_string(packet, TRACK_NAME_LENGTH)
 	weather = read_byte(packet)
 	wind = read_byte(packet)
 

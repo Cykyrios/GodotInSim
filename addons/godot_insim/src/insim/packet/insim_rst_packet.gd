@@ -2,6 +2,8 @@ class_name InSimRSTPacket
 extends InSimPacket
 
 
+const TRACK_NAME_LENGTH := 6
+
 const PACKET_SIZE := 28
 const PACKET_TYPE := InSim.Packet.ISP_RST
 var zero := 0
@@ -39,7 +41,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	qual_mins = read_byte(packet)
 	num_players = read_byte(packet)
 	timing = read_byte(packet)
-	track = read_string(packet, 6)
+	track = read_string(packet, TRACK_NAME_LENGTH)
 	weather = read_byte(packet)
 	wind = read_byte(packet)
 	flags = read_word(packet)

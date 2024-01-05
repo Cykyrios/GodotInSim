@@ -35,8 +35,11 @@ enum DLFlags {
 	DL_21,
 	DL_22,
 	DL_23,
-	DL_NUM,
+	DL_NUM
 }
+
+const DISPLAY_1_SIZE := 16
+const DISPLAY_2_SIZE := 16
 
 const SIZE_WITHOUT_ID := 92
 const SIZE_WITH_ID := 96
@@ -91,15 +94,15 @@ func decode_packet(packet: PackedByteArray) -> void:
 	throttle = read_float(packet)
 	brake = read_float(packet)
 	clutch = read_float(packet)
-	display1 = read_string(packet, 16)
-	display2 = read_string(packet, 16)
+	display1 = read_string(packet, DISPLAY_1_SIZE)
+	display2 = read_string(packet, DISPLAY_2_SIZE)
 	if packet_size == SIZE_WITH_ID:
 		id = read_int(packet)
 
 
 func get_flags_array() -> Array[int]:
 	var flags_array: Array[int] = []
-	flags_array.resize(OGFlags.size())
+	var _discard := flags_array.resize(OGFlags.size())
 	for i in flags_array.size():
 		flags_array[i] = 1 if flags & OGFlags.values()[i] > 0 else 0
 	return flags_array
@@ -107,7 +110,7 @@ func get_flags_array() -> Array[int]:
 
 func get_lights_array(lights: int) -> Array[int]:
 	var lights_array: Array[int] = []
-	lights_array.resize(DLFlags.size() - 1)
+	var _discard := lights_array.resize(DLFlags.size() - 1)
 	for i in lights_array.size():
 		lights_array[i] = (lights >> i) & 1
 	return lights_array

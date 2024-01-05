@@ -2,6 +2,9 @@ class_name InSimNCNPacket
 extends InSimPacket
 
 
+const USER_NAME_MAX_LENGTH := 24
+const PLAYER_NAME_MAX_LENGTH := 24
+
 const PACKET_SIZE := 56
 const PACKET_TYPE := InSim.Packet.ISP_NCN
 var ucid := 0
@@ -27,8 +30,8 @@ func _decode_packet(packet: PackedByteArray) -> void:
 		return
 	super(packet)
 	ucid = read_byte(packet)
-	user_name = read_string(packet, 24)
-	player_name = read_string(packet, 24)
+	user_name = read_string(packet, USER_NAME_MAX_LENGTH)
+	player_name = read_string(packet, PLAYER_NAME_MAX_LENGTH)
 	admin = read_byte(packet)
 	total = read_byte(packet)
 	flags = read_byte(packet)

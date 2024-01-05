@@ -2,6 +2,10 @@ class_name InSimRESPacket
 extends InSimPacket
 
 
+const USERNAME_MAX_LENGTH := 24
+const PLAYER_NAME_MAX_LENGTH := 24
+const PLATE_MAX_LENGTH := 8
+
 const PACKET_SIZE := 84
 const PACKET_TYPE := InSim.Packet.ISP_RES
 var player_id := 0
@@ -39,9 +43,9 @@ func _decode_packet(packet: PackedByteArray) -> void:
 		return
 	super(packet)
 	player_id = read_byte(packet)
-	username = read_string(packet, 24)
-	player_name = read_string(packet, 24)
-	plate = read_string(packet, 8)
+	username = read_string(packet, USERNAME_MAX_LENGTH)
+	player_name = read_string(packet, PLAYER_NAME_MAX_LENGTH)
+	plate = read_string(packet, PLAYER_NAME_MAX_LENGTH)
 	car_name = read_car_name(packet)
 	total_time = read_unsigned(packet)
 	best_lap = read_unsigned(packet)

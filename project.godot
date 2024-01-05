@@ -12,7 +12,7 @@ config_version=5
 
 config/name="godotinsim"
 run/main_scene="res://godot_insim.tscn"
-config/features=PackedStringArray("4.3", "GL Compatibility")
+config/features=PackedStringArray("4.2", "GL Compatibility")
 config/icon="res://icon.svg"
 
 [autoload]
@@ -20,6 +20,12 @@ config/icon="res://icon.svg"
 GISInSim="*res://addons/godot_insim/src/insim/insim.gd"
 GISOutSim="*res://addons/godot_insim/src/outsim/outsim.gd"
 GISOutGauge="*res://addons/godot_insim/src/outgauge/outgauge.gd"
+
+[debug]
+
+gdscript/warnings/exclude_addons=false
+gdscript/warnings/untyped_declaration=1
+gdscript/warnings/return_value_discarded=1
 
 [editor_plugins]
 

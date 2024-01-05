@@ -14,7 +14,7 @@ var player_ids: Array[int] = []
 func _init() -> void:
 	size = PACKET_SIZE
 	type = PACKET_TYPE
-	player_ids.resize(size)
+	var _discard := player_ids.resize(size)
 	for i in size:
 		player_ids[i] = 0
 

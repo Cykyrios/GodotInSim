@@ -36,7 +36,7 @@ func add_char(data: String) -> void:
 
 func add_string(length: int, data: String) -> void:
 	var temp_buffer := data.to_utf8_buffer()
-	temp_buffer.resize(length)
+	var _discard := temp_buffer.resize(length)
 	for i in length:
 		buffer.encode_u8(data_offset, temp_buffer[i])
 		data_offset += 1
@@ -133,7 +133,7 @@ func read_car_name(packet: PackedByteArray) -> String:
 	):
 		car_name = car_name_buffer.get_string_from_utf8()
 	else:
-		car_name_buffer.resize(3)
+		var _discard := car_name_buffer.resize(3)
 		car_name_buffer.reverse()
 		car_name = car_name_buffer.hex_encode().to_upper()
 	return car_name
@@ -188,7 +188,7 @@ func read_float(packet: PackedByteArray) -> float:
 
 func resize_buffer(new_size: int) -> void:
 	size = new_size
-	buffer.resize(size)
+	var _discard := buffer.resize(size)
 
 
 func fill_buffer() -> void:

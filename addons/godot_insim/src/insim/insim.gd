@@ -545,9 +545,9 @@ var packet_timer := 0.0
 func _ready() -> void:
 	socket = PacketPeerUDP.new()
 
-	packet_received.connect(_on_packet_received)
-	isp_tiny_received.connect(_on_tiny_packet_received)
-	isp_small_received.connect(_on_small_packet_received)
+	var _discard := packet_received.connect(_on_packet_received)
+	_discard = isp_tiny_received.connect(_on_tiny_packet_received)
+	_discard = isp_small_received.connect(_on_small_packet_received)
 
 
 func _process(delta: float) -> void:
@@ -594,14 +594,11 @@ func read_incoming_packets() -> void:
 			continue
 		packet_type = packet_buffer.decode_u8(1) as Packet
 		if packet_type != Packet.ISP_NONE:
-			print("Received %s packet:" % [Packet.keys()[packet_type]])
 			var insim_packet := InSimPacket.create_packet_from_buffer(packet_buffer)
-			print(insim_packet)
 			packet_received.emit(insim_packet)
 
 
 func read_version_packet(packet: InSimVERPacket) -> void:
-	print(packet.get_dictionary())
 	if packet.insim_ver != VERSION:
 		print("Host InSim version (%d) is different from local version (%d)." % \
 				[packet.insim_ver, VERSION])
@@ -678,9 +675,21 @@ func send_nlp_request() -> void:
 	send_packet(InSimTinyPacket.new(1, Tiny.TINY_NLP))
 
 
+func send_outgauge_request(interval := 1) -> void:
+	if not socket:
+		return
+	send_packet(InSimSmallPacket.new(0, Small.SMALL_SSG, interval))
+
+
+func send_outsim_request(interval := 1) -> void:
+	if not socket:
+		return
+	send_packet(InSimSmallPacket.new(0, Small.SMALL_SSP, interval))
+
+
 func send_packet(packet: InSimPacket) -> void:
 	packet.fill_buffer()
-	socket.put_packet(packet.buffer)
+	var _discard := socket.put_packet(packet.buffer)
 	packet_sent.emit(packet)
 
 
@@ -734,18 +743,6 @@ func send_version_request() -> void:
 
 func send_vote_cancel() -> void:
 	send_packet(InSimTinyPacket.new(0, Tiny.TINY_VTC))
-
-
-func send_outgauge_request(interval := 1) -> void:
-	if not socket:
-		return
-	send_packet(InSimSmallPacket.new(0, Small.SMALL_SSG, interval))
-
-
-func send_outsim_request(interval := 1) -> void:
-	if not socket:
-		return
-	send_packet(InSimSmallPacket.new(0, Small.SMALL_SSP, interval))
 
 
 func _on_packet_received(packet: InSimPacket) -> void:

@@ -8,6 +8,10 @@ const SETF_ABS_ENABLE := 4
 
 const MAX_TYRES := 4
 
+const PLAYER_NAME_MAX_LENGTH := 24
+const PLATE_MAX_LENGTH := 8
+const SKIN_NAME_MAX_LENGTH := 16
+
 const PACKET_SIZE := 76
 const PACKET_TYPE := InSim.Packet.ISP_NPL
 var player_id := 0
@@ -54,10 +58,10 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	ucid = read_byte(packet)
 	player_type = read_byte(packet)
 	flags = read_word(packet)
-	player_name = read_string(packet, 24)
-	plate = read_string(packet, 8)
+	player_name = read_string(packet, PLAYER_NAME_MAX_LENGTH)
+	plate = read_string(packet, PLATE_MAX_LENGTH)
 	car_name = read_car_name(packet)
-	skin_name = read_string(packet, 16)
+	skin_name = read_string(packet, SKIN_NAME_MAX_LENGTH)
 	tyres.clear()
 	for i in MAX_TYRES:
 		tyres.append(read_byte(packet))
