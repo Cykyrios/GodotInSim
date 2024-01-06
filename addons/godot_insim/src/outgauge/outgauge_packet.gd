@@ -43,7 +43,7 @@ const DISPLAY_1_SIZE := 16
 const DISPLAY_2_SIZE := 16
 
 const SIZE_WITHOUT_ID := 92
-const SIZE_WITH_ID := 96
+const SIZE_WITH_ID := SIZE_WITHOUT_ID + 4
 
 var time := 0
 var car_name := ""
