@@ -185,11 +185,27 @@ enum TTC {
 	TTC_SEL_STOP,
 }
 
+enum ButtonClick {
+	ISB_LMB = 1,
+	ISB_RMB = 2,
+	ISB_CTRL = 4,
+	ISB_SHIFT = 8,
+}
 enum ButtonFunction {
 	BFN_DEL_BTN,
 	BFN_CLEAR,
 	BFN_USER_CLEAR,
 	BFN_REQUEST,
+}
+enum ButtonStyle {
+	ISB_C1 = 1,
+	ISB_C2 = 2,
+	ISB_C4 = 4,
+	ISB_CLICK = 8,
+	ISB_LIGHT = 16,
+	ISB_DARK = 32,
+	ISB_LEFT = 64,
+	ISB_RIGHT = 128,
 }
 enum Car {
 	CAR_NONE = 0,
@@ -215,36 +231,27 @@ enum Car {
 	CAR_FBM = 0x80000,
 	CAR_ALL = 0xffffffff
 }
+enum CompCarInfo {
+	CCI_BLUE = 1,
+	CCI_YELLOW = 2,
+	CCI_LAG = 32,
+	CCI_FIRST = 64,
+	CCI_LAST = 128,
+}
+enum Confirmation {
+	CONF_MENTIONED = 1,
+	CONF_CONFIRMED = 2,
+	CONF_PENALTY_DT = 4,
+	CONF_PENALTY_SG = 8,
+	CONF_PENALTY_30 = 16,
+	CONF_PENALTY_45 = 32,
+	CONF_DID_NOT_PIT = 64,
+	CONF_DISQ = (CONF_PENALTY_DT | CONF_PENALTY_SG | CONF_DID_NOT_PIT),
+	CONF_TIME = (CONF_PENALTY_30 | CONF_PENALTY_45),
+}
 enum CSCAction {
 	CSC_STOP,
 	CSC_START,
-}
-enum DashLight {
-	DL_SHIFT,
-	DL_FULLBEAM,
-	DL_HANDBRAKE,
-	DL_PITSPEED,
-	DL_TC,
-	DL_SIGNAL_L,
-	DL_SIGNAL_R,
-	DL_SIGNAL_ANY,
-	DL_OILWARN,
-	DL_BATTERY,
-	DL_ABS,
-	DL_ENGINE,
-	DL_FOG_REAR,
-	DL_FOG_FRONT,
-	DL_DIPPED,
-	DL_FUELWARN,
-	DL_SIDELIGHTS,
-	DL_NEUTRAL,
-	DL_18,
-	DL_19,
-	DL_20,
-	DL_21,
-	DL_22,
-	DL_23,
-	DL_NUM
 }
 enum InitFlag {
 	ISF_RES_0 = 1,
@@ -390,6 +397,12 @@ enum MessageSound {
 	SND_ERROR,
 	SND_NUM
 }
+enum OBHFlag {
+	OBH_LAYOUT = 1,
+	OBH_CAN_MOVE = 2,
+	OBH_WAS_MOVING = 4,
+	OBH_ON_SPOT = 8,
+}
 enum OCOAction {
 	OCO_ZERO,
 	OCO_1,
@@ -449,6 +462,22 @@ enum PitWork {
 	PSE_REFUEL,
 	PSE_NUM
 }
+enum Player {
+	PIF_LEFTSIDE = 1,
+	PIF_RESERVED_2 = 2,
+	PIF_RESERVED_4 = 4,
+	PIF_AUTOGEARS = 8,
+	PIF_SHIFTER = 16,
+	PIF_RESERVED_32 = 32,
+	PIF_HELP_B = 64,
+	PIF_AXIS_CLUTCH = 128,
+	PIF_INPITS = 256,
+	PIF_AUTOCLUTCH = 512,
+	PIF_MOUSE = 1024,
+	PIF_KB_NO_HELP = 2048,
+	PIF_KB_STABILISED = 4096,
+	PIF_CUSTOM_VIEW = 8192,
+}
 enum PMOAction {
 	PMO_LOADING_FILE,
 	PMO_ADD_OBJECTS,
@@ -460,6 +489,12 @@ enum PMOAction {
 	PMO_POSITION,
 	PMO_GET_Z,
 	PMO_NUM
+}
+enum PMOFlags {
+	PMO_FILE_END = 1,
+	PMO_MOVE_MODIFY = 2,
+	PMO_SELECTION_REAL = 4,
+	PMO_AVOID_CHECK = 8,
 }
 enum Replay {
 	RIP_OK,
@@ -475,11 +510,21 @@ enum Replay {
 	RIP_USER,
 	RIP_OOS,
 }
+enum ReplayOption {
+	RIPOPT_LOOP = 1,
+	RIPOPT_SKINS = 2,
+	RIPOPT_FULL_PHYS = 4,
+}
 enum Screenshot {
 	SSH_OK,
 	SSH_DEDICATED,
 	SSH_CORRUPTED,
 	SSH_NO_SAVE,
+}
+enum Setup {
+	SETF_SYMM_WHEELS = 1,
+	SETF_TC_ENABLE = 2,
+	SETF_ABS_ENABLE = 4,
 }
 enum State {
 	ISS_GAME = 1,

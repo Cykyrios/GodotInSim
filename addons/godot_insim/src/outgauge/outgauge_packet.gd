@@ -9,7 +9,6 @@ enum OGFlags {
 	OG_KM = 16384,
 	OG_BAR = 32768,
 }
-
 enum DLFlags {
 	DL_SHIFT,
 	DL_FULLBEAM,
@@ -37,6 +36,8 @@ enum DLFlags {
 	DL_23,
 	DL_NUM
 }
+
+const DLF_ENGINE_SEVERE := 0x1000_0000
 
 const DISPLAY_1_SIZE := 16
 const DISPLAY_2_SIZE := 16
