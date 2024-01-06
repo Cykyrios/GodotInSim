@@ -1,6 +1,9 @@
 extends MarginContainer
 
 
+@export var insim_address := "127.0.0.1"
+@export var insim_port := 29_999
+
 var car_lights_timer := Timer.new()
 var car_switches_timer := Timer.new()
 
@@ -48,6 +51,8 @@ func _on_insim_button_pressed() -> void:
 		GISInSim.close()
 		insim_button.text = "Initialize InSim"
 	else:
+		GISInSim.address = insim_address
+		GISInSim.insim_port = insim_port
 		var initialization_data := InSimInitializationData.new()
 		GISInSim.initialize(initialization_data)
 		insim_button.text = "Close InSim"
