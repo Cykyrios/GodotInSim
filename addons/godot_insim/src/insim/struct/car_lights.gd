@@ -13,6 +13,14 @@ const FOG_FRONT_BIT_MASK := 0b1
 const EXTRA_BIT_SHIFT := 22
 const EXTRA_BIT_MASK := 0b1
 
+const ALL_OFF := (
+	InSim.LocalCarLights.LCL_SET_SIGNALS |
+	InSim.LocalCarLights.LCL_SET_LIGHTS |
+	InSim.LocalCarLights.LCL_SET_FOG_REAR |
+	InSim.LocalCarLights.LCL_SET_FOG_FRONT |
+	InSim.LocalCarLights.LCL_SET_EXTRA
+)
+
 var set_signals := false
 var set_lights := false
 var set_fog_rear := false
@@ -34,6 +42,14 @@ var fog_front := 0:
 var extra := 0:
 	set(value):
 		extra = clampi(value, 0, 1)
+
+
+func _init(lcl_mask := 0) -> void:
+	set_signals = lcl_mask & InSim.LocalCarLights.LCL_SET_SIGNALS
+	set_lights = lcl_mask & InSim.LocalCarLights.LCL_SET_LIGHTS
+	set_fog_rear = lcl_mask & InSim.LocalCarLights.LCL_SET_FOG_REAR
+	set_fog_front = lcl_mask & InSim.LocalCarLights.LCL_SET_FOG_FRONT
+	set_extra = lcl_mask & InSim.LocalCarLights.LCL_SET_EXTRA
 
 
 func _to_string() -> String:

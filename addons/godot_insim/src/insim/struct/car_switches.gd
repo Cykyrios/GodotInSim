@@ -13,6 +13,14 @@ const HORN_BIT_MASK := 0b111
 const SIREN_BIT_SHIFT := 20
 const SIREN_BIT_MASK := 0b11
 
+const ALL_OFF := (
+	InSim.LocalCarSwitches.LCS_SET_SIGNALS |
+	InSim.LocalCarSwitches.LCS_SET_FLASH |
+	InSim.LocalCarSwitches.LCS_SET_HEADLIGHTS |
+	InSim.LocalCarSwitches.LCS_SET_HORN |
+	InSim.LocalCarSwitches.LCS_SET_SIREN
+)
+
 var set_signals := false
 var set_flash := false
 var set_headlights := false
@@ -34,6 +42,14 @@ var horn := 0:
 var siren := 0:
 	set(value):
 		siren = clampi(value, 0, 2)
+
+
+func _init(lcs_mask := 0) -> void:
+	set_signals = lcs_mask & InSim.LocalCarSwitches.LCS_SET_SIGNALS
+	set_flash = lcs_mask & InSim.LocalCarSwitches.LCS_SET_FLASH
+	set_headlights = lcs_mask & InSim.LocalCarSwitches.LCS_SET_HEADLIGHTS
+	set_horn = lcs_mask & InSim.LocalCarSwitches.LCS_SET_HORN
+	set_siren = lcs_mask & InSim.LocalCarSwitches.LCS_SET_SIREN
 
 
 func _to_string() -> String:
