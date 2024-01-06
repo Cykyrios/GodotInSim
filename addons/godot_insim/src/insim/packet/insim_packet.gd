@@ -215,4 +215,5 @@ func _fill_buffer() -> void:
 
 
 func _decode_packet(packet_buffer: PackedByteArray) -> void:
+	super(packet_buffer)
 	decode_header(packet_buffer)
