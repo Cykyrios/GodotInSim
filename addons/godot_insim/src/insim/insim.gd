@@ -579,6 +579,7 @@ enum Vote {
 
 const VERSION := 9
 const PACKET_READ_INTERVAL := 0.01
+const TIMEOUT_DELAY := 70
 
 var address := "127.0.0.1"
 var insim_port := 29_999
@@ -586,13 +587,24 @@ var insim_port := 29_999
 var socket: PacketPeerUDP = null
 var packet_timer := 0.0
 
+var insim_connected := false
+var connection_timer := Timer.new()
+
 
 func _ready() -> void:
 	socket = PacketPeerUDP.new()
 
 	var _discard := packet_received.connect(_on_packet_received)
+	_discard = isp_ver_received.connect(read_version_packet)
 	_discard = isp_tiny_received.connect(_on_tiny_packet_received)
 	_discard = isp_small_received.connect(_on_small_packet_received)
+
+	add_child(connection_timer)
+	connection_timer.one_shot = true
+	_discard = connection_timer.timeout.connect(func() -> void:
+		insim_connected = false
+		push_warning("InSim connection timed out.")
+	)
 
 
 func _process(delta: float) -> void:
@@ -608,6 +620,7 @@ func close() -> void:
 	send_packet(InSimTinyPacket.new(0, Tiny.TINY_CLOSE))
 	print("Closing InSim connection.")
 	socket.close()
+	insim_connected = false
 
 
 func initialize(initialization_data: InSimInitializationData) -> void:
@@ -644,6 +657,7 @@ func read_incoming_packets() -> void:
 
 
 func read_version_packet(packet: InSimVERPacket) -> void:
+	insim_connected = true
 	if packet.insim_ver != VERSION:
 		print("Host InSim version (%d) is different from local version (%d)." % \
 				[packet.insim_ver, VERSION])
@@ -702,6 +716,7 @@ func send_insim_multi_request() -> void:
 
 func send_keep_alive_packet() -> void:
 	send_packet(InSimTinyPacket.new(0, Tiny.TINY_NONE))
+	connection_timer.start(TIMEOUT_DELAY)
 
 
 func send_local_car_lights(lcl: CarLights) -> void:
@@ -733,6 +748,9 @@ func send_outsim_request(interval := 1) -> void:
 
 
 func send_packet(packet: InSimPacket) -> void:
+	if packet.type != Packet.ISP_ISI and not insim_connected:
+		push_warning("InSim is not initialized, packet not sent.")
+		return
 	packet.fill_buffer()
 	var _discard := socket.put_packet(packet.buffer)
 	packet_sent.emit(packet)
