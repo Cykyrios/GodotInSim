@@ -2,6 +2,13 @@ class_name OutSimPack2
 extends RefCounted
 
 
+enum WheelIndex {
+	REAR_LEFT,
+	REAR_RIGHT,
+	FRONT_LEFT,
+	FRONT_RIGHT,
+}
+
 const WHEEL_COUNT := 4
 
 var os_options := 0
