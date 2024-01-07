@@ -16,5 +16,6 @@ func _to_string() -> String:
 
 
 func _decode_packet(packet: PackedByteArray) -> void:
+	super(packet)
 	outsim_pack.os_options = outsim_options
 	outsim_pack.set_from_buffer(packet)

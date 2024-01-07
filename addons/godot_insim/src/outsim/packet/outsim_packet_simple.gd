@@ -15,4 +15,5 @@ func _to_string() -> String:
 
 
 func _decode_packet(packet: PackedByteArray) -> void:
+	super(packet)
 	outsim_pack.set_from_buffer(packet)
