@@ -12,12 +12,10 @@ Enums and bitflags are implemented as enums in `InSim`, `OutSim` and `OutGauge` 
 
 ## Installation
 
-To start building your InSim app, place the `addons` folder in your project root. You then have two options:
+To start building your InSim app, you only need to place this repository's contents in a subfolder of your project (`addons/godot_insim` is recommended). You can add it as a git submodule to your project.
 
-* Manually create and manage `InSim`, `OutSim` and `OutGauge` nodes, or
-* Activate the GodotInsim plugin (Projects > Project Settings > Plugins tab). You may need to restart the editor for it to properly register the `GISInSim`, `GISOutSim` and `GISOutGauge` autoloads.
-
-If you wish to connect to multiple InSim instances, you will need to manage `InSim` nodes manually.
+From there, you can manually create and manage `InSim`, `OutSim` and `OutGauge` nodes to communicate with LFS.  
+If you wish to connect to multiple InSim instances, you will need to create and manage several `InSim` nodes.
 
 ## Usage
 
@@ -58,7 +56,7 @@ Direct OutSim communication can be enabled without InSim by setting the appropri
 
 ## Example
 
-A very simple example is provided as a demo (demo.tscn is the default scene). The following images are from this demo.
+A very simple example is provided as a demo in [this repository](https://github.com/Cykyrios/GodotInSim-Demo). The following images are from this demo.
 
 ![InSim](/examples/GIS_demo.gif)
 
