@@ -58,6 +58,6 @@ Direct OutSim communication can be enabled without InSim by setting the appropri
 
 A very simple example is provided as a demo in [this repository](https://github.com/Cykyrios/GodotInSim-Demo). The following images are from this demo.
 
-![InSim](/examples/GIS_demo.gif)
+![InSim](https://github.com/Cykyrios/GodotInSim-Demo/blob/main/examples/GodotInSim_demo.gif?raw=true)
 
-![OutGauge and OutSim](/examples/GIS_demo.png)
+![OutGauge and OutSim](https://github.com/Cykyrios/GodotInSim-Demo/blob/main/examples/GodotInSim_demo.png?raw=true)
