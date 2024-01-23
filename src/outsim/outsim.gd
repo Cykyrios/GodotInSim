@@ -39,13 +39,7 @@ func _process(delta: float) -> void:
 
 
 static func create_packet_from_buffer(options: int, packet_buffer: PackedByteArray) -> OutSimPacket:
-	var packet: OutSimPacket = null
-	if options == 0:
-		packet = OutSimPacketSimple.new()
-	else:
-		packet = OutSimPacketDetailed.new(options)
-	packet.buffer = packet_buffer
-	packet.decode_packet(packet_buffer)
+	var packet := OutSimPacket.new(options, packet_buffer)
 	return packet
 
 
