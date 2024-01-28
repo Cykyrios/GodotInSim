@@ -2,6 +2,8 @@ class_name InSim
 extends Node
 
 
+signal timeout
+
 signal packet_received(packet: InSimPacket)
 signal isp_ver_received(packet: InSimVERPacket)
 signal isp_tiny_received(packet: InSimTinyPacket)
@@ -602,6 +604,7 @@ func _ready() -> void:
 	add_child(connection_timer)
 	connection_timer.one_shot = true
 	_discard = connection_timer.timeout.connect(func() -> void:
+		timeout.emit()
 		insim_connected = false
 		push_warning("InSim connection timed out.")
 	)
