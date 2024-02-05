@@ -29,10 +29,10 @@ func _decode_packet(packet: PackedByteArray) -> void:
 		push_error("%s packet expected size %d, got %d." % [InSim.Packet.keys()[type], size, packet_size])
 		return
 	super(packet)
-	zero = read_byte(packet)
-	sp_close = read_word(packet)
+	zero = read_byte()
+	sp_close = read_word()
 	closing_speed = (sp_close & CLOSING_SPEED_MASK) / CLOSING_SPEED_MULTIPLIER
-	time = read_word(packet)
+	time = read_word()
 	var struct_size := CarContact.STRUCT_SIZE
 	car_a.set_from_buffer(packet.slice(data_offset, data_offset + struct_size))
 	data_offset += struct_size

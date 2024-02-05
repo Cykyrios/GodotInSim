@@ -28,11 +28,11 @@ func _decode_packet(packet: PackedByteArray) -> void:
 		push_error("%s packet expected size %d, got %d." % [InSim.Packet.keys()[type], size, packet_size])
 		return
 	super(packet)
-	ucid = read_byte(packet)
-	mode = read_byte(packet) as InSim.InterfaceMode
-	submode = read_byte(packet)
-	sel_type = read_byte(packet)
-	sp3 = read_byte(packet)
+	ucid = read_byte()
+	mode = read_byte() as InSim.InterfaceMode
+	submode = read_byte()
+	sel_type = read_byte()
+	sp3 = read_byte()
 
 
 func _get_data_dictionary() -> Dictionary:

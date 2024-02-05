@@ -25,10 +25,10 @@ func _decode_packet(packet: PackedByteArray) -> void:
 		push_error("%s packet expected size %d, got %d." % [InSim.Packet.keys()[type], size, packet_size])
 		return
 	super(packet)
-	num_players = read_byte(packet)
+	num_players = read_byte()
 	player_ids.clear()
 	for i in MAX_PLAYERS:
-		player_ids.append(read_byte(packet))
+		player_ids.append(read_byte())
 
 
 func _fill_buffer() -> void:

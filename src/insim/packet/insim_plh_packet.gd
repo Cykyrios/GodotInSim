@@ -30,14 +30,14 @@ func _decode_packet(packet: PackedByteArray) -> void:
 				PACKET_MIN_SIZE, PACKET_MAX_SIZE, SIZE_MULTIPLIER, packet_size])
 		return
 	super(packet)
-	nump = read_byte(packet)
+	nump = read_byte()
 	hcaps.clear()
 	for i in nump:
 		var player_hcap := PlayerHandicap.new()
-		player_hcap.player_id = read_byte(packet)
-		player_hcap.flags = read_byte(packet)
-		player_hcap.h_mass = read_byte(packet)
-		player_hcap.h_tres = read_byte(packet)
+		player_hcap.player_id = read_byte()
+		player_hcap.flags = read_byte()
+		player_hcap.h_mass = read_byte()
+		player_hcap.h_tres = read_byte()
 		hcaps.append(player_hcap)
 
 

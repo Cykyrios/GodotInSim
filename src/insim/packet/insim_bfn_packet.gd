@@ -23,11 +23,11 @@ func _decode_packet(packet: PackedByteArray) -> void:
 		push_error("%s packet expected size %d, got %d." % [InSim.Packet.keys()[type], size, packet_size])
 		return
 	super(packet)
-	subtype = read_byte(packet) as InSim.ButtonFunction
-	ucid = read_byte(packet)
-	click_id = read_byte(packet)
-	click_max = read_byte(packet)
-	inst = read_byte(packet)
+	subtype = read_byte() as InSim.ButtonFunction
+	ucid = read_byte()
+	click_id = read_byte()
+	click_max = read_byte()
+	inst = read_byte()
 
 
 func _fill_buffer() -> void:

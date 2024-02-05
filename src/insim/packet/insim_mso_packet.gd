@@ -32,12 +32,12 @@ func _decode_packet(packet: PackedByteArray) -> void:
 				PACKET_MIN_SIZE, PACKET_MAX_SIZE, SIZE_MULTIPLIER, packet_size])
 		return
 	super(packet)
-	zero = read_byte(packet)
-	ucid = read_byte(packet)
-	player_id = read_byte(packet)
-	user_type = read_byte(packet)
-	text_start = read_byte(packet)
-	msg = read_string(packet, packet_size - data_offset)
+	zero = read_byte()
+	ucid = read_byte()
+	player_id = read_byte()
+	user_type = read_byte()
+	text_start = read_byte()
+	msg = read_string(packet_size - data_offset)
 
 
 func _get_data_dictionary() -> Dictionary:

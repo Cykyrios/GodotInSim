@@ -176,9 +176,9 @@ func decode_header(packet_buffer: PackedByteArray) -> void:
 		push_error("Buffer is smaller than InSim packet header.")
 		return
 	data_offset = 0
-	size = read_byte(packet_buffer) * SIZE_MULTIPLIER
-	type = read_byte(packet_buffer) as InSim.Packet
-	req_i = read_byte(packet_buffer)
+	size = read_byte() * SIZE_MULTIPLIER
+	type = read_byte() as InSim.Packet
+	req_i = read_byte()
 
 
 func write_header() -> void:

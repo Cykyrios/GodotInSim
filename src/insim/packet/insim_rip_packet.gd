@@ -30,14 +30,14 @@ func _decode_packet(packet: PackedByteArray) -> void:
 		push_error("%s packet expected size %d, got %d." % [InSim.Packet.keys()[type], size, packet_size])
 		return
 	super(packet)
-	error = read_byte(packet)
-	mpr = read_byte(packet)
-	paused = read_byte(packet)
-	options = read_byte(packet)
-	sp3 = read_byte(packet)
-	c_time = read_unsigned(packet)
-	t_time = read_unsigned(packet)
-	replay_name = read_string(packet, REPLAY_NAME_MAX_LENGTH)
+	error = read_byte()
+	mpr = read_byte()
+	paused = read_byte()
+	options = read_byte()
+	sp3 = read_byte()
+	c_time = read_unsigned()
+	t_time = read_unsigned()
+	replay_name = read_string(REPLAY_NAME_MAX_LENGTH)
 
 
 func _fill_buffer() -> void:

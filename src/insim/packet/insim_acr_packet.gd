@@ -33,12 +33,12 @@ func _decode_packet(packet: PackedByteArray) -> void:
 				PACKET_MIN_SIZE, PACKET_MAX_SIZE, SIZE_MULTIPLIER, packet_size])
 		return
 	super(packet)
-	zero = read_byte(packet)
-	ucid = read_byte(packet)
-	admin = read_byte(packet)
-	result = read_byte(packet)
-	sp3 = read_byte(packet)
-	text = read_string(packet, packet_size - data_offset)
+	zero = read_byte()
+	ucid = read_byte()
+	admin = read_byte()
+	result = read_byte()
+	sp3 = read_byte()
+	text = read_string(packet_size - data_offset)
 
 
 func _get_data_dictionary() -> Dictionary:

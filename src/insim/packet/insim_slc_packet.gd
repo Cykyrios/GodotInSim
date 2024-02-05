@@ -20,8 +20,8 @@ func _decode_packet(packet: PackedByteArray) -> void:
 		push_error("%s packet expected size %d, got %d." % [InSim.Packet.keys()[type], size, packet_size])
 		return
 	super(packet)
-	ucid = read_byte(packet)
-	car_name = read_car_name(packet)
+	ucid = read_byte()
+	car_name = read_car_name()
 
 
 func _get_data_dictionary() -> Dictionary:

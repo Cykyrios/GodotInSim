@@ -35,11 +35,11 @@ func _decode_packet(packet: PackedByteArray) -> void:
 				PACKET_MIN_SIZE, PACKET_MAX_SIZE, SIZE_MULTIPLIER, packet_size])
 		return
 	super(packet)
-	num_objects = read_byte(packet)
-	ucid = read_byte(packet)
-	pmo_action = read_byte(packet) as InSim.PMOAction
-	pmo_flags = read_byte(packet)
-	sp3 = read_byte(packet)
+	num_objects = read_byte()
+	ucid = read_byte()
+	pmo_action = read_byte() as InSim.PMOAction
+	pmo_flags = read_byte()
+	sp3 = read_byte()
 	info.clear()
 	var struct_size := ObjectInfo.STRUCT_SIZE
 	for i in num_objects:

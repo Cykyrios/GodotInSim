@@ -34,10 +34,10 @@ func _decode_packet(packet: PackedByteArray) -> void:
 				PACKET_MIN_SIZE, PACKET_MAX_SIZE, SIZE_MULTIPLIER, packet_size])
 		return
 	super(packet)
-	num_mods = read_byte(packet)
+	num_mods = read_byte()
 	skin_id.clear()
 	for i in num_mods:
-		skin_id.append(read_unsigned(packet))
+		skin_id.append(read_unsigned())
 
 
 func _fill_buffer() -> void:

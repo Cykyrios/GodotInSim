@@ -110,7 +110,7 @@ func add_float(data: float) -> void:
 	data_offset += 4
 
 
-func read_car_name(packet: PackedByteArray) -> String:
+func read_car_name() -> String:
 	var is_alphanumeric := func is_alphanumeric(character: int) -> bool:
 		var string := String.chr(character)
 		if (
@@ -122,7 +122,7 @@ func read_car_name(packet: PackedByteArray) -> String:
 		return false
 
 	const CAR_NAME_LENGTH := 4
-	var car_name_buffer := packet.slice(data_offset, data_offset + CAR_NAME_LENGTH)
+	var car_name_buffer := buffer.slice(data_offset, data_offset + CAR_NAME_LENGTH)
 	data_offset += CAR_NAME_LENGTH
 	var car_name := ""
 	if (
@@ -139,49 +139,49 @@ func read_car_name(packet: PackedByteArray) -> String:
 	return car_name
 
 
-func read_char(packet: PackedByteArray) -> String:
-	return read_string(packet, 1)
+func read_char() -> String:
+	return read_string(1)
 
 
-func read_string(packet: PackedByteArray, length: int) -> String:
-	var temp_buffer := packet.slice(data_offset, data_offset + length)
+func read_string(length: int) -> String:
+	var temp_buffer := buffer.slice(data_offset, data_offset + length)
 	var result := temp_buffer.get_string_from_utf8()
 	data_offset += length
 	return result
 
 
-func read_byte(packet: PackedByteArray) -> int:
-	var result := packet.decode_u8(data_offset)
+func read_byte() -> int:
+	var result := buffer.decode_u8(data_offset)
 	data_offset += 1
 	return result
 
 
-func read_word(packet: PackedByteArray) -> int:
-	var result := packet.decode_u16(data_offset)
+func read_word() -> int:
+	var result := buffer.decode_u16(data_offset)
 	data_offset += 2
 	return result
 
 
-func read_short(packet: PackedByteArray) -> int:
-	var result := packet.decode_s16(data_offset)
+func read_short() -> int:
+	var result := buffer.decode_s16(data_offset)
 	data_offset += 2
 	return result
 
 
-func read_unsigned(packet: PackedByteArray) -> int:
-	var result := packet.decode_u32(data_offset)
+func read_unsigned() -> int:
+	var result := buffer.decode_u32(data_offset)
 	data_offset += 4
 	return result
 
 
-func read_int(packet: PackedByteArray) -> int:
-	var result := packet.decode_s32(data_offset)
+func read_int() -> int:
+	var result := buffer.decode_s32(data_offset)
 	data_offset += 4
 	return result
 
 
-func read_float(packet: PackedByteArray) -> float:
-	var result := packet.decode_float(data_offset)
+func read_float() -> float:
+	var result := buffer.decode_float(data_offset)
 	data_offset += 4
 	return result
 

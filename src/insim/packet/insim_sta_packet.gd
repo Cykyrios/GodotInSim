@@ -40,26 +40,26 @@ func _decode_packet(packet: PackedByteArray) -> void:
 		push_error("%s packet expected size %d, got %d." % [InSim.Packet.keys()[type], size, packet_size])
 		return
 	super(packet)
-	zero = read_byte(packet)
-	replay_speed = read_float(packet)
+	zero = read_byte()
+	replay_speed = read_float()
 
-	flags = read_word(packet)
-	ingame_cam = read_byte(packet)
-	view_player_id = read_byte(packet)
+	flags = read_word()
+	ingame_cam = read_byte()
+	view_player_id = read_byte()
 
-	num_players = read_byte(packet)
-	num_connections = read_byte(packet)
-	num_finished = read_byte(packet)
-	race_in_progress = read_byte(packet)
+	num_players = read_byte()
+	num_connections = read_byte()
+	num_finished = read_byte()
+	race_in_progress = read_byte()
 
-	qual_mins = read_byte(packet)
-	race_laps = read_byte(packet)
-	sp2 = read_byte(packet)
-	server_status = read_byte(packet)
+	qual_mins = read_byte()
+	race_laps = read_byte()
+	sp2 = read_byte()
+	server_status = read_byte()
 
-	track = read_string(packet, TRACK_NAME_LENGTH)
-	weather = read_byte(packet)
-	wind = read_byte(packet)
+	track = read_string(TRACK_NAME_LENGTH)
+	weather = read_byte()
+	wind = read_byte()
 
 
 func _get_data_dictionary() -> Dictionary:

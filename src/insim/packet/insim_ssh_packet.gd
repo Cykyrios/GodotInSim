@@ -27,12 +27,12 @@ func _decode_packet(packet: PackedByteArray) -> void:
 		push_error("%s packet expected size %d, got %d." % [InSim.Packet.keys()[type], size, packet_size])
 		return
 	super(packet)
-	error = read_byte(packet)
-	sp0 = read_byte(packet)
-	sp1 = read_byte(packet)
-	sp2 = read_byte(packet)
-	sp3 = read_byte(packet)
-	screenshot_name = read_string(packet, SCREENSHOT_NAME_MAX_LENGTH)
+	error = read_byte()
+	sp0 = read_byte()
+	sp1 = read_byte()
+	sp2 = read_byte()
+	sp3 = read_byte()
+	screenshot_name = read_string(SCREENSHOT_NAME_MAX_LENGTH)
 
 
 func _fill_buffer() -> void:

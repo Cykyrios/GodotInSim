@@ -26,13 +26,13 @@ func _decode_packet(packet: PackedByteArray) -> void:
 		push_error("%s packet expected size %d, got %d." % [InSim.Packet.keys()[type], size, packet_size])
 		return
 	super(packet)
-	player_id = read_byte(packet)
-	split_time = read_unsigned(packet)
-	elapsed_time = read_unsigned(packet)
-	split = read_byte(packet)
-	penalty = read_byte(packet) as InSim.Penalty
-	num_stops = read_byte(packet)
-	fuel200 = read_byte(packet)
+	player_id = read_byte()
+	split_time = read_unsigned()
+	elapsed_time = read_unsigned()
+	split = read_byte()
+	penalty = read_byte() as InSim.Penalty
+	num_stops = read_byte()
+	fuel200 = read_byte()
 
 
 func _get_data_dictionary() -> Dictionary:

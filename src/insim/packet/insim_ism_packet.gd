@@ -25,12 +25,12 @@ func _decode_packet(packet: PackedByteArray) -> void:
 		push_error("%s packet expected size %d, got %d." % [InSim.Packet.keys()[type], size, packet_size])
 		return
 	super(packet)
-	zero = read_byte(packet)
-	host = read_byte(packet)
-	sp1 = read_byte(packet)
-	sp2 = read_byte(packet)
-	sp3 = read_byte(packet)
-	h_name = read_string(packet, 32)
+	zero = read_byte()
+	host = read_byte()
+	sp1 = read_byte()
+	sp2 = read_byte()
+	sp3 = read_byte()
+	h_name = read_string(32)
 
 
 func _get_data_dictionary() -> Dictionary:

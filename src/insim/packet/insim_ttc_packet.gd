@@ -29,11 +29,11 @@ func _decode_packet(packet: PackedByteArray) -> void:
 		push_error("%s packet expected size %d, got %d." % [InSim.Packet.keys()[type], size, packet_size])
 		return
 	super(packet)
-	sub_type = read_byte(packet) as InSim.TTC
-	ucid = read_byte(packet)
-	b1 = read_byte(packet)
-	b2 = read_byte(packet)
-	b3 = read_byte(packet)
+	sub_type = read_byte() as InSim.TTC
+	ucid = read_byte()
+	b1 = read_byte()
+	b2 = read_byte()
+	b3 = read_byte()
 
 
 func _fill_buffer() -> void:

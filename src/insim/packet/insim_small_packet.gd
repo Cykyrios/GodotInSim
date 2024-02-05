@@ -22,8 +22,8 @@ func _decode_packet(packet: PackedByteArray) -> void:
 		push_error("%s packet expected size %d, got %d." % [InSim.Packet.keys()[type], size, packet_size])
 		return
 	super(packet)
-	sub_type = read_byte(packet) as InSim.Small
-	value = read_unsigned(packet)
+	sub_type = read_byte() as InSim.Small
+	value = read_unsigned()
 
 
 func _fill_buffer() -> void:

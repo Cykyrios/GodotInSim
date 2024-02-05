@@ -33,18 +33,18 @@ func _decode_packet(packet: PackedByteArray) -> void:
 		push_error("%s packet expected size %d, got %d." % [InSim.Packet.keys()[type], size, packet_size])
 		return
 	super(packet)
-	player_id = read_byte(packet)
-	laps_done = read_word(packet)
-	flags = read_word(packet)
-	fuel_add = read_byte(packet)
-	penalty = read_byte(packet) as InSim.Penalty
-	num_stops = read_byte(packet)
-	sp3 = read_byte(packet)
+	player_id = read_byte()
+	laps_done = read_word()
+	flags = read_word()
+	fuel_add = read_byte()
+	penalty = read_byte() as InSim.Penalty
+	num_stops = read_byte()
+	sp3 = read_byte()
 	tyres.clear()
 	for i in MAX_TYRES:
-		tyres.append(read_byte(packet))
-	work = read_unsigned(packet)
-	spare = read_unsigned(packet)
+		tyres.append(read_byte())
+	work = read_unsigned()
+	spare = read_unsigned()
 
 
 func _get_data_dictionary() -> Dictionary:

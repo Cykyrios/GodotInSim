@@ -43,19 +43,19 @@ func _decode_packet(packet: PackedByteArray) -> void:
 		push_error("%s packet expected size %d, got %d." % [InSim.Packet.keys()[type], size, packet_size])
 		return
 	super(packet)
-	player_id = read_byte(packet)
-	sp_close = read_word(packet)
+	player_id = read_byte()
+	sp_close = read_word()
 	closing_speed = (sp_close & CLOSING_SPEED_MASK) / CLOSING_SPEED_MULTIPLIER
-	time = read_word(packet)
+	time = read_word()
 	var struct_size := CarContObj.STRUCT_SIZE
 	object.set_from_buffer(packet.slice(data_offset, data_offset + struct_size))
 	data_offset += struct_size
-	x = read_short(packet)
-	y = read_short(packet)
-	z = read_byte(packet)
-	sp1 = read_byte(packet)
-	index = read_byte(packet)
-	obh_flags = read_byte(packet)
+	x = read_short()
+	y = read_short()
+	z = read_byte()
+	sp1 = read_byte()
+	index = read_byte()
+	obh_flags = read_byte()
 
 
 func _get_data_dictionary() -> Dictionary:

@@ -27,7 +27,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 				PACKET_MIN_SIZE, PACKET_MAX_SIZE, SIZE_MULTIPLIER, packet_size])
 		return
 	super(packet)
-	num_cars = read_byte(packet)
+	num_cars = read_byte()
 	info.clear()
 	var struct_size := CompCar.STRUCT_SIZE
 	for i in num_cars:
