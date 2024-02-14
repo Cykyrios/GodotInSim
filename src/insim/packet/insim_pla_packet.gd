@@ -6,7 +6,7 @@ const PACKET_SIZE := 8
 const PACKET_TYPE := InSim.Packet.ISP_PLA
 var player_id := 0
 
-var fact := 0
+var fact := InSim.PitLane.PITLANE_EXIT
 var sp1 := 0
 var sp2 := 0
 var sp3 := 0
@@ -24,7 +24,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 		return
 	super(packet)
 	player_id = read_byte()
-	fact = read_byte()
+	fact = read_byte() as InSim.PitLane
 	sp1 = read_byte()
 	sp2 = read_byte()
 	sp3 = read_byte()
