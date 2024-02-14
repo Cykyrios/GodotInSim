@@ -1,6 +1,13 @@
 class_name InSimSmallPacket
 extends InSimPacket
 
+## General purpose packet - IS_SMALL
+##
+## To avoid defining several packet structures that are exactly the same, and to avoid
+## wasting the ISP_ enumeration, IS_SMALL is used at various times when no additional data
+## other than SubT and an additional integer is required.[br]
+## [br]
+## See [enum InSim.Small] for the list of SMALL_ packets.
 
 const PACKET_SIZE := 8
 const PACKET_TYPE := InSim.Packet.ISP_SMALL

@@ -1,12 +1,13 @@
 class_name InSimPLAPacket
 extends InSimPacket
 
+## Pit LAne packet
 
 const PACKET_SIZE := 8
 const PACKET_TYPE := InSim.Packet.ISP_PLA
-var player_id := 0
+var player_id := 0  ## player's unique id
 
-var fact := InSim.PitLane.PITLANE_EXIT
+var fact := InSim.PitLane.PITLANE_EXIT  ## pit lane fact (see [enum InSim.PitLane])
 var sp1 := 0
 var sp2 := 0
 var sp3 := 0

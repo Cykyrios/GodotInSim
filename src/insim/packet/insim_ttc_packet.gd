@@ -1,6 +1,11 @@
 class_name InSimTTCPacket
 extends InSimPacket
 
+## General purpose packet - IS_TTC (Target To Connection)
+##
+## Similar to IS_SMALL but contains 4 bytes instead of a integer.[br]
+## [br]
+## See [enum InSim.TTC] for the list of TTC_ packets.
 
 const PACKET_SIZE := 8
 const PACKET_TYPE := InSim.Packet.ISP_TTC
