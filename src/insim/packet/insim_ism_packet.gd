@@ -1,17 +1,18 @@
 class_name InSimISMPacket
 extends InSimPacket
 
+## InSim Multi packet
 
 const PACKET_SIZE := 40
 const PACKET_TYPE := InSim.Packet.ISP_ISM
 var zero := 0
 
-var host := 0
+var host := 0  ## 0 = guest / 1 = host
 var sp1 := 0
 var sp2 := 0
 var sp3 := 0
 
-var h_name := ""
+var h_name := ""  ## the name of the host joined or started
 
 
 func _init() -> void:

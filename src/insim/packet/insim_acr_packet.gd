@@ -1,6 +1,7 @@
 class_name InSimACRPacket
 extends InSimPacket
 
+## Admin Command Report packet
 
 const PACKET_MIN_SIZE := 12
 const PACKET_MAX_SIZE := 72
@@ -9,12 +10,12 @@ const MSG_MAX_LENGTH := 64
 
 var zero := 0
 
-var ucid := 0
-var admin := 0
-var result := 0
+var ucid := 0  ## connection's unique id (0 = host)
+var admin := 0  ## set if user is an admin
+var result := 0  ## 1 - processed / 2 - rejected / 3 - unknown command
 var sp3 := 0
 
-var text := ""
+var text := ""  ## 4, 8, 12... 64 characters - last byte is zero
 
 
 func _init() -> void:

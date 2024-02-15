@@ -1,14 +1,15 @@
 class_name InSimHLVPacket
 extends InSimPacket
 
+## Hot Lap Validity packet - off track / hit wall / speeding in pits / out of bounds
 
 const PACKET_SIZE := 16
 const PACKET_TYPE := InSim.Packet.ISP_HLV
-var player_id := 0
+var player_id := 0  ## player's unique id
 
-var hlvc := 0
+var hlvc := 0  ## 0: ground / 1: wall / 4: speeding / 5: out of bounds
 var sp1 := 0
-var time := 0
+var time := 0  ## looping time stamp (hundredths - time since reset - like [constant InSim.TINY_GTH])
 
 var object := CarContObj.new()
 

@@ -1,17 +1,18 @@
 class_name InSimCSCPacket
 extends InSimPacket
 
+## Car State Changed packet - reports a change in a car's state (currentl start or stop)
 
 const PACKET_SIZE := 20
 const PACKET_TYPE := InSim.Packet.ISP_CSC
-var player_id := 0
+var player_id := 0  ## player's unique id
 
 var sp0 := 0
 var csc_action := InSim.CSCAction.CSC_START
 var sp2 := 0
 var sp3 := 0
 
-var time := 0
+var time := 0  ## hundredths of a second since start (as in [constant InSim.SMALL_RTP])
 var object := CarContObj.new()
 
 

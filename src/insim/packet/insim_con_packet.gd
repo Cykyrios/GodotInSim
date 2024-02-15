@@ -1,6 +1,7 @@
 class_name InSimCONPacket
 extends InSimPacket
 
+## CONtact packet - between two cars ([member car_a] and [member car_b] are sorted by [member player_id])
 
 const CLOSING_SPEED_MASK := 0x0fff
 const CLOSING_SPEED_MULTIPLIER := 10.0
@@ -9,8 +10,8 @@ const PACKET_SIZE := 40
 const PACKET_TYPE := InSim.Packet.ISP_CON
 var zero := 0
 
-var sp_close := 0
-var time := 0
+var sp_close := 0  ## high 4 bits: reserved / low 12 bits: closing speed (10 = 1 m/s)
+var time := 0  ## looping time stamp (hundredths - time since reset - like [constant InSim.TINY_GTH]
 
 var car_a := CarContact.new()
 var car_b := CarContact.new()

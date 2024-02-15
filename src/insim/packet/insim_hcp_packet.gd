@@ -1,6 +1,7 @@
 class_name InSimHCPPacket
 extends InSimPacket
 
+## HandiCaPs packet
 
 const MAX_CARS := 32
 
@@ -8,7 +9,7 @@ const PACKET_SIZE := 68
 const PACKET_TYPE := InSim.Packet.ISP_HCP
 var zero := 0
 
-var car_hcp: Array[CarHandicap] = []
+var car_hcp: Array[CarHandicap] = []  ## h_mass and h_tres for each car: XF GTI = 0 / XR GT = 1 etc
 
 
 func _init() -> void:

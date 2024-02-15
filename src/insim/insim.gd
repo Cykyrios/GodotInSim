@@ -208,16 +208,16 @@ enum TTC {
 }
 
 enum ButtonClick {
-	ISB_LMB = 1,
-	ISB_RMB = 2,
-	ISB_CTRL = 4,
-	ISB_SHIFT = 8,
+	ISB_LMB = 1,  ## left click
+	ISB_RMB = 2,  ## right click
+	ISB_CTRL = 4,  ## ctrl + click
+	ISB_SHIFT = 8,  ## shift + click
 }
 enum ButtonFunction {
-	BFN_DEL_BTN,
-	BFN_CLEAR,
-	BFN_USER_CLEAR,
-	BFN_REQUEST,
+	BFN_DEL_BTN,  ## 0 - instruction: delete one button or range of buttons (must set ClickID)
+	BFN_CLEAR,  ## 1 - instruction: clear all buttons made by this insim instance
+	BFN_USER_CLEAR,  ## 2 - info: user cleared this insim instance's buttons
+	BFN_REQUEST,  ## 3 - user request: SHIFT+B or SHIFT+I - request for buttons
 }
 enum ButtonStyle {
 	ISB_C1 = 1,
@@ -290,21 +290,21 @@ enum InitFlag {
 	ISF_REQ_JOIN = 2048,  ## bit 11: process join requests
 }
 enum InterfaceMode {
-	CIM_NORMAL,
+	CIM_NORMAL,  ## not in a special mode
 	CIM_OPTIONS,
 	CIM_HOST_OPTIONS,
 	CIM_GARAGE,
 	CIM_CAR_SELECT,
 	CIM_TRACK_SELECT,
-	CIM_SHIFTU,
+	CIM_SHIFTU,  ## free view mode
 	CIM_NUM
 }
 enum InterfaceNormal {
 	NRM_NORMAL,
-	NRM_WHEEL_TEMPS,
-	NRM_WHEEL_DAMAGE,
-	NRM_LIVE_SETTINGS,
-	NRM_PIT_INSTRUCTIONS,
+	NRM_WHEEL_TEMPS,  ## F9
+	NRM_WHEEL_DAMAGE,  ## F10
+	NRM_LIVE_SETTINGS,  ## F11
+	NRM_PIT_INSTRUCTIONS,  ## F12
 	NRM_NUM
 }
 enum InterfaceGarage {
@@ -501,15 +501,15 @@ enum Player {
 	PIF_CUSTOM_VIEW = 8192,
 }
 enum PMOAction {
-	PMO_LOADING_FILE,
-	PMO_ADD_OBJECTS,
-	PMO_DEL_OBJECTS,
-	PMO_CLEAR_ALL,
-	PMO_TINY_AXM,
-	PMO_TTC_SEL,
-	PMO_SELECTION,
-	PMO_POSITION,
-	PMO_GET_Z,
+	PMO_LOADING_FILE,  ## 0 - sent by the layout loading system only
+	PMO_ADD_OBJECTS,  ## 1 - adding objects (from InSim or editor)
+	PMO_DEL_OBJECTS,  ## 2 - delete objects (from InSim or editor)
+	PMO_CLEAR_ALL,  ## 3 - clear all objects (NumO must be zero)
+	PMO_TINY_AXM,  ## 4 - a reply to a TINY_AXM request
+	PMO_TTC_SEL,  ## 5 - a reply to a TTC_SEL request
+	PMO_SELECTION,  ## 6 - set a connection's layout editor selection
+	PMO_POSITION,  ## 7 - user pressed O without anything selected
+	PMO_GET_Z,  ## 8 - request Z values / reply with Z values
 	PMO_NUM
 }
 enum PMOFlags {

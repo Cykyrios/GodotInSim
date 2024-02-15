@@ -1,15 +1,16 @@
 class_name InSimBFNPacket
 extends InSimPacket
 
+## Button FunctioN packet
 
 const PACKET_SIZE := 8
 const PACKET_TYPE := InSim.Packet.ISP_BFN
-var subtype := InSim.ButtonFunction.BFN_USER_CLEAR
+var subtype := InSim.ButtonFunction.BFN_USER_CLEAR  ## subtype, see [enum InSim.ButtonFunction]
 
-var ucid := 0
-var click_id := 0
-var click_max := 0
-var inst := 0
+var ucid := 0  ## connection to send to or received from (0 = local / 255 = all)
+var click_id := 0  ## if SubT is BFN_DEL_BTN: ID of single button to delete or first button in range
+var click_max := 0  ## if SubT is BFN_DEL_BTN: ID of last button in range (if greater than ClickID)
+var inst := 0  ## used internally by InSim
 
 
 func _init() -> void:

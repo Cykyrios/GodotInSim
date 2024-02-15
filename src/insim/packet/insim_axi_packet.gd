@@ -1,16 +1,17 @@
 class_name InSimAXIPacket
 extends InSimPacket
 
+## AutoX Info packet
 
 const PACKET_SIZE := 40
 const PACKET_TYPE := InSim.Packet.ISP_AXI
 var zero := 0
 
-var ax_start := 0
-var num_checkpoints := 0
-var num_objects := 0
+var ax_start := 0  ## autocross start position
+var num_checkpoints := 0  ## number of checkpoints
+var num_objects := 0  ## number of objects
 
-var layout_name := ""
+var layout_name := ""  ## the name of the layout last loaded (if loaded locally)
 
 
 func _init() -> void:

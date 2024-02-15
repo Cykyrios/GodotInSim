@@ -1,12 +1,19 @@
 class_name InSimCCHPacket
 extends InSimPacket
 
+## Camera CHange packet
+##
+## To track cameras you need to consider 3 points:[br]
+## 1) The default camera: [constant InSim.VIEW_DRIVER][br]
+## 2) Player flags: [constant InSim.PIF_CUSTOM_VIEW] means [constant InSim.VIEW_CUSTOM]
+## at start or pit exit[br]
+## 3) IS_CCH ([InSimCCHPacket]): sent when an existing driver changes camera
 
 const PACKET_SIZE := 8
 const PACKET_TYPE := InSim.Packet.ISP_CCH
-var player_id := 0
+var player_id := 0  ## player's unique id
 
-var camera := InSim.View.VIEW_MAX
+var camera := InSim.View.VIEW_MAX  ## view identifier (see [enum InSim.View])
 var sp1 := 0
 var sp2 := 0
 var sp3 := 0

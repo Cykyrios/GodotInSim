@@ -17,7 +17,7 @@ var penalty := InSim.Penalty.PENALTY_NONE  ## current penalty (see [enum InSim.P
 var num_stops := 0  ## number of pit stops
 var sp3 := 0
 
-var tyres: Array[int] = []  ## tyres changed
+var tyres: Array[InSim.Tyre] = []  ## tyres changed
 
 var work := 0  ## pit work (see [enum InSim.PitWork])
 var spare := 0

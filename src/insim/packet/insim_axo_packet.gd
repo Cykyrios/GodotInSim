@@ -1,10 +1,11 @@
 class_name InSimAXOPacket
 extends InSimPacket
 
+## AutoX Object packet
 
 const PACKET_SIZE := 4
 const PACKET_TYPE := InSim.Packet.ISP_AXO
-var player_id := 0
+var player_id := 0  ## player's unique id
 
 
 func _init() -> void:

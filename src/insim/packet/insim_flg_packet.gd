@@ -1,14 +1,15 @@
 class_name InSimFLGPacket
 extends InSimPacket
 
+## FLaG packet - yellow or blue flag changed
 
 const PACKET_SIZE := 8
 const PACKET_TYPE := InSim.Packet.ISP_FLG
-var player_id := 0
+var player_id := 0  ## player's unique id
 
-var off_on := 0
-var flag := 0
-var car_behind := 0
+var off_on := 0  ## 0 = off / 1 = on
+var flag := 0  ## 1 = given blue / 2 = causing yellow
+var car_behind := 0  ## unique id of obstructed player
 var sp3 := 0
 
 

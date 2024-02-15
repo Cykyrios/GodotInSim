@@ -1,13 +1,14 @@
 class_name InSimCNLPacket
 extends InSimPacket
 
+## ConN Leave packet
 
 const PACKET_SIZE := 8
 const PACKET_TYPE := InSim.Packet.ISP_CNL
-var ucid := 0
+var ucid := 0  ## unique id of the connection which left
 
-var reason := InSim.LeaveReason.LEAVR_NUM
-var total := 0
+var reason := InSim.LeaveReason.LEAVR_NUM  ## leave reason (see [enum InSim.LeaveReason])
+var total := 0  ## number of connections including host
 var sp2 := 0
 var sp3 := 0
 

@@ -1,13 +1,14 @@
 class_name InSimCPRPacket
 extends InSimPacket
 
+## Conn Player Rename packet
 
 const PACKET_SIZE := 36
 const PACKET_TYPE := InSim.Packet.ISP_CPR
-var ucid := 0
+var ucid := 0  ## unique id of the connection
 
-var player_name := ""
-var plate := ""
+var player_name := ""  ## new name
+var plate := ""  ## number plate - NO ZERO AT END!
 
 
 func _init() -> void:

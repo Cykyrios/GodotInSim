@@ -1,24 +1,25 @@
 class_name InSimCPPPacket
 extends InSimPacket
 
+## Cam Pos Pack packet - full camera packet (in car OR Shift+U mode)
 
 const PACKET_SIZE := 32
 const PACKET_TYPE := InSim.Packet.ISP_CPP
 var zero := 0
 
-var pos := Vector3i.ZERO
+var pos := Vector3i.ZERO  ## position vector
 
-var heading := 0
-var pitch := 0
-var roll := 0
+var heading := 0  ## heading - 0 points along Y axis
+var pitch := 0  ## pitch
+var roll := 0  ## roll
 
-var view_plid := 255
-var ingame_cam := 255
+var view_plid := 255  ## unique ID of viewed player (0 = none)
+var ingame_cam := 255  ## as reported in [InSimSTAPacket]
 
-var fov := 70.0
+var fov := 70.0  ## 4-byte float: FOV in degrees
 
-var time := 0
-var flags := 0
+var time := 0  ## time in ms to get there (0 means instant)
+var flags := 0  ## state flags (see [enum InSim.State])
 
 
 func _init() -> void:

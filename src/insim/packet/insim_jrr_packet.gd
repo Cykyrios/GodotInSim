@@ -1,17 +1,18 @@
 class_name InSimJRRPacket
 extends InSimPacket
 
+## Join Request Reply packet - send one of these back to LFS in response to a join request
 
 const PACKET_SIZE := 16
 const PACKET_TYPE := InSim.Packet.ISP_JRR
-var player_id := 0
+var player_id := 0  ## ZERO when this is a replay to a join request - SET to move a car
 
-var ucid := 0
-var action := 0
+var ucid := 0  ## set when this is a reply to a join request - ignored when moving a car
+var action := 0  ## 1 - allow / 0 - reject (should send message to user)
 var sp2 := 0
 var sp3 := 0
 
-var start_pos := ObjectInfo.new()
+var start_pos := ObjectInfo.new()  ## 0: use default start point / Flags = 0x80: set start point
 
 
 func _init() -> void:
