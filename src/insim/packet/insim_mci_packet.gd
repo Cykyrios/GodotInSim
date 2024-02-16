@@ -1,14 +1,15 @@
 class_name InSimMCIPacket
 extends InSimPacket
 
+## Multi Car Info packet - if more than [constant MAX_CARS] in race then more than one is sent
 
 const MAX_CARS := 16
 const PACKET_MIN_SIZE := 4 + CompCar.STRUCT_SIZE
 const PACKET_MAX_SIZE := 4 + MAX_CARS * CompCar.STRUCT_SIZE
 const PACKET_TYPE := InSim.Packet.ISP_MCI
 
-var num_cars := 0
-var info: Array[CompCar] = []
+var num_cars := 0  ## number of valid CompCar structs in this packet
+var info: Array[CompCar] = []  ## car info for each player, 1 to [constant MAX_CARS]
 
 
 func _init() -> void:

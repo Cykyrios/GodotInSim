@@ -1,13 +1,14 @@
 class_name InSimTOCPacket
 extends InSimPacket
 
+## Take Over Car packet
 
 const PACKET_SIZE := 8
 const PACKET_TYPE := InSim.Packet.ISP_TOC
-var player_id := 0
+var player_id := 0  ## player's unique id
 
-var old_ucid := 0
-var new_ucid := 0
+var old_ucid := 0  ## old connection's unique id
+var new_ucid := 0  ## new connection's unique id
 var sp2 := 0
 var sp3 := 0
 

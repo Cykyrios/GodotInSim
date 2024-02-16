@@ -1,6 +1,7 @@
 class_name InSimVERPacket
 extends InSimPacket
 
+## VERsion packet
 
 const VERSION_LENGTH := 8
 const PRODUCT_LENGTH := 6
@@ -9,9 +10,9 @@ const PACKET_SIZE := 20
 const PACKET_TYPE := InSim.Packet.ISP_VER
 var zero := 0
 
-var version := ""
-var product := ""
-var insim_ver := 0
+var version := ""  ## LFS version, e.g. 0.3G
+var product := ""  ## Product: DEMO / S1 / S2 / S3
+var insim_ver := 0  ## InSim version
 var spare := 0
 
 

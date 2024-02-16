@@ -1,20 +1,21 @@
 class_name InSimNCNPacket
 extends InSimPacket
 
+## New ConN packet
 
 const USER_NAME_MAX_LENGTH := 24
 const PLAYER_NAME_MAX_LENGTH := 24
 
 const PACKET_SIZE := 56
 const PACKET_TYPE := InSim.Packet.ISP_NCN
-var ucid := 0
+var ucid := 0  ## connection's unique id (0 = host)
 
-var user_name := ""
-var player_name := ""
+var user_name := ""  ## username
+var player_name := ""  ## nickname
 
-var admin := 0
-var total := 0
-var flags := 0
+var admin := 0  ## 1 if admin
+var total := 0  ## number of connections including host
+var flags := 0  ## bit 2: remote
 var sp3 := 0
 
 

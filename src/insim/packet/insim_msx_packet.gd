@@ -1,6 +1,7 @@
 class_name InSimMSXPacket
 extends InSimPacket
 
+## MSg eXtended packet - like [InSimMSTPacket] but longer (not for commands)
 
 const PACKET_SIZE := 100
 const PACKET_TYPE := InSim.Packet.ISP_MSX
@@ -8,7 +9,7 @@ const MSG_MAX_LENGTH := 96  # last byte must be zero, actual length is one chara
 
 var zero := 0
 
-var msg := ""
+var msg := ""  ## last byte must be zero
 
 
 func _init() -> void:

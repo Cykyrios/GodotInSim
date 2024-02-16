@@ -1,15 +1,16 @@
 class_name InSimOCOPacket
 extends InSimPacket
 
+## Object COntrol packet - currently used for switching start lights
 
 const PACKET_SIZE := 8
 const PACKET_TYPE := InSim.Packet.ISP_OCO
 var zero := 0
 
-var oco_action := InSim.OCOAction.OCO_NUM
-var index := 0
-var identifier := 0
-var data := 0
+var oco_action := InSim.OCOAction.OCO_NUM  ## see [enum InSim.OCOAction]
+var index := 0  ## see InSim documentation
+var identifier := 0  ## identify particular start lights objects (0 to 63 or 255 = all)
+var data := 0  ## see InSim documentation
 
 
 func _init() -> void:

@@ -1,12 +1,13 @@
 class_name InSimOBHPacket
 extends InSimPacket
 
+## OBject Hit packet - car hit an autocross object or an unknown object
 
 enum Flag {
-	OBH_LAYOUT = 1,
-	OBH_CAN_MOVE = 2,
-	OBH_WAS_MOVING = 4,
-	OBH_ON_SPOT = 8,
+	OBH_LAYOUT = 1,  ## an added object
+	OBH_CAN_MOVE = 2,  ## a movable object
+	OBH_WAS_MOVING = 4,  ## was moving before this hit
+	OBH_ON_SPOT = 8,  ## object in original position
 }
 
 const CLOSING_SPEED_MASK := 0x0fff
@@ -14,20 +15,20 @@ const CLOSING_SPEED_MULTIPLIER := 10.0
 
 const PACKET_SIZE := 24
 const PACKET_TYPE := InSim.Packet.ISP_OBH
-var player_id := 0
+var player_id := 0  ## player's unique id
 
-var sp_close := 0
-var time := 0
+var sp_close := 0  ## high 4 bits: reserved / low 12 bits: closing speed (10 = 1 m/s)
+var time := 0  ## looping time stamp (hundredths - time since reset - like [constant InSim.TINY_GTH])
 
 var object := CarContObj.new()
 
-var x := 0
-var y := 0
+var x := 0  ## as in [ObjectInfo]
+var y := 0  ## as in [ObjectInfo]
 
-var z := 0
+var z := 0  ## if [constant OBH_LAYOUT] is set: as in [ObjectInfo]
 var sp1 := 0
-var index := 0
-var obh_flags := 0
+var index := 0  ## AXO_x as in [ObjectInfo] or zero if it is an unknown object
+var obh_flags := 0  ## see [enum Flag]
 
 var closing_speed := 0.0
 

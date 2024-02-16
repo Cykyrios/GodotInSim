@@ -1,14 +1,15 @@
 class_name InSimREOPacket
 extends InSimPacket
 
+## REOrder packet - this packet can be sent in either direction
 
 const MAX_PLAYERS := 40
 
 const PACKET_SIZE := 44
 const PACKET_TYPE := InSim.Packet.ISP_REO
-var num_players := 0
+var num_players := 0  # number of players in race
 
-var player_ids: Array[int] = []
+var player_ids: Array[int] = []  ## all player ids in new order
 
 
 func _init() -> void:

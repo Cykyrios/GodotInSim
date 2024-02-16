@@ -1,19 +1,20 @@
 class_name InSimSSHPacket
 extends InSimPacket
 
+## ScreenSHot packet
 
 const SCREENSHOT_NAME_MAX_LENGTH := 32  # last byte must be zero, so actual value is decreased by one
 
 const PACKET_SIZE := 40
 const PACKET_TYPE := InSim.Packet.ISP_SSH
-var error := 0
+var error := 0  ## 0 = OK / other values are listed in [enum InSim.Screenshot]
 
 var sp0 := 0
 var sp1 := 0
 var sp2 := 0
 var sp3 := 0
 
-var screenshot_name := ""
+var screenshot_name := ""  ## name of screenshot file - last byte must be zero
 
 
 func _init() -> void:

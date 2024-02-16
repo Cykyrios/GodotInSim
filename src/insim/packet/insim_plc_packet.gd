@@ -1,17 +1,18 @@
 class_name InSimPLCPacket
 extends InSimPacket
 
+## PLayer Cars packet
 
 const PACKET_SIZE := 12
 const PACKET_TYPE := InSim.Packet.ISP_PLC
 var zero := 0
 
-var ucid := 0
+var ucid := 0  ## connection's unique id (0 = host / 255 = all)
 var sp1 := 0
 var sp2 := 0
 var sp3 := 0
 
-var cars := 0
+var cars := 0  ## allowed cars - see [enum InSim.Car]
 
 
 func _init() -> void:

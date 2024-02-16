@@ -1,6 +1,7 @@
 class_name InSimRESPacket
 extends InSimPacket
 
+## RESult packet (qualify or confirmed finish)
 
 const USERNAME_MAX_LENGTH := 24
 const PLAYER_NAME_MAX_LENGTH := 24
@@ -8,27 +9,27 @@ const PLATE_MAX_LENGTH := 8
 
 const PACKET_SIZE := 84
 const PACKET_TYPE := InSim.Packet.ISP_RES
-var player_id := 0
+var player_id := 0  ## player's unique id (0 = player left before result was sent)
 
-var username := ""
-var player_name := ""
-var plate := ""
-var car_name := ""
+var username := ""  ## username
+var player_name := ""  ## nickame
+var plate := ""  ## number plate - NO ZERO AT END!
+var car_name := ""  ## skin prefix
 
-var total_time := 0
-var best_lap := 0
+var total_time := 0  ## (ms) race or autocross: total time / qualify: session time
+var best_lap := 0  ## (ms) best lap
 
 var sp_a := 0
-var num_stops := 0
-var confirm := 0
+var num_stops := 0  ## number of pit stops
+var confirm := 0  ## confirmation flags: disqualified etc - see [enum InSim.Confirmation]
 var sp_b := 0
 
-var laps_done := 0
-var flags := 0
+var laps_done := 0  ## laps completed
+var flags := 0  ## player flags: help settings etc - see [enum InSim.Player]
 
-var result_num := 0
-var num_results := 0
-var penalty_seconds := 0
+var result_num := 0  ## finish or qualify pos (0 = win / 255 = not added to table)
+var num_results := 0  ## total number of results (qualify doesn't always add a new one)
+var penalty_seconds := 0  ## penalty time in seconds (already included in race time)
 
 
 func _init() -> void:

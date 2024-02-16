@@ -1,17 +1,18 @@
 class_name InSimNCIPacket
 extends InSimPacket
 
+## New Conn Info packet - sent on host only if an admin password has been set
 
 const PACKET_SIZE := 16
 const PACKET_TYPE := InSim.Packet.ISP_NCI
-var ucid := 0
+var ucid := 0  ## connection's unique id (0 = host)
 
-var language := 0
-var license := 0
+var language := 0  ## see [enum InSim.Language]
+var license := 0  ## 0:demo / 1:S1 ...
 var sp2 := 0
 var sp3 := 0
 
-var user_id := 0
+var user_id := 0  ## LFS UserID
 var ip_address := 0
 
 

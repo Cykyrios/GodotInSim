@@ -405,10 +405,10 @@ enum LeaveReason {
 	LEAVR_NUM
 }
 enum MessageUserValue {
-	MSO_SYSTEM,
-	MSO_USER,
-	MSO_PREFIX,
-	MSO_O,
+	MSO_SYSTEM,  ## 0 - system message
+	MSO_USER,  ## 1 - normal visible user message
+	MSO_PREFIX,  ## 2 - hidden message starting with special prefix (see ISI)
+	MSO_O,  ## 3 - hidden message typed on local pc with /o command
 	MSO_NUM
 }
 enum MessageSound {
@@ -538,10 +538,10 @@ enum ReplayOption {
 	RIPOPT_FULL_PHYS = 4,
 }
 enum Screenshot {
-	SSH_OK,
-	SSH_DEDICATED,
-	SSH_CORRUPTED,
-	SSH_NO_SAVE,
+	SSH_OK,  ## 0 - OK: completed instruction
+	SSH_DEDICATED,  ## 1 - can't save a screenshot - dedicated host
+	SSH_CORRUPTED,  ## 2 - IS_SSH corrupted (e.g. Name does not end with zero)
+	SSH_NO_SAVE,  ## 3 - could not save the screenshot
 }
 enum Setup {
 	SETF_SYMM_WHEELS = 1,

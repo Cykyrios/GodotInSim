@@ -1,14 +1,15 @@
 class_name InSimPENPacket
 extends InSimPacket
 
+## PENalty packet (given or cleared)
 
 const PACKET_SIZE := 8
 const PACKET_TYPE := InSim.Packet.ISP_PEN
-var player_id := 0
+var player_id := 0  ## player's unique id
 
-var old_penalty := InSim.Penalty.PENALTY_NONE
-var new_penalty := InSim.Penalty.PENALTY_NONE
-var reason := InSim.PenaltyReason.PENR_NUM
+var old_penalty := InSim.Penalty.PENALTY_NONE  ## old penalty value (see [enum InSim.Penalty])
+var new_penalty := InSim.Penalty.PENALTY_NONE  ## new penalty value (see [enum InSim.Penalty])
+var reason := InSim.PenaltyReason.PENR_NUM  ## penalty reason (see [enum InSim.PenaltyReason])
 var sp3 := 0
 
 

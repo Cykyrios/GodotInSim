@@ -1,14 +1,15 @@
 class_name InSimMSLPacket
 extends InSimPacket
 
+## MSg Local packet - message to appear on local computer only
 
 const PACKET_SIZE := 132
 const PACKET_TYPE := InSim.Packet.ISP_MSL
 const MSG_MAX_LENGTH := 128  # last byte must be zero, actual length is one character shorter
 
-var sound := InSim.MessageSound.SND_SILENT
+var sound := InSim.MessageSound.SND_SILENT  ## sound effect (see [enum InSim.MessageSound])
 
-var msg := ""
+var msg := ""  ## last byte must be zero
 
 
 func _init() -> void:

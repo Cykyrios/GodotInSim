@@ -1,20 +1,21 @@
 class_name InSimMTCPacket
 extends InSimPacket
 
+## Msg To Connection packet - hosts only - send to a connection / a player / all
 
 const PACKET_MIN_SIZE := 12
 const PACKET_MAX_SIZE := 136
 const PACKET_TYPE := InSim.Packet.ISP_MTC
 const TEXT_MAX_LENGTH := 128  # last byte must be zero, actual length is one character shorter
 
-var sound := InSim.MessageSound.SND_SILENT
+var sound := InSim.MessageSound.SND_SILENT  ## sound effect (see [enum InSim.MessageSound])
 
-var ucid := 0
-var player_id := 0
+var ucid := 0  ## connection's unique id (0 = host / 255 = all)
+var player_id := 0  ## player's unique id (if zero, use [member ucid])
 var sp2 := 0
 var sp3 := 0
 
-var text := ""
+var text := ""  ## up to 128 characters of text - last byte must be zero
 
 
 func _init() -> void:

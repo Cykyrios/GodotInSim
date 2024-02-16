@@ -4,10 +4,10 @@ extends RefCounted
 
 const STRUCT_SIZE := 6
 
-var node := 0
-var lap := 0
-var player_id := 0
-var position := 0
+var node := 0  ## current path node
+var lap := 0  ## current lap
+var player_id := 0  ## player's unique id
+var position := 0  ## current race position: 0 = unknown, 1 = leader, etc...
 
 
 func _to_string() -> String:
