@@ -1,21 +1,22 @@
 class_name InSimFINPacket
 extends InSimPacket
 
+## FINished packet - Finished race notification (not a final result - use [InSimRESPacket])
 
 const PACKET_SIZE := 20
 const PACKET_TYPE := InSim.Packet.ISP_FIN
-var player_id := 0
+var player_id := 0  ## player's unique id (0 = player left before result was sent)
 
-var race_time := 0
-var best_lap := 0
+var race_time := 0  ## race time (ms)
+var best_lap := 0  ## best lap (ms)
 
 var sp_a := 0
-var num_stops := 0
-var confirm := 0
+var num_stops := 0  ## number of pit stops
+var confirm := 0  ## confirmation flags: disqualified etc - see [enum InSim.Confirmation]
 var sp_b := 0
 
-var laps_done := 0
-var flags := 0
+var laps_done := 0  ## laps completed
+var flags := 0  ## player flags: help settings etc - see [enum InSim.Player]
 
 
 func _init() -> void:

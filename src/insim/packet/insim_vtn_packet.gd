@@ -1,13 +1,14 @@
 class_name InSimVTNPacket
 extends InSimPacket
 
+## VoTe Notify packet
 
 const PACKET_SIZE := 8
 const PACKET_TYPE := InSim.Packet.ISP_VTN
 var zero := 0
 
-var ucid := 0
-var action := 0
+var ucid := 0  ## connection's unique id
+var action := 0  ## see [enum InSim.Vote]
 var spare2 := 0
 var spare3 := 0
 

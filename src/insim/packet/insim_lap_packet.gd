@@ -1,21 +1,22 @@
 class_name InSimLAPPacket
 extends InSimPacket
 
+## LAP time packet
 
 const PACKET_SIZE := 20
 const PACKET_TYPE := InSim.Packet.ISP_LAP
-var player_id := 0
+var player_id := 0  ## player's unique id
 
-var lap_time := 0
-var elapsed_time := 0
+var lap_time := 0  ## lap time (ms)
+var elapsed_time := 0  ## total time (ms)
 
-var laps_done := 0
-var flags := 0
+var laps_done := 0  ## laps completed
+var flags := 0  ## player flags
 
 var sp0 := 0
-var penalty := InSim.Penalty.PENALTY_NONE
-var num_stops := 0
-var fuel200 := 0
+var penalty := InSim.Penalty.PENALTY_NONE  ## current penalty value (see [enum InSim.Penalty])
+var num_stops := 0  ## number of pit stops
+var fuel200 := 0  ## /showfuel yes: double fuel percent / no: 255
 
 
 func _init() -> void:

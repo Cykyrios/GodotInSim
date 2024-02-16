@@ -1,13 +1,14 @@
 class_name InSimSCCPacket
 extends InSimPacket
 
+## Set Car Camera packet - simplified camera packe t(not Shift+U mode)
 
 const PACKET_SIZE := 8
 const PACKET_TYPE := InSim.Packet.ISP_SCC
 var zero := 0
 
-var view_plid := 255
-var ingame_cam := 255
+var view_plid := 255  ## unique ID of player to view
+var ingame_cam := 255  ## as reported in [InSimSTAPacket]
 var sp2 := 0
 var sp3 := 0
 

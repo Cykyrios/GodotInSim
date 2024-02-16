@@ -1,6 +1,7 @@
 class_name InSimRSTPacket
 extends InSimPacket
 
+## Race STart packet
 
 const TRACK_NAME_LENGTH := 6
 
@@ -8,21 +9,26 @@ const PACKET_SIZE := 28
 const PACKET_TYPE := InSim.Packet.ISP_RST
 var zero := 0
 
-var race_laps := 0
-var qual_mins := 0
-var num_players := 0
+var race_laps := 0  ## 0 if qualifying
+var qual_mins := 0  ## 0 if race
+var num_players := 0  ## number of players in race
+## lap timing: bits 6 and 7 ([code]timing & 0xc0[/code]):[br]
+## [code]0x40[/code]: standard lap timing is being used[br]
+## [code]0x80[/code]: custom timing - user checkpoints have been placed[br]
+## [code]0xc0[/code]: no lap timing - e.g. open config with no user checkpoints[br]
+## bits 0 and 1 ([code]timing & 0x03[/code]): number of checkpoints if lap timing is enabled
 var timing := 0
 
-var track := ""
-var weather := 0
-var wind := 0
+var track := ""  ## short track name
+var weather := 0  ## weather (depends on track)
+var wind := 0  ## wind (none / low / high)
 
-var flags := 0
-var num_nodes := 0
-var finish := 0
-var split1 := 0
-var split2 := 0
-var split3 := 0
+var flags := 0  ## race flags (must pit, can reset, etc - see [enum InSim.HostFlag])
+var num_nodes := 0  ## total number of nodes in the path
+var finish := 0  ## node index - finish line
+var split1 := 0  ## node index - split 1
+var split2 := 0  ## node index - split 2
+var split3 := 0  ## node index - split 3
 
 
 func _init() -> void:

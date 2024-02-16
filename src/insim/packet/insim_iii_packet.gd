@@ -1,6 +1,7 @@
 class_name InSimIIIPacket
 extends InSimPacket
 
+## InsIm Info packet - /i message from user to host's InSim - variable size
 
 const PACKET_MIN_SIZE := 12
 const PACKET_MAX_SIZE := 72
@@ -9,12 +10,12 @@ const MSG_MAX_LENGTH := 64
 
 var zero := 0
 
-var ucid := 0
-var player_id := 0
+var ucid := 0  ## connection's unique id (0 = host)
+var player_id := 0  ## player's unique id (if zero, use [member ucid])
 var sp2 := 0
 var sp3 := 0
 
-var msg := ""
+var msg := ""  ## 4, 8, 12... 64 characters - last byte is zero
 
 
 func _init() -> void:

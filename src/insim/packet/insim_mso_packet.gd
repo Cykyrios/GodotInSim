@@ -1,6 +1,7 @@
 class_name InSimMSOPacket
 extends InSimPacket
 
+## MSg Out packet - system messages and user messages - variable size
 
 const PACKET_MIN_SIZE := 12
 const PACKET_MAX_SIZE := 136
@@ -9,11 +10,11 @@ const MSG_MAX_LENGTH := 128
 
 var zero := 0
 
-var ucid := 0
-var player_id := 0
-var user_type := 0
-var text_start := 0
-var msg := ""
+var ucid := 0  ## connection's unique id (0 = host)
+var player_id := 0  ## player's unique id (if zero, use [member ucid])
+var user_type := 0  ## set if typed by a user (see [enum InSim.MessageUserValue])
+var text_start := 0  ## first character of the actual text (after player name)
+var msg := ""  ## 4, 8, 12... 128 characters - last byte is zero
 
 
 func _init() -> void:

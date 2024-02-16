@@ -1,6 +1,7 @@
 class_name InSimSTAPacket
 extends InSimPacket
 
+## STAte packet
 
 const TRACK_NAME_LENGTH := 6
 
@@ -8,25 +9,30 @@ const PACKET_SIZE := 28
 const PACKET_TYPE := InSim.Packet.ISP_STA
 var zero := 0
 
-var replay_speed := 0.0
+var replay_speed := 0.0  ## 4-byte float - 1.0 is normal speed
 
-var flags := 0
-var ingame_cam := 0 # TODO: look for "view identifiers"
-var view_player_id := 0
+var flags := 0  ## state flags (see [enum InSim.State])
+var ingame_cam := 0   ## Which type of camera is selected (see [enum InSim.View])
+var view_player_id := 0  ## Unique ID of viewed player (0 = none)
 
-var num_players := 0
-var num_connections := 0
-var num_finished := 0
-var race_in_progress := 0
+var num_players := 0  ## Number of players in race
+var num_connections := 0  ## Number of connections including host
+var num_finished := 0  ## Number finished or qualified
+var race_in_progress := 0  ## 0 = no race / 1 = race / 2 = qualifying
 
-var qual_mins := 0
-var race_laps := 0
+var qual_mins := 0  ## qualifying duration
+## race laps, with the following meanings depending on range:[br]
+## 0: practice[br]
+## 1-99: number of laps... laps = rl[br]
+## 100-190: 100 to 1000 laps... laps = (rl - 100) * 10 + 100[br]
+## 191-238: 1 to 48 hours... hours = rl - 190
+var race_laps := 0  ## see "RaceLaps" near the top of this document
 var sp2 := 0
-var server_status := 0
+var server_status := 0  ## 0 = unknown / 1 = success / > 1 = fail
 
-var track := ""
-var weather := 0
-var wind := 0
+var track := ""  ## short name for track e.g. FE2R
+var weather := 0  ## 0,1,2...
+var wind := 0  ## 0 = off / 1 = weak / 2 = strong
 
 
 func _init() -> void:

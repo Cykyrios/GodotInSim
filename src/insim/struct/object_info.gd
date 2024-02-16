@@ -4,13 +4,13 @@ extends RefCounted
 
 const STRUCT_SIZE := 8
 
-var x := 0
-var y := 0
+var x := 0  ## position (1 metre = 16)
+var y := 0  ## position (1 metre = 16)
 
-var z := 0
-var flags := 0
-var index := 0
-var heading := 0
+var z := 0  ## height (1m = 4)
+var flags := 0  ## various (see LFS LYT format description)
+var index := 0  ## object index
+var heading := 0  ## degrees * 180 * 256 / 360, with a value of 0 = 180 degrees, 128 = 0 degrees
 
 
 func _to_string() -> String:

@@ -1,24 +1,25 @@
 class_name InSimPITPacket
 extends InSimPacket
 
+## PIT stop packet
 
 const MAX_TYRES := 4
 
 const PACKET_SIZE := 24
 const PACKET_TYPE := InSim.Packet.ISP_PIT
-var player_id := 0
+var player_id := 0  ## player's unique id
 
-var laps_done := 0
-var flags := 0
+var laps_done := 0  ## laps completed
+var flags := 0  ## player flags
 
-var fuel_add := 0
-var penalty := InSim.Penalty.PENALTY_NONE
-var num_stops := 0
+var fuel_add := 0  ## /showfuel yes: fuel added percent / no: 255
+var penalty := InSim.Penalty.PENALTY_NONE  ## current penalty (see [enum InSim.Penalty])
+var num_stops := 0  ## number of pit stops
 var sp3 := 0
 
-var tyres: Array[int] = []
+var tyres: Array[InSim.Tyre] = []  ## tyres changed
 
-var work := 0
+var work := 0  ## pit work (see [enum InSim.PitWork])
 var spare := 0
 
 

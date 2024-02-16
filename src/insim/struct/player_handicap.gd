@@ -1,18 +1,21 @@
 class_name PlayerHandicap
 extends RefCounted
 
+## Player handicaps
 
 const STRUCT_SIZE := 4
 
 const H_MASS_MAX := 200
 const H_TRES_MAX := 50
 
-var player_id := 0
+var player_id := 0  ## player's unique id
+## bit 0: set [member h_mass] / bit 1: set [member h_tres] (e.g. flags = 3 to set both)
+## / bit 7: silent
 var flags := 0
-var h_mass := 0:
+var h_mass := 0:  ## 0 to 200 - added mass (kg)
 	set(new_mass):
 		h_mass = clampi(new_mass, 0, H_MASS_MAX)
-var h_tres := 0:
+var h_tres := 0:  ## 0 to 50 - intake restriction
 	set(new_tres):
 		h_tres = clampi(new_tres, 0, H_TRES_MAX)
 

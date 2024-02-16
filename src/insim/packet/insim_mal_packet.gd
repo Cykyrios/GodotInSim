@@ -1,6 +1,7 @@
 class_name InSimMALPacket
 extends InSimPacket
 
+## Mods ALlowed packet - variable size
 
 const MAL_MAX_MODS := 120
 const MAL_DATA_SIZE := 4
@@ -8,14 +9,14 @@ const MAL_DATA_SIZE := 4
 const PACKET_MIN_SIZE := 8
 const PACKET_MAX_SIZE := 8 + MAL_MAX_MODS * MAL_DATA_SIZE
 const PACKET_TYPE := InSim.Packet.ISP_MAL
-var num_mods := 0
+var num_mods := 0  ## number of mods in this packet
 
-var ucid := 0
-var flags := 0
+var ucid := 0  ## unique id of the connection that updated the list
+var flags := 0  ## zero (for now)
 var sp2 := 0
 var sp3 := 0
 
-var skin_id: Array[int] = []
+var skin_id: Array[int] = []  ## skin id of each mod in compressed format, 0 to [constant MAL_MAX_MODS]
 
 
 func _init() -> void:

@@ -1,14 +1,15 @@
 class_name InSimNLPPacket
 extends InSimPacket
 
+## Node and Lap Packet - variable size
 
 const MAX_CARS := 40
 const PACKET_MIN_SIZE := 4 + NodeLap.STRUCT_SIZE + 2
 const PACKET_MAX_SIZE := 4 + MAX_CARS * NodeLap.STRUCT_SIZE
 const PACKET_TYPE := InSim.Packet.ISP_NLP
 
-var num_players := 0
-var info: Array[NodeLap] = []
+var num_players := 0  ## number of players in race
+var info: Array[NodeLap] = []  ## node and lap of each player, 1 to [constant MAX_CARS]
 
 
 func _init() -> void:

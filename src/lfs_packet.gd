@@ -1,6 +1,12 @@
 class_name LFSPacket
 extends RefCounted
 
+## Base packet for communication with LFS
+##
+## All packets inherit from this base class, which includes common parameters and methods to
+## facilitate reading and writing data.[br]
+## This class is generally not intended to be used directly, instead prefer using [InSimPacket],
+## [OutSimPacket] or [OutGaugePacket] as needed for your application.
 
 var buffer := PackedByteArray()
 var size := 0

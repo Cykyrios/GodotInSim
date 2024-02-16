@@ -4,23 +4,23 @@ extends RefCounted
 
 const STRUCT_SIZE := 16
 
-var player_id := 0
-var info := 0
-var sp2 := 0
-var steer := 0
+var player_id := 0  ## player's unique id
+var info := 0  ## like info byte in [CompCar] (CCI_BLUE / CCI_YELLOW / CCI_LAG)
+var sp2 := 0  ## spare
+var steer := 0  ## front wheel steer in degrees (right positive)
 
-var throttle_brake := 0
-var clutch_handbrake := 0
-var gear_spare := 0
-var speed := 0
+var throttle_brake := 0  ## high 4 bits: throttle / low 4 bits: brake (0 to 16)
+var clutch_handbrake := 0  ## high 4 bits: clutch / low 4 bits: handbrake (0 to 16)
+var gear_spare := 0  ## high 4 bits: gear (15=R) / low 4 bits: spare
+var speed := 0  ## m/s
 
-var direction := 0
-var heading := 0
-var accel_forward := 0
-var accel_right := 0
+var direction := 0  ## car's motion if Speed > 0: 0 = world y direction, 128 = 180 deg
+var heading := 0  ## direction of forward axis: 0 = world y direction, 128 = 180 deg
+var accel_forward := 0  ## m/s^2 longitudinal acceleration (forward positive)
+var accel_right := 0  ## m/s^2 lateral acceleration (right positive)
 
-var x := 0
-var y := 0
+var x := 0  ## position (1 metre = 16)
+var y := 0  ## position (1 metre = 16)
 
 
 func _to_string() -> String:

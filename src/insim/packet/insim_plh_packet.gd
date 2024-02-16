@@ -1,6 +1,7 @@
 class_name InSimPLHPacket
 extends InSimPacket
 
+## PLayer Handicaps packet - variable size
 
 const PLH_MAX_PLAYERS := 40
 const PLH_DATA_SIZE := 4
@@ -9,9 +10,9 @@ const PACKET_BASE_SIZE := 4
 const PACKET_MIN_SIZE := PACKET_BASE_SIZE + PLH_DATA_SIZE
 const PACKET_MAX_SIZE := PACKET_BASE_SIZE + PLH_DATA_SIZE * PLH_MAX_PLAYERS
 const PACKET_TYPE := InSim.Packet.ISP_PLH
-var nump := 0
+var nump := 0  ## number of players in this packet
 
-var hcaps: Array[PlayerHandicap] = []
+var hcaps: Array[PlayerHandicap] = []  ## 0 to [constant PLH_MAX_PLAYERS] ([member nump])
 
 
 func _init() -> void:

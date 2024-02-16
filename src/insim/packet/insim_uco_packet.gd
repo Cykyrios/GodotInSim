@@ -1,19 +1,20 @@
 class_name InSimUCOPacket
 extends InSimPacket
 
+## User Control Object packet
 
 const PACKET_SIZE := 28
 const PACKET_TYPE := InSim.Packet.ISP_UCO
-var player_id := 0
+var player_id := 0  ## player's unique id
 
 var sp0 := 0
-var uco_action := InSim.UCOAction.UCO_CIRCLE_ENTER
+var uco_action := InSim.UCOAction.UCO_CIRCLE_ENTER  ## see [enum InSim.UCOAction]
 var sp2 := 0
 var sp3 := 0
 
-var time := 0
+var time := 0  ## hundredths of a second since start (as in [constant InSim.SMALL_RTP])
 var object := CarContObj.new()
-var info := ObjectInfo.new()
+var info := ObjectInfo.new()  ## info about the checkpoint or circle
 
 
 func _init() -> void:

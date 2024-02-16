@@ -1,22 +1,23 @@
 class_name InSimRIPPacket
 extends InSimPacket
 
+## Replay Information Packet
 
 const REPLAY_NAME_MAX_LENGTH := 64  # last byte must be zero, so actual value is decreased by one
 
 const PACKET_SIZE := 80
 const PACKET_TYPE := InSim.Packet.ISP_RIP
-var error := 0
+var error := 0  ## 0 or 1 = OK / other values are listed in [enum InSim.Replay]
 
-var mpr := 0
-var paused := 0
-var options := 0
+var mpr := 0  ## 0 = SPR / 1 = MPR
+var paused := 0  ## request: pause on arrival / reply: paused state
+var options := 0  ## various options - see [enum InSim.ReplayOption]
 var sp3 := 0
 
-var c_time := 0
-var t_time := 0
+var c_time := 0  ## (hundredths) request: destination / reply: position
+var t_time := 0  ## (hundredths) request: zero / reply: replay length
 
-var replay_name := ""
+var replay_name := ""  ## zero or replay name - last byte must be zero
 
 
 func _init() -> void:

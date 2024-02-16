@@ -1,13 +1,15 @@
 class_name InSimMSTPacket
 extends InSimPacket
 
+## MSg Type packet - send to LFS to type message or command
+
 const PACKET_SIZE := 68
 const PACKET_TYPE := InSim.Packet.ISP_MST
 const MSG_MAX_LENGTH := 64  # last byte must be zero, actual length is one character shorter
 
 var zero := 0
 
-var msg := ""
+var msg := ""  ## last byte must be zero
 
 
 func _init() -> void:

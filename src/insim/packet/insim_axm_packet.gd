@@ -1,6 +1,7 @@
 class_name InSimAXMPacket
 extends InSimPacket
 
+## AutoX Multiple objects packet
 
 const MIN_OBJECTS := 0
 const MAX_OBJECTS := 60
@@ -11,9 +12,9 @@ const PACKET_TYPE := InSim.Packet.ISP_AXM
 
 var num_objects := 0
 
-var ucid := 0
-var pmo_action := InSim.PMOAction.PMO_NUM
-var pmo_flags := 0
+var ucid := 0  ## unique id of the connection that sent the packet
+var pmo_action := InSim.PMOAction.PMO_NUM  ## see [enum InSim.PMOAction]
+var pmo_flags := 0  ## see [enum InSim.PMOFlags]
 var sp3 := 0
 
 var info: Array[ObjectInfo] = []

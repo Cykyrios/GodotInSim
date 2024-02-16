@@ -1,12 +1,13 @@
 class_name InSimPSFPacket
 extends InSimPacket
 
+## Pit Stop Finished packet
 
 const PACKET_SIZE := 12
 const PACKET_TYPE := InSim.Packet.ISP_PSF
-var player_id := 0
+var player_id := 0  ## player's unique id
 
-var stop_time := 0
+var stop_time := 0  ## stop time (ms)
 var spare := 0
 
 

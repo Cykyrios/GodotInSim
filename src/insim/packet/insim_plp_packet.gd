@@ -1,10 +1,11 @@
 class_name InSimPLPPacket
 extends InSimPacket
 
+## PLayer Pits packet (go to settings - stays in player list)
 
 const PACKET_SIZE := 4
 const PACKET_TYPE := InSim.Packet.ISP_PLP
-var player_id := 0
+var player_id := 0  ## player's unique id
 
 
 func _init() -> void:

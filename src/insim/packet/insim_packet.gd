@@ -1,6 +1,21 @@
 class_name InSimPacket
 extends LFSPacket
 
+## Base InSim packet
+##
+## This class is generally not intended to be used directly, except when expecting packets
+## as arguments without knowing their types in advance. For other cases, using specific packet
+## classes is recommended.[br]
+## Some parameters listed below are inherited from [LFSPacket].[br]
+## [br]
+## All InSim packets use a four byte header[br]
+## [br]
+## [param Size]: total packet size - a multiple of 4[br]
+## [param Type]: packet identifier from the ISP_ enum (see below)[br]
+## [param ReqI]: non zero if the packet is a packet request or a reply to a request[br]
+## [param Data]: the first data byte[br]
+## [br]
+## Spare bytes and Zero bytes must be filled with ZERO.
 
 const SIZE_MULTIPLIER := 4
 const HEADER_SIZE := 4

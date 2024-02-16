@@ -1,19 +1,22 @@
 class_name InSimCIMPacket
 extends InSimPacket
 
+## Conn Interface Mode packet
 
-const MARSH_IS_CP := 252
-const MARSH_IS_AREA := 253
-const MARSH_MARSHAL := 254
-const MARSH_ROUTE := 255
+const MARSH_IS_CP := 252  ## insim checkpoint
+const MARSH_IS_AREA := 253  ## insim circle
+const MARSH_MARSHAL := 254  ## restricted area
+const MARSH_ROUTE := 255  ## route checker
 
 const PACKET_SIZE := 8
 const PACKET_TYPE := InSim.Packet.ISP_CIM
-var ucid := 0
+var ucid := 0  ## connection's unique id (0 = local)
 
-var mode := InSim.InterfaceMode.CIM_NUM
+var mode := InSim.InterfaceMode.CIM_NUM  ## mode identifier (see [enum InSim.InterfaceMode])
+## submode identifier (see [enum InSim.InterfaceNormal], [enum InSim.InterfaceGarage],
+## [enum InSim.InterfaceShiftU])
 var submode := 0
-var sel_type := 0
+var sel_type := 0  ## selected object type or zero if unselected, can be an AXO_x or MARSH_x
 var sp3 := 0
 
 

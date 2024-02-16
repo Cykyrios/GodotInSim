@@ -1,19 +1,20 @@
 class_name InSimBTTPacket
 extends InSimPacket
 
+## BuTton Type packet - sent back when user types into a text entry button
 
 const PACKET_SIZE := 104
 const PACKET_TYPE := InSim.Packet.ISP_BTT
 const TEXT_MAX_LENGTH := 96
 
-var ucid := 0
+var ucid := 0  ## connection that typed into the button (zero if local)
 
-var click_id := 0
-var inst := 0
-var type_in := 0
+var click_id := 0  ## button identifier originally sent in IS_BTN ([class InSimBTNPacket])
+var inst := 0  ## used internally by InSim
+var type_in := 0  ## from original button specification
 var sp3 := 0
 
-var text := ""
+var text := ""  ## typed text, zero to [member type_in] specified in IS_BTN ([class InSimBTNPacket])
 
 
 func _init() -> void:

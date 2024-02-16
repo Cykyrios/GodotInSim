@@ -1,12 +1,13 @@
 class_name InSimPFLPacket
 extends InSimPacket
 
+## Player FLags packet (help flags changed)
 
 const PACKET_SIZE := 8
 const PACKET_TYPE := InSim.Packet.ISP_PFL
-var player_id := 0
+var player_id := 0  ## player's unique id
 
-var flags := 0
+var flags := 0  ## player flags (see [enum InSim.Player])
 var spare := 0
 
 

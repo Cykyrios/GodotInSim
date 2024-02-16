@@ -1,15 +1,16 @@
 class_name InSimMODPacket
 extends InSimPacket
 
+## MODe packet - send to LFS to change screen mode
 
 const PACKET_SIZE := 20
 const PACKET_TYPE := InSim.Packet.ISP_MOD
 var zero := 0
 
-var bits16 := 0
-var refresh_rate := 0
-var width := 0
-var height := 0
+var bits16 := 0  ## set to choose 16-bit
+var refresh_rate := 0  ## refresh rate - zero for default
+var width := 0  ## 0 means go to window
+var height := 0  ## 0 means go to window
 
 
 func _init() -> void:

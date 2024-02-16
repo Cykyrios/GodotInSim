@@ -1,10 +1,11 @@
 class_name InSimCRSPacket
 extends InSimPacket
 
+## Car ReSet packet
 
 const PACKET_SIZE := 4
 const PACKET_TYPE := InSim.Packet.ISP_CRS
-var player_id := 0
+var player_id := 0  ## player's unique id
 
 
 func _init() -> void:
