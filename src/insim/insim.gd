@@ -207,6 +207,11 @@ enum TTC {
 	TTC_SEL_STOP,  ## 3 - instruction: switch off IS_AXM requested by TTC_SEL_START
 }
 
+enum AutoCrossObject {
+	AXO_START_LIGHTS1 = 149,
+	AXO_START_LIGHTS2 = 150,
+	AXO_START_LIGHTS3 = 151,
+}
 enum ButtonClick {
 	ISB_LMB = 1,  ## left click
 	ISB_RMB = 2,  ## right click
