@@ -3,10 +3,6 @@ extends InSimPacket
 
 ## New PLayer joining race packet (if [member player_id] already exists, then leaving pits)
 
-const SETF_SYMM_WHEELS := 1
-const SETF_TC_ENABLE := 2
-const SETF_ABS_ENABLE := 4
-
 const MAX_TYRES := 4
 
 const PLAYER_NAME_MAX_LENGTH := 24
@@ -19,7 +15,7 @@ var player_id := 0  ## player's newly assigned unique id
 
 var ucid := 0  ## connection's unique id
 var player_type := 0  ## bit 0: female / bit 1: AI / bit 2: remote
-var flags := 0  ## player flags
+var flags := 0  ## player flags (see [enum InSim.Player])
 
 var player_name := ""  ## nickname
 var plate := ""  ## number plate - NO ZERO AT END!
