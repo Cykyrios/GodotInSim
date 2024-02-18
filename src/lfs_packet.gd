@@ -29,6 +29,18 @@ func get_dictionary() -> Dictionary:
 	return _get_dictionary()
 
 
+## Override to update values with non-standard units from gis (GodotInSim) prefixed values, e.g.[br]
+## [code]position = gis_position * 65536[/code].
+func _set_values_from_gis() -> void:
+	pass
+
+
+## Override to update gis (GodotInSim) variables from variables with non-standard units, e.g.[br]
+## [code]gis_position = position / 65536.0[/code].
+func _update_gis_values() -> void:
+	pass
+
+
 static func create_packet_from_buffer(packet_buffer: PackedByteArray) -> LFSPacket:
 	var packet := LFSPacket.new()
 	packet.buffer = packet_buffer
@@ -198,6 +210,7 @@ func resize_buffer(new_size: int) -> void:
 
 
 func fill_buffer() -> void:
+	_set_values_from_gis()
 	_fill_buffer()
 
 
@@ -207,6 +220,7 @@ func _fill_buffer() -> void:
 
 func decode_packet(packet_buffer: PackedByteArray) -> void:
 	_decode_packet(packet_buffer)
+	_update_gis_values()
 
 
 func _decode_packet(packet_buffer: PackedByteArray) -> void:

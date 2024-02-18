@@ -5,6 +5,7 @@ extends InSimPacket
 
 const CLOSING_SPEED_MASK := 0x0fff
 const CLOSING_SPEED_MULTIPLIER := 10.0
+const TIME_MULTIPLIER := 100.0
 
 const PACKET_SIZE := 40
 const PACKET_TYPE := InSim.Packet.ISP_CON
@@ -16,7 +17,8 @@ var time := 0  ## looping time stamp (hundredths - time since reset - like [cons
 var car_a := CarContact.new()
 var car_b := CarContact.new()
 
-var closing_speed := 0.0
+var gis_closing_speed := 0.0  ## Closing speed in m/s
+var gis_time := 0.0  ## Time in s
 
 
 func _init() -> void:
@@ -32,7 +34,6 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	super(packet)
 	zero = read_byte()
 	sp_close = read_word()
-	closing_speed = (sp_close & CLOSING_SPEED_MASK) / CLOSING_SPEED_MULTIPLIER
 	time = read_word()
 	var struct_size := CarContact.STRUCT_SIZE
 	car_a.set_from_buffer(packet.slice(data_offset, data_offset + struct_size))
@@ -49,3 +50,8 @@ func _get_data_dictionary() -> Dictionary:
 		"A": car_a,
 		"B": car_b,
 	}
+
+
+func _update_gis_values() -> void:
+	gis_closing_speed = (sp_close & CLOSING_SPEED_MASK) / CLOSING_SPEED_MULTIPLIER
+	gis_time = time / TIME_MULTIPLIER

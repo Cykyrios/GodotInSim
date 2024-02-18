@@ -3,6 +3,8 @@ extends InSimPacket
 
 ## RESult packet (qualify or confirmed finish)
 
+const TIME_MULTIPLIER := 1000.0
+
 const USERNAME_MAX_LENGTH := 24
 const PLAYER_NAME_MAX_LENGTH := 24
 const PLATE_MAX_LENGTH := 8
@@ -30,6 +32,9 @@ var flags := 0  ## player flags: help settings etc - see [enum InSim.Player]
 var result_num := 0  ## finish or qualify pos (0 = win / 255 = not added to table)
 var num_results := 0  ## total number of results (qualify doesn't always add a new one)
 var penalty_seconds := 0  ## penalty time in seconds (already included in race time)
+
+var gis_total_time := 0.0
+var gis_best_lap := 0.0
 
 
 func _init() -> void:
@@ -80,3 +85,8 @@ func _get_data_dictionary() -> Dictionary:
 		"NumRes": num_results,
 		"PSeconds": penalty_seconds,
 	}
+
+
+func _update_gis_values() -> void:
+	gis_total_time = total_time / TIME_MULTIPLIER
+	gis_best_lap = best_lap / TIME_MULTIPLIER

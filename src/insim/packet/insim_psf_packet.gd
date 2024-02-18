@@ -3,12 +3,16 @@ extends InSimPacket
 
 ## Pit Stop Finished packet
 
+const TIME_MULTIPLIER := 1000.0
+
 const PACKET_SIZE := 12
 const PACKET_TYPE := InSim.Packet.ISP_PSF
 var player_id := 0  ## player's unique id
 
 var stop_time := 0  ## stop time (ms)
 var spare := 0
+
+var gis_stop_time := 0.0
 
 
 func _init() -> void:
@@ -33,3 +37,7 @@ func _get_data_dictionary() -> Dictionary:
 		"StopTime": stop_time,
 		"Spare": spare,
 	}
+
+
+func _update_gis_values() -> void:
+	gis_stop_time = stop_time / TIME_MULTIPLIER

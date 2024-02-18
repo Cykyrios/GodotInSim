@@ -3,6 +3,10 @@ extends InSimPacket
 
 ## Cam Pos Pack packet - full camera packet (in car OR Shift+U mode)
 
+const POSITION_MULTIPLIER := 65536.0
+const ANGLE_MULTIPLIER := 32768.0
+const TIME_MULTIPLIER := 1000.0
+
 const PACKET_SIZE := 32
 const PACKET_TYPE := InSim.Packet.ISP_CPP
 var zero := 0
@@ -20,6 +24,10 @@ var fov := 70.0  ## 4-byte float: FOV in degrees
 
 var time := 0  ## time in ms to get there (0 means instant)
 var flags := 0  ## state flags (see [enum InSim.State])
+
+var gis_position := Vector3.ZERO
+var gis_angles := Vector3.ZERO
+var gis_time := 0.0
 
 
 func _init() -> void:
@@ -76,3 +84,23 @@ func _get_data_dictionary() -> Dictionary:
 		"Time": time,
 		"Flags": flags,
 	}
+
+
+func _update_gis_values() -> void:
+	gis_position = Vector3(pos) / POSITION_MULTIPLIER
+	gis_angles = Vector3(
+		deg_to_rad(90 - pitch * 180 / ANGLE_MULTIPLIER),
+		deg_to_rad(roll * 180 / ANGLE_MULTIPLIER),
+		deg_to_rad(180 + heading * 180 / ANGLE_MULTIPLIER)
+	)
+	gis_time = time / TIME_MULTIPLIER
+
+
+func _set_values_from_gis() -> void:
+	pos.x = int(gis_position.x * POSITION_MULTIPLIER)
+	pos.y = int(gis_position.y * POSITION_MULTIPLIER)
+	pos.z = int(gis_position.z * POSITION_MULTIPLIER)
+	pitch = (90 - rad_to_deg(gis_angles.x)) * ANGLE_MULTIPLIER / 180
+	roll = rad_to_deg(gis_angles.y) * ANGLE_MULTIPLIER / 180
+	heading = (180 + rad_to_deg(gis_angles.z)) * ANGLE_MULTIPLIER / 180
+	time = gis_time * TIME_MULTIPLIER

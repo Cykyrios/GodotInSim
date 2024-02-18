@@ -3,6 +3,8 @@ extends InSimPacket
 
 ## FINished packet - Finished race notification (not a final result - use [InSimRESPacket])
 
+const TIME_MULTIPLIER := 1000.0
+
 const PACKET_SIZE := 20
 const PACKET_TYPE := InSim.Packet.ISP_FIN
 var player_id := 0  ## player's unique id (0 = player left before result was sent)
@@ -17,6 +19,9 @@ var sp_b := 0
 
 var laps_done := 0  ## laps completed
 var flags := 0  ## player flags: help settings etc - see [enum InSim.Player]
+
+var gis_race_time := 0.0
+var gis_best_lap := 0.0
 
 
 func _init() -> void:
@@ -53,3 +58,8 @@ func _get_data_dictionary() -> Dictionary:
 		"LapsDone": laps_done,
 		"Flags": flags,
 	}
+
+
+func _update_gis_values() -> void:
+	gis_race_time = race_time / TIME_MULTIPLIER
+	gis_best_lap = best_lap / TIME_MULTIPLIER

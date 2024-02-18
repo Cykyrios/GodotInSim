@@ -3,6 +3,8 @@ extends InSimPacket
 
 ## User Control Object packet
 
+const TIME_MULTIPLIER := 100.0
+
 const PACKET_SIZE := 28
 const PACKET_TYPE := InSim.Packet.ISP_UCO
 var player_id := 0  ## player's unique id
@@ -15,6 +17,8 @@ var sp3 := 0
 var time := 0  ## hundredths of a second since start (as in [constant InSim.SMALL_RTP])
 var object := CarContObj.new()
 var info := ObjectInfo.new()  ## info about the checkpoint or circle
+
+var gis_time := 0.0
 
 
 func _init() -> void:
@@ -53,3 +57,7 @@ func _get_data_dictionary() -> Dictionary:
 		"C": object,
 		"Info": info,
 	}
+
+
+func _update_gis_values() -> void:
+	gis_time = time / TIME_MULTIPLIER

@@ -3,6 +3,8 @@ extends InSimPacket
 
 ## Replay Information Packet
 
+const TIME_MULTIPLIER := 100.0
+
 const REPLAY_NAME_MAX_LENGTH := 64  # last byte must be zero, so actual value is decreased by one
 
 const PACKET_SIZE := 80
@@ -18,6 +20,9 @@ var c_time := 0  ## (hundredths) request: destination / reply: position
 var t_time := 0  ## (hundredths) request: zero / reply: replay length
 
 var replay_name := ""  ## zero or replay name - last byte must be zero
+
+var gis_c_time := 0.0
+var gis_t_time := 0.0
 
 
 func _init() -> void:
@@ -66,3 +71,13 @@ func _get_data_dictionary() -> Dictionary:
 		"TTime": t_time,
 		"RName": replay_name,
 	}
+
+
+func _set_values_from_gis() -> void:
+	c_time = gis_c_time * TIME_MULTIPLIER
+	t_time = gis_t_time * TIME_MULTIPLIER
+
+
+func _update_gis_values() -> void:
+	gis_c_time = c_time / TIME_MULTIPLIER
+	gis_t_time = t_time / TIME_MULTIPLIER

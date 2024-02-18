@@ -12,6 +12,8 @@ enum Flag {
 
 const CLOSING_SPEED_MASK := 0x0fff
 const CLOSING_SPEED_MULTIPLIER := 10.0
+const POSITION_XY_MULTIPLIER := 16.0
+const POSITION_Z_MULTIPLIER := 4.0
 
 const PACKET_SIZE := 24
 const PACKET_TYPE := InSim.Packet.ISP_OBH
@@ -30,7 +32,8 @@ var sp1 := 0
 var index := 0  ## AXO_x as in [ObjectInfo] or zero if it is an unknown object
 var obh_flags := 0  ## see [enum Flag]
 
-var closing_speed := 0.0
+var gis_closing_speed := 0.0
+var gis_position := Vector3.ZERO
 
 
 func _init() -> void:
@@ -46,7 +49,6 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	super(packet)
 	player_id = read_byte()
 	sp_close = read_word()
-	closing_speed = (sp_close & CLOSING_SPEED_MASK) / CLOSING_SPEED_MULTIPLIER
 	time = read_word()
 	var struct_size := CarContObj.STRUCT_SIZE
 	object.set_from_buffer(packet.slice(data_offset, data_offset + struct_size))
@@ -72,3 +74,9 @@ func _get_data_dictionary() -> Dictionary:
 		"Index": index,
 		"OBHFlags": obh_flags,
 	}
+
+
+func _update_gis_values() -> void:
+	gis_closing_speed = (sp_close & CLOSING_SPEED_MASK) / CLOSING_SPEED_MULTIPLIER
+	gis_position = Vector3(x / POSITION_XY_MULTIPLIER, y / POSITION_XY_MULTIPLIER,
+			z / POSITION_Z_MULTIPLIER)

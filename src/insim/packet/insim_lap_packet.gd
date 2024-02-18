@@ -3,6 +3,9 @@ extends InSimPacket
 
 ## LAP time packet
 
+const TIME_MULTIPLIER := 1000.0
+const FUEL_MULTIPLIER := 2.0
+
 const PACKET_SIZE := 20
 const PACKET_TYPE := InSim.Packet.ISP_LAP
 var player_id := 0  ## player's unique id
@@ -17,6 +20,10 @@ var sp0 := 0
 var penalty := InSim.Penalty.PENALTY_NONE  ## current penalty value (see [enum InSim.Penalty])
 var num_stops := 0  ## number of pit stops
 var fuel200 := 0  ## /showfuel yes: double fuel percent / no: 255
+
+var gis_lap_time := 0.0
+var gis_elapsed_time := 0.0
+var gis_fuel := 0.0
 
 
 func _init() -> void:
@@ -53,3 +60,9 @@ func _get_data_dictionary() -> Dictionary:
 		"NumStops": num_stops,
 		"Fuel200": fuel200,
 	}
+
+
+func _update_gis_values() -> void:
+	gis_lap_time = lap_time / TIME_MULTIPLIER
+	gis_elapsed_time = elapsed_time / TIME_MULTIPLIER
+	gis_fuel = fuel200 / FUEL_MULTIPLIER if fuel200 != 255 else -1.0

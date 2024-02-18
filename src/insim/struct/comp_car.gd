@@ -2,6 +2,11 @@ class_name CompCar
 extends RefCounted
 
 
+const POSITION_MULTIPLIER := 65536.0
+const SPEED_MULTIPLIER := 327.68
+const ANGLE_MULTIPLIER := 32768.0
+const ANGVEL_MULTIPLIER := 16384 / 360.0
+
 const STRUCT_SIZE := 28
 
 var node := 0
@@ -17,6 +22,12 @@ var speed := 0
 var direction := 0
 var heading := 0
 var ang_vel := 0
+
+var gis_position := Vector3.ZERO
+var gis_speed := 0.0
+var gis_direction := 0.0
+var gis_heading := 0.0
+var gis_angular_velocity := 0.0
 
 
 func _to_string() -> String:
@@ -60,3 +71,9 @@ func set_from_buffer(buffer: PackedByteArray) -> void:
 	direction = buffer.decode_u16(22)
 	heading = buffer.decode_u16(24)
 	ang_vel = buffer.decode_s16(26)
+
+	gis_position = Vector3(x, y, z) / POSITION_MULTIPLIER
+	gis_speed = speed / SPEED_MULTIPLIER
+	gis_direction = direction / ANGLE_MULTIPLIER
+	gis_heading = heading / ANGLE_MULTIPLIER
+	gis_angular_velocity = ang_vel / ANGVEL_MULTIPLIER

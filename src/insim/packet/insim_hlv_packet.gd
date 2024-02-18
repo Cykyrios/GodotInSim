@@ -3,6 +3,8 @@ extends InSimPacket
 
 ## Hot Lap Validity packet - off track / hit wall / speeding in pits / out of bounds
 
+const TIME_MULTIPLIER := 100.0
+
 const PACKET_SIZE := 16
 const PACKET_TYPE := InSim.Packet.ISP_HLV
 var player_id := 0  ## player's unique id
@@ -12,6 +14,8 @@ var sp1 := 0
 var time := 0  ## looping time stamp (hundredths - time since reset - like [constant InSim.TINY_GTH])
 
 var object := CarContObj.new()
+
+var gis_time := 0.0
 
 
 func _init() -> void:
@@ -42,3 +46,7 @@ func _get_data_dictionary() -> Dictionary:
 		"Time": time,
 		"C": object,
 	}
+
+
+func _update_gis_values() -> void:
+	gis_time = time / TIME_MULTIPLIER
