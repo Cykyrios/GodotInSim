@@ -21,12 +21,18 @@ func _to_string() -> String:
 	return "%s" % [buffer]
 
 
+## Override to define behavior for new packets
+func _decode_packet(packet_buffer: PackedByteArray) -> void:
+	buffer = packet_buffer
+
+
+## Override to define behavior for new packets
+func _fill_buffer() -> void:
+	pass
+
+
 func _get_dictionary() -> Dictionary:
 	return {}
-
-
-func get_dictionary() -> Dictionary:
-	return _get_dictionary()
 
 
 ## Override to update values with non-standard units from gis (GodotInSim) prefixed values, e.g.[br]
@@ -48,18 +54,21 @@ static func create_packet_from_buffer(packet_buffer: PackedByteArray) -> LFSPack
 	return packet
 
 
-func add_char(data: String) -> void:
-	add_string(1, data)
+func decode_packet(packet_buffer: PackedByteArray) -> void:
+	_decode_packet(packet_buffer)
+	_update_gis_values()
 
 
-func add_string(length: int, data: String) -> void:
-	var temp_buffer := data.to_utf8_buffer()
-	var _discard := temp_buffer.resize(length)
-	for i in length:
-		buffer.encode_u8(data_offset, temp_buffer[i])
-		data_offset += 1
+func fill_buffer() -> void:
+	_set_values_from_gis()
+	_fill_buffer()
 
 
+func get_dictionary() -> Dictionary:
+	return _get_dictionary()
+
+
+#region buffer I/O
 func add_byte(data: int) -> void:
 	if data > 0xFF:
 		push_error("Data too large for unsigned byte, max 255, got %d." % [data])
@@ -71,42 +80,12 @@ func add_byte(data: int) -> void:
 	data_offset += 1
 
 
-func add_word(data: int) -> void:
-	var min_value := 0
-	var max_value := 0xFFFF
-	if data > max_value:
-		push_error("Data too large for unsigned word, max %d, got %d." % [max_value, data])
-		return
-	if data < min_value:
-		push_error("Data cannot be negative, got %d." % [data])
-		return
-	buffer.encode_u16(data_offset, data)
-	data_offset += 2
+func add_char(data: String) -> void:
+	add_string(1, data)
 
 
-func add_short(data: int) -> void:
-	var min_value := -0x1000
-	var max_value := 0xFFF
-	if data > max_value:
-		push_error("Data too large for short integer, max %d, got %d." % [max_value, data])
-		return
-	if data < min_value:
-		push_error("Data too small for short integer, min %d, got %d." % [min_value, data])
-		return
-	buffer.encode_s16(data_offset, data)
-	data_offset += 2
-
-
-func add_unsigned(data: int) -> void:
-	var min_value := 0
-	var max_value := 0xFFFF_FFFF
-	if data > max_value:
-		push_error("Data too large for unsigned integer, max %d, got %d." % [max_value, data])
-		return
-	if data < min_value:
-		push_error("Data cannot be negative, got %d." % [data])
-		return
-	buffer.encode_u32(data_offset, data)
+func add_float(data: float) -> void:
+	buffer.encode_float(data_offset, data)
 	data_offset += 4
 
 
@@ -123,9 +102,57 @@ func add_int(data: int) -> void:
 	data_offset += 4
 
 
-func add_float(data: float) -> void:
-	buffer.encode_float(data_offset, data)
+func add_short(data: int) -> void:
+	var min_value := -0x1000
+	var max_value := 0xFFF
+	if data > max_value:
+		push_error("Data too large for short integer, max %d, got %d." % [max_value, data])
+		return
+	if data < min_value:
+		push_error("Data too small for short integer, min %d, got %d." % [min_value, data])
+		return
+	buffer.encode_s16(data_offset, data)
+	data_offset += 2
+
+
+func add_string(length: int, data: String) -> void:
+	var temp_buffer := data.to_utf8_buffer()
+	var _discard := temp_buffer.resize(length)
+	for i in length:
+		buffer.encode_u8(data_offset, temp_buffer[i])
+		data_offset += 1
+
+
+func add_unsigned(data: int) -> void:
+	var min_value := 0
+	var max_value := 0xFFFF_FFFF
+	if data > max_value:
+		push_error("Data too large for unsigned integer, max %d, got %d." % [max_value, data])
+		return
+	if data < min_value:
+		push_error("Data cannot be negative, got %d." % [data])
+		return
+	buffer.encode_u32(data_offset, data)
 	data_offset += 4
+
+
+func add_word(data: int) -> void:
+	var min_value := 0
+	var max_value := 0xFFFF
+	if data > max_value:
+		push_error("Data too large for unsigned word, max %d, got %d." % [max_value, data])
+		return
+	if data < min_value:
+		push_error("Data cannot be negative, got %d." % [data])
+		return
+	buffer.encode_u16(data_offset, data)
+	data_offset += 2
+
+
+func read_byte() -> int:
+	var result := buffer.decode_u8(data_offset)
+	data_offset += 1
+	return result
 
 
 func read_car_name() -> String:
@@ -161,33 +188,8 @@ func read_char() -> String:
 	return read_string(1)
 
 
-func read_string(length: int) -> String:
-	var temp_buffer := buffer.slice(data_offset, data_offset + length)
-	var result := temp_buffer.get_string_from_utf8()
-	data_offset += length
-	return result
-
-
-func read_byte() -> int:
-	var result := buffer.decode_u8(data_offset)
-	data_offset += 1
-	return result
-
-
-func read_word() -> int:
-	var result := buffer.decode_u16(data_offset)
-	data_offset += 2
-	return result
-
-
-func read_short() -> int:
-	var result := buffer.decode_s16(data_offset)
-	data_offset += 2
-	return result
-
-
-func read_unsigned() -> int:
-	var result := buffer.decode_u32(data_offset)
+func read_float() -> float:
+	var result := buffer.decode_float(data_offset)
 	data_offset += 4
 	return result
 
@@ -198,30 +200,32 @@ func read_int() -> int:
 	return result
 
 
-func read_float() -> float:
-	var result := buffer.decode_float(data_offset)
+func read_short() -> int:
+	var result := buffer.decode_s16(data_offset)
+	data_offset += 2
+	return result
+
+
+func read_string(length: int) -> String:
+	var temp_buffer := buffer.slice(data_offset, data_offset + length)
+	var result := temp_buffer.get_string_from_utf8()
+	data_offset += length
+	return result
+
+
+func read_unsigned() -> int:
+	var result := buffer.decode_u32(data_offset)
 	data_offset += 4
 	return result
+
+
+func read_word() -> int:
+	var result := buffer.decode_u16(data_offset)
+	data_offset += 2
+	return result
+#endregion
 
 
 func resize_buffer(new_size: int) -> void:
 	size = new_size
 	var _discard := buffer.resize(size)
-
-
-func fill_buffer() -> void:
-	_set_values_from_gis()
-	_fill_buffer()
-
-
-func _fill_buffer() -> void:
-	pass
-
-
-func decode_packet(packet_buffer: PackedByteArray) -> void:
-	_decode_packet(packet_buffer)
-	_update_gis_values()
-
-
-func _decode_packet(packet_buffer: PackedByteArray) -> void:
-	buffer = packet_buffer
