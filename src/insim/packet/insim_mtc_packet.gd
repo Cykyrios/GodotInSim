@@ -35,7 +35,7 @@ func _fill_buffer() -> void:
 		text = text.left(TEXT_MAX_LENGTH - 1)  # last byte must be zero
 		text_length = TEXT_MAX_LENGTH
 	var remainder := text_length % SIZE_MULTIPLIER
-	text_length += remainder
+	text_length += SIZE_MULTIPLIER - remainder
 	if remainder == 0 and text_length < TEXT_MAX_LENGTH:
 		text_length += SIZE_MULTIPLIER
 	add_string(text_length, text)
@@ -59,3 +59,4 @@ func trim_packet_size() -> void:
 		if buffer[PACKET_MAX_SIZE - i - 1] != 0:
 			size = PACKET_MAX_SIZE - i
 			resize_buffer(size)
+			break

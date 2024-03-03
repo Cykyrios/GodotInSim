@@ -47,17 +47,18 @@ func _fill_buffer() -> void:
 		add_string(caption_length, caption)
 		add_byte(0)
 		caption_length += 2
-	var text_length := text.length()
-	if text_length >= TEXT_MAX_LENGTH - caption_length:
-		text = text.left(TEXT_MAX_LENGTH - caption_length)
+	var text_length := text.length() + caption_length
+	if text_length >= TEXT_MAX_LENGTH:
+		text = text.left(TEXT_MAX_LENGTH)
 		text_length = text.length()
 	var remainder := text_length % SIZE_MULTIPLIER
-	text_length += remainder
-	if remainder == 0 and text_length < TEXT_MAX_LENGTH - caption_length:
+	if remainder > 0:
+		text_length += SIZE_MULTIPLIER - remainder
+	if remainder == 0 and text_length < TEXT_MAX_LENGTH:
 		text_length += SIZE_MULTIPLIER
 	add_string(text_length, text)
-	buffer.encode_u8(size - 1, 0)  # last byte must be zero
 	trim_packet_size()
+	buffer.encode_u8(size - 1, 0)  # last byte must be zero
 
 
 func _get_data_dictionary() -> Dictionary:
@@ -81,3 +82,4 @@ func trim_packet_size() -> void:
 		if buffer[PACKET_MAX_SIZE - i - 1] != 0:
 			size = PACKET_MAX_SIZE - i
 			resize_buffer(size)
+			break
