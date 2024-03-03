@@ -222,7 +222,8 @@ func resize_buffer(new_size: int) -> void:
 # All packets have a size equal to a multiple of 4
 func _adjust_packet_size() -> void:
 	var remainder := size % SIZE_MULTIPLIER
-	size += remainder
+	if remainder > 0:
+		size += SIZE_MULTIPLIER - remainder
 
 
 func _fill_buffer() -> void:
