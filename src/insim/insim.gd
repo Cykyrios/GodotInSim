@@ -224,6 +224,12 @@ enum ButtonFunction {
 	BFN_USER_CLEAR,  ## 2 - info: user cleared this insim instance's buttons
 	BFN_REQUEST,  ## 3 - user request: SHIFT+B or SHIFT+I - request for buttons
 }
+enum ButtonPosition {
+	X_MIN = 0,
+	X_MAX = 110,
+	Y_MIN = 0,
+	Y_MAX = 170,
+}
 enum ButtonStyle {
 	ISB_C1 = 1,
 	ISB_C2 = 2,
