@@ -74,6 +74,6 @@ func set_from_buffer(buffer: PackedByteArray) -> void:
 
 	gis_position = Vector3(x, y, z) / POSITION_MULTIPLIER
 	gis_speed = speed / SPEED_MULTIPLIER
-	gis_direction = direction / ANGLE_MULTIPLIER
-	gis_heading = heading / ANGLE_MULTIPLIER
-	gis_angular_velocity = ang_vel / ANGVEL_MULTIPLIER
+	gis_direction = deg_to_rad(direction / ANGLE_MULTIPLIER)
+	gis_heading = deg_to_rad(heading / ANGLE_MULTIPLIER)
+	gis_angular_velocity = deg_to_rad(ang_vel / ANGVEL_MULTIPLIER)
