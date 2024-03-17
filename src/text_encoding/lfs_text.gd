@@ -128,5 +128,9 @@ static func unicode_to_lfs(text: String) -> String:
 					buffer.append_array(temp_bytes)
 					break
 			if not code_page_found:
-				buffer.append_array(translate_specials(FALLBACK_CHARACTER).to_utf8_buffer())
-	return buffer.get_string_from_utf16()
+				buffer.append_array(translate_specials(FALLBACK_CHARACTER).to_utf16_buffer())
+	return buffer
+
+
+static func unicode_to_lfs_string(text: String) -> String:
+	return unicode_to_lfs_bytes(text).get_string_from_utf16()
