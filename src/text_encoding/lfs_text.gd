@@ -66,7 +66,9 @@ static func get_bytes_from_string(code: int, code_page: String) -> PackedByteArr
 					var encoded_code := page_table.keys()[i] as int
 					var high_byte := encoded_code >> 8
 					var low_byte := encoded_code - (high_byte << 8)
-					return PackedByteArray([low_byte, high_byte])
+					if high_byte == 0:
+						return PackedByteArray([low_byte])
+					return PackedByteArray([high_byte, low_byte])
 	return []
 
 
@@ -84,14 +86,19 @@ static func get_string_from_bytes(buffer: PackedByteArray, code_page: String) ->
 		if buffer[i] < 128:
 			text += String.chr(buffer[i])
 			continue
+		if LFSCodePages.CODE_PAGE_TABLES.has(page):
+			var page_dict := LFSCodePages.CODE_PAGE_TABLES[page] as Dictionary
+			if page_dict.has(buffer[i]):
+				text += String.chr(page_dict[buffer[i]])
+				continue
 		var sub_page := "%s%d" % [page, buffer[i]]
-		if LFSCodePages.CODE_PAGE_TABLES.has(sub_page):
-			if LFSCodePages.CODE_PAGE_TABLES[sub_page].has(buffer[i + 1]):
-				text += String.chr(LFSCodePages.CODE_PAGE_TABLES[sub_page][buffer[i + 1]])
+		if LFSCodePages.CODE_PAGE_TABLES.has(sub_page) and i < buffer.size() - 1:
+			var sub_code := (buffer[i] << 8) + buffer[i + 1]
+			if LFSCodePages.CODE_PAGE_TABLES[sub_page].has(sub_code):
+				text += String.chr(LFSCodePages.CODE_PAGE_TABLES[sub_page][sub_code])
+				skip_next = true
 			else:
 				text += "?"
-		elif LFSCodePages.CODE_PAGE_TABLES.has(page):
-			text += String.chr(LFSCodePages.CODE_PAGE_TABLES[page][buffer[i]])
 		else:
 			text += "?"
 	return text
