@@ -132,6 +132,14 @@ func add_string(length: int, data: String) -> void:
 		data_offset += 1
 
 
+func add_string_as_utf8(length: int, data: String) -> void:
+	var temp_buffer := data.to_utf8_buffer()
+	var _discard := temp_buffer.resize(length)
+	for i in length:
+		buffer.encode_u8(data_offset, temp_buffer[i])
+		data_offset += 1
+
+
 func add_unsigned(data: int) -> void:
 	var min_value := 0
 	var max_value := 0xFFFF_FFFF
@@ -216,6 +224,13 @@ func read_short() -> int:
 
 
 func read_string(length: int) -> String:
+	var temp_buffer := buffer.slice(data_offset, data_offset + length)
+	var result := LFSText.lfs_bytes_to_unicode(temp_buffer)
+	data_offset += length
+	return result
+
+
+func read_string_as_utf8(length: int) -> String:
 	var temp_buffer := buffer.slice(data_offset, data_offset + length)
 	var result := temp_buffer.get_string_from_utf8()
 	data_offset += length
