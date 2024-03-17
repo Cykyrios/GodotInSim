@@ -17,7 +17,6 @@ const CODE_PAGES := {
 	"^K": "euc-kr",
 	"^8": "CP1252",
 }
-
 const SPECIAL_CHARACTERS := {
 	"^a": "*",
 	"^c": ":",
@@ -30,7 +29,6 @@ const SPECIAL_CHARACTERS := {
 	"^t": '"',
 	"^v": "|",
 }
-
 const COLORS := [
 	Color(0, 0, 0),
 	Color(1, 0, 0),
@@ -41,7 +39,6 @@ const COLORS := [
 	Color(0, 1, 1),
 	Color(1, 1, 1),
 ]
-
 const FALLBACK_CHARACTER := "?"
 
 
@@ -58,30 +55,19 @@ static func is_multibyte(code_page: String, char: int) -> bool:
 	return false
 
 
-static func parse_lfs_message(buffer: PackedByteArray) -> String:
-	var current_code_page := "^L"
-	var message := ""
-	var block_start := 0
-	var block_end := 0
-
-	for i in buffer.size():
-		if buffer[i] == 0:
-			if block_start < block_end:
-				#message +=
-				pass
-			break
-		elif is_multibyte(current_code_page, buffer[i]):
-			block_end += 2
-			i += 1  # WARNING: this may not work (for loop probably creates an array)
-		elif buffer[i] == 0x5e:
-			pass
-		else:
-			block_end += 1
-	for special_character in SPECIAL_CHARACTERS:
-		var regexp := RegEx.create_from_string("^%s" % [special_character])
-		regexp.sub(message, SPECIAL_CHARACTERS[special_character], true)
-	message = message.replace("^^", "^")
-	return message
+static func get_bytes_from_string(code: int, code_page: String) -> PackedByteArray:
+	if not LFSCodePages.CODE_PAGE_TABLES.has(code_page):
+		return []
+	for key in LFSCodePages.CODE_PAGE_TABLES.keys():
+		if (key as String).begins_with(code_page):
+			var page_table := LFSCodePages.CODE_PAGE_TABLES[key] as Dictionary
+			for i in page_table.values().size():
+				if page_table.values()[i] == code:
+					var encoded_code := page_table.keys()[i] as int
+					var high_byte := encoded_code >> 8
+					var low_byte := encoded_code - (high_byte << 8)
+					return PackedByteArray([low_byte, high_byte])
+	return []
 
 
 static func get_string_from_bytes(buffer: PackedByteArray, code_page: String) -> String:
@@ -109,21 +95,6 @@ static func get_string_from_bytes(buffer: PackedByteArray, code_page: String) ->
 		else:
 			text += "?"
 	return text
-
-
-static func get_bytes_from_string(code: int, code_page: String) -> PackedByteArray:
-	if not LFSCodePages.CODE_PAGE_TABLES.has(code_page):
-		return []
-	for key in LFSCodePages.CODE_PAGE_TABLES.keys():
-		if (key as String).begins_with(code_page):
-			var page_table := LFSCodePages.CODE_PAGE_TABLES[key] as Dictionary
-			for i in page_table.values().size():
-				if page_table.values()[i] == code:
-					var encoded_code := page_table.keys()[i] as int
-					var high_byte := encoded_code >> 8
-					var low_byte := encoded_code - (high_byte << 8)
-					return PackedByteArray([low_byte, high_byte])
-	return []
 
 
 static func lfs_bytes_to_unicode(buffer: PackedByteArray) -> String:
