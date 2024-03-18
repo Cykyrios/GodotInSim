@@ -55,7 +55,7 @@ static func is_multibyte(code_page: String, char: int) -> bool:
 	return false
 
 
-static func get_bytes_from_string(code: int, code_page: String) -> PackedByteArray:
+static func get_bytes_from_string(code: int, code_page: String, keep_utf16: bool) -> PackedByteArray:
 	if not LFSCodePages.CODE_PAGE_TABLES.has(code_page):
 		return []
 	for key in LFSCodePages.CODE_PAGE_TABLES.keys():
@@ -66,6 +66,8 @@ static func get_bytes_from_string(code: int, code_page: String) -> PackedByteArr
 					var encoded_code := page_table.keys()[i] as int
 					var high_byte := encoded_code >> 8
 					var low_byte := encoded_code - (high_byte << 8)
+					if keep_utf16:
+						return PackedByteArray([low_byte, high_byte])
 					if high_byte == 0:
 						return PackedByteArray([low_byte])
 					return PackedByteArray([high_byte, low_byte])
@@ -154,7 +156,7 @@ static func translate_specials(text: String) -> String:
 	return message
 
 
-static func unicode_to_lfs_bytes(text: String) -> PackedByteArray:
+static func unicode_to_lfs_bytes(text: String, keep_utf16 := false) -> PackedByteArray:
 	var page := "L"
 	var message := translate_specials(text)
 	var buffer := PackedByteArray()
@@ -162,13 +164,13 @@ static func unicode_to_lfs_bytes(text: String) -> PackedByteArray:
 		if message.unicode_at(i) < 128:
 			buffer.append_array(message[i].to_utf16_buffer())
 			continue
-		var temp_bytes := get_bytes_from_string(message.unicode_at(i), page)
+		var temp_bytes := get_bytes_from_string(message.unicode_at(i), page, keep_utf16)
 		if not temp_bytes.is_empty():
 			buffer.append_array(temp_bytes)
 		else:
 			var code_page_found := false
 			for code_page: String in CODE_PAGES.keys():
-				temp_bytes = get_bytes_from_string(message.unicode_at(i), code_page.substr(1, 1))
+				temp_bytes = get_bytes_from_string(message.unicode_at(i), code_page.substr(1, 1), keep_utf16)
 				if not temp_bytes.is_empty():
 					code_page_found = true
 					page = code_page.substr(1, 1)
@@ -180,5 +182,5 @@ static func unicode_to_lfs_bytes(text: String) -> PackedByteArray:
 	return buffer
 
 
-static func unicode_to_lfs_string(text: String) -> String:
-	return unicode_to_lfs_bytes(text).get_string_from_utf16()
+static func _unicode_to_lfs_string(text: String) -> String:
+	return unicode_to_lfs_bytes(text, true).get_string_from_utf16()
