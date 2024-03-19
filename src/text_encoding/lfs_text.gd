@@ -29,7 +29,7 @@ const SPECIAL_CHARACTERS := {
 	"^t": '"',
 	"^v": "|",
 }
-const COLORS := [
+const COLORS: Array[Color] = [
 	Color(0, 0, 0),
 	Color(1, 0, 0),
 	Color(0, 1, 0),
@@ -147,6 +147,27 @@ static func lfs_bytes_to_unicode(buffer: PackedByteArray) -> String:
 		message = regexp.sub(message, SPECIAL_CHARACTERS.values()[i], true)
 	message = message.replace("^^", "^")
 	return message
+
+
+static func lfs_colors_to_bbcode(text: String) -> String:
+	var colored_text := text
+	var color_regex := RegEx.create_from_string(r"\^\d")
+	var regex_match := color_regex.search(colored_text)
+	var colors_found := false
+	while regex_match:
+		var color_index := regex_match.strings[0].right(1).to_int()
+		if color_index >= 8:
+			colored_text = color_regex.sub(colored_text, "[/color]" if colors_found else "")
+			colors_found = false
+		else:
+			colored_text = color_regex.sub(colored_text,
+					"%s[color=#%s]" % ["[/color]" if colors_found else "",
+					COLORS[color_index].to_html(false)])
+			colors_found = true
+		regex_match = color_regex.search(colored_text)
+	if colors_found:
+		colored_text += "[/color]"
+	return colored_text
 
 
 static func translate_specials(text: String) -> String:
