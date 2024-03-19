@@ -42,6 +42,23 @@ const COLORS: Array[Color] = [
 const FALLBACK_CHARACTER := "?"
 
 
+static func bbcode_to_lfs_colors(text: String) -> String:
+	var lfs_text := text
+	var regex := RegEx.create_from_string(r"(?U)(?:\^[89])?\[color=#([A-Fa-f0-9]+)\](.+)\[/color\]")
+	var regex_match := regex.search(lfs_text)
+	var get_color_index := func get_color_index(hex_color: String) -> int:
+		for index in COLORS.size():
+			if COLORS[index].to_html(false) == hex_color:
+				return index
+		return COLORS.size()
+	while regex_match:
+		var color_index := get_color_index.call(regex_match.strings[1])
+		lfs_text = regex.sub(lfs_text, "^%d%s^8" % [color_index, regex_match.strings[2]])
+		regex_match = regex.search(lfs_text)
+	lfs_text.trim_suffix("^8")
+	return lfs_text
+
+
 static func is_multibyte(code_page: String, char: int) -> bool:
 	match code_page:
 		"^L", "^8", "^G", "^C", "^E", "^T", "^B":
