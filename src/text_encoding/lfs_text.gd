@@ -100,9 +100,9 @@ static func get_string_from_bytes(buffer: PackedByteArray, code_page: String) ->
 				text += String.chr(LFSCodePages.CODE_PAGE_TABLES[sub_page][sub_code])
 				skip_next = true
 			else:
-				text += "?"
+				text += FALLBACK_CHARACTER
 		else:
-			text += "?"
+			text += FALLBACK_CHARACTER
 	return text
 
 
