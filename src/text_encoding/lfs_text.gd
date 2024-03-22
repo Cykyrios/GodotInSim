@@ -187,6 +187,22 @@ static func lfs_colors_to_bbcode(text: String) -> String:
 	return colored_text
 
 
+static func strip_colors(text: String) -> String:
+	var result := text
+	var regex := RegEx.create_from_string(r"\^\d")
+	var regex_match := regex.search(result)
+	while regex_match:
+		var color_code := regex_match.strings[0].substr(1, 1).to_int()
+		result = regex.sub(result, "^L" if color_code == 9 else "")
+		regex_match = regex.search(result)
+	regex = RegEx.create_from_string(r"(?U)\[color=#[A-Fa-f0-9]\](.+)\[/color\]")
+	regex_match = regex.search(result)
+	while regex_match:
+		result = regex.sub(result, regex_match.strings[1])
+		regex_match = regex.search(result)
+	return result
+
+
 static func translate_specials(text: String) -> String:
 	var message := text
 	for i in SPECIAL_CHARACTERS.size():
