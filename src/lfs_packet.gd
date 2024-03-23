@@ -117,15 +117,6 @@ func add_short(data: int) -> void:
 
 func add_string(length: int, data: String) -> void:
 	var temp_buffer := LFSText.unicode_to_lfs_bytes(data)
-	var last_data_index := -1
-	for i in temp_buffer.size():
-		if temp_buffer[-1 - i] != 0:
-			last_data_index = i
-	var idx := 0
-	while idx < temp_buffer.size():
-		if temp_buffer[-1 - idx] == 0:
-			temp_buffer.remove_at(temp_buffer.size() - 1 - idx)
-		idx += 1
 	var _discard := temp_buffer.resize(length)
 	for i in length:
 		buffer.encode_u8(data_offset, temp_buffer[i])

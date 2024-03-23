@@ -175,6 +175,16 @@ static func unicode_to_lfs_bytes(text: String, keep_utf16 := false) -> PackedByt
 					break
 			if not code_page_found:
 				buffer.append_array(_translate_specials(FALLBACK_CHARACTER).to_utf16_buffer())
+	if not keep_utf16:
+		var last_data_index := -1
+		for i in buffer.size():
+			if buffer[-1 - i] != 0:
+				last_data_index = i
+		var idx := 0
+		while idx < buffer.size():
+			if buffer[-1 - idx] == 0:
+				buffer.remove_at(buffer.size() - 1 - idx)
+			idx += 1
 	return buffer
 
 
