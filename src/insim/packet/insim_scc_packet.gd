@@ -16,6 +16,7 @@ var sp3 := 0
 func _init() -> void:
 	size = PACKET_SIZE
 	type = PACKET_TYPE
+	sendable = true
 
 
 func _fill_buffer() -> void:

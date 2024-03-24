@@ -16,6 +16,7 @@ var data := 0  ## see InSim documentation
 func _init() -> void:
 	size = PACKET_SIZE
 	type = PACKET_TYPE
+	sendable = true
 
 
 func _decode_packet(packet: PackedByteArray) -> void:

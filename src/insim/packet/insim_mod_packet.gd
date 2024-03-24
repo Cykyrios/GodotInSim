@@ -16,6 +16,7 @@ var height := 0  ## 0 means go to window
 func _init() -> void:
 	size = PACKET_SIZE
 	type = PACKET_TYPE
+	sendable = true
 
 
 func _fill_buffer() -> void:

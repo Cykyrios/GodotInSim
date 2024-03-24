@@ -9,6 +9,42 @@ extends InSimPacket
 ## [br]
 ## See [enum InSim.Tiny] for the list of TINY_ packets.
 
+const RECEIVABLES := [
+	InSim.Tiny.TINY_NONE,
+	InSim.Tiny.TINY_REPLY,
+	InSim.Tiny.TINY_VTC,
+	InSim.Tiny.TINY_MPE,
+	InSim.Tiny.TINY_REN,
+	InSim.Tiny.TINY_CLR,
+	InSim.Tiny.TINY_AXC,
+]
+const SENDABLES := [
+	InSim.Tiny.TINY_NONE,
+	InSim.Tiny.TINY_VER,
+	InSim.Tiny.TINY_CLOSE,
+	InSim.Tiny.TINY_PING,
+	InSim.Tiny.TINY_VTC,
+	InSim.Tiny.TINY_SCP,
+	InSim.Tiny.TINY_SST,
+	InSim.Tiny.TINY_GTH,
+	InSim.Tiny.TINY_ISM,
+	InSim.Tiny.TINY_NCN,
+	InSim.Tiny.TINY_NPL,
+	InSim.Tiny.TINY_RES,
+	InSim.Tiny.TINY_NLP,
+	InSim.Tiny.TINY_MCI,
+	InSim.Tiny.TINY_REO,
+	InSim.Tiny.TINY_RST,
+	InSim.Tiny.TINY_AXI,
+	InSim.Tiny.TINY_RIP,
+	InSim.Tiny.TINY_NCI,
+	InSim.Tiny.TINY_ALC,
+	InSim.Tiny.TINY_AXM,
+	InSim.Tiny.TINY_SLC,
+	InSim.Tiny.TINY_MAL,
+	InSim.Tiny.TINY_PLH,
+]
+
 const PACKET_SIZE := 4
 const PACKET_TYPE := InSim.Packet.ISP_TINY
 var sub_type := InSim.Tiny.TINY_NONE
@@ -19,6 +55,10 @@ func _init(req := 0, subt := InSim.Tiny.TINY_NONE) -> void:
 	type = PACKET_TYPE
 	req_i = req
 	sub_type = subt
+	if sub_type in RECEIVABLES:
+		receivable = true
+	if sub_type in SENDABLES:
+		sendable = true
 
 
 func _decode_packet(packet: PackedByteArray) -> void:

@@ -18,6 +18,7 @@ func _init() -> void:
 	var _discard := car_hcp.resize(MAX_CARS)
 	for i in car_hcp.size():
 		car_hcp[i] = CarHandicap.new()
+	sendable = true
 
 
 func _fill_buffer() -> void:

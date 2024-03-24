@@ -18,6 +18,8 @@ var hcaps: Array[PlayerHandicap] = []  ## 0 to [constant PLH_MAX_PLAYERS] ([memb
 func _init() -> void:
 	size = PACKET_MAX_SIZE
 	type = PACKET_TYPE
+	receivable = true
+	sendable = true
 
 
 func _decode_packet(packet: PackedByteArray) -> void:

@@ -21,6 +21,7 @@ var text := ""  ## up to 128 characters of text - last byte must be zero
 func _init() -> void:
 	size = PACKET_MAX_SIZE
 	type = PACKET_TYPE
+	sendable = true
 
 
 func _fill_buffer() -> void:

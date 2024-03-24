@@ -53,6 +53,7 @@ func _init() -> void:
 	size = PACKET_SIZE
 	type = PACKET_TYPE
 	req_i = REQ_I
+	sendable = true
 
 
 func _fill_buffer() -> void:

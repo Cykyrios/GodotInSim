@@ -20,6 +20,8 @@ var screenshot_name := ""  ## name of screenshot file - last byte must be zero
 func _init() -> void:
 	size = PACKET_SIZE
 	type = PACKET_TYPE
+	receivable = true
+	sendable = true
 
 
 func _decode_packet(packet: PackedByteArray) -> void:

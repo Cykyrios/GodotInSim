@@ -18,6 +18,7 @@ var cars := 0  ## allowed cars - see [enum InSim.Car]
 func _init() -> void:
 	size = PACKET_SIZE
 	type = PACKET_TYPE
+	sendable = true
 
 
 func _fill_buffer() -> void:

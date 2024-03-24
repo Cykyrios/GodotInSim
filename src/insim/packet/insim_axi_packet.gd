@@ -17,6 +17,7 @@ var layout_name := ""  ## the name of the layout last loaded (if loaded locally)
 func _init() -> void:
 	size = PACKET_SIZE
 	type = PACKET_TYPE
+	receivable = true
 
 
 func _decode_packet(packet: PackedByteArray) -> void:

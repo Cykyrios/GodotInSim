@@ -22,6 +22,8 @@ var skin_id: Array[int] = []  ## skin id of each mod in compressed format, 0 to 
 func _init() -> void:
 	size = PACKET_MAX_SIZE
 	type = PACKET_TYPE
+	receivable = true
+	sendable = true
 
 
 func _decode_packet(packet: PackedByteArray) -> void:

@@ -20,6 +20,7 @@ var msg := ""  ## 4, 8, 12... 128 characters - last byte is zero
 func _init() -> void:
 	size = PACKET_MAX_SIZE
 	type = PACKET_TYPE
+	receivable = true
 
 
 func _decode_packet(packet: PackedByteArray) -> void:

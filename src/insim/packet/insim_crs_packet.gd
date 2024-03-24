@@ -11,6 +11,7 @@ var player_id := 0  ## player's unique id
 func _init() -> void:
 	size = PACKET_SIZE
 	type = PACKET_TYPE
+	receivable = true
 
 
 func _decode_packet(packet: PackedByteArray) -> void:

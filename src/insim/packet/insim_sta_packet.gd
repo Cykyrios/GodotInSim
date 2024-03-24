@@ -38,6 +38,7 @@ var wind := 0  ## 0 = off / 1 = weak / 2 = strong
 func _init() -> void:
 	size = PACKET_SIZE
 	type = PACKET_TYPE
+	receivable = true
 
 
 func _decode_packet(packet: PackedByteArray) -> void:

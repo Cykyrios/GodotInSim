@@ -18,6 +18,7 @@ var start_pos := ObjectInfo.new()  ## 0: use default start point / Flags = 0x80:
 func _init() -> void:
 	size = PACKET_SIZE
 	type = PACKET_TYPE
+	sendable = true
 
 
 func _fill_buffer() -> void:

@@ -28,6 +28,8 @@ var gis_t_time := 0.0
 func _init() -> void:
 	size = PACKET_SIZE
 	type = PACKET_TYPE
+	receivable = true
+	sendable = true
 
 
 func _decode_packet(packet: PackedByteArray) -> void:

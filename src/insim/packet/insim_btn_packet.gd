@@ -28,6 +28,7 @@ func _init(req := 1) -> void:
 	size = PACKET_MAX_SIZE
 	type = PACKET_TYPE
 	req_i = req
+	sendable = true
 
 
 func _fill_buffer() -> void:

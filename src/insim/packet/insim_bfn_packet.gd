@@ -16,6 +16,8 @@ var inst := 0  ## used internally by InSim
 func _init() -> void:
 	size = PACKET_SIZE
 	type = PACKET_TYPE
+	receivable = true
+	sendable = true
 
 
 func _decode_packet(packet: PackedByteArray) -> void:

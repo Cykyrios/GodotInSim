@@ -20,6 +20,7 @@ var text := ""  ## typed text, zero to [member type_in] specified in IS_BTN ([cl
 func _init() -> void:
 	size = PACKET_SIZE
 	type = PACKET_TYPE
+	receivable = true
 
 
 func _decode_packet(packet: PackedByteArray) -> void:

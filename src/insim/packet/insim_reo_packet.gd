@@ -18,6 +18,8 @@ func _init() -> void:
 	var _discard := player_ids.resize(size)
 	for i in size:
 		player_ids[i] = 0
+	receivable = true
+	sendable = true
 
 
 func _decode_packet(packet: PackedByteArray) -> void:

@@ -15,6 +15,7 @@ var info: Array[CompCar] = []  ## car info for each player, 1 to [constant MAX_C
 func _init() -> void:
 	size = PACKET_MAX_SIZE
 	type = PACKET_TYPE
+	receivable = true
 
 
 func _decode_packet(packet: PackedByteArray) -> void:

@@ -15,6 +15,7 @@ var msg := ""  ## last byte must be zero
 func _init() -> void:
 	size = PACKET_SIZE
 	type = PACKET_TYPE
+	sendable = true
 
 
 func _fill_buffer() -> void:

@@ -43,6 +43,7 @@ var fuel := 0  ## /showfuel yes: fuel percent / no: 255
 func _init() -> void:
 	size = PACKET_SIZE
 	type = PACKET_TYPE
+	receivable = true
 
 
 func _decode_packet(packet: PackedByteArray) -> void:

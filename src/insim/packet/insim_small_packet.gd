@@ -9,6 +9,22 @@ extends InSimPacket
 ## [br]
 ## See [enum InSim.Small] for the list of SMALL_ packets.
 
+const RECEIVABLES := [
+	InSim.Small.SMALL_VTA,
+	InSim.Small.SMALL_RTP,
+	InSim.Small.SMALL_ALC,
+]
+const SENDABLES := [
+	InSim.Small.SMALL_SSP,
+	InSim.Small.SMALL_SSG,
+	InSim.Small.SMALL_TMS,
+	InSim.Small.SMALL_STP,
+	InSim.Small.SMALL_NLI,
+	InSim.Small.SMALL_ALC,
+	InSim.Small.SMALL_LCS,
+	InSim.Small.SMALL_LCL,
+]
+
 const PACKET_SIZE := 8
 const PACKET_TYPE := InSim.Packet.ISP_SMALL
 var sub_type := InSim.Small.SMALL_NONE
@@ -21,6 +37,10 @@ func _init(req := 0, subt := InSim.Small.SMALL_NONE, uval := 0) -> void:
 	req_i = req
 	sub_type = subt
 	value = uval
+	if sub_type in RECEIVABLES:
+		receivable = true
+	if sub_type in SENDABLES:
+		sendable = true
 
 
 func _decode_packet(packet: PackedByteArray) -> void:

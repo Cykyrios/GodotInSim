@@ -20,6 +20,9 @@ extends LFSPacket
 const SIZE_MULTIPLIER := 4
 const HEADER_SIZE := 4
 
+var receivable := false
+var sendable := false
+
 var type := InSim.Packet.ISP_NONE
 var req_i := 0
 

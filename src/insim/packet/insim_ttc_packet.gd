@@ -26,6 +26,7 @@ func _init(req := 0, subt := InSim.TTC.TTC_NONE, _ucid := 0, _b1 := 0, _b2 := 0,
 	b1 = _b1
 	b2 = _b2
 	b3 = _b3
+	sendable = true
 
 
 func _decode_packet(packet: PackedByteArray) -> void:
