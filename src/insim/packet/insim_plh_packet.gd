@@ -7,7 +7,7 @@ const PLH_MAX_PLAYERS := 40
 const PLH_DATA_SIZE := 4
 
 const PACKET_BASE_SIZE := 4
-const PACKET_MIN_SIZE := PACKET_BASE_SIZE + PLH_DATA_SIZE
+const PACKET_MIN_SIZE := PACKET_BASE_SIZE
 const PACKET_MAX_SIZE := PACKET_BASE_SIZE + PLH_DATA_SIZE * PLH_MAX_PLAYERS
 const PACKET_TYPE := InSim.Packet.ISP_PLH
 var nump := 0  ## number of players in this packet
@@ -47,8 +47,10 @@ func _decode_packet(packet: PackedByteArray) -> void:
 func _fill_buffer() -> void:
 	super()
 	update_req_i()
+	nump = mini(nump, hcaps.size())
 	add_byte(nump)
-	for i in hcaps.size():
+	resize_buffer(PACKET_BASE_SIZE + nump * PLH_DATA_SIZE)
+	for i in nump:
 		add_byte(hcaps[i].player_id)
 		add_byte(hcaps[i].flags)
 		add_byte(hcaps[i].h_mass)
