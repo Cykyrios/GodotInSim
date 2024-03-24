@@ -1,7 +1,9 @@
 class_name PlayerHandicap
-extends RefCounted
+extends InSimStruct
 
 ## Player handicaps
+
+const MASS_MULTIPLIER := 1.0
 
 const STRUCT_SIZE := 4
 
@@ -19,12 +21,14 @@ var h_tres := 0:  ## 0 to 50 - intake restriction
 	set(new_tres):
 		h_tres = clampi(new_tres, 0, H_TRES_MAX)
 
+var gis_mass := 0.0
+
 
 func _to_string() -> String:
 	return "(PLID %d, Flags %d, %dkg, %d%%)" % [player_id, flags, h_mass, h_tres]
 
 
-func get_buffer() -> PackedByteArray:
+func _get_buffer() -> PackedByteArray:
 	var buffer := PackedByteArray()
 	var _discard := buffer.resize(STRUCT_SIZE)
 	buffer.encode_u8(0, player_id)
@@ -34,10 +38,18 @@ func get_buffer() -> PackedByteArray:
 	return buffer
 
 
-func set_from_buffer(buffer: PackedByteArray) -> void:
+func _set_from_buffer(buffer: PackedByteArray) -> void:
 	if buffer.size() != STRUCT_SIZE:
 		push_error("Wrong buffer size, expected %d, got %d" % [STRUCT_SIZE, buffer.size()])
 	player_id = buffer.decode_u8(0)
 	flags = buffer.decode_u8(1)
 	h_mass = buffer.decode_u8(2)
 	h_tres = buffer.decode_u8(3)
+
+
+func _set_values_from_gis() -> void:
+	h_mass = gis_mass * MASS_MULTIPLIER
+
+
+func _update_gis_values() -> void:
+	gis_mass = h_mass / MASS_MULTIPLIER

@@ -1,16 +1,25 @@
 class_name CarContObj
-extends RefCounted
+extends InSimStruct
 
+
+const POSITION_MULTIPLIER := 65536.0
+const Z_MULTIPLIER := 256.0
+const SPEED_MULTIPLIER := 1.0
+const ANGLE_MULTIPLIER := 256 / 360.0
 
 const STRUCT_SIZE := 8
 
-var direction := 0
-var heading := 0
-var speed := 0
-var z := 0
+var direction := 0  ## car's motion if Speed > 0: 0 = world y direction, 128 = 180 deg
+var heading := 0  ## direction of forward axis: 0 = world y direction, 128 = 180 deg
+var speed := 0  ## m/s
+var x := 0  ## position (1 metre = 16)
+var y := 0  ## position (1 metre = 16)
+var z := 0  ## position (1 metre = 4)
 
-var x := 0
-var y := 0
+var gis_position := Vector3.ZERO
+var gis_heading := 0.0
+var gis_direction := 0.0
+var gis_speed := 0.0
 
 
 func _to_string() -> String:
@@ -18,7 +27,7 @@ func _to_string() -> String:
 			[direction, heading, speed, z, x, y]
 
 
-func get_buffer() -> PackedByteArray:
+func _get_buffer() -> PackedByteArray:
 	var buffer := PackedByteArray()
 	var _discard := buffer.resize(STRUCT_SIZE)
 	buffer.encode_u8(0, direction)
@@ -30,7 +39,7 @@ func get_buffer() -> PackedByteArray:
 	return buffer
 
 
-func set_from_buffer(buffer: PackedByteArray) -> void:
+func _set_from_buffer(buffer: PackedByteArray) -> void:
 	if buffer.size() != STRUCT_SIZE:
 		push_error("Wrong buffer size, expected %d, got %d" % [STRUCT_SIZE, buffer.size()])
 	direction = buffer.decode_u8(0)
@@ -39,3 +48,19 @@ func set_from_buffer(buffer: PackedByteArray) -> void:
 	z = buffer.decode_u8(3)
 	x = buffer.decode_s16(4)
 	y = buffer.decode_s16(6)
+
+
+func _set_values_from_gis() -> void:
+	x = gis_position.x * POSITION_MULTIPLIER
+	y = gis_position.y * POSITION_MULTIPLIER
+	z = gis_position.z * Z_MULTIPLIER
+	heading = gis_heading * ANGLE_MULTIPLIER
+	direction = gis_direction * ANGLE_MULTIPLIER
+	speed = gis_speed * SPEED_MULTIPLIER
+
+
+func _update_gis_values() -> void:
+	gis_position = Vector3(x / POSITION_MULTIPLIER, y / POSITION_MULTIPLIER, z / Z_MULTIPLIER)
+	gis_direction = direction / ANGLE_MULTIPLIER
+	gis_heading = heading / ANGLE_MULTIPLIER
+	gis_speed = speed / SPEED_MULTIPLIER

@@ -1,5 +1,5 @@
 class_name CompCar
-extends RefCounted
+extends InSimStruct
 
 
 const POSITION_MULTIPLIER := 65536.0
@@ -36,7 +36,7 @@ func _to_string() -> String:
 			+ ", Speed:%d, Direction:%d, Heading:%d, AngVel:%d" % [speed, direction, heading, ang_vel]
 
 
-func get_buffer() -> PackedByteArray:
+func _get_buffer() -> PackedByteArray:
 	var buffer := PackedByteArray()
 	var _discard := buffer.resize(STRUCT_SIZE)
 	buffer.encode_u16(0, node)
@@ -55,7 +55,7 @@ func get_buffer() -> PackedByteArray:
 	return buffer
 
 
-func set_from_buffer(buffer: PackedByteArray) -> void:
+func _set_from_buffer(buffer: PackedByteArray) -> void:
 	if buffer.size() != STRUCT_SIZE:
 		push_error("Wrong buffer size, expected %d, got %d" % [STRUCT_SIZE, buffer.size()])
 	node = buffer.decode_u16(0)
@@ -72,6 +72,18 @@ func set_from_buffer(buffer: PackedByteArray) -> void:
 	heading = buffer.decode_u16(24)
 	ang_vel = buffer.decode_s16(26)
 
+
+func _set_values_from_gis() -> void:
+	x = gis_position.x * POSITION_MULTIPLIER
+	y = gis_position.y * POSITION_MULTIPLIER
+	z = gis_position.z * POSITION_MULTIPLIER
+	speed = gis_speed * SPEED_MULTIPLIER
+	direction = rad_to_deg(gis_direction * ANGLE_MULTIPLIER)
+	heading = rad_to_deg(gis_heading * ANGLE_MULTIPLIER)
+	ang_vel = rad_to_deg(gis_angular_velocity * ANGVEL_MULTIPLIER)
+
+
+func _update_gis_value() -> void:
 	gis_position = Vector3(x, y, z) / POSITION_MULTIPLIER
 	gis_speed = speed / SPEED_MULTIPLIER
 	gis_direction = deg_to_rad(direction / ANGLE_MULTIPLIER)
