@@ -7,7 +7,7 @@ const MAL_MAX_MODS := 120
 const MAL_DATA_SIZE := 4
 
 const PACKET_MIN_SIZE := 8
-const PACKET_MAX_SIZE := 8 + MAL_MAX_MODS * MAL_DATA_SIZE
+const PACKET_MAX_SIZE := PACKET_MIN_SIZE + MAL_MAX_MODS * MAL_DATA_SIZE
 const PACKET_TYPE := InSim.Packet.ISP_MAL
 var num_mods := 0  ## number of mods in this packet
 
@@ -46,11 +46,13 @@ func _decode_packet(packet: PackedByteArray) -> void:
 func _fill_buffer() -> void:
 	super()
 	update_req_i()
+	num_mods = mini(num_mods, skin_id.size())
 	add_byte(num_mods)
 	add_byte(ucid)
 	add_byte(flags)
 	add_byte(sp2)
 	add_byte(sp3)
+	resize_buffer(PACKET_MIN_SIZE + num_mods * MAL_DATA_SIZE)
 	for i in num_mods:
 		add_unsigned(skin_id[i])
 
