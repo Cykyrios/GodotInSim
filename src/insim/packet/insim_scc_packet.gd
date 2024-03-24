@@ -1,7 +1,7 @@
 class_name InSimSCCPacket
 extends InSimPacket
 
-## Set Car Camera packet - simplified camera packe t(not Shift+U mode)
+## Set Car Camera packet - simplified camera packet (not Shift+U mode)
 
 const PACKET_SIZE := 8
 const PACKET_TYPE := InSim.Packet.ISP_SCC
