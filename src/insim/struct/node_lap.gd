@@ -1,5 +1,5 @@
 class_name NodeLap
-extends RefCounted
+extends InSimStruct
 
 
 const STRUCT_SIZE := 6
@@ -14,7 +14,7 @@ func _to_string() -> String:
 	return "Node:%d, Lap:%d, PLID:%d, Pos:%d" % [node, lap, player_id, position]
 
 
-func get_buffer() -> PackedByteArray:
+func _get_buffer() -> PackedByteArray:
 	var buffer := PackedByteArray()
 	var _discard := buffer.resize(STRUCT_SIZE)
 	buffer.encode_u16(0, node)
@@ -24,7 +24,7 @@ func get_buffer() -> PackedByteArray:
 	return buffer
 
 
-func set_from_buffer(buffer: PackedByteArray) -> void:
+func _set_from_buffer(buffer: PackedByteArray) -> void:
 	if buffer.size() != STRUCT_SIZE:
 		push_error("Wrong buffer size, expected %d, got %d" % [STRUCT_SIZE, buffer.size()])
 	node = buffer.decode_u16(0)

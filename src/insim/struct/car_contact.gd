@@ -1,6 +1,12 @@
 class_name CarContact
-extends RefCounted
+extends InSimStruct
 
+
+const POSITION_MULTIPLIER := 16.0
+const ACCELERATION_MULTIPLIER := 1.0
+const ANGLE_MULTIPLIER := 256 / 360.0
+const SPEED_MULTIPLIER := 1.0
+const STEER_MULTIPLIER := -PI / 180.0
 
 const STRUCT_SIZE := 16
 
@@ -22,6 +28,13 @@ var accel_right := 0  ## m/s^2 lateral acceleration (right positive)
 var x := 0  ## position (1 metre = 16)
 var y := 0  ## position (1 metre = 16)
 
+var gis_position := Vector2.ZERO
+var gis_speed := 0.0
+var gis_acceleration := Vector2.ZERO
+var gis_direction := 0.0
+var gis_heading := 0.0
+var gis_steer := 0.0
+
 
 func _to_string() -> String:
 	return "PLID:%d, Info:%d, Sp2:%d, Steer:%d, ThrBrk:%d, CluHan:%d, GearSp:%d, Speed:%d" % \
@@ -30,7 +43,7 @@ func _to_string() -> String:
 			[direction, heading, accel_forward, accel_right, x, y]
 
 
-func get_buffer() -> PackedByteArray:
+func _get_buffer() -> PackedByteArray:
 	var buffer := PackedByteArray()
 	var _discard := buffer.resize(STRUCT_SIZE)
 	buffer.encode_u8(0, player_id)
@@ -50,7 +63,7 @@ func get_buffer() -> PackedByteArray:
 	return buffer
 
 
-func set_from_buffer(buffer: PackedByteArray) -> void:
+func _set_from_buffer(buffer: PackedByteArray) -> void:
 	if buffer.size() != STRUCT_SIZE:
 		push_error("Wrong buffer size, expected %d, got %d" % [STRUCT_SIZE, buffer.size()])
 	player_id = buffer.decode_u8(0)
@@ -67,3 +80,23 @@ func set_from_buffer(buffer: PackedByteArray) -> void:
 	accel_right = buffer.decode_u8(11)
 	x = buffer.decode_s16(12)
 	y = buffer.decode_s16(14)
+
+
+func _set_values_from_gis() -> void:
+	x = gis_position.x * POSITION_MULTIPLIER
+	y = gis_position.y * POSITION_MULTIPLIER
+	heading = gis_heading * ANGLE_MULTIPLIER
+	direction = gis_direction * ANGLE_MULTIPLIER
+	speed = gis_speed * SPEED_MULTIPLIER
+	accel_forward = gis_acceleration.y * ACCELERATION_MULTIPLIER
+	accel_right = gis_acceleration.x * ACCELERATION_MULTIPLIER
+	steer = gis_steer * STEER_MULTIPLIER
+
+
+func _update_gis_values() -> void:
+	gis_position = Vector2(x, y) / POSITION_MULTIPLIER
+	gis_heading = heading / ANGLE_MULTIPLIER
+	gis_direction = direction / ANGLE_MULTIPLIER
+	gis_speed = speed / SPEED_MULTIPLIER
+	gis_acceleration = Vector2(accel_right, accel_forward) / SPEED_MULTIPLIER
+	gis_steer = steer / STEER_MULTIPLIER
