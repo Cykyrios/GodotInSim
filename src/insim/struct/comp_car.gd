@@ -83,7 +83,7 @@ func _set_values_from_gis() -> void:
 	ang_vel = rad_to_deg(gis_angular_velocity * ANGVEL_MULTIPLIER)
 
 
-func _update_gis_value() -> void:
+func _update_gis_values() -> void:
 	gis_position = Vector3(x, y, z) / POSITION_MULTIPLIER
 	gis_speed = speed / SPEED_MULTIPLIER
 	gis_direction = deg_to_rad(direction / ANGLE_MULTIPLIER)
