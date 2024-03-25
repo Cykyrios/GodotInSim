@@ -54,110 +54,14 @@ static func create_packet_from_buffer(packet_buffer: PackedByteArray) -> InSimPa
 	var packet_type := InSimPacket.decode_packet_type(packet_buffer)
 	var packet := InSimPacket.new()
 	match packet_type:
-		InSim.Packet.ISP_NONE:
-			packet = InSimPacket.new()
-		InSim.Packet.ISP_ISI:
-			packet = InSimISIPacket.new()
-		InSim.Packet.ISP_VER:
-			packet = InSimVERPacket.new()
-		InSim.Packet.ISP_TINY:
-			packet = InSimTinyPacket.new()
-		InSim.Packet.ISP_SMALL:
-			packet = InSimSmallPacket.new()
-		InSim.Packet.ISP_STA:
-			packet = InSimSTAPacket.new()
-		InSim.Packet.ISP_SFP:
-			packet = InSimSFPPacket.new()
-		InSim.Packet.ISP_MOD:
-			packet = InSimMODPacket.new()
-		InSim.Packet.ISP_MSO:
-			packet = InSimMSOPacket.new()
-		InSim.Packet.ISP_III:
-			packet = InSimIIIPacket.new()
 		InSim.Packet.ISP_ACR:
 			packet = InSimACRPacket.new()
-		InSim.Packet.ISP_TTC:
-			packet = InSimTTCPacket.new()
-		InSim.Packet.ISP_ISM:
-			packet = InSimISMPacket.new()
-		InSim.Packet.ISP_PLH:
-			packet = InSimPLHPacket.new()
-		InSim.Packet.ISP_VTN:
-			packet = InSimVTNPacket.new()
-		InSim.Packet.ISP_NCN:
-			packet = InSimNCNPacket.new()
-		InSim.Packet.ISP_NCI:
-			packet = InSimNCIPacket.new()
-		InSim.Packet.ISP_RST:
-			packet = InSimRSTPacket.new()
-		InSim.Packet.ISP_SLC:
-			packet = InSimSLCPacket.new()
-		InSim.Packet.ISP_MAL:
-			packet = InSimMALPacket.new()
-		InSim.Packet.ISP_CIM:
-			packet = InSimCIMPacket.new()
-		InSim.Packet.ISP_CNL:
-			packet = InSimCNLPacket.new()
-		InSim.Packet.ISP_CPR:
-			packet = InSimCPRPacket.new()
-		InSim.Packet.ISP_NPL:
-			packet = InSimNPLPacket.new()
-		InSim.Packet.ISP_PLP:
-			packet = InSimPLPPacket.new()
-		InSim.Packet.ISP_PLL:
-			packet = InSimPLLPacket.new()
-		InSim.Packet.ISP_CRS:
-			packet = InSimCRSPacket.new()
-		InSim.Packet.ISP_LAP:
-			packet = InSimLAPPacket.new()
-		InSim.Packet.ISP_SPX:
-			packet = InSimSPXPacket.new()
-		InSim.Packet.ISP_PIT:
-			packet = InSimPITPacket.new()
-		InSim.Packet.ISP_PSF:
-			packet = InSimPSFPacket.new()
-		InSim.Packet.ISP_PLA:
-			packet = InSimPLAPacket.new()
-		InSim.Packet.ISP_CCH:
-			packet = InSimCCHPacket.new()
-		InSim.Packet.ISP_PEN:
-			packet = InSimPENPacket.new()
-		InSim.Packet.ISP_TOC:
-			packet = InSimTOCPacket.new()
-		InSim.Packet.ISP_FLG:
-			packet = InSimFLGPacket.new()
-		InSim.Packet.ISP_PFL:
-			packet = InSimPFLPacket.new()
-		InSim.Packet.ISP_FIN:
-			packet = InSimFINPacket.new()
-		InSim.Packet.ISP_RES:
-			packet = InSimRESPacket.new()
-		InSim.Packet.ISP_REO:
-			packet = InSimREOPacket.new()
 		InSim.Packet.ISP_AXI:
 			packet = InSimAXIPacket.new()
-		InSim.Packet.ISP_AXO:
-			packet = InSimAXOPacket.new()
-		InSim.Packet.ISP_CON:
-			packet = InSimCONPacket.new()
-		InSim.Packet.ISP_CSC:
-			packet = InSimCSCPacket.new()
-		InSim.Packet.ISP_HLV:
-			packet = InSimHLVPacket.new()
-		InSim.Packet.ISP_JRR:
-			packet = InSimJRRPacket.new()
-		InSim.Packet.ISP_MCI:
-			packet = InSimMCIPacket.new()
-		InSim.Packet.ISP_NLP:
-			packet = InSimNLPPacket.new()
-		InSim.Packet.ISP_OBH:
-			packet = InSimOBHPacket.new()
-		InSim.Packet.ISP_OCO:
-			packet = InSimOCOPacket.new()
-		InSim.Packet.ISP_UCO:
-			packet = InSimUCOPacket.new()
 		InSim.Packet.ISP_AXM:
 			packet = InSimAXMPacket.new()
+		InSim.Packet.ISP_AXO:
+			packet = InSimAXOPacket.new()
 		InSim.Packet.ISP_BFN:
 			packet = InSimBFNPacket.new()
 		InSim.Packet.ISP_BTC:
@@ -166,14 +70,110 @@ static func create_packet_from_buffer(packet_buffer: PackedByteArray) -> InSimPa
 			packet = InSimBTNPacket.new()
 		InSim.Packet.ISP_BTT:
 			packet = InSimBTTPacket.new()
+		InSim.Packet.ISP_CCH:
+			packet = InSimCCHPacket.new()
+		InSim.Packet.ISP_CIM:
+			packet = InSimCIMPacket.new()
+		InSim.Packet.ISP_CNL:
+			packet = InSimCNLPacket.new()
+		InSim.Packet.ISP_CON:
+			packet = InSimCONPacket.new()
 		InSim.Packet.ISP_CPP:
 			packet = InSimCPPPacket.new()
+		InSim.Packet.ISP_CPR:
+			packet = InSimCPRPacket.new()
+		InSim.Packet.ISP_CRS:
+			packet = InSimCRSPacket.new()
+		InSim.Packet.ISP_CSC:
+			packet = InSimCSCPacket.new()
+		InSim.Packet.ISP_FIN:
+			packet = InSimFINPacket.new()
+		InSim.Packet.ISP_FLG:
+			packet = InSimFLGPacket.new()
+		InSim.Packet.ISP_HLV:
+			packet = InSimHLVPacket.new()
+		InSim.Packet.ISP_III:
+			packet = InSimIIIPacket.new()
+		InSim.Packet.ISP_ISI:
+			packet = InSimISIPacket.new()
+		InSim.Packet.ISP_ISM:
+			packet = InSimISMPacket.new()
+		InSim.Packet.ISP_JRR:
+			packet = InSimJRRPacket.new()
+		InSim.Packet.ISP_LAP:
+			packet = InSimLAPPacket.new()
+		InSim.Packet.ISP_MAL:
+			packet = InSimMALPacket.new()
+		InSim.Packet.ISP_MCI:
+			packet = InSimMCIPacket.new()
+		InSim.Packet.ISP_MOD:
+			packet = InSimMODPacket.new()
+		InSim.Packet.ISP_MSO:
+			packet = InSimMSOPacket.new()
+		InSim.Packet.ISP_NCI:
+			packet = InSimNCIPacket.new()
+		InSim.Packet.ISP_NCN:
+			packet = InSimNCNPacket.new()
+		InSim.Packet.ISP_NLP:
+			packet = InSimNLPPacket.new()
+		InSim.Packet.ISP_NONE:
+			packet = InSimPacket.new()
+		InSim.Packet.ISP_NPL:
+			packet = InSimNPLPacket.new()
+		InSim.Packet.ISP_OBH:
+			packet = InSimOBHPacket.new()
+		InSim.Packet.ISP_OCO:
+			packet = InSimOCOPacket.new()
+		InSim.Packet.ISP_PEN:
+			packet = InSimPENPacket.new()
+		InSim.Packet.ISP_PFL:
+			packet = InSimPFLPacket.new()
+		InSim.Packet.ISP_PIT:
+			packet = InSimPITPacket.new()
+		InSim.Packet.ISP_PLA:
+			packet = InSimPLAPacket.new()
+		InSim.Packet.ISP_PLH:
+			packet = InSimPLHPacket.new()
+		InSim.Packet.ISP_PLL:
+			packet = InSimPLLPacket.new()
+		InSim.Packet.ISP_PLP:
+			packet = InSimPLPPacket.new()
+		InSim.Packet.ISP_PSF:
+			packet = InSimPSFPacket.new()
+		InSim.Packet.ISP_REO:
+			packet = InSimREOPacket.new()
+		InSim.Packet.ISP_RES:
+			packet = InSimRESPacket.new()
 		InSim.Packet.ISP_RIP:
 			packet = InSimRIPPacket.new()
+		InSim.Packet.ISP_RST:
+			packet = InSimRSTPacket.new()
 		InSim.Packet.ISP_SCC:
 			packet = InSimSCCPacket.new()
+		InSim.Packet.ISP_SFP:
+			packet = InSimSFPPacket.new()
+		InSim.Packet.ISP_SLC:
+			packet = InSimSLCPacket.new()
+		InSim.Packet.ISP_SMALL:
+			packet = InSimSmallPacket.new()
+		InSim.Packet.ISP_SPX:
+			packet = InSimSPXPacket.new()
 		InSim.Packet.ISP_SSH:
 			packet = InSimSSHPacket.new()
+		InSim.Packet.ISP_STA:
+			packet = InSimSTAPacket.new()
+		InSim.Packet.ISP_TINY:
+			packet = InSimTinyPacket.new()
+		InSim.Packet.ISP_TTC:
+			packet = InSimTTCPacket.new()
+		InSim.Packet.ISP_TOC:
+			packet = InSimTOCPacket.new()
+		InSim.Packet.ISP_UCO:
+			packet = InSimUCOPacket.new()
+		InSim.Packet.ISP_VER:
+			packet = InSimVERPacket.new()
+		InSim.Packet.ISP_VTN:
+			packet = InSimVTNPacket.new()
 		_:
 			push_error("%s packets are not supported at this time." % [InSim.Packet.keys()[packet_type]])
 			return packet

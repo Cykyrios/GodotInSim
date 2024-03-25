@@ -25,6 +25,7 @@ extends Node
 signal timeout
 
 signal packet_received(packet: InSimPacket)
+signal packet_sent(packet: InSimPacket)
 signal isp_ver_received(packet: InSimVERPacket)
 signal isp_tiny_received(packet: InSimTinyPacket)
 signal isp_small_received(packet: InSimSmallPacket)
@@ -85,7 +86,6 @@ signal tiny_mpe_received(packet: InSimTinyPacket)
 signal tiny_ren_received(packet: InSimTinyPacket)
 signal tiny_clr_received(packet: InSimTinyPacket)
 signal tiny_axc_received(packet: InSimTinyPacket)
-signal packet_sent(packet: InSimPacket)
 
 enum Packet {
 	ISP_NONE,  ## 0: not used
