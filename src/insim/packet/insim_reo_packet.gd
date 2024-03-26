@@ -15,8 +15,8 @@ var player_ids: Array[int] = []  ## all player ids in new order
 func _init() -> void:
 	size = PACKET_SIZE
 	type = PACKET_TYPE
-	var _discard := player_ids.resize(size)
-	for i in size:
+	var _discard := player_ids.resize(MAX_PLAYERS)
+	for i in MAX_PLAYERS:
 		player_ids[i] = 0
 	receivable = true
 	sendable = true
