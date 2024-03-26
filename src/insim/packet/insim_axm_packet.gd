@@ -54,11 +54,13 @@ func _decode_packet(packet: PackedByteArray) -> void:
 
 func _fill_buffer() -> void:
 	super()
+	num_objects = mini(num_objects, info.size())
 	add_byte(num_objects)
 	add_byte(ucid)
 	add_byte(pmo_action)
 	add_byte(pmo_flags)
 	add_byte(sp3)
+	resize_buffer(PACKET_BASE_SIZE + num_objects * ObjectInfo.STRUCT_SIZE)
 	for i in num_objects:
 		var info_buffer := info[i].get_buffer()
 		for byte in info_buffer:
