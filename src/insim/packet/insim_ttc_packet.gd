@@ -46,10 +46,10 @@ func _fill_buffer() -> void:
 	super()
 	update_req_i()
 	add_byte(sub_type)
-	add_unsigned(ucid)
-	add_unsigned(b1)
-	add_unsigned(b2)
-	add_unsigned(b3)
+	add_byte(ucid)
+	add_byte(b1)
+	add_byte(b2)
+	add_byte(b3)
 
 
 func _get_data_dictionary() -> Dictionary:
