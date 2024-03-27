@@ -133,6 +133,22 @@ static func lfs_colors_to_bbcode(text: String) -> String:
 	return colored_text
 
 
+static func lfs_string_to_unicode(text: String) -> String:
+	var buffer := text.to_utf16_buffer()
+	buffer.append(0)
+	var buffer_size := buffer.size()
+	var i := 0
+	while i < buffer_size - (0 if (buffer_size % 2 == 0) else 1):
+		var value_1 := buffer[i]
+		var value_2 := buffer[i + 1]
+		if value_1 != 0 and value_2 != 0:
+			buffer[i] = value_2
+			buffer[i + 1] = value_1
+		i += 2
+	buffer = _remove_inner_zeros(buffer)
+	return lfs_bytes_to_unicode(buffer)
+
+
 ## Removes all colors from [param text], including LFS colors and BBCode tags.
 static func strip_colors(text: String) -> String:
 	var result := text
@@ -154,7 +170,7 @@ static func strip_colors(text: String) -> String:
 ## true, the array can be converted back to text as UTF16.
 static func unicode_to_lfs_bytes(text: String, keep_utf16 := false) -> PackedByteArray:
 	var page := "L"
-	var message := _translate_specials(text)
+	var message := _translate_specials(_escape_circumflex(text))
 	var buffer := PackedByteArray()
 	for i in message.length():
 		if message.unicode_at(i) < 128:
@@ -176,15 +192,7 @@ static func unicode_to_lfs_bytes(text: String, keep_utf16 := false) -> PackedByt
 			if not code_page_found:
 				buffer.append_array(_translate_specials(FALLBACK_CHARACTER).to_utf16_buffer())
 	if not keep_utf16:
-		var last_data_index := -1
-		for i in buffer.size():
-			if buffer[-1 - i] != 0:
-				last_data_index = i
-		var idx := 0
-		while idx < buffer.size():
-			if buffer[-1 - idx] == 0:
-				buffer.remove_at(buffer.size() - 1 - idx)
-			idx += 1
+		buffer = _remove_inner_zeros(buffer)
 	return buffer
 
 
@@ -192,6 +200,11 @@ static func unicode_to_lfs_bytes(text: String, keep_utf16 := false) -> PackedByt
 ## format by removing intermediate zeros.
 static func unicode_to_lfs_string(text: String) -> String:
 	return unicode_to_lfs_bytes(text, true).get_string_from_utf16()
+
+
+static func _escape_circumflex(text: String) -> String:
+	var regex := RegEx.create_from_string(r"\^(?!\d)")
+	return regex.sub(text, "^^", true)
 
 
 static func _get_bytes_from_string(code: int, code_page: String, keep_utf16: bool) -> PackedByteArray:
@@ -258,8 +271,27 @@ static func _is_multibyte(code_page: String, char: int) -> bool:
 	return false
 
 
+static func _remove_inner_zeros(buffer: PackedByteArray) -> PackedByteArray:
+	var last_data_index := -1
+	for i in buffer.size():
+		if buffer[-1 - i] != 0:
+			last_data_index = i
+	var cleaned_buffer := buffer.duplicate()
+	var idx := 0
+	while idx < cleaned_buffer.size():
+		if cleaned_buffer[-1 - idx] == 0:
+			cleaned_buffer.remove_at(cleaned_buffer.size() - 1 - idx)
+		idx += 1
+	return cleaned_buffer
+
+
 static func _translate_specials(text: String) -> String:
 	var message := text
 	for i in SPECIAL_CHARACTERS.size():
 		message = message.replace(SPECIAL_CHARACTERS.values()[i], SPECIAL_CHARACTERS.keys()[i])
 	return message
+
+
+static func _unescape_circumflex(text: String) -> String:
+	var result := text
+	return result
