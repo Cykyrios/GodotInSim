@@ -105,7 +105,7 @@ static func lfs_bytes_to_unicode(buffer: PackedByteArray) -> String:
 		else:
 			block_end += 1
 	for i in SPECIAL_CHARACTERS.size():
-		var regexp := RegEx.create_from_string("\\%s" % [SPECIAL_CHARACTERS.keys()[i]])
+		var regexp := RegEx.create_from_string(r"(?<!\^)\%s" % [SPECIAL_CHARACTERS.keys()[i]])
 		message = regexp.sub(message, SPECIAL_CHARACTERS.values()[i], true)
 	message = message.replace("^^", "^")
 	return message
