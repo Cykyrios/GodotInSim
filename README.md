@@ -26,7 +26,8 @@ You first have to initialize InSim by sending an IS_ISI packet, which is done by
 ### Sending packets
 
 You can create new packets using the corresponding classes, named `InSimXXXPacket` where `XXX` is a packet identifier, e.g. `VER` for a version packet. Each class contains the variables from the corresponding `IS_XXX` struct.  
-To send a packet, call `send_packet(packet)` on your `InSim` instance.
+To send a packet, call `send_packet(packet)` on your `InSim` instance.  
+General-purpose packets (ISP_TINY, ISP_SMALL and ISP_TTC) can be sent initialized with their values directly, e.g. `send_packet(InSimTinyPacket.new(1, InSim.Tiny.TINY_GTH))`.
 
 ### Receiving packets
 
@@ -53,6 +54,15 @@ Direct OutGauge communication can be enabled without InSim by setting the approp
 ## OutSim
 
 Direct OutSim communication can be enabled without InSim by setting the appropriate settings in your `cfg.txt` file. Initialize the OutSim socket with `initialize(outsim_options)` on your `OutSim` instance to receive packets. The `outsim_options` must be the same as the OutSimOpts in `cfg.txt`.
+
+## Text handling
+
+Text is automatically converted from UTF8 to LFS's format and vice versa. You can also use functions from the `LFSText` class to manually convert text, strip colors, as well as convert colors from BBCode to LFS color codes and vice versa for display in Godot's `RichTextLabel` or web pages. The class includes an array of colors and an enum with the corresponding indices.
+
+## Miscellaneous
+
+The `GISUtils` class includes general-purpose utility functions. There is currently a single set of unit conversion functions, if you want to compute some values directly from packets.  
+All packets containing physical values have additional, corresponding variables starting with the `gis_` prefix (e.g. `gis_heading` or `gis_position` as a `Vector3(x, y, z)`). All `gis_*` variables use standard units: m, s, kg, N, W. Speeds use m/s, angles use radians. When sending such packets, you should prefer filling in the `gis_*` variables, as they use consistent units. They will be rounded to the packet's encoding precision. By default, all `gis_*` variables are used to set the packet's buffer; you can disable this behavior by setting `use_gis_values = false` after creating any packet.
 
 ## Example
 
