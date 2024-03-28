@@ -12,6 +12,10 @@ var buffer := PackedByteArray()
 var size := 0
 var data_offset := 0
 
+## If true, all variables starting with [code]gis_*[/code] will be converted to their LFS format
+## counterpart when filling the packet's buffer.
+var use_gis_values := true
+
 
 func _init() -> void:
 	pass
@@ -60,7 +64,8 @@ func decode_packet(packet_buffer: PackedByteArray) -> void:
 
 
 func fill_buffer() -> void:
-	_set_values_from_gis()
+	if use_gis_values:
+		_set_values_from_gis()
 	_fill_buffer()
 
 
