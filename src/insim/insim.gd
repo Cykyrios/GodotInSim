@@ -155,6 +155,12 @@ enum Packet {
 	ISP_CIM,  ## 64 - info: connection's interface mode
 	ISP_MAL,  ## 65 - both ways: set mods allowed
 	ISP_PLH,  ## 66 - both ways: set player handicaps
+	IRP_ARQ = 250,  ## Send : request if we are host admin (after connecting to a host)
+	IRP_ARP,  ## Receive : replies if you are admin (after connecting to a host)
+	IRP_HLR,  ## Send : To request a hostlist
+	IRP_HOS,  ## Receive : Hostlist info
+	IRP_SEL,  ## Send : To select a host
+	IRP_ERR,  ## Receive : An error number
 }
 enum Tiny {
 	TINY_NONE,  ## 0 - keep alive: see "maintaining the connection"
@@ -205,6 +211,23 @@ enum TTC {
 	TTC_SEL,  ## 1 - info request: send IS_AXM for a layout editor selection
 	TTC_SEL_START,  ## 2 - info request: send IS_AXM every time the selection changes
 	TTC_SEL_STOP,  ## 3 - instruction: switch off IS_AXM requested by TTC_SEL_START
+}
+enum RelayError {
+	IR_ERR_PACKET = 1,  ## Invalid packet sent by client (wrong structure / length)
+	IR_ERR_PACKET2,  ## Invalid packet sent by client (packet was not allowed to be forwarded to host)
+	IR_ERR_HOSTNAME,  ## Wrong hostname given by client
+	IR_ERR_ADMIN,  ## Wrong admin pass given by client
+	IR_ERR_SPEC,  ## Wrong spec pass given by client
+	IR_ERR_NOSPEC,  ## Spectator pass required, but none given
+}
+enum RelayFlag {
+	HOS_SPECPASS = 1,  ## Host requires a spectator password
+	HOS_LICENSED = 2,  ## Bit is set if host is licensed
+	HOS_S1 = 4,  ## Bit is set if host is S1
+	HOS_S2 = 8,  ## Bit is set if host is S2
+	HOS_CRUISE = 32,  ## Bit is set if host is Cruise
+	HOS_FIRST = 64,  ## Indicates the first host in the list
+	HOS_LAST = 128,  ## Indicates the last host in the list
 }
 
 enum AutoCrossObject {
