@@ -40,13 +40,12 @@ func _get_data_dictionary() -> Dictionary:
 
 
 func _get_dictionary() -> Dictionary:
-	var data := _get_data_dictionary()
 	var dict := {
 		"Size": size,
 		"Type": type,
 		"ReqI": req_i,
 	}
-	dict.merge(data)
+	dict.merge(_get_data_dictionary())
 	return dict
 
 
