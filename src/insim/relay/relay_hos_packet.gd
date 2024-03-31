@@ -30,11 +30,13 @@ func _decode_packet(packet: PackedByteArray) -> void:
 				min_size, max_size, SIZE_MULTIPLIER, packet_size])
 		return
 	super(packet)
+	host_info.clear()
 	num_hosts = read_byte()
 	for i in num_hosts:
 		var host := HostInfo.new()
 		host.set_from_buffer(packet.slice(data_offset, data_offset + HostInfo.STRUCT_SIZE))
 		data_offset += HostInfo.STRUCT_SIZE
+		host_info.append(host)
 
 
 func _get_data_dictionary() -> Dictionary:
