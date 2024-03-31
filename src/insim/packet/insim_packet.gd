@@ -174,6 +174,18 @@ static func create_packet_from_buffer(packet_buffer: PackedByteArray) -> InSimPa
 			packet = InSimVERPacket.new()
 		InSim.Packet.ISP_VTN:
 			packet = InSimVTNPacket.new()
+		InSim.Packet.IRP_ARP:
+			packet = RelayARPPacket.new()
+		InSim.Packet.IRP_ARQ:
+			packet = RelayARQPacket.new()
+		InSim.Packet.IRP_ERR:
+			packet = RelayERRPacket.new()
+		InSim.Packet.IRP_HLR:
+			packet = RelayHLRPacket.new()
+		InSim.Packet.IRP_HOS:
+			packet = RelayHOSPacket.new()
+		InSim.Packet.IRP_SEL:
+			packet = RelaySELPacket.new()
 		_:
 			push_error("%s packets are not supported at this time." % [InSim.Packet.keys()[packet_type]])
 			return packet
