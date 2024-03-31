@@ -650,17 +650,27 @@ const PACKET_READ_INTERVAL := 0.01
 const TIMEOUT_DELAY := 70
 
 var address := "127.0.0.1"
+var port := 29_999
 var insim_port := 29_999
 
 var socket: PacketPeerUDP = null
+var stream: StreamPeerTCP = null
+var is_udp := false
 var packet_timer := 0.0
 
 var insim_connected := false
 var connection_timer := Timer.new()
 
 
+func _init(_address := "127.0.0.1", _port := 29_999, use_udp := false) -> void:
+	address = _address
+	port = _port
+	is_udp = use_udp
+
+
 func _ready() -> void:
 	socket = PacketPeerUDP.new()
+	stream = StreamPeerTCP.new()
 
 	var _discard := packet_received.connect(_on_packet_received)
 	_discard = isp_ver_received.connect(read_version_packet)
@@ -684,18 +694,35 @@ func _process(delta: float) -> void:
 
 
 func close() -> void:
-	if not socket:
+	if is_udp and not socket or not is_udp and not stream:
 		return
 	send_packet(InSimTinyPacket.new(0, Tiny.TINY_CLOSE))
 	print("Closing InSim connection.")
-	socket.close()
+	if is_udp:
+		socket.close()
+	else:
+		stream.disconnect_from_host()
 	insim_connected = false
 
 
-func initialize(initialization_data: InSimInitializationData) -> void:
-	var error := socket.connect_to_host(address, insim_port)
-	if error != OK:
-		push_error(error)
+	if is_udp:
+		var error := socket.connect_to_host(address, port)
+		if error != OK:
+			push_error(error)
+	else:
+		var error := stream.connect_to_host(address, port)
+		if error != OK:
+			push_error(error)
+		stream.poll()
+		var status := stream.get_status()
+		print("TCP connecting...")
+		while status == stream.STATUS_CONNECTING:
+			await get_tree().create_timer(0.5).timeout
+			status = stream.get_status()
+		print("TCP status: %d%s" % [status, (" - %s:%d" % [stream.get_connected_host(),
+				stream.get_connected_port()]) if status == stream.STATUS_CONNECTED else ""])
+		if status != stream.STATUS_CONNECTED:
+			return
 	send_packet(create_initialization_packet(initialization_data))
 
 
@@ -713,16 +740,36 @@ func create_initialization_packet(initialization_data: InSimInitializationData) 
 func read_incoming_packets() -> void:
 	var packet_buffer := PackedByteArray()
 	var packet_type := Packet.ISP_NONE
-	while socket.get_available_packet_count() > 0:
-		packet_buffer = socket.get_packet()
-		var err := socket.get_packet_error()
-		if err != OK:
-			push_error("Error reading incoming packet: %s" % [err])
-			continue
-		packet_type = packet_buffer.decode_u8(1) as Packet
+	if is_udp:
+		while socket.get_available_packet_count() > 0:
+			packet_buffer = socket.get_packet()
+			var err := socket.get_packet_error()
+			if err != OK:
+				push_error("Error reading incoming packet: %s" % [err])
+				continue
+			packet_type = packet_buffer.decode_u8(1) as Packet
+			if packet_type != Packet.ISP_NONE:
+				var insim_packet := InSimPacket.create_packet_from_buffer(packet_buffer)
+				packet_received.emit(insim_packet)
+	else:
+		stream.poll()
+		if (
+			stream.get_status() != stream.STATUS_CONNECTED
+			or stream.get_available_bytes() < InSimPacket.HEADER_SIZE
+		):
+			return
+	while stream.get_available_bytes() > InSimPacket.HEADER_SIZE:
+		var stream_data := stream.get_data(InSimPacket.HEADER_SIZE)
+		var error := stream_data[0] as Error
+		var packet_header := stream_data[1] as PackedByteArray
+		var packet_size := packet_header[0] * InSimPacket.SIZE_MULTIPLIER
+		packet_type = packet_header[1] as Packet
+		packet_buffer = packet_header.duplicate()
+		packet_buffer.append_array(stream.get_data(packet_size - InSimPacket.HEADER_SIZE)[1])
 		if packet_type != Packet.ISP_NONE:
 			var insim_packet := InSimPacket.create_packet_from_buffer(packet_buffer)
 			packet_received.emit(insim_packet)
+		stream.poll()
 
 
 func read_version_packet(packet: InSimVERPacket) -> void:
@@ -805,13 +852,13 @@ func send_nlp_request() -> void:
 
 
 func send_outgauge_request(interval := 1) -> void:
-	if not socket:
+	if is_udp and not socket or not is_udp and not stream:
 		return
 	send_packet(InSimSmallPacket.new(0, Small.SMALL_SSG, interval))
 
 
 func send_outsim_request(interval := 1) -> void:
-	if not socket:
+	if is_udp and not socket or not is_udp and not stream:
 		return
 	send_packet(InSimSmallPacket.new(0, Small.SMALL_SSP, interval))
 
@@ -821,7 +868,11 @@ func send_packet(packet: InSimPacket) -> void:
 		push_warning("InSim is not initialized, packet not sent.")
 		return
 	packet.fill_buffer()
-	var _discard := socket.put_packet(packet.buffer)
+	if is_udp:
+		var _discard := socket.put_packet(packet.buffer)
+	else:
+		var _discard := stream.put_data(packet.buffer)
+		pass
 	packet_sent.emit(packet)
 
 
