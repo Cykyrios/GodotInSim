@@ -732,7 +732,8 @@ func initialize(initialization_data: InSimInitializationData, insim_relay := fal
 				stream.get_connected_port()]) if status == stream.STATUS_CONNECTED else ""])
 		if status != stream.STATUS_CONNECTED:
 			return
-	send_packet(create_initialization_packet(initialization_data))
+	if not insim_relay:
+		send_packet(create_initialization_packet(initialization_data))
 
 
 func create_initialization_packet(initialization_data: InSimInitializationData) -> InSimISIPacket:
@@ -767,11 +768,16 @@ func read_incoming_packets() -> void:
 			or stream.get_available_bytes() < InSimPacket.HEADER_SIZE
 		):
 			return
+	var packets_available := true
 	while stream.get_available_bytes() > InSimPacket.HEADER_SIZE:
 		var stream_data := stream.get_data(InSimPacket.HEADER_SIZE)
 		var error := stream_data[0] as Error
 		var packet_header := stream_data[1] as PackedByteArray
-		var packet_size := packet_header[0] * InSimPacket.SIZE_MULTIPLIER
+		var packet_size := packet_header[0]
+		if is_relay:
+			packet_header[0] = packet_size / InSimPacket.SIZE_MULTIPLIER
+		else:
+			packet_size *= InSimPacket.SIZE_MULTIPLIER
 		packet_type = packet_header[1] as Packet
 		packet_buffer = packet_header.duplicate()
 		packet_buffer.append_array(stream.get_data(packet_size - InSimPacket.HEADER_SIZE)[1])
@@ -779,6 +785,7 @@ func read_incoming_packets() -> void:
 			var insim_packet := InSimPacket.create_packet_from_buffer(packet_buffer)
 			packet_received.emit(insim_packet)
 		stream.poll()
+		packets_available = true if stream.get_available_bytes() > InSimPacket.HEADER_SIZE else false
 
 
 func read_version_packet(packet: InSimVERPacket) -> void:
@@ -873,10 +880,16 @@ func send_outsim_request(interval := 1) -> void:
 
 
 func send_packet(packet: InSimPacket) -> void:
-	if packet.type != Packet.ISP_ISI and not insim_connected:
-		push_warning("InSim is not initialized, packet not sent.")
-		return
+	if (
+		not insim_connected
+		and not is_relay
+		and packet.type != Packet.ISP_ISI
+		and packet.type < Packet.IRP_ARQ
+	):
+		push_warning("Warning: Sending packet but InSim is not initialized.")
 	packet.fill_buffer()
+	if is_relay:
+		packet.buffer[0] = packet.buffer[0] * InSimPacket.SIZE_MULTIPLIER
 	if is_udp:
 		var _discard := socket.put_packet(packet.buffer)
 	else:
