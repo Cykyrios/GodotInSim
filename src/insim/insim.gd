@@ -651,7 +651,7 @@ const TIMEOUT_DELAY := 70
 
 var address := "127.0.0.1"
 var port := 29_999
-var insim_port := 29_999
+var is_relay := false
 
 var socket: PacketPeerUDP = null
 var stream: StreamPeerTCP = null
@@ -705,6 +705,15 @@ func close() -> void:
 	insim_connected = false
 
 
+func connnect_relay() -> void:
+	address = "isrelay.lfs.net"
+	port = 47474
+	is_relay = true
+
+
+func initialize(initialization_data: InSimInitializationData, insim_relay := false) -> void:
+	if insim_relay:
+		connnect_relay()
 	if is_udp:
 		var error := socket.connect_to_host(address, port)
 		if error != OK:
