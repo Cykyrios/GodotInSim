@@ -86,6 +86,9 @@ signal tiny_mpe_received(packet: InSimTinyPacket)
 signal tiny_ren_received(packet: InSimTinyPacket)
 signal tiny_clr_received(packet: InSimTinyPacket)
 signal tiny_axc_received(packet: InSimTinyPacket)
+signal irp_arp_received(packet: RelayARPPacket)
+signal irp_hos_received(packet: RelayHOSPacket)
+signal irp_err_received(packet: RelayERRPacket)
 
 enum Packet {
 	ISP_NONE,  ## 0: not used
@@ -978,6 +981,12 @@ func _on_packet_received(packet: InSimPacket) -> void:
 			isp_mal_received.emit(packet)
 		Packet.ISP_PLH:
 			isp_plh_received.emit(packet)
+		Packet.IRP_ARP:
+			irp_arp_received.emit(packet)
+		Packet.IRP_HOS:
+			irp_hos_received.emit(packet)
+		Packet.IRP_ERR:
+			irp_err_received.emit(packet)
 		_:
 			push_error("Packet type %s is not supported at this time." % [Packet.keys()[packet.type]])
 
