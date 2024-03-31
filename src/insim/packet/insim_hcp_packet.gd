@@ -9,7 +9,10 @@ const PACKET_SIZE := 68
 const PACKET_TYPE := InSim.Packet.ISP_HCP
 var zero := 0
 
-var car_hcp: Array[CarHandicap] = []  ## h_mass and h_tres for each car: XF GTI = 0 / XR GT = 1 etc
+## h_mass and h_tres for each car: XF GTI = 0 / XR GT = 1 etc[br]
+## Subtract 1 from the [enum InSim.Car] enum if using it for array index,
+## e.g. [code]InSim.Car.CAR_FBM - 1[/code].
+var car_hcp: Array[CarHandicap] = []
 
 
 func _init() -> void:
