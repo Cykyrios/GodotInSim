@@ -219,9 +219,9 @@ func read_short() -> int:
 	return result
 
 
-func read_string(length: int) -> String:
+func read_string(length: int, zero_terminated := true) -> String:
 	var temp_buffer := buffer.slice(data_offset, data_offset + length)
-	var result := LFSText.lfs_bytes_to_unicode(temp_buffer)
+	var result := LFSText.lfs_bytes_to_unicode(temp_buffer, zero_terminated)
 	data_offset += length
 	return result
 

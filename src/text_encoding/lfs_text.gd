@@ -68,7 +68,11 @@ static func bbcode_to_lfs_colors(text: String) -> String:
 
 
 ## Converts a text string in binary LFS format to a UTF8 string.
-static func lfs_bytes_to_unicode(buffer: PackedByteArray) -> String:
+static func lfs_bytes_to_unicode(bytes: PackedByteArray, zero_terminated := true) -> String:
+	var buffer := bytes.duplicate()
+	if not zero_terminated:
+		buffer.append(0)
+
 	var current_code_page := "^L"
 	var message := ""
 	var block_start := 0
