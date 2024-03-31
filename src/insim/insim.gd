@@ -86,6 +86,9 @@ signal tiny_mpe_received(packet: InSimTinyPacket)
 signal tiny_ren_received(packet: InSimTinyPacket)
 signal tiny_clr_received(packet: InSimTinyPacket)
 signal tiny_axc_received(packet: InSimTinyPacket)
+signal irp_arp_received(packet: RelayARPPacket)
+signal irp_hos_received(packet: RelayHOSPacket)
+signal irp_err_received(packet: RelayERRPacket)
 
 enum Packet {
 	ISP_NONE,  ## 0: not used
@@ -155,6 +158,12 @@ enum Packet {
 	ISP_CIM,  ## 64 - info: connection's interface mode
 	ISP_MAL,  ## 65 - both ways: set mods allowed
 	ISP_PLH,  ## 66 - both ways: set player handicaps
+	IRP_ARQ = 250,  ## Send : request if we are host admin (after connecting to a host)
+	IRP_ARP,  ## Receive : replies if you are admin (after connecting to a host)
+	IRP_HLR,  ## Send : To request a hostlist
+	IRP_HOS,  ## Receive : Hostlist info
+	IRP_SEL,  ## Send : To select a host
+	IRP_ERR,  ## Receive : An error number
 }
 enum Tiny {
 	TINY_NONE,  ## 0 - keep alive: see "maintaining the connection"
@@ -205,6 +214,23 @@ enum TTC {
 	TTC_SEL,  ## 1 - info request: send IS_AXM for a layout editor selection
 	TTC_SEL_START,  ## 2 - info request: send IS_AXM every time the selection changes
 	TTC_SEL_STOP,  ## 3 - instruction: switch off IS_AXM requested by TTC_SEL_START
+}
+enum RelayError {
+	IR_ERR_PACKET = 1,  ## Invalid packet sent by client (wrong structure / length)
+	IR_ERR_PACKET2,  ## Invalid packet sent by client (packet was not allowed to be forwarded to host)
+	IR_ERR_HOSTNAME,  ## Wrong hostname given by client
+	IR_ERR_ADMIN,  ## Wrong admin pass given by client
+	IR_ERR_SPEC,  ## Wrong spec pass given by client
+	IR_ERR_NOSPEC,  ## Spectator pass required, but none given
+}
+enum RelayFlag {
+	HOS_SPECPASS = 1,  ## Host requires a spectator password
+	HOS_LICENSED = 2,  ## Bit is set if host is licensed
+	HOS_S1 = 4,  ## Bit is set if host is S1
+	HOS_S2 = 8,  ## Bit is set if host is S2
+	HOS_CRUISE = 32,  ## Bit is set if host is Cruise
+	HOS_FIRST = 64,  ## Indicates the first host in the list
+	HOS_LAST = 128,  ## Indicates the last host in the list
 }
 
 enum AutoCrossObject {
@@ -624,17 +650,27 @@ const PACKET_READ_INTERVAL := 0.01
 const TIMEOUT_DELAY := 70
 
 var address := "127.0.0.1"
-var insim_port := 29_999
+var port := 29_999
+var is_relay := false
 
 var socket: PacketPeerUDP = null
+var stream: StreamPeerTCP = null
+var is_udp := false
 var packet_timer := 0.0
 
 var insim_connected := false
 var connection_timer := Timer.new()
 
 
+func _init(_address := "127.0.0.1", _port := 29_999, use_udp := false) -> void:
+	address = _address
+	port = _port
+	is_udp = use_udp
+
+
 func _ready() -> void:
 	socket = PacketPeerUDP.new()
+	stream = StreamPeerTCP.new()
 
 	var _discard := packet_received.connect(_on_packet_received)
 	_discard = isp_ver_received.connect(read_version_packet)
@@ -658,19 +694,46 @@ func _process(delta: float) -> void:
 
 
 func close() -> void:
-	if not socket:
+	if is_udp and not socket or not is_udp and not stream:
 		return
 	send_packet(InSimTinyPacket.new(0, Tiny.TINY_CLOSE))
 	print("Closing InSim connection.")
-	socket.close()
+	if is_udp:
+		socket.close()
+	else:
+		stream.disconnect_from_host()
 	insim_connected = false
 
 
-func initialize(initialization_data: InSimInitializationData) -> void:
-	var error := socket.connect_to_host(address, insim_port)
-	if error != OK:
-		push_error(error)
-	send_packet(create_initialization_packet(initialization_data))
+func connnect_relay() -> void:
+	address = "isrelay.lfs.net"
+	port = 47474
+	is_relay = true
+
+
+func initialize(initialization_data: InSimInitializationData, insim_relay := false) -> void:
+	if insim_relay:
+		connnect_relay()
+	if is_udp:
+		var error := socket.connect_to_host(address, port)
+		if error != OK:
+			push_error(error)
+	else:
+		var error := stream.connect_to_host(address, port)
+		if error != OK:
+			push_error(error)
+		stream.poll()
+		var status := stream.get_status()
+		print("TCP connecting...")
+		while status == stream.STATUS_CONNECTING:
+			await get_tree().create_timer(0.5).timeout
+			status = stream.get_status()
+		print("TCP status: %d%s" % [status, (" - %s:%d" % [stream.get_connected_host(),
+				stream.get_connected_port()]) if status == stream.STATUS_CONNECTED else ""])
+		if status != stream.STATUS_CONNECTED:
+			return
+	if not insim_relay:
+		send_packet(create_initialization_packet(initialization_data))
 
 
 func create_initialization_packet(initialization_data: InSimInitializationData) -> InSimISIPacket:
@@ -687,16 +750,42 @@ func create_initialization_packet(initialization_data: InSimInitializationData) 
 func read_incoming_packets() -> void:
 	var packet_buffer := PackedByteArray()
 	var packet_type := Packet.ISP_NONE
-	while socket.get_available_packet_count() > 0:
-		packet_buffer = socket.get_packet()
-		var err := socket.get_packet_error()
-		if err != OK:
-			push_error("Error reading incoming packet: %s" % [err])
-			continue
-		packet_type = packet_buffer.decode_u8(1) as Packet
+	if is_udp:
+		while socket.get_available_packet_count() > 0:
+			packet_buffer = socket.get_packet()
+			var err := socket.get_packet_error()
+			if err != OK:
+				push_error("Error reading incoming packet: %s" % [err])
+				continue
+			packet_type = packet_buffer.decode_u8(1) as Packet
+			if packet_type != Packet.ISP_NONE:
+				var insim_packet := InSimPacket.create_packet_from_buffer(packet_buffer)
+				packet_received.emit(insim_packet)
+	else:
+		stream.poll()
+		if (
+			stream.get_status() != stream.STATUS_CONNECTED
+			or stream.get_available_bytes() < InSimPacket.HEADER_SIZE
+		):
+			return
+	var packets_available := true
+	while stream.get_available_bytes() > InSimPacket.HEADER_SIZE:
+		var stream_data := stream.get_data(InSimPacket.HEADER_SIZE)
+		var error := stream_data[0] as Error
+		var packet_header := stream_data[1] as PackedByteArray
+		var packet_size := packet_header[0]
+		if is_relay:
+			packet_header[0] = packet_size / InSimPacket.SIZE_MULTIPLIER
+		else:
+			packet_size *= InSimPacket.SIZE_MULTIPLIER
+		packet_type = packet_header[1] as Packet
+		packet_buffer = packet_header.duplicate()
+		packet_buffer.append_array(stream.get_data(packet_size - InSimPacket.HEADER_SIZE)[1])
 		if packet_type != Packet.ISP_NONE:
 			var insim_packet := InSimPacket.create_packet_from_buffer(packet_buffer)
 			packet_received.emit(insim_packet)
+		stream.poll()
+		packets_available = true if stream.get_available_bytes() > InSimPacket.HEADER_SIZE else false
 
 
 func read_version_packet(packet: InSimVERPacket) -> void:
@@ -779,23 +868,33 @@ func send_nlp_request() -> void:
 
 
 func send_outgauge_request(interval := 1) -> void:
-	if not socket:
+	if is_udp and not socket or not is_udp and not stream:
 		return
 	send_packet(InSimSmallPacket.new(0, Small.SMALL_SSG, interval))
 
 
 func send_outsim_request(interval := 1) -> void:
-	if not socket:
+	if is_udp and not socket or not is_udp and not stream:
 		return
 	send_packet(InSimSmallPacket.new(0, Small.SMALL_SSP, interval))
 
 
 func send_packet(packet: InSimPacket) -> void:
-	if packet.type != Packet.ISP_ISI and not insim_connected:
-		push_warning("InSim is not initialized, packet not sent.")
-		return
+	if (
+		not insim_connected
+		and not is_relay
+		and packet.type != Packet.ISP_ISI
+		and packet.type < Packet.IRP_ARQ
+	):
+		push_warning("Warning: Sending packet but InSim is not initialized.")
 	packet.fill_buffer()
-	var _discard := socket.put_packet(packet.buffer)
+	if is_relay:
+		packet.buffer[0] = packet.buffer[0] * InSimPacket.SIZE_MULTIPLIER
+	if is_udp:
+		var _discard := socket.put_packet(packet.buffer)
+	else:
+		var _discard := stream.put_data(packet.buffer)
+		pass
 	packet_sent.emit(packet)
 
 
@@ -955,6 +1054,12 @@ func _on_packet_received(packet: InSimPacket) -> void:
 			isp_mal_received.emit(packet)
 		Packet.ISP_PLH:
 			isp_plh_received.emit(packet)
+		Packet.IRP_ARP:
+			irp_arp_received.emit(packet)
+		Packet.IRP_HOS:
+			irp_hos_received.emit(packet)
+		Packet.IRP_ERR:
+			irp_err_received.emit(packet)
 		_:
 			push_error("Packet type %s is not supported at this time." % [Packet.keys()[packet.type]])
 
