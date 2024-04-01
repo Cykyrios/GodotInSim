@@ -52,7 +52,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	player_id = read_byte()
 	username = read_string(USERNAME_MAX_LENGTH)
 	player_name = read_string(PLAYER_NAME_MAX_LENGTH)
-	plate = read_string(PLATE_MAX_LENGTH)
+	plate = read_string(PLATE_MAX_LENGTH, false)
 	car_name = read_car_name()
 	total_time = read_unsigned()
 	best_lap = read_unsigned()

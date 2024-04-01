@@ -25,7 +25,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	super(packet)
 	ucid = read_byte()
 	player_name = read_string(24)
-	plate = read_string(8)
+	plate = read_string(8, false)
 
 
 func _get_data_dictionary() -> Dictionary:
