@@ -778,7 +778,7 @@ func read_incoming_packets() -> void:
 		):
 			return
 	var packets_available := true
-	while stream.get_available_bytes() > InSimPacket.HEADER_SIZE:
+	while stream.get_available_bytes() >= InSimPacket.HEADER_SIZE:
 		var stream_data := stream.get_data(InSimPacket.HEADER_SIZE)
 		var error := stream_data[0] as Error
 		var packet_header := stream_data[1] as PackedByteArray
