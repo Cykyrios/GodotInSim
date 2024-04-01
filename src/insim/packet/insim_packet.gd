@@ -213,8 +213,7 @@ func decode_header(packet_buffer: PackedByteArray) -> void:
 func write_header() -> void:
 	resize_buffer(size)
 	data_offset = 0
-	@warning_ignore("integer_division")
-	add_byte(size / SIZE_MULTIPLIER)
+	add_byte(int(size / float(SIZE_MULTIPLIER)))
 	add_byte(type)
 	add_byte(req_i)
 	add_byte(0)
@@ -229,8 +228,7 @@ func resize_buffer(new_size: int) -> void:
 	size = new_size
 	_adjust_packet_size()
 	var _discard := buffer.resize(size)
-	@warning_ignore("integer_division")
-	buffer.encode_u8(0, size / SIZE_MULTIPLIER)
+	buffer.encode_u8(0, int(size / float(SIZE_MULTIPLIER)))
 
 
 # All packets have a size equal to a multiple of 4

@@ -25,7 +25,7 @@ func _to_string() -> String:
 
 func _get_buffer() -> PackedByteArray:
 	var buffer := PackedByteArray()
-	buffer.resize(STRUCT_SIZE)
+	var _discard := buffer.resize(STRUCT_SIZE)
 	buffer.encode_u8(0, h_mass)
 	buffer.encode_u8(1, h_tres)
 	return buffer
@@ -39,7 +39,7 @@ func _set_from_buffer(buffer: PackedByteArray) -> void:
 
 
 func _set_values_from_gis() -> void:
-	h_mass = gis_mass * MASS_MULTIPLIER
+	h_mass = int(gis_mass * MASS_MULTIPLIER)
 
 
 func _update_gis_values() -> void:

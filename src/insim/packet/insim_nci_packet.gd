@@ -29,7 +29,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 		return
 	super(packet)
 	ucid = read_byte()
-	language = read_byte()
+	language = read_byte() as InSim.Language
 	license = read_byte()
 	sp2 = read_byte()
 	sp3 = read_byte()

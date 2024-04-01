@@ -48,10 +48,10 @@ func _set_from_buffer(buffer: PackedByteArray) -> void:
 
 
 func _set_values_from_gis() -> void:
-	x = gis_position.x * POSITION_MULTIPLIER
-	y = gis_position.y * POSITION_MULTIPLIER
-	z = gis_position.z * Z_MULTIPLIER
-	heading = (180 + rad_to_deg(gis_heading)) * ANGLE_MULTIPLIER
+	x = int(gis_position.x * POSITION_MULTIPLIER)
+	y = int(gis_position.y * POSITION_MULTIPLIER)
+	z = int(gis_position.z * Z_MULTIPLIER)
+	heading = int((180 + rad_to_deg(gis_heading)) * ANGLE_MULTIPLIER)
 
 
 func _update_gis_values() -> void:

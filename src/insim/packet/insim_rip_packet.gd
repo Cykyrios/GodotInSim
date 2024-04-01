@@ -76,8 +76,8 @@ func _get_data_dictionary() -> Dictionary:
 
 
 func _set_values_from_gis() -> void:
-	c_time = gis_c_time * TIME_MULTIPLIER
-	t_time = gis_t_time * TIME_MULTIPLIER
+	c_time = int(gis_c_time * TIME_MULTIPLIER)
+	t_time = int(gis_t_time * TIME_MULTIPLIER)
 
 
 func _update_gis_values() -> void:

@@ -37,7 +37,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	zero = read_byte()
 	ucid = read_byte()
 	player_id = read_byte()
-	user_type = read_byte()
+	user_type = read_byte() as InSim.MessageUserValue
 	text_start = read_byte()
 	msg = read_string(packet_size - data_offset)
 

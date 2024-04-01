@@ -48,7 +48,7 @@ func _set_from_buffer(buffer: PackedByteArray) -> void:
 
 
 func _set_values_from_gis() -> void:
-	h_mass = gis_mass * MASS_MULTIPLIER
+	h_mass = int(gis_mass * MASS_MULTIPLIER)
 
 
 func _update_gis_values() -> void:

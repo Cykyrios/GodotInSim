@@ -7,6 +7,7 @@ const HOST_NAME_LENGTH := 32
 
 const PACKET_SIZE := 40
 const PACKET_TYPE := InSim.Packet.ISP_ISM
+
 var zero := 0
 
 var host := 0  ## 0 = guest / 1 = host

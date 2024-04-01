@@ -60,10 +60,10 @@ static func bbcode_to_lfs_colors(text: String) -> String:
 				return index
 		return COLORS.size()
 	while regex_match:
-		var color_index := get_color_index.call(regex_match.strings[1])
+		var color_index := get_color_index.call(regex_match.strings[1]) as int
 		lfs_text = regex.sub(lfs_text, "^%d%s^8" % [color_index, regex_match.strings[2]])
 		regex_match = regex.search(lfs_text)
-	lfs_text.trim_suffix("^8")
+	lfs_text = lfs_text.trim_suffix("^8")
 	return lfs_text
 
 
@@ -71,7 +71,7 @@ static func bbcode_to_lfs_colors(text: String) -> String:
 static func lfs_bytes_to_unicode(bytes: PackedByteArray, zero_terminated := true) -> String:
 	var buffer := bytes.duplicate()
 	if not zero_terminated:
-		buffer.append(0)
+		var _discard := buffer.append(0)
 
 	var current_code_page := "^L"
 	var message := ""
@@ -92,7 +92,7 @@ static func lfs_bytes_to_unicode(bytes: PackedByteArray, zero_terminated := true
 			skip_next = true
 		elif buffer[i] == 0x5e:
 			# Found "^"
-			var code_page_check := "^%s" % [String.chr(buffer[i + 1])]
+			var code_page_check := "^%s" % [char(buffer[i + 1])]
 			if CODE_PAGES.has(code_page_check):
 				if block_start < block_end:
 					message += _get_string_from_bytes(buffer.slice(block_start, block_end), current_code_page)
@@ -110,7 +110,7 @@ static func lfs_bytes_to_unicode(bytes: PackedByteArray, zero_terminated := true
 			block_end += 1
 	for i in SPECIAL_CHARACTERS.size():
 		var regexp := RegEx.create_from_string(r"(?<!\^)\%s" % [SPECIAL_CHARACTERS.keys()[i]])
-		message = regexp.sub(message, SPECIAL_CHARACTERS.values()[i], true)
+		message = regexp.sub(message, SPECIAL_CHARACTERS.values()[i] as String, true)
 	message = message.replace("^^", "^")
 	return message
 
@@ -139,7 +139,7 @@ static func lfs_colors_to_bbcode(text: String) -> String:
 
 static func lfs_string_to_unicode(text: String) -> String:
 	var buffer := text.to_utf16_buffer()
-	buffer.append(0)
+	var _discard := buffer.append(0)
 	var buffer_size := buffer.size()
 	var i := 0
 	while i < buffer_size - (0 if (buffer_size % 2 == 0) else 1):
@@ -214,8 +214,8 @@ static func _escape_circumflex(text: String) -> String:
 static func _get_bytes_from_string(code: int, code_page: String, keep_utf16: bool) -> PackedByteArray:
 	if not LFSCodePages.CODE_PAGE_TABLES.has(code_page):
 		return []
-	for key in LFSCodePages.CODE_PAGE_TABLES.keys():
-		if (key as String).begins_with(code_page):
+	for key: String in LFSCodePages.CODE_PAGE_TABLES.keys():
+		if key.begins_with(code_page):
 			var page_table := LFSCodePages.CODE_PAGE_TABLES[key] as Dictionary
 			for i in page_table.values().size():
 				if page_table.values()[i] == code:
@@ -242,18 +242,18 @@ static func _get_string_from_bytes(buffer: PackedByteArray, code_page: String) -
 			skip_next = false
 			continue
 		if buffer[i] < 128:
-			text += String.chr(buffer[i])
+			text += char(buffer[i])
 			continue
 		if LFSCodePages.CODE_PAGE_TABLES.has(page):
 			var page_dict := LFSCodePages.CODE_PAGE_TABLES[page] as Dictionary
 			if page_dict.has(buffer[i]):
-				text += String.chr(page_dict[buffer[i]])
+				text += char(page_dict[buffer[i]] as int)
 				continue
 		var sub_page := "%s%d" % [page, buffer[i]]
 		if LFSCodePages.CODE_PAGE_TABLES.has(sub_page) and i < buffer.size() - 1:
 			var sub_code := (buffer[i] << 8) + buffer[i + 1]
-			if LFSCodePages.CODE_PAGE_TABLES[sub_page].has(sub_code):
-				text += String.chr(LFSCodePages.CODE_PAGE_TABLES[sub_page][sub_code])
+			if (LFSCodePages.CODE_PAGE_TABLES[sub_page] as Dictionary).has(sub_code):
+				text += char(LFSCodePages.CODE_PAGE_TABLES[sub_page][sub_code] as int)
 				skip_next = true
 			else:
 				text += FALLBACK_CHARACTER
@@ -262,24 +262,20 @@ static func _get_string_from_bytes(buffer: PackedByteArray, code_page: String) -
 	return text
 
 
-static func _is_multibyte(code_page: String, char: int) -> bool:
+static func _is_multibyte(code_page: String, character: int) -> bool:
 	match code_page:
 		"^L", "^8", "^G", "^C", "^E", "^T", "^B":
 			return false
 		"^J":
-			return (char > 0x80 and char < 0xa0) or (char >= 0xe0 and char < 0xfd)
+			return (character > 0x80 and character < 0xa0) or (character >= 0xe0 and character < 0xfd)
 		"^H", "^S", "^K":
-			return char > 0x80 and char < 0xff
+			return character > 0x80 and character < 0xff
 		_:
-			push_error("Code page unknown: %s" % [char])
+			push_error("Code page unknown: %s" % [character])
 	return false
 
 
 static func _remove_inner_zeros(buffer: PackedByteArray) -> PackedByteArray:
-	var last_data_index := -1
-	for i in buffer.size():
-		if buffer[-1 - i] != 0:
-			last_data_index = i
 	var cleaned_buffer := buffer.duplicate()
 	var idx := 0
 	while idx < cleaned_buffer.size():
@@ -292,7 +288,8 @@ static func _remove_inner_zeros(buffer: PackedByteArray) -> PackedByteArray:
 static func _translate_specials(text: String) -> String:
 	var message := text
 	for i in SPECIAL_CHARACTERS.size():
-		message = message.replace(SPECIAL_CHARACTERS.values()[i], SPECIAL_CHARACTERS.keys()[i])
+		message = message.replace(SPECIAL_CHARACTERS.values()[i] as String,
+				SPECIAL_CHARACTERS.keys()[i] as String)
 	return message
 
 

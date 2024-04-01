@@ -14,6 +14,7 @@ func _get_buffer() -> PackedByteArray:
 
 
 ## Override to define struct behavior.
+@warning_ignore("unused_parameter")
 func _set_from_buffer(buffer: PackedByteArray) -> void:
 	pass
 
