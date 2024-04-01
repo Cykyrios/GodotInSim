@@ -3,6 +3,8 @@ extends InSimPacket
 
 ## InSim Multi packet
 
+const HOST_NAME_LENGTH := 32
+
 const PACKET_SIZE := 40
 const PACKET_TYPE := InSim.Packet.ISP_ISM
 var zero := 0
@@ -32,7 +34,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	sp1 = read_byte()
 	sp2 = read_byte()
 	sp3 = read_byte()
-	h_name = read_string(32)
+	h_name = read_string(HOST_NAME_LENGTH)
 
 
 func _get_data_dictionary() -> Dictionary:

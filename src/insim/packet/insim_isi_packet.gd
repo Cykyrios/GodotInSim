@@ -31,7 +31,9 @@ extends InSimPacket
 ## Messages typed with this prefix will be sent to your InSim program
 ## on the host (in IS_MSO) and not displayed on anyone's screen.
 
-
+const PREFIX_LENGTH := 1
+const ADMIN_LENGTH := 16
+const NAME_LENGTH := 16
 
 const PACKET_SIZE := 44
 const PACKET_TYPE := InSim.Packet.ISP_ISI
@@ -63,11 +65,11 @@ func _fill_buffer() -> void:
 	add_word(flags)
 
 	add_byte(insim_version)
-	add_string(1, prefix)
+	add_string(PREFIX_LENGTH, prefix)
 	add_word(interval)
 
-	add_string(16, admin)
-	add_string(16, i_name)
+	add_string(ADMIN_LENGTH, admin)
+	add_string(NAME_LENGTH, i_name)
 
 
 func _get_data_dictionary() -> Dictionary:

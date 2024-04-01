@@ -3,6 +3,8 @@ extends InSimPacket
 
 ## AutoX Info packet
 
+const LAYOUT_MAX_LENGTH := 32
+
 const PACKET_SIZE := 40
 const PACKET_TYPE := InSim.Packet.ISP_AXI
 var zero := 0
@@ -30,7 +32,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	ax_start = read_byte()
 	num_checkpoints = read_byte()
 	num_objects = read_word()
-	layout_name = read_string(32)
+	layout_name = read_string(LAYOUT_MAX_LENGTH)
 
 
 func _get_data_dictionary() -> Dictionary:
