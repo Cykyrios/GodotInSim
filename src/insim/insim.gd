@@ -647,7 +647,8 @@ enum Vote {
 
 const VERSION := 9
 const PACKET_READ_INTERVAL := 0.01
-const TIMEOUT_DELAY := 70
+const PING_INTERVAL := 30
+const TIMEOUT_DELAY := 10
 
 var address := "127.0.0.1"
 var port := 29_999
@@ -659,7 +660,8 @@ var is_udp := false
 var packet_timer := 0.0
 
 var insim_connected := false
-var connection_timer := Timer.new()
+var ping_timer := Timer.new()
+var timeout_timer := Timer.new()
 
 
 func _init(_address := "127.0.0.1", _port := 29_999, use_udp := false) -> void:
@@ -677,13 +679,12 @@ func _ready() -> void:
 	_discard = isp_tiny_received.connect(_on_tiny_packet_received)
 	_discard = isp_small_received.connect(_on_small_packet_received)
 
-	add_child(connection_timer)
-	connection_timer.one_shot = true
-	_discard = connection_timer.timeout.connect(func() -> void:
-		timeout.emit()
-		insim_connected = false
-		push_warning("InSim connection timed out.")
-	)
+	add_child(ping_timer)
+	ping_timer.one_shot = true
+	_discard = ping_timer.timeout.connect(send_ping)
+	add_child(timeout_timer)
+	timeout_timer.one_shot = true
+	_discard = timeout_timer.timeout.connect(handle_timeout)
 
 
 func _process(delta: float) -> void:
@@ -711,6 +712,13 @@ func connnect_relay() -> void:
 	is_relay = true
 
 
+func handle_timeout() -> void:
+		timeout.emit()
+		insim_connected = false
+		push_warning("InSim connection timed out.")
+		close()
+
+
 func initialize(initialization_data: InSimInitializationData, insim_relay := false) -> void:
 	if insim_relay:
 		connnect_relay()
@@ -734,6 +742,7 @@ func initialize(initialization_data: InSimInitializationData, insim_relay := fal
 			return
 	if not insim_relay:
 		send_packet(create_initialization_packet(initialization_data))
+		reset_timeout_timer()
 
 
 func create_initialization_packet(initialization_data: InSimInitializationData) -> InSimISIPacket:
@@ -788,6 +797,11 @@ func read_incoming_packets() -> void:
 		packets_available = true if stream.get_available_bytes() > InSimPacket.HEADER_SIZE else false
 
 
+func read_ping_reply(packet: InSimTinyPacket) -> void:
+	insim_connected = true
+	reset_timeout_timer()
+
+
 func read_version_packet(packet: InSimVERPacket) -> void:
 	insim_connected = true
 	if packet.insim_ver != VERSION:
@@ -796,6 +810,11 @@ func read_version_packet(packet: InSimVERPacket) -> void:
 		close()
 		return
 	print("Host InSim version matches local version (%d)." % [VERSION])
+
+
+func reset_timeout_timer() -> void:
+	ping_timer.start(PING_INTERVAL)
+	timeout_timer.stop()
 
 
 func send_autocross_info_request() -> void:
@@ -848,7 +867,7 @@ func send_insim_multi_request() -> void:
 
 func send_keep_alive_packet() -> void:
 	send_packet(InSimTinyPacket.new(0, Tiny.TINY_NONE))
-	connection_timer.start(TIMEOUT_DELAY)
+	reset_timeout_timer()
 
 
 func send_local_car_lights(lcl: CarLights) -> void:
@@ -884,6 +903,7 @@ func send_packet(packet: InSimPacket) -> void:
 		not insim_connected
 		and not is_relay
 		and packet.type != Packet.ISP_ISI
+		and not (packet.type == Packet.ISP_TINY and (packet as InSimTinyPacket).sub_type == Tiny.TINY_PING)
 		and packet.type < Packet.IRP_ARQ
 	):
 		push_warning("Warning: Sending packet but InSim is not initialized.")
@@ -899,6 +919,7 @@ func send_packet(packet: InSimPacket) -> void:
 
 
 func send_ping() -> void:
+	timeout_timer.start(TIMEOUT_DELAY)
 	send_packet(InSimTinyPacket.new(1, Tiny.TINY_PING))
 
 
@@ -1082,6 +1103,7 @@ func _on_tiny_packet_received(packet: InSimTinyPacket) -> void:
 		Tiny.TINY_NONE:
 			send_keep_alive_packet()
 		Tiny.TINY_REPLY:
+			read_ping_reply(packet)
 			tiny_reply_received.emit(packet)
 		Tiny.TINY_VTC:
 			tiny_vtc_received.emit(packet)
