@@ -817,85 +817,9 @@ func reset_timeout_timer() -> void:
 	timeout_timer.stop()
 
 
-func send_autocross_info_request() -> void:
-	send_packet(InSimTinyPacket.new(1, Tiny.TINY_AXI))
-
-
-func send_autocross_layout_objects_request() -> void:
-	send_packet(InSimTinyPacket.new(1, Tiny.TINY_AXM))
-
-
-func send_autocross_editor_selection_request(ucid := 0) -> void:
-	send_packet(InSimTTCPacket.new(1, TTC.TTC_SEL, ucid))
-
-
-func send_camera_position_request() -> void:
-	send_packet(InSimTinyPacket.new(1, Tiny.TINY_SCP))
-
-
-func send_change_nlp_mci_rate(interval: int) -> void:
-	send_packet(InSimSmallPacket.new(1, Small.SMALL_NLI, interval))
-
-
-func send_connection_info_request() -> void:
-	send_packet(InSimTinyPacket.new(1, Tiny.TINY_NCI))
-
-
-func send_connection_list_request() -> void:
-	send_packet(InSimTinyPacket.new(1, Tiny.TINY_NCN))
-
-
-func send_current_time_request() -> void:
-	send_packet(InSimTinyPacket.new(1, Tiny.TINY_GTH))
-
-
-func send_get_allowed_cars() -> void:
-	send_packet(InSimTinyPacket.new(1, Tiny.TINY_ALC))
-
-
-func send_get_allowed_mods() -> void:
-	send_packet(InSimTinyPacket.new(1, Tiny.TINY_MAL))
-
-
-func send_grid_order_request() -> void:
-	send_packet(InSimTinyPacket.new(1, Tiny.TINY_REO))
-
-
-func send_insim_multi_request() -> void:
-	send_packet(InSimTinyPacket.new(1, Tiny.TINY_ISM))
-
-
 func send_keep_alive_packet() -> void:
 	send_packet(InSimTinyPacket.new(0, Tiny.TINY_NONE))
 	reset_timeout_timer()
-
-
-func send_local_car_lights(lcl: CarLights) -> void:
-	send_packet(InSimSmallPacket.new(0, Small.SMALL_LCL, lcl.get_value()))
-
-
-func send_local_car_switches(lcs: CarSwitches) -> void:
-	send_packet(InSimSmallPacket.new(0, Small.SMALL_LCS, lcs.get_value()))
-
-
-func send_mci_request() -> void:
-	send_packet(InSimTinyPacket.new(1, Tiny.TINY_MCI))
-
-
-func send_nlp_request() -> void:
-	send_packet(InSimTinyPacket.new(1, Tiny.TINY_NLP))
-
-
-func send_outgauge_request(interval := 1) -> void:
-	if is_udp and not socket or not is_udp and not stream:
-		return
-	send_packet(InSimSmallPacket.new(0, Small.SMALL_SSG, interval))
-
-
-func send_outsim_request(interval := 1) -> void:
-	if is_udp and not socket or not is_udp and not stream:
-		return
-	send_packet(InSimSmallPacket.new(0, Small.SMALL_SSP, interval))
 
 
 func send_packet(packet: InSimPacket) -> void:
@@ -921,54 +845,6 @@ func send_packet(packet: InSimPacket) -> void:
 func send_ping() -> void:
 	timeout_timer.start(TIMEOUT_DELAY)
 	send_packet(InSimTinyPacket.new(1, Tiny.TINY_PING))
-
-
-func send_player_handicaps_request() -> void:
-	send_packet(InSimTinyPacket.new(1, Tiny.TINY_PLH))
-
-
-func send_player_list_request() -> void:
-	send_packet(InSimTinyPacket.new(1, Tiny.TINY_NPL))
-
-
-func send_race_start_request() -> void:
-	send_packet(InSimTinyPacket.new(1, Tiny.TINY_RST))
-
-
-func send_result_request() -> void:
-	send_packet(InSimTinyPacket.new(1, Tiny.TINY_RES))
-
-
-func send_replay_information_request() -> void:
-	send_packet(InSimTinyPacket.new(1, Tiny.TINY_RIP))
-
-
-func send_selected_car_request() -> void:
-	send_packet(InSimTinyPacket.new(1, Tiny.TINY_SLC))
-
-
-func send_set_allowed_cars(allowed_cars: int) -> void:
-	send_packet(InSimSmallPacket.new(0, Small.SMALL_ALC, allowed_cars))
-
-
-func send_state_request() -> void:
-	send_packet(InSimTinyPacket.new(1, Tiny.TINY_SST))
-
-
-func send_time_step_request(step: int) -> void:
-	send_packet(InSimSmallPacket.new(1, Small.SMALL_STP, step))
-
-
-func send_time_stop_request(stop: int) -> void:
-	send_packet(InSimSmallPacket.new(1, Small.SMALL_TMS, stop))
-
-
-func send_version_request() -> void:
-	send_packet(InSimTinyPacket.new(1, Tiny.TINY_VER))
-
-
-func send_vote_cancel() -> void:
-	send_packet(InSimTinyPacket.new(0, Tiny.TINY_VTC))
 
 
 func _on_packet_received(packet: InSimPacket) -> void:
