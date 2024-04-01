@@ -31,16 +31,7 @@ func _fill_buffer() -> void:
 	add_byte(player_id)
 	add_byte(sp2)
 	add_byte(sp3)
-	var text_length := text.length()
-	if text_length >= TEXT_MAX_LENGTH:
-		text = text.left(TEXT_MAX_LENGTH - 1)  # last byte must be zero
-		text_length = TEXT_MAX_LENGTH
-	var remainder := text_length % SIZE_MULTIPLIER
-	text_length += SIZE_MULTIPLIER - remainder
-	if remainder == 0 and text_length < TEXT_MAX_LENGTH:
-		text_length += SIZE_MULTIPLIER
-	add_string(text_length, text)
-	buffer.encode_u8(size - 1, 0)  # last byte must be zero
+	add_string_variable_length(text, TEXT_MAX_LENGTH, SIZE_MULTIPLIER)
 	trim_packet_size()
 
 
@@ -58,6 +49,6 @@ func _get_data_dictionary() -> Dictionary:
 func trim_packet_size() -> void:
 	for i in TEXT_MAX_LENGTH:
 		if buffer[PACKET_MAX_SIZE - i - 1] != 0:
-			size = PACKET_MAX_SIZE - i
+			size = PACKET_MAX_SIZE - i + 1  # + 1 to keep final zero
 			resize_buffer(size)
 			break
