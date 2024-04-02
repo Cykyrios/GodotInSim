@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://rtl5ejc1tbb6"]
+
+[ext_resource type="Script" path="res://addons/godot_insim/src/tests/tests.gd" id="1_7kd8v"]
+
+[node name="Tests" type="Node"]
+script = ExtResource("1_7kd8v")
