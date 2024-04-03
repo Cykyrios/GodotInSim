@@ -694,6 +694,17 @@ func connect_lfs_connection_signals() -> void:
 	_discard = lfs_connection.packet_received.connect(_on_packet_received)
 
 
+func create_initialization_packet() -> InSimISIPacket:
+	var initialization_packet := InSimISIPacket.new()
+	initialization_packet.udp_port = initialization_data.udp_port
+	initialization_packet.flags = initialization_data.flags
+	initialization_packet.prefix = initialization_data.prefix
+	initialization_packet.interval = initialization_data.interval
+	initialization_packet.admin = initialization_data.admin
+	initialization_packet.i_name = initialization_data.i_name
+	return initialization_packet
+
+
 func handle_timeout() -> void:
 		timeout.emit()
 		insim_connected = false
@@ -731,19 +742,15 @@ func initialize(
 	lfs_connection.connect_to_host(address, port, initialization_data.udp_port)
 
 
-func create_initialization_packet() -> InSimISIPacket:
-	var initialization_packet := InSimISIPacket.new()
-	initialization_packet.udp_port = initialization_data.udp_port
-	initialization_packet.flags = initialization_data.flags
-	initialization_packet.prefix = initialization_data.prefix
-	initialization_packet.interval = initialization_data.interval
-	initialization_packet.admin = initialization_data.admin
-	initialization_packet.i_name = initialization_data.i_name
-	return initialization_packet
+func push_error_unknown_packet_subtype(type: int, subtype: int) -> void:
+	push_error("%s with unknown packet subtype" % [Packet.keys()[type], subtype])
 
 
-@warning_ignore("unused_parameter")
-func read_ping_reply(packet: InSimTinyPacket) -> void:
+func push_error_unknown_packet_type(type: int) -> void:
+	push_error("Unknown packet type: %d" % [type])
+
+
+func read_ping_reply() -> void:
 	insim_connected = true
 	reset_timeout_timer()
 
@@ -914,7 +921,7 @@ func _on_packet_received(packet_buffer: PackedByteArray) -> void:
 		Packet.IRP_ERR:
 			irp_err_received.emit(packet)
 		_:
-			push_error("Packet type %s is not supported at this time." % [packet.type])
+			push_error_unknown_packet_type(packet.type)
 
 
 func _on_small_packet_received(packet: InSimSmallPacket) -> void:
@@ -926,8 +933,7 @@ func _on_small_packet_received(packet: InSimSmallPacket) -> void:
 		Small.SMALL_ALC:
 			small_alc_received.emit(packet)
 		_:
-			push_error("%s with subtype %s is not supported at this time." % \
-					[Packet.keys()[packet.type], packet.sub_type])
+			push_error_unknown_packet_subtype(packet.type, packet.sub_type)
 
 
 func _on_tiny_packet_received(packet: InSimTinyPacket) -> void:
@@ -935,7 +941,7 @@ func _on_tiny_packet_received(packet: InSimTinyPacket) -> void:
 		Tiny.TINY_NONE:
 			send_keep_alive_packet()
 		Tiny.TINY_REPLY:
-			read_ping_reply(packet)
+			read_ping_reply()
 			tiny_reply_received.emit(packet)
 		Tiny.TINY_VTC:
 			tiny_vtc_received.emit(packet)
@@ -948,5 +954,4 @@ func _on_tiny_packet_received(packet: InSimTinyPacket) -> void:
 		Tiny.TINY_AXC:
 			tiny_axc_received.emit(packet)
 		_:
-			push_error("%s with subtype %s is not supported at this time." % \
-					[Packet.keys()[packet.type], packet.sub_type])
+			push_error_unknown_packet_subtype(packet.type, packet.sub_type)
