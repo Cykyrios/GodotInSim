@@ -646,34 +646,22 @@ enum Vote {
 }
 
 const VERSION := 9
-const PACKET_READ_INTERVAL := 0.01
 const PING_INTERVAL := 30
 const TIMEOUT_DELAY := 10
 
-var address := "127.0.0.1"
-var port := 29_999
-var is_relay := false
+const RELAY_ADDRESS := "isrelay.lfs.net"
+const RELAY_PORT := 47474
 
-var socket: PacketPeerUDP = null
-var stream: StreamPeerTCP = null
-var is_udp := false
-var packet_timer := 0.0
+var lfs_connection: LFSConnection = null
+var is_relay := false
+var initialization_data: InSimInitializationData = null
 
 var insim_connected := false
 var ping_timer := Timer.new()
 var timeout_timer := Timer.new()
 
 
-func _init(_address := "127.0.0.1", _port := 29_999, use_udp := false) -> void:
-	address = _address
-	port = _port
-	is_udp = use_udp
-
-
 func _ready() -> void:
-	socket = PacketPeerUDP.new()
-	stream = StreamPeerTCP.new()
-
 	var _discard := packet_received.connect(_on_packet_received)
 	_discard = isp_ver_received.connect(read_version_packet)
 	_discard = isp_tiny_received.connect(_on_tiny_packet_received)
@@ -687,29 +675,29 @@ func _ready() -> void:
 	_discard = timeout_timer.timeout.connect(handle_timeout)
 
 
-func _process(delta: float) -> void:
-	packet_timer += delta
-	if delta >= PACKET_READ_INTERVAL:
-		packet_timer = 0
-		read_incoming_packets()
-
-
 func close() -> void:
-	if is_udp and not socket or not is_udp and not stream:
+	if not lfs_connection:
 		return
 	send_packet(InSimTinyPacket.new(0, Tiny.TINY_CLOSE))
 	print("Closing InSim connection.")
-	if is_udp:
-		socket.close()
-	else:
-		stream.disconnect_from_host()
+	lfs_connection.disconnect_from_host()
 	insim_connected = false
 
 
-func connnect_relay() -> void:
-	address = "isrelay.lfs.net"
-	port = 47474
-	is_relay = true
+func connect_lfs_connection_signals() -> void:
+	var _discard := lfs_connection.connected.connect(_on_connected_to_host)
+	_discard = lfs_connection.connection_failed.connect(func() -> void:
+		push_warning("Could not connect to %s:%d." % [lfs_connection.address, lfs_connection.port])
+	)
+	_discard = lfs_connection.packet_received.connect(func(packet: LFSPacket) -> void:
+		if packet is InSimPacket:
+			packet_received.emit(packet)
+		else:
+			push_warning("Received non-InSim packet.")
+	)
+	_discard = lfs_connection.packet_sent.connect(func(packet: InSimPacket) -> void:
+		packet_sent.emit(packet)
+	)
 
 
 func handle_timeout() -> void:
@@ -719,33 +707,35 @@ func handle_timeout() -> void:
 		close()
 
 
-func initialize(initialization_data: InSimInitializationData, insim_relay := false) -> void:
-	if insim_relay:
-		connnect_relay()
-	if is_udp:
-		var error := socket.connect_to_host(address, port)
-		if error != OK:
-			push_error(error)
+func initialize(
+	address: String, port: int, init_data: InSimInitializationData,
+	insim_relay := false, use_udp := false
+) -> void:
+	initialization_data = init_data
+	if (
+		use_udp and lfs_connection is LFSConnectionTCP
+		or not use_udp and lfs_connection is LFSConnectionUDP
+	):
+		remove_child(lfs_connection)
+		lfs_connection.queue_free()
+		await get_tree().process_frame
+	if lfs_connection:
+		lfs_connection.disconnect_from_host()
 	else:
-		var error := stream.connect_to_host(address, port)
-		if error != OK:
-			push_error(error)
-		var _discard := stream.poll()
-		var status := stream.get_status()
-		print("TCP connecting...")
-		while status == stream.STATUS_CONNECTING:
-			await get_tree().create_timer(0.5).timeout
-			status = stream.get_status()
-		print("TCP status: %d%s" % [status, (" - %s:%d" % [stream.get_connected_host(),
-				stream.get_connected_port()]) if status == stream.STATUS_CONNECTED else ""])
-		if status != stream.STATUS_CONNECTED:
-			return
-	if not insim_relay:
-		send_packet(create_initialization_packet(initialization_data))
-		reset_timeout_timer()
+		if use_udp:
+			lfs_connection = LFSConnectionUDP.new()
+		else:
+			lfs_connection = LFSConnectionTCP.new()
+		add_child(lfs_connection)
+		connect_lfs_connection_signals()
+	if insim_relay:
+		address = RELAY_ADDRESS
+		port = RELAY_PORT
+		is_relay = true
+	lfs_connection.connect_to_host(address, port)
 
 
-func create_initialization_packet(initialization_data: InSimInitializationData) -> InSimISIPacket:
+func create_initialization_packet() -> InSimISIPacket:
 	var initialization_packet := InSimISIPacket.new()
 	initialization_packet.udp_port = initialization_data.udp_port
 	initialization_packet.flags = initialization_data.flags
@@ -757,42 +747,7 @@ func create_initialization_packet(initialization_data: InSimInitializationData) 
 
 
 func read_incoming_packets() -> void:
-	var packet_buffer := PackedByteArray()
-	var packet_type := Packet.ISP_NONE
-	if is_udp:
-		while socket.get_available_packet_count() > 0:
-			packet_buffer = socket.get_packet()
-			var err := socket.get_packet_error()
-			if err != OK:
-				push_error("Error reading incoming packet: %s" % [err])
-				continue
-			packet_type = packet_buffer.decode_u8(1) as Packet
-			if packet_type != Packet.ISP_NONE:
-				var insim_packet := InSimPacket.create_packet_from_buffer(packet_buffer)
-				packet_received.emit(insim_packet)
-	else:
-		var _discard := stream.poll()
-		if (
-			stream.get_status() != stream.STATUS_CONNECTED
-			or stream.get_available_bytes() < InSimPacket.HEADER_SIZE
-		):
-			return
-	while stream.get_available_bytes() >= InSimPacket.HEADER_SIZE:
-		var stream_data := stream.get_data(InSimPacket.HEADER_SIZE)
-		var _discard := stream_data[0] as Error
-		var packet_header := stream_data[1] as PackedByteArray
-		var packet_size := packet_header[0]
-		if is_relay:
-			packet_header[0] = int(packet_size / float(InSimPacket.SIZE_MULTIPLIER))
-		else:
-			packet_size *= InSimPacket.SIZE_MULTIPLIER
-		packet_type = packet_header[1] as Packet
-		packet_buffer = packet_header.duplicate()
-		packet_buffer.append_array(stream.get_data(packet_size - InSimPacket.HEADER_SIZE)[1] as PackedByteArray)
-		if packet_type != Packet.ISP_NONE:
-			var insim_packet := InSimPacket.create_packet_from_buffer(packet_buffer)
-			packet_received.emit(insim_packet)
-		_discard = stream.poll()
+	lfs_connection.get_incoming_packets()
 
 
 @warning_ignore("unused_parameter")
@@ -830,20 +785,18 @@ func send_packet(packet: InSimPacket) -> void:
 		and packet.type < Packet.IRP_ARQ
 	):
 		push_warning("Warning: Sending packet but InSim is not initialized.")
-	packet.fill_buffer()
-	if is_relay:
-		packet.buffer[0] = packet.buffer[0] * InSimPacket.SIZE_MULTIPLIER
-	if is_udp:
-		var _discard := socket.put_packet(packet.buffer)
-	else:
-		var _discard := stream.put_data(packet.buffer)
-		pass
-	packet_sent.emit(packet)
+	lfs_connection.send_packet(packet)
 
 
 func send_ping() -> void:
 	timeout_timer.start(TIMEOUT_DELAY)
 	send_packet(InSimTinyPacket.new(1, Tiny.TINY_PING))
+
+
+func _on_connected_to_host() -> void:
+	if not is_relay:
+		send_packet(create_initialization_packet())
+		reset_timeout_timer()
 
 
 func _on_packet_received(packet: InSimPacket) -> void:
