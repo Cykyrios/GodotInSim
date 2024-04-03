@@ -16,26 +16,14 @@ enum OutSimOpts {
 	OSO_EXTRA_1 = 256,
 }
 
-const PACKET_READ_INTERVAL := 0.01
-
 var outsim_options := 0
 
-var address := "127.0.0.1"
-var port := 29_997
-
-var socket: PacketPeerUDP = null
-var packet_timer := 0.0
+var lfs_connection := LFSConnectionUDP.new()
 
 
 func _ready() -> void:
-	socket = PacketPeerUDP.new()
-
-
-func _process(delta: float) -> void:
-	packet_timer += delta
-	if delta >= PACKET_READ_INTERVAL:
-		packet_timer = 0
-		read_incoming_packets()
+	add_child(lfs_connection)
+	var _discard := lfs_connection.packet_received.connect(_on_packet_received)
 
 
 static func create_packet_from_buffer(options: int, packet_buffer: PackedByteArray) -> OutSimPacket:
@@ -44,25 +32,14 @@ static func create_packet_from_buffer(options: int, packet_buffer: PackedByteArr
 
 
 func close() -> void:
-	if not socket:
-		return
-	socket.close()
+	lfs_connection.disconnect_from_host()
 
 
-func initialize(options: int) -> void:
+func initialize(options: int, address := "127.0.0.1", port := 29_997) -> void:
 	outsim_options = options
-	var error := socket.bind(port, address)
-	if error != OK:
-		push_error(error)
+	lfs_connection.connect_to_host(address, port)
 
 
-func read_incoming_packets() -> void:
-	var packet_buffer := PackedByteArray()
-	while socket.get_available_packet_count() > 0:
-		packet_buffer = socket.get_packet()
-		var err := socket.get_packet_error()
-		if err != OK:
-			push_error("Error reading incoming packet: %s" % [err])
-			continue
-		var outsim_packet := OutSim.create_packet_from_buffer(outsim_options, packet_buffer)
-		packet_received.emit(outsim_packet)
+func _on_packet_received(packet_buffer: PackedByteArray) -> void:
+	var packet := OutSim.create_packet_from_buffer(outsim_options, packet_buffer)
+	packet_received.emit(packet)
