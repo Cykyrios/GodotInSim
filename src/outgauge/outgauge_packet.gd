@@ -74,7 +74,8 @@ func _init(packet := PackedByteArray()) -> void:
 		decode_packet(packet)
 
 
-func decode_packet(packet: PackedByteArray) -> void:
+func _decode_packet(packet: PackedByteArray) -> void:
+	super(packet)
 	var packet_size := packet.size()
 	if packet_size != SIZE_WITHOUT_ID and packet_size != SIZE_WITH_ID:
 		push_error("OutGauge packet size incorrect: expected %d or %d, got %d." % \
