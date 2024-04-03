@@ -776,6 +776,9 @@ func send_keep_alive_packet() -> void:
 
 
 func send_packet(packet: InSimPacket) -> void:
+	if not lfs_connection:
+		push_error("No connection, cannot send packet.")
+		return
 	if (
 		not insim_connected
 		and not is_relay
