@@ -663,10 +663,8 @@ var timeout_timer := Timer.new()
 
 
 func _ready() -> void:
-	var _discard := packet_received.connect(_on_packet_received)
-	_discard = isp_ver_received.connect(read_version_packet)
-	_discard = isp_tiny_received.connect(_on_tiny_packet_received)
-	_discard = isp_small_received.connect(_on_small_packet_received)
+	add_child(nlp_mci_connection)
+	var _discard := nlp_mci_connection.packet_received.connect(_on_packet_received)
 
 	add_child(ping_timer)
 	ping_timer.one_shot = true
@@ -675,10 +673,9 @@ func _ready() -> void:
 	timeout_timer.one_shot = true
 	_discard = timeout_timer.timeout.connect(handle_timeout)
 
-	add_child(nlp_mci_connection)
-	_discard = nlp_mci_connection.packet_received.connect(func(packet: LFSPacket) -> void:
-		packet_received.emit(packet)
-	)
+	_discard = isp_ver_received.connect(read_version_packet)
+	_discard = isp_tiny_received.connect(_on_tiny_packet_received)
+	_discard = isp_small_received.connect(_on_small_packet_received)
 
 
 func close() -> void:
@@ -693,18 +690,8 @@ func close() -> void:
 
 func connect_lfs_connection_signals() -> void:
 	var _discard := lfs_connection.connected.connect(_on_connected_to_host)
-	_discard = lfs_connection.connection_failed.connect(func() -> void:
-		push_warning("Could not connect to %s:%d." % [lfs_connection.address, lfs_connection.port])
-	)
-	_discard = lfs_connection.packet_received.connect(func(packet: LFSPacket) -> void:
-		if packet is InSimPacket:
-			packet_received.emit(packet)
-		else:
-			push_warning("Received non-InSim packet.")
-	)
-	_discard = lfs_connection.packet_sent.connect(func(packet: InSimPacket) -> void:
-		packet_sent.emit(packet)
-	)
+	_discard = lfs_connection.connection_failed.connect(_on_connection_failed)
+	_discard = lfs_connection.packet_received.connect(_on_packet_received)
 
 
 func handle_timeout() -> void:
@@ -791,7 +778,10 @@ func send_packet(packet: InSimPacket) -> void:
 		and packet.type < Packet.IRP_ARQ
 	):
 		push_warning("Warning: Sending packet but InSim is not initialized.")
-	lfs_connection.send_packet(packet)
+	packet.fill_buffer()
+	var packet_sent_successfully := lfs_connection.send_packet(packet.buffer)
+	if packet_sent_successfully:
+		packet_sent.emit(packet)
 
 
 func send_ping() -> void:
@@ -805,7 +795,13 @@ func _on_connected_to_host() -> void:
 		reset_timeout_timer()
 
 
-func _on_packet_received(packet: InSimPacket) -> void:
+func _on_connection_failed() -> void:
+	push_warning("Could not connect to %s:%d." % [lfs_connection.address, lfs_connection.port])
+
+
+func _on_packet_received(packet_buffer: PackedByteArray) -> void:
+	var packet := InSimPacket.create_packet_from_buffer(packet_buffer)
+	packet_received.emit(packet)
 	match packet.type:
 		Packet.ISP_VER:
 			isp_ver_received.emit(packet)

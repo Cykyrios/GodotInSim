@@ -9,8 +9,7 @@ extends Node
 signal connection_failed
 signal connected
 signal disconnected
-signal packet_received(packet: LFSPacket)
-signal packet_sent(packet: LFSPacket)
+signal packet_received(packet: PackedByteArray)
 
 var address := ""
 var port := 0
@@ -36,5 +35,5 @@ func get_incoming_packets() -> void:
 
 
 @warning_ignore("unused_parameter")
-func send_packet(packet: InSimPacket) -> void:
-	pass
+func send_packet(packet: PackedByteArray) -> bool:
+	return false

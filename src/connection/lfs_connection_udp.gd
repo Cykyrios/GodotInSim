@@ -21,26 +21,20 @@ func disconnect_from_host() -> void:
 
 func get_incoming_packets() -> void:
 	var packet_buffer := PackedByteArray()
-	var packet_type := InSim.Packet.ISP_NONE
 	while socket.get_available_packet_count() > 0:
 		packet_buffer = socket.get_packet()
 		var error := socket.get_packet_error()
 		if error != OK:
 			push_error("Error reading incoming packet: %s" % [error])
 			continue
-		packet_type = packet_buffer.decode_u8(1) as InSim.Packet
-		if packet_type != InSim.Packet.ISP_NONE:
-			var insim_packet := InSimPacket.create_packet_from_buffer(packet_buffer)
-			packet_received.emit(insim_packet)
+		packet_received.emit(packet_buffer)
 
 
-func send_packet(packet: InSimPacket) -> void:
+func send_packet(packet: PackedByteArray) -> bool:
 	if not socket.is_socket_connected():
 		await connected
-	print(packet.get_dictionary())
-	packet.fill_buffer()
-	var error := socket.put_packet(packet.buffer)
+	var error := socket.put_packet(packet)
 	if error != OK:
 		push_error("Error sending packet: %d" % [error])
-		return
-	packet_sent.emit(packet)
+		return false
+	return true

@@ -33,7 +33,6 @@ func disconnect_from_host() -> void:
 
 func get_incoming_packets() -> void:
 	var packet_buffer := PackedByteArray()
-	var packet_type := InSim.Packet.ISP_NONE
 	var _discard := stream.poll()
 	if (
 		stream.get_status() != stream.STATUS_CONNECTED
@@ -49,21 +48,17 @@ func get_incoming_packets() -> void:
 			packet_header[0] = int(packet_size / float(InSimPacket.SIZE_MULTIPLIER))
 		else:
 			packet_size *= InSimPacket.SIZE_MULTIPLIER
-		packet_type = packet_header[1] as InSim.Packet
 		packet_buffer = packet_header.duplicate()
 		packet_buffer.append_array(stream.get_data(packet_size - InSimPacket.HEADER_SIZE)[1] as PackedByteArray)
-		if packet_type != InSim.Packet.ISP_NONE:
-			var insim_packet := InSimPacket.create_packet_from_buffer(packet_buffer)
-			packet_received.emit(insim_packet)
+		packet_received.emit(packet_buffer)
 		_discard = stream.poll()
 
 
-func send_packet(packet: InSimPacket) -> void:
-	packet.fill_buffer()
+func send_packet(packet: PackedByteArray) -> bool:
 	if is_insim_relay:
-		packet.buffer[0] = packet.buffer[0] * InSimPacket.SIZE_MULTIPLIER
-	var error := stream.put_data(packet.buffer)
+		packet[0] = packet[0] * InSimPacket.SIZE_MULTIPLIER
+	var error := stream.put_data(packet)
 	if error != OK:
 		push_error("Error sending packet: %d" % [error])
-		return
-	packet_sent.emit(packet)
+		return false
+	return true
