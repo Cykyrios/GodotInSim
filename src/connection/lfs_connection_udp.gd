@@ -5,9 +5,13 @@ extends LFSConnection
 var socket := PacketPeerUDP.new()
 
 
-func connect_to_host(_address: String, _port: int, _udp_port := 0) -> void:
+func connect_to_host(_address: String, _port: int, _udp_port := 0, is_out := false) -> void:
 	super(_address, _port, _udp_port)
-	var error := socket.connect_to_host(address, port)
+	var error := -1
+	if is_out:
+		error = socket.bind(port, address)
+	else:
+		error = socket.connect_to_host(address, port)
 	if error == OK:
 		connected.emit()
 	else:

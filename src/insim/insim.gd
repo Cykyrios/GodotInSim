@@ -729,7 +729,7 @@ func initialize(
 	lfs_connection.connect_to_host(address, port, initialization_data.udp_port)
 	nlp_mci_connection.disconnect_from_host()
 	if initialization_data.udp_port != 0:
-		nlp_mci_connection.connect_to_host(lfs_connection.address, lfs_connection.udp_port)
+		nlp_mci_connection.connect_to_host(lfs_connection.address, lfs_connection.udp_port, 0, true)
 
 
 func create_initialization_packet() -> InSimISIPacket:

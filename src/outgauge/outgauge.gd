@@ -24,7 +24,7 @@ func close() -> void:
 
 
 func initialize(address := "127.0.0.1", port := 29_998) -> void:
-	lfs_connection.connect_to_host(address, port)
+	lfs_connection.connect_to_host(address, port, 0, true)
 
 
 func _on_packet_received(packet_buffer: PackedByteArray) -> void:
