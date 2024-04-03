@@ -777,22 +777,22 @@ func read_incoming_packets() -> void:
 			or stream.get_available_bytes() < InSimPacket.HEADER_SIZE
 		):
 			return
-	while stream.get_available_bytes() >= InSimPacket.HEADER_SIZE:
-		var stream_data := stream.get_data(InSimPacket.HEADER_SIZE)
-		var _discard := stream_data[0] as Error
-		var packet_header := stream_data[1] as PackedByteArray
-		var packet_size := packet_header[0]
-		if is_relay:
-			packet_header[0] = int(packet_size / float(InSimPacket.SIZE_MULTIPLIER))
-		else:
-			packet_size *= InSimPacket.SIZE_MULTIPLIER
-		packet_type = packet_header[1] as Packet
-		packet_buffer = packet_header.duplicate()
-		packet_buffer.append_array(stream.get_data(packet_size - InSimPacket.HEADER_SIZE)[1] as PackedByteArray)
-		if packet_type != Packet.ISP_NONE:
-			var insim_packet := InSimPacket.create_packet_from_buffer(packet_buffer)
-			packet_received.emit(insim_packet)
-		_discard = stream.poll()
+		while stream.get_available_bytes() >= InSimPacket.HEADER_SIZE:
+			var stream_data := stream.get_data(InSimPacket.HEADER_SIZE)
+			_discard = stream_data[0] as Error
+			var packet_header := stream_data[1] as PackedByteArray
+			var packet_size := packet_header[0]
+			if is_relay:
+				packet_header[0] = int(packet_size / float(InSimPacket.SIZE_MULTIPLIER))
+			else:
+				packet_size *= InSimPacket.SIZE_MULTIPLIER
+			packet_type = packet_header[1] as Packet
+			packet_buffer = packet_header.duplicate()
+			packet_buffer.append_array(stream.get_data(packet_size - InSimPacket.HEADER_SIZE)[1] as PackedByteArray)
+			if packet_type != Packet.ISP_NONE:
+				var insim_packet := InSimPacket.create_packet_from_buffer(packet_buffer)
+				packet_received.emit(insim_packet)
+			_discard = stream.poll()
 
 
 @warning_ignore("unused_parameter")
