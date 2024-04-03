@@ -4,24 +4,12 @@ extends Node
 
 signal packet_received(packet: OutGaugePacket)
 
-const PACKET_READ_INTERVAL := 0.01
-
-var address := "127.0.0.1"
-var port := 29_998
-
-var socket: PacketPeerUDP = null
-var packet_timer := 0.0
+var lfs_connection := LFSConnectionUDP.new()
 
 
 func _ready() -> void:
-	socket = PacketPeerUDP.new()
-
-
-func _process(delta: float) -> void:
-	packet_timer += delta
-	if delta >= PACKET_READ_INTERVAL:
-		packet_timer = 0
-		read_incoming_packets()
+	add_child(lfs_connection)
+	var _discard := lfs_connection.packet_received.connect(_on_packet_received)
 
 
 static func create_packet_from_buffer(packet_buffer: PackedByteArray) -> OutGaugePacket:
@@ -32,24 +20,13 @@ static func create_packet_from_buffer(packet_buffer: PackedByteArray) -> OutGaug
 
 
 func close() -> void:
-	if not socket:
-		return
-	socket.close()
+	lfs_connection.disconnect_from_host()
 
 
-func initialize() -> void:
-	var error := socket.bind(port, address)
-	if error != OK:
-		push_error(error)
+func initialize(address := "127.0.0.1", port := 29_998) -> void:
+	lfs_connection.connect_to_host(address, port, 0, true)
 
 
-func read_incoming_packets() -> void:
-	var packet_buffer := PackedByteArray()
-	while socket.get_available_packet_count() > 0:
-		packet_buffer = socket.get_packet()
-		var err := socket.get_packet_error()
-		if err != OK:
-			push_error("Error reading incoming packet: %s" % [err])
-			continue
-		var outgauge_packet := OutGauge.create_packet_from_buffer(packet_buffer)
-		packet_received.emit(outgauge_packet)
+func _on_packet_received(packet_buffer: PackedByteArray) -> void:
+	var packet := OutGauge.create_packet_from_buffer(packet_buffer)
+	packet_received.emit(packet as OutGaugePacket)
