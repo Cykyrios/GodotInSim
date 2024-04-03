@@ -912,7 +912,7 @@ func _on_packet_received(packet_buffer: PackedByteArray) -> void:
 		Packet.IRP_ERR:
 			irp_err_received.emit(packet)
 		_:
-			push_error("Packet type %s is not supported at this time." % [Packet.keys()[packet.type]])
+			push_error("Packet type %s is not supported at this time." % [packet.type])
 
 
 func _on_small_packet_received(packet: InSimSmallPacket) -> void:
@@ -925,7 +925,7 @@ func _on_small_packet_received(packet: InSimSmallPacket) -> void:
 			small_alc_received.emit(packet)
 		_:
 			push_error("%s with subtype %s is not supported at this time." % \
-					[Packet.keys()[packet.type], Small.keys()[packet.sub_type]])
+					[Packet.keys()[packet.type], packet.sub_type])
 
 
 func _on_tiny_packet_received(packet: InSimTinyPacket) -> void:
@@ -947,4 +947,4 @@ func _on_tiny_packet_received(packet: InSimTinyPacket) -> void:
 			tiny_axc_received.emit(packet)
 		_:
 			push_error("%s with subtype %s is not supported at this time." % \
-					[Packet.keys()[packet.type], Tiny.keys()[packet.sub_type]])
+					[Packet.keys()[packet.type], packet.sub_type])
