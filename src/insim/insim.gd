@@ -726,6 +726,8 @@ func initialize(
 		address = RELAY_ADDRESS
 		port = RELAY_PORT
 		is_relay = true
+	else:
+		is_relay = false
 	lfs_connection.connect_to_host(address, port, initialization_data.udp_port)
 
 
