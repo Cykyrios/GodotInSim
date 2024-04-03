@@ -653,6 +653,7 @@ const RELAY_ADDRESS := "isrelay.lfs.net"
 const RELAY_PORT := 47474
 
 var lfs_connection: LFSConnection = null
+var nlp_mci_connection := LFSConnectionUDP.new()
 var is_relay := false
 var initialization_data: InSimInitializationData = null
 
@@ -674,6 +675,11 @@ func _ready() -> void:
 	timeout_timer.one_shot = true
 	_discard = timeout_timer.timeout.connect(handle_timeout)
 
+	add_child(nlp_mci_connection)
+	_discard = nlp_mci_connection.packet_received.connect(func(packet: LFSPacket) -> void:
+		packet_received.emit(packet)
+	)
+
 
 func close() -> void:
 	if not lfs_connection:
@@ -681,6 +687,7 @@ func close() -> void:
 	send_packet(InSimTinyPacket.new(0, Tiny.TINY_CLOSE))
 	print("Closing InSim connection.")
 	lfs_connection.disconnect_from_host()
+	nlp_mci_connection.disconnect_from_host()
 	insim_connected = false
 
 
@@ -732,7 +739,10 @@ func initialize(
 		address = RELAY_ADDRESS
 		port = RELAY_PORT
 		is_relay = true
-	lfs_connection.connect_to_host(address, port)
+	lfs_connection.connect_to_host(address, port, initialization_data.udp_port)
+	nlp_mci_connection.disconnect_from_host()
+	if initialization_data.udp_port != 0:
+		nlp_mci_connection.connect_to_host(lfs_connection.address, lfs_connection.udp_port)
 
 
 func create_initialization_packet() -> InSimISIPacket:
@@ -744,10 +754,6 @@ func create_initialization_packet() -> InSimISIPacket:
 	initialization_packet.admin = initialization_data.admin
 	initialization_packet.i_name = initialization_data.i_name
 	return initialization_packet
-
-
-func read_incoming_packets() -> void:
-	lfs_connection.get_incoming_packets()
 
 
 @warning_ignore("unused_parameter")

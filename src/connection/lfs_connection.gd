@@ -14,15 +14,17 @@ signal packet_sent(packet: LFSPacket)
 
 var address := ""
 var port := 0
+var udp_port := 0
 
 
 func _process(_delta: float) -> void:
 	get_incoming_packets()
 
 
-func connect_to_host(_address: String, _port: int) -> void:
+func connect_to_host(_address: String, _port: int, _udp_port := 0) -> void:
 	address = _address
 	port = _port
+	udp_port = _udp_port
 
 
 func disconnect_from_host() -> void:

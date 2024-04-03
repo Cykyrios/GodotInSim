@@ -5,11 +5,14 @@ extends LFSConnection
 var socket := PacketPeerUDP.new()
 
 
-func connect_to_host(_address: String, _port: int) -> void:
-	super(_address, _port)
+func connect_to_host(_address: String, _port: int, _udp_port := 0) -> void:
+	super(_address, _port, _udp_port)
 	var error := socket.connect_to_host(address, port)
-	if error != OK:
+	if error == OK:
+		connected.emit()
+	else:
 		push_error("Connection error: %d" % [error])
+		connection_failed.emit()
 
 
 func disconnect_from_host() -> void:
@@ -32,6 +35,9 @@ func get_incoming_packets() -> void:
 
 
 func send_packet(packet: InSimPacket) -> void:
+	if not socket.is_socket_connected():
+		await connected
+	print(packet.get_dictionary())
 	packet.fill_buffer()
 	var error := socket.put_packet(packet.buffer)
 	if error != OK:

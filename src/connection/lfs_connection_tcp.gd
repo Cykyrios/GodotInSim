@@ -4,11 +4,10 @@ extends LFSConnection
 
 var stream := StreamPeerTCP.new()
 var is_insim_relay := false
-var udp_connection := LFSConnectionUDP.new()
 
 
-func connect_to_host(_address: String, _port: int) -> void:
-	super(_address, _port)
+func connect_to_host(_address: String, _port: int, _udp_port := 0) -> void:
+	super(_address, _port, _udp_port)
 	if address == InSim.RELAY_ADDRESS and port == InSim.RELAY_PORT:
 		is_insim_relay = true
 	var error := stream.connect_to_host(address, port)
