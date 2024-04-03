@@ -727,9 +727,6 @@ func initialize(
 		port = RELAY_PORT
 		is_relay = true
 	lfs_connection.connect_to_host(address, port, initialization_data.udp_port)
-	nlp_mci_connection.disconnect_from_host()
-	if initialization_data.udp_port != 0:
-		nlp_mci_connection.connect_to_host(lfs_connection.address, lfs_connection.udp_port, 0, true)
 
 
 func create_initialization_packet() -> InSimISIPacket:
@@ -792,6 +789,9 @@ func send_ping() -> void:
 func _on_connected_to_host() -> void:
 	if not is_relay:
 		send_packet(create_initialization_packet())
+		nlp_mci_connection.disconnect_from_host()
+		if initialization_data.udp_port != 0:
+			nlp_mci_connection.connect_to_host(lfs_connection.address, lfs_connection.udp_port, 0, true)
 		reset_timeout_timer()
 
 
