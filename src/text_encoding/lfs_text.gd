@@ -69,6 +69,7 @@ static func bbcode_to_lfs_colors(text: String) -> String:
 
 ## Converts a text string in binary LFS format to a UTF8 string.
 static func lfs_bytes_to_unicode(bytes: PackedByteArray, zero_terminated := true) -> String:
+	# Largely based on Sim Broadcasts' code: https://github.com/simbroadcasts/parse-lfs-message
 	var buffer := bytes.duplicate()
 	if not zero_terminated:
 		var _discard := buffer.append(0)
@@ -173,6 +174,7 @@ static func strip_colors(text: String) -> String:
 ## Converts [param text] from UTF8 to LFS encoding as a [PackedByteArray]. If [param keep_utf16] is
 ## true, the array can be converted back to text as UTF16.
 static func unicode_to_lfs_bytes(text: String, keep_utf16 := false) -> PackedByteArray:
+	# Largely based on Sim Broadcasts' code: https://github.com/simbroadcasts/unicode-to-lfs
 	var page := "L"
 	var message := _translate_specials(_escape_circumflex(text))
 	var buffer := PackedByteArray()

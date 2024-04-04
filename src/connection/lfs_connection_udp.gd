@@ -8,6 +8,8 @@ var socket := PacketPeerUDP.new()
 func connect_to_host(_address: String, _port: int, _udp_port := 0, is_out := false) -> void:
 	super(_address, _port, _udp_port)
 	var error := -1
+	# I honestly have no idea why I have to do this, but socket.connect_to_host() doesn't work for
+	# OutGauge/OutSim, packets aren't received. OTOH, socket.bind() returns 2 for InSim...
 	if is_out:
 		error = socket.bind(port, address)
 	else:

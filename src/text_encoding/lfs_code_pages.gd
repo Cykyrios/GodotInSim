@@ -2,6 +2,8 @@ class_name LFSCodePages
 extends RefCounted
 
 
+# Adapted from Victor van Vlaardingen's HTML Remote:
+# https://github.com/VictorVanV/HtmlRemote/blob/dbc6c702d12d86f1b3a76194cb662c0da2c493f6/js/LfsString.js
 const CODE_PAGE_TABLES := {
 	"E": {
 		128: 8364,
