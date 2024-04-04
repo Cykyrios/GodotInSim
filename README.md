@@ -1,14 +1,14 @@
 # Godot InSim
 
-This project aims to provide an API to build apps with the [Godot game engine](https://github.com/godotengine/godot) that can communicate with [Live For Speed](https://www.lfs.net) through its InSim protocol, as well as OutSim and OutGauge.
+This project aims to provide an API to build apps with the [Godot game engine](https://github.com/godotengine/godot) that can communicate with [Live For Speed](https://www.lfs.net) through its InSim protocol, as well as OutSim, OutGauge and InSimRelay.
 
 ## Implementation and compatibility
 
-Godot InSim currently supports InSim version 9.
+Godot InSim currently supports InSim version 9 as of LFS 0.7E.
 
 InSim packets are implemented while keeping naming conventions as close as reasonably possible to LFS's InSim documentation, although some variable names are made more readable to adhere more closely to Godot's GDScript style guide.
 
-Enums and bitflags are implemented as enums in `InSim`, `OutSim` and `OutGauge` as appropriate, some enums specific to a single type of packet can be included in the corresponding packet directly.
+Enums and bitflags are implemented as enums in `InSim`, `OutSim` and `OutGauge` as appropriate, some enums specific to a single type of packet can be included in the corresponding packet directly. `InSimRelay` is included directly in the `InSim` class.
 
 ## Installation
 
@@ -21,7 +21,8 @@ If you wish to connect to multiple InSim instances, you will need to create and 
 
 ### InSim initialization
 
-You first have to initialize InSim by sending an IS_ISI packet, which is done by calling `initialize` on your `InSim` instance. You need to set the address and port in the InSim instance, you can also pass some initialization data that will set the packet accordingly, such as flags to enable receiving certain packets.  
+You first have to initialize InSim by sending an IS_ISI packet, which is done by calling `initialize` on your `InSim` instance and passing the address and port you want to connect to, as well as some initialization data that will set the packet accordingly, such as flags to enable receiving certain packets. You can also set whether this connection is a relay, and the protocol to use (TCP or UDP).  
+OutGauge and OutSim work similarly, but only need the address and port.
 
 ### Sending packets
 
@@ -34,7 +35,7 @@ General-purpose packets (ISP_TINY, ISP_SMALL and ISP_TTC) can be sent initialize
 Signals are provided to listen to incoming packets:
 
 * `packet_received` is emitted for all incoming packets, and passes the packet as an `InSimPacket`.
-* Each packet type also emits a corresponding signal, e.g. `isp_ver_packet_received` when receiving the version packet (ISP_VER). The packet is also passed as an `InSimXXXPacket`.
+* Each packet type also emits a corresponding signal, e.g. `isp_ver_received` when receiving the version packet (ISP_VER). The packet is also passed as an `InSimXXXPacket`.
 * Generic packets (ISP_TINY and ISP_SMALL) also emit signals for their subtypes, such as `tiny_clr_received`.
 
 This allows you to listen to specific packets as well as handle any incoming packet.
@@ -43,7 +44,7 @@ This allows you to listen to specific packets as well as handle any incoming pac
 
 As LFS pings the application with a specific packet (TINY_NONE) every 30 seconds, the corresponding reply is sent automatically to prevent timeouts.
 
-The optional version request in the IS_ISI initialization packet is set to request a version packet, that you can check for InSim version compatibility.
+The optional version request in the IS_ISI initialization packet is set to request a version packet when calling `InSim.initialize()`, that you can check for InSim version compatibility.
 
 All other packets are left to the user to handle.
 
@@ -54,6 +55,10 @@ Direct OutGauge communication can be enabled without InSim by setting the approp
 ## OutSim
 
 Direct OutSim communication can be enabled without InSim by setting the appropriate settings in your `cfg.txt` file. Initialize the OutSim socket with `initialize(outsim_options)` on your `OutSim` instance to receive packets. The `outsim_options` must be the same as the OutSimOpts in `cfg.txt`.
+
+## InSimRelay
+
+You can connect to InSimRelay by connecting to InSim with the corresponding option. Relay packets can be sent just like normal InSim packets.
 
 ## Text handling
 
