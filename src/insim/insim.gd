@@ -22,6 +22,8 @@ extends Node
 ## This will make LFS listen for packets on that TCP and UDP port.
 
 
+signal connected
+signal disconnected
 signal timeout
 
 signal packet_received(packet: InSimPacket)
@@ -686,6 +688,7 @@ func close() -> void:
 	lfs_connection.disconnect_from_host()
 	nlp_mci_connection.disconnect_from_host()
 	insim_connected = false
+	disconnected.emit()
 
 
 func connect_lfs_connection_signals() -> void:
@@ -805,6 +808,7 @@ func _on_connected_to_host() -> void:
 		if initialization_data.udp_port != 0:
 			nlp_mci_connection.connect_to_host(lfs_connection.address, lfs_connection.udp_port, 0, true)
 		reset_timeout_timer()
+		connected.emit()
 
 
 func _on_connection_failed() -> void:
