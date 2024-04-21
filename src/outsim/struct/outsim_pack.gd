@@ -14,7 +14,6 @@ const OUTSIM_PACK1_ID_SIZE := 4
 
 const WHEEL_COUNT := 4
 
-var is_old_pack := false  # OutSimPack vs OutSimPack2
 var outsim_options := 0
 
 var header_l := ""
@@ -56,7 +55,6 @@ func _to_string() -> String:
 
 func set_from_buffer(buffer: PackedByteArray) -> void:
 	var data_offset := 0
-	is_old_pack = true if outsim_options == 0 else false
 	if outsim_options == 0:
 		var buffer_size := buffer.size()
 		if buffer_size in [OUTSIM_PACK1_SIZE, OUTSIM_PACK1_SIZE + OUTSIM_PACK1_ID_SIZE]:
