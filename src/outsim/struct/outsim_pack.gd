@@ -44,6 +44,11 @@ var steer_torque := 0.0
 var spare := 0.0
 
 
+func _init() -> void:
+	for wheel in OutSimPack.WHEEL_COUNT:
+		os_wheels.append(OutSimWheel.new())
+
+
 func _to_string() -> String:
 	return "ID:%d, Time:%d, OSMain:%s, OSInputs:%s, Gear:%d, Sp1:%d, Sp2:%d, Sp3:%d" % \
 			[id, time, os_main, os_inputs, gear, sp1, sp2, sp3] \
