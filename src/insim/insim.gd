@@ -688,6 +688,7 @@ func close() -> void:
 	lfs_connection.disconnect_from_host()
 	nlp_mci_connection.disconnect_from_host()
 	insim_connected = false
+	ping_timer.stop()
 	disconnected.emit()
 
 
