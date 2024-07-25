@@ -31,7 +31,7 @@ func test_float_to_string(input: float, expected: String) -> bool:
 	var tester := TimeTester.new()
 	tester.test_float_to_string(input, expected)
 	if not tester.passed:
-		print("%s: %s -> %s" % ["OK" if tester.passed else "NOK", tester.input_float, tester.output_text])
+		print_rich("[color=red]NOK: %s -> %s[/color]" % [tester.input_float, tester.output_text])
 	return tester.passed
 
 
@@ -39,7 +39,7 @@ func test_string_to_float(input: String, expected: float) -> bool:
 	var tester := TimeTester.new()
 	tester.test_string_to_float(input, expected)
 	if not tester.passed:
-		print("%s: %s -> %s" % ["OK" if tester.passed else "NOK", tester.input_text, tester.output_float])
+		print_rich("[color=red]NOK: %s -> %s[/color]" % [tester.input_text, tester.output_float])
 	return tester.passed
 
 

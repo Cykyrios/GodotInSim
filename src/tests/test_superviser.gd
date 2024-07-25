@@ -19,7 +19,8 @@ func add_result(result: bool) -> void:
 func end_test_suite() -> void:
 	assert(passed_tests + failed_tests == test_count,
 			"Incoherent test count, expected %d, got %d." % [test_count, passed_tests + failed_tests])
-	print("%s: %d tests run, %d failed." % [title, test_count, failed_tests])
+	print_rich("%s: %d tests run, %s%d failed%s." % [title, test_count,
+			"[color=red]" if failed_tests > 0 else "", failed_tests, "[/color]" if failed_tests > 0 else ""])
 
 
 func start_test_suite(test_title := "test") -> void:

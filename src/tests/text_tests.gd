@@ -30,7 +30,7 @@ func test_unicode_to_string(input: String, expected: String) -> bool:
 	var tester := TextTester.new()
 	tester.test_unicode_to_string(input, expected)
 	if not tester.passed:
-		print("%s: %s -> %s" % ["OK" if tester.passed else "NOK", tester.input, tester.output])
+		print_rich("[color=red]NOK: %s -> %s[/color]" % [tester.input, tester.output])
 	return tester.passed
 
 
@@ -38,7 +38,7 @@ func test_string_to_unicode(input: String, expected: String) -> bool:
 	var tester := TextTester.new()
 	tester.test_string_to_unicode(input, expected)
 	if not tester.passed:
-		print("%s: %s -> %s" % ["OK" if tester.passed else "NOK", tester.input, tester.output])
+		print_rich("[color=red]NOK: %s -> %s[/color]" % [tester.input, tester.output])
 	return tester.passed
 
 

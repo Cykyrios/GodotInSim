@@ -29,7 +29,7 @@ func test_acceleration_conversion(
 	var tester := UnitConversionTester.new()
 	tester.test_acceleration_conversion(value, from, to, expected)
 	if not tester.passed:
-		print("%s: %f %s -> %f %s" % ["OK" if tester.passed else "NOK", tester.input,
+		print_rich("[color=red]NOK: %f %s -> %f %s[/color]" % [tester.input,
 				GISUtils.AccelerationUnit.keys()[from], tester.output, GISUtils.AccelerationUnit.keys()[to]])
 	return tester.passed
 
@@ -50,7 +50,7 @@ func test_angle_conversion(
 	var tester := UnitConversionTester.new()
 	tester.test_angle_conversion(value, from, to, expected)
 	if not tester.passed:
-		print("%s: %f %s -> %f %s" % ["OK" if tester.passed else "NOK", tester.input,
+		print_rich("[color=red]NOK: %f %s -> %f %s[/color]" % [tester.input,
 				GISUtils.AngleUnit.keys()[from], tester.output, GISUtils.AngleUnit.keys()[to]])
 	return tester.passed
 
@@ -69,7 +69,7 @@ func test_force_conversion(
 	var tester := UnitConversionTester.new()
 	tester.test_force_conversion(value, from, to, expected)
 	if not tester.passed:
-		print("%s: %f %s -> %f %s" % ["OK" if tester.passed else "NOK", tester.input,
+		print_rich("[color=red]NOK: %f %s -> %f %s[/color]" % [tester.input,
 				GISUtils.ForceUnit.keys()[from], tester.output, GISUtils.ForceUnit.keys()[to]])
 	return tester.passed
 
@@ -90,7 +90,7 @@ func test_length_conversion(
 	var tester := UnitConversionTester.new()
 	tester.test_length_conversion(value, from, to, expected)
 	if not tester.passed:
-		print("%s: %f %s -> %f %s" % ["OK" if tester.passed else "NOK", tester.input,
+		print_rich("[color=red]NOK: %f %s -> %f %s[/color]" % [tester.input,
 				GISUtils.LengthUnit.keys()[from], tester.output, GISUtils.LengthUnit.keys()[to]])
 	return tester.passed
 
@@ -111,7 +111,7 @@ func test_mass_conversion(
 	var tester := UnitConversionTester.new()
 	tester.test_mass_conversion(value, from, to, expected)
 	if not tester.passed:
-		print("%s: %f %s -> %f %s" % ["OK" if tester.passed else "NOK", tester.input,
+		print_rich("[color=red]NOK: %f %s -> %f %s[/color]" % [tester.input,
 				GISUtils.MassUnit.keys()[from], tester.output, GISUtils.MassUnit.keys()[to]])
 	return tester.passed
 
@@ -130,7 +130,7 @@ func test_power_conversion(
 	var tester := UnitConversionTester.new()
 	tester.test_power_conversion(value, from, to, expected)
 	if not tester.passed:
-		print("%s: %f %s -> %f %s" % ["OK" if tester.passed else "NOK", tester.input,
+		print_rich("[color=red]NOK: %f %s -> %f %s[/color]" % [tester.input,
 				GISUtils.PowerUnit.keys()[from], tester.output, GISUtils.PowerUnit.keys()[to]])
 	return tester.passed
 
@@ -153,7 +153,7 @@ func test_speed_conversion(
 	var tester := UnitConversionTester.new()
 	tester.test_speed_conversion(value, from, to, expected)
 	if not tester.passed:
-		print("%s: %f %s -> %f %s" % ["OK" if tester.passed else "NOK", tester.input,
+		print_rich("[color=red]NOK: %f %s -> %f %s[/color]" % [tester.input,
 				GISUtils.SpeedUnit.keys()[from], tester.output, GISUtils.SpeedUnit.keys()[to]])
 	return tester.passed
 
@@ -176,7 +176,7 @@ func test_time_conversion(
 	var tester := UnitConversionTester.new()
 	tester.test_time_conversion(value, from, to, expected)
 	if not tester.passed:
-		print("%s: %f %s -> %f %s" % ["OK" if tester.passed else "NOK", tester.input,
+		print_rich("[color=red]NOK: %f %s -> %f %s[/color]" % [tester.input,
 				GISUtils.TimeUnit.keys()[from], tester.output, GISUtils.TimeUnit.keys()[to]])
 	return tester.passed
 
