@@ -46,10 +46,8 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	ban_ips.clear()
 	for i in numb:
 		var ip_address := IPAddress.new()
-		ip_address.address[0] = read_byte()
-		ip_address.address[1] = read_byte()
-		ip_address.address[2] = read_byte()
-		ip_address.address[3] = read_byte()
+		ip_address.fill_from_string("%d.%d.%d.%d" % [read_byte(), read_byte(),
+				read_byte(), read_byte()])
 		ban_ips.append(ip_address)
 
 
@@ -64,10 +62,10 @@ func _fill_buffer() -> void:
 	add_byte(sp3)
 	resize_buffer(PACKET_BASE_SIZE + numb * IPB_DATA_SIZE)
 	for i in numb:
-		add_byte(ban_ips[i].address[0])
-		add_byte(ban_ips[i].address[1])
-		add_byte(ban_ips[i].address[2])
-		add_byte(ban_ips[i].address[3])
+		add_byte(ban_ips[i].address_array[0])
+		add_byte(ban_ips[i].address_array[1])
+		add_byte(ban_ips[i].address_array[2])
+		add_byte(ban_ips[i].address_array[3])
 
 
 func _get_data_dictionary() -> Dictionary:
