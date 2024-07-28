@@ -13,7 +13,7 @@ var sp2 := 0
 var sp3 := 0
 
 var user_id := 0  ## LFS UserID
-var ip_address := 0
+var ip_address := IPAddress.new()
 
 
 func _init() -> void:
@@ -34,7 +34,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	sp2 = read_byte()
 	sp3 = read_byte()
 	user_id = read_unsigned()
-	ip_address = read_unsigned()
+	ip_address.fill_from_int(read_unsigned())
 
 
 func _get_data_dictionary() -> Dictionary:
@@ -45,5 +45,5 @@ func _get_data_dictionary() -> Dictionary:
 		"Sp2": sp2,
 		"Sp3": sp3,
 		"UserID": user_id,
-		"IPAddress": ip_address,
+		"IPAddress": ip_address.address_string,
 	}
