@@ -85,7 +85,7 @@ static func convert_time(value: float, from: TimeUnit, to: TimeUnit) -> float:
 ## Returns a time value in seconds from a time string in format "hh:mm:ss.dd". Validation is not
 ## performed, strings such as "62:70.5" are considered valid and will return 3790.5 seconds. Hours
 ## and minutes can be omitted is they are leading zeros.
-static func get_seconds_from_time_strings(time: String) -> float:
+static func get_seconds_from_time_string(time: String) -> float:
 	var regex := RegEx.create_from_string(r"(?:(\d+):)?(?:(\d+):)?(\d+)(.\d*)?")
 	var regex_match := regex.search(time)
 	if not regex_match:
