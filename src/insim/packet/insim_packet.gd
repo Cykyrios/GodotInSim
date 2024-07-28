@@ -93,6 +93,8 @@ static func create_packet_from_buffer(packet_buffer: PackedByteArray) -> InSimPa
 			packet = InSimHLVPacket.new()
 		InSim.Packet.ISP_III:
 			packet = InSimIIIPacket.new()
+		InSim.Packet.ISP_IPB:
+			packet = InSimIPBPacket.new()
 		InSim.Packet.ISP_ISI:
 			packet = InSimISIPacket.new()
 		InSim.Packet.ISP_ISM:

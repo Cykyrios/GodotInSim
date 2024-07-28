@@ -43,6 +43,7 @@ const SENDABLES := [
 	InSim.Tiny.TINY_SLC,
 	InSim.Tiny.TINY_MAL,
 	InSim.Tiny.TINY_PLH,
+	InSim.Tiny.TINY_IPB,
 ]
 
 const PACKET_SIZE := 4
