@@ -79,6 +79,7 @@ signal isp_csc_received(packet: InSimCSCPacket)
 signal isp_cim_received(packet: InSimCIMPacket)
 signal isp_mal_received(packet: InSimMALPacket)
 signal isp_plh_received(packet: InSimPLHPacket)
+signal isp_ipb_received(packet: InSimIPBPacket)
 signal small_vta_received(packet: InSimSmallPacket)
 signal small_rtp_received(packet: InSimSmallPacket)
 signal small_alc_received(packet: InSimSmallPacket)
@@ -160,6 +161,7 @@ enum Packet {
 	ISP_CIM,  ## 64 - info: connection's interface mode
 	ISP_MAL,  ## 65 - both ways: set mods allowed
 	ISP_PLH,  ## 66 - both ways: set player handicaps
+	ISP_IPB,  ## 67 - both ways: set IP bans
 	IRP_ARQ = 250,  ## Send : request if we are host admin (after connecting to a host)
 	IRP_ARP,  ## Receive : replies if you are admin (after connecting to a host)
 	IRP_HLR,  ## Send : To request a hostlist
@@ -197,6 +199,7 @@ enum Tiny {
 	TINY_SLC,  ## 26 - info request: send IS_SLC packets for all connections
 	TINY_MAL,  ## 27 - info request: send IS_MAL listing the currently allowed mods
 	TINY_PLH,  ## 28 - info request: send IS_PLH listing player handicaps
+	TINY_IPB,  ## 29 - info request: send IS_IPB listing the IP bans
 }
 enum Small {
 	SMALL_NONE,  ## 0: not used
@@ -922,6 +925,8 @@ func _on_packet_received(packet_buffer: PackedByteArray) -> void:
 			isp_mal_received.emit(packet)
 		Packet.ISP_PLH:
 			isp_plh_received.emit(packet)
+		Packet.ISP_IPB:
+			isp_ipb_received.emit(packet)
 		Packet.IRP_ARP:
 			irp_arp_received.emit(packet)
 		Packet.IRP_HOS:
