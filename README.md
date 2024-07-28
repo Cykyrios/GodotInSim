@@ -4,7 +4,7 @@ This project aims to provide an API to build apps with the [Godot game engine](h
 
 ## Implementation and compatibility
 
-Godot InSim currently supports InSim version 9 as of LFS 0.7E.
+Godot InSim currently supports InSim version 9 as of LFS 0.7F.
 
 InSim packets are implemented while keeping naming conventions as close as reasonably possible to LFS's InSim documentation, although some variable names are made more readable to adhere more closely to Godot's GDScript style guide.
 
