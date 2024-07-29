@@ -9,19 +9,19 @@ const ANGVEL_MULTIPLIER := 16384 / 360.0
 
 const STRUCT_SIZE := 28
 
-var node := 0
-var lap := 0
-var player_id := 0
-var position := 0
-var info := 0
+var node := 0  ## current path node
+var lap := 0  ## current lap
+var player_id := 0  ## player's unique id
+var position := 0  ## current race position: 0 = unknown, 1 = leader, etc...
+var info := 0  ## flags and other info - see below
 var sp3 := 0
-var x := 0
-var y := 0
-var z := 0
-var speed := 0
-var direction := 0
-var heading := 0
-var ang_vel := 0
+var x := 0  ## X map (65536 = 1 metre)
+var y := 0  ## Y map (65536 = 1 metre)
+var z := 0  ## Z alt (65536 = 1 metre)
+var speed := 0  ## speed (32768 = 100 m/s)
+var direction := 0  ## car's motion if Speed > 0: 0 = world y direction, 32768 = 180 deg
+var heading := 0  ## direction of forward axis: 0 = world y direction, 32768 = 180 deg
+var ang_vel := 0  ## signed, rate of change of heading: (16384 = 360 deg/s)
 
 var gis_position := Vector3.ZERO
 var gis_speed := 0.0
