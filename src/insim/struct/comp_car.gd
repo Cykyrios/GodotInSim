@@ -11,7 +11,7 @@ const STRUCT_SIZE := 28
 
 var node := 0  ## current path node
 var lap := 0  ## current lap
-var player_id := 0  ## player's unique id
+var plid := 0  ## player's unique id
 var position := 0  ## current race position: 0 = unknown, 1 = leader, etc...
 var info := 0  ## flags and other info - see below
 var sp3 := 0
@@ -32,7 +32,7 @@ var gis_angular_velocity := 0.0
 
 func _to_string() -> String:
 	return "Node:%d, Lap:%d, PLID:%d, Pos:%d, Info:%d, Sp3:%d, X:%d, Y:%d, Z:%d" % \
-			[node, lap, player_id, position, info, sp3, x, y, z] \
+			[node, lap, plid, position, info, sp3, x, y, z] \
 			+ ", Speed:%d, Direction:%d, Heading:%d, AngVel:%d" % [speed, direction, heading, ang_vel]
 
 
@@ -41,7 +41,7 @@ func _get_buffer() -> PackedByteArray:
 	var _discard := buffer.resize(STRUCT_SIZE)
 	buffer.encode_u16(0, node)
 	buffer.encode_u16(2, lap)
-	buffer.encode_u8(4, player_id)
+	buffer.encode_u8(4, plid)
 	buffer.encode_u8(5, position)
 	buffer.encode_u8(6, info)
 	buffer.encode_u8(7, sp3)
@@ -60,7 +60,7 @@ func _set_from_buffer(buffer: PackedByteArray) -> void:
 		push_error("Wrong buffer size, expected %d, got %d" % [STRUCT_SIZE, buffer.size()])
 	node = buffer.decode_u16(0)
 	lap = buffer.decode_u16(2)
-	player_id = buffer.decode_u8(4)
+	plid = buffer.decode_u8(4)
 	position = buffer.decode_u8(5)
 	info = buffer.decode_u8(6)
 	sp3 = buffer.decode_u8(7)

@@ -51,7 +51,7 @@ var time := 0  ## time in milliseconds (to check order)
 var car_name := ""  ## Car name
 var flags := 0  ## Info (see [enum OGFlags])
 var gear := 0  ## Reverse:0, Neutral:1, First:2...
-var player_id := 0  ## Unique ID of viewed player (0 = none)
+var plid := 0  ## Unique ID of viewed player (0 = none)
 var speed := 0.0  ## M/S
 var rpm := 0.0  ## RPM
 var turbo := 0.0  ## BAR
@@ -85,7 +85,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	car_name = read_car_name()
 	flags = read_word()
 	gear = read_byte()
-	player_id = read_byte()
+	plid = read_byte()
 	speed = read_float()
 	rpm = read_float()
 	turbo = read_float()

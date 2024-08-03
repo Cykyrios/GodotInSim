@@ -7,7 +7,7 @@ const TIME_MULTIPLIER := 1000.0
 
 const PACKET_SIZE := 20
 const PACKET_TYPE := InSim.Packet.ISP_FIN
-var player_id := 0  ## player's unique id (0 = player left before result was sent)
+var plid := 0  ## player's unique id (0 = player left before result was sent)
 
 var race_time := 0  ## race time (ms)
 var best_lap := 0  ## best lap (ms)
@@ -36,7 +36,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 		push_error("%s packet expected size %d, got %d." % [InSim.Packet.keys()[type], size, packet_size])
 		return
 	super(packet)
-	player_id = read_byte()
+	plid = read_byte()
 	race_time = read_unsigned()
 	best_lap = read_unsigned()
 	sp_a = read_byte()
@@ -49,7 +49,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 
 func _get_data_dictionary() -> Dictionary:
 	return {
-		"PLID": player_id,
+		"PLID": plid,
 		"TTime": race_time,
 		"BTime": best_lap,
 		"SpA": sp_a,

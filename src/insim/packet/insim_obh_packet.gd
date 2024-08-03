@@ -17,7 +17,7 @@ const POSITION_Z_MULTIPLIER := 4.0
 
 const PACKET_SIZE := 24
 const PACKET_TYPE := InSim.Packet.ISP_OBH
-var player_id := 0  ## player's unique id
+var plid := 0  ## player's unique id
 
 var sp_close := 0  ## high 4 bits: reserved / low 12 bits: closing speed (10 = 1 m/s)
 var time := 0  ## looping time stamp (hundredths - time since reset - like [constant InSim.TINY_GTH])
@@ -48,7 +48,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 		push_error("%s packet expected size %d, got %d." % [InSim.Packet.keys()[type], size, packet_size])
 		return
 	super(packet)
-	player_id = read_byte()
+	plid = read_byte()
 	sp_close = read_word()
 	time = read_word()
 	var struct_size := CarContObj.STRUCT_SIZE
@@ -64,7 +64,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 
 func _get_data_dictionary() -> Dictionary:
 	return {
-		"PLID": player_id,
+		"PLID": plid,
 		"SpClose": sp_close,
 		"Time": time,
 		"C": object,

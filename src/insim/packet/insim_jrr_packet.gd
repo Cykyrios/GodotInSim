@@ -5,7 +5,7 @@ extends InSimPacket
 
 const PACKET_SIZE := 16
 const PACKET_TYPE := InSim.Packet.ISP_JRR
-var player_id := 0  ## ZERO when this is a replay to a join request - SET to move a car
+var plid := 0  ## ZERO when this is a replay to a join request - SET to move a car
 
 var ucid := 0  ## set when this is a reply to a join request - ignored when moving a car
 var action := 0  ## 1 - allow / 0 - reject (should send message to user)
@@ -23,7 +23,7 @@ func _init() -> void:
 
 func _fill_buffer() -> void:
 	super()
-	add_byte(player_id)
+	add_byte(plid)
 	add_byte(ucid)
 	add_byte(action)
 	add_byte(sp2)
@@ -35,7 +35,7 @@ func _fill_buffer() -> void:
 
 func _get_data_dictionary() -> Dictionary:
 	return {
-		"PLID": player_id,
+		"PLID": plid,
 		"UCID": ucid,
 		"Action": action,
 		"Sp2": sp2,

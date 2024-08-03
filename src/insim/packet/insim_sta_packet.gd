@@ -13,7 +13,7 @@ var replay_speed := 0.0  ## 4-byte float - 1.0 is normal speed
 
 var flags := 0  ## state flags (see [enum InSim.State])
 var ingame_cam := 0  ## Which type of camera is selected (see [enum InSim.View])
-var view_player_id := 0  ## Unique ID of viewed player (0 = none)
+var view_plid := 0  ## Unique ID of viewed player (0 = none)
 
 var num_players := 0  ## Number of players in race
 var num_connections := 0  ## Number of connections including host
@@ -52,7 +52,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 
 	flags = read_word()
 	ingame_cam = read_byte()
-	view_player_id = read_byte()
+	view_plid = read_byte()
 
 	num_players = read_byte()
 	num_connections = read_byte()
@@ -75,7 +75,7 @@ func _get_data_dictionary() -> Dictionary:
 		"ReplaySpeed": replay_speed,
 		"Flags": flags,
 		"InGameCam": ingame_cam,
-		"ViewPLID": view_player_id,
+		"ViewPLID": view_plid,
 		"NumP": num_players,
 		"NumConns": num_connections,
 		"NumFinished": num_finished,

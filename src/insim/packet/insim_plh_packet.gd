@@ -37,7 +37,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	hcaps.clear()
 	for i in nump:
 		var player_hcap := PlayerHandicap.new()
-		player_hcap.player_id = read_byte()
+		player_hcap.plid = read_byte()
 		player_hcap.flags = read_byte()
 		player_hcap.h_mass = read_byte()
 		player_hcap.h_tres = read_byte()
@@ -51,7 +51,7 @@ func _fill_buffer() -> void:
 	add_byte(nump)
 	resize_buffer(PACKET_BASE_SIZE + nump * PLH_DATA_SIZE)
 	for i in nump:
-		add_byte(hcaps[i].player_id)
+		add_byte(hcaps[i].plid)
 		add_byte(hcaps[i].flags)
 		add_byte(hcaps[i].h_mass)
 		add_byte(hcaps[i].h_tres)

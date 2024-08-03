@@ -5,7 +5,7 @@ extends InSimPacket
 
 const PACKET_SIZE := 8
 const PACKET_TYPE := InSim.Packet.ISP_TOC
-var player_id := 0  ## player's unique id
+var plid := 0  ## player's unique id
 
 var old_ucid := 0  ## old connection's unique id
 var new_ucid := 0  ## new connection's unique id
@@ -25,7 +25,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 		push_error("%s packet expected size %d, got %d." % [InSim.Packet.keys()[type], size, packet_size])
 		return
 	super(packet)
-	player_id = read_byte()
+	plid = read_byte()
 	old_ucid = read_byte()
 	new_ucid = read_byte()
 	sp2 = read_byte()
@@ -34,7 +34,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 
 func _get_data_dictionary() -> Dictionary:
 	return {
-		"PLID": player_id,
+		"PLID": plid,
 		"OldUCID": old_ucid,
 		"NewUCID": new_ucid,
 		"Sp2": sp2,

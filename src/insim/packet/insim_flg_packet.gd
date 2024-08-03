@@ -5,7 +5,7 @@ extends InSimPacket
 
 const PACKET_SIZE := 8
 const PACKET_TYPE := InSim.Packet.ISP_FLG
-var player_id := 0  ## player's unique id
+var plid := 0  ## player's unique id
 
 var off_on := 0  ## 0 = off / 1 = on
 var flag := 0  ## 1 = given blue / 2 = causing yellow
@@ -25,7 +25,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 		push_error("%s packet expected size %d, got %d." % [InSim.Packet.keys()[type], size, packet_size])
 		return
 	super(packet)
-	player_id = read_byte()
+	plid = read_byte()
 	off_on = read_byte()
 	flag = read_byte()
 	car_behind = read_byte()
@@ -34,7 +34,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 
 func _get_data_dictionary() -> Dictionary:
 	return {
-		"PLID": player_id,
+		"PLID": plid,
 		"OffOn": off_on,
 		"Flag": flag,
 		"CarBehind": car_behind,

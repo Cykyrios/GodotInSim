@@ -1,7 +1,7 @@
 class_name InSimNPLPacket
 extends InSimPacket
 
-## New PLayer joining race packet (if [member player_id] already exists, then leaving pits)
+## New PLayer joining race packet (if [member plid] already exists, then leaving pits)
 
 const MAX_TYRES := 4
 
@@ -11,7 +11,7 @@ const SKIN_NAME_MAX_LENGTH := 16
 
 const PACKET_SIZE := 76
 const PACKET_TYPE := InSim.Packet.ISP_NPL
-var player_id := 0  ## player's newly assigned unique id
+var plid := 0  ## player's newly assigned unique id
 
 var ucid := 0  ## connection's unique id
 var player_type := 0  ## bit 0: female / bit 1: AI / bit 2: remote
@@ -52,7 +52,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 		push_error("%s packet expected size %d, got %d." % [InSim.Packet.keys()[type], size, packet_size])
 		return
 	super(packet)
-	player_id = read_byte()
+	plid = read_byte()
 	ucid = read_byte()
 	player_type = read_byte()
 	flags = read_word()
@@ -79,7 +79,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 
 func _get_data_dictionary() -> Dictionary:
 	return {
-		"PLID": player_id,
+		"PLID": plid,
 		"UCID": ucid,
 		"PType": player_type,
 		"Flags": flags,

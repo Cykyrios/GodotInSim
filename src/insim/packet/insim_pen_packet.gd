@@ -5,7 +5,7 @@ extends InSimPacket
 
 const PACKET_SIZE := 8
 const PACKET_TYPE := InSim.Packet.ISP_PEN
-var player_id := 0  ## player's unique id
+var plid := 0  ## player's unique id
 
 var old_penalty := InSim.Penalty.PENALTY_NONE  ## old penalty value (see [enum InSim.Penalty])
 var new_penalty := InSim.Penalty.PENALTY_NONE  ## new penalty value (see [enum InSim.Penalty])
@@ -25,7 +25,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 		push_error("%s packet expected size %d, got %d." % [InSim.Packet.keys()[type], size, packet_size])
 		return
 	super(packet)
-	player_id = read_byte()
+	plid = read_byte()
 	old_penalty = read_byte() as InSim.Penalty
 	new_penalty = read_byte() as InSim.Penalty
 	reason = read_byte() as InSim.PenaltyReason
@@ -34,7 +34,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 
 func _get_data_dictionary() -> Dictionary:
 	return {
-		"PLID": player_id,
+		"PLID": plid,
 		"OldPen": old_penalty,
 		"NewPen": new_penalty,
 		"Reason": reason,

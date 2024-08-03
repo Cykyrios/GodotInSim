@@ -7,7 +7,7 @@ const TIME_MULTIPLIER := 100.0
 
 const PACKET_SIZE := 20
 const PACKET_TYPE := InSim.Packet.ISP_CSC
-var player_id := 0  ## player's unique id
+var plid := 0  ## player's unique id
 
 var sp0 := 0
 var csc_action := InSim.CSCAction.CSC_START
@@ -32,7 +32,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 		push_error("%s packet expected size %d, got %d." % [InSim.Packet.keys()[type], size, packet_size])
 		return
 	super(packet)
-	player_id = read_byte()
+	plid = read_byte()
 	sp0 = read_byte()
 	csc_action = read_byte() as InSim.CSCAction
 	sp2 = read_byte()
@@ -45,7 +45,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 
 func _get_data_dictionary() -> Dictionary:
 	return {
-		"PLID": player_id,
+		"PLID": plid,
 		"Sp0": sp0,
 		"CSCAction": csc_action,
 		"Sp2": sp2,

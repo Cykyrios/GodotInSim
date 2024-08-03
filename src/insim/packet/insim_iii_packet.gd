@@ -11,7 +11,7 @@ const MSG_MAX_LENGTH := 64
 var zero := 0
 
 var ucid := 0  ## connection's unique id (0 = host)
-var player_id := 0  ## player's unique id (if zero, use [member ucid])
+var plid := 0  ## player's unique id (if zero, use [member ucid])
 var sp2 := 0
 var sp3 := 0
 
@@ -37,7 +37,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	super(packet)
 	zero = read_byte()
 	ucid = read_byte()
-	player_id = read_byte()
+	plid = read_byte()
 	sp2 = read_byte()
 	sp3 = read_byte()
 	msg = read_string(packet_size - data_offset)
@@ -47,7 +47,7 @@ func _get_data_dictionary() -> Dictionary:
 	return {
 		"Zero": zero,
 		"UCID": ucid,
-		"PLID": player_id,
+		"PLID": plid,
 		"Sp2": sp2,
 		"Sp3": sp3,
 		"Msg": msg,

@@ -8,7 +8,7 @@ const FUEL_MULTIPLIER := 2.0
 
 const PACKET_SIZE := 16
 const PACKET_TYPE := InSim.Packet.ISP_SPX
-var player_id := 0  ## player's unique id
+var plid := 0  ## player's unique id
 
 var split_time := 0  ## split time (ms)
 var elapsed_time := 0  ## total time (ms)
@@ -35,7 +35,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 		push_error("%s packet expected size %d, got %d." % [InSim.Packet.keys()[type], size, packet_size])
 		return
 	super(packet)
-	player_id = read_byte()
+	plid = read_byte()
 	split_time = read_unsigned()
 	elapsed_time = read_unsigned()
 	split = read_byte()
@@ -46,7 +46,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 
 func _get_data_dictionary() -> Dictionary:
 	return {
-		"PLID": player_id,
+		"PLID": plid,
 		"STime": split_time,
 		"ETime": elapsed_time,
 		"Split": split,

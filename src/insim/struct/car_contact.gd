@@ -10,7 +10,7 @@ const STEER_MULTIPLIER := PI / 180.0
 
 const STRUCT_SIZE := 16
 
-var player_id := 0  ## player's unique id
+var plid := 0  ## player's unique id
 var info := 0  ## like info byte in [CompCar] (CCI_BLUE / CCI_YELLOW / CCI_LAG)
 var sp2 := 0  ## spare
 var steer := 0  ## front wheel steer in degrees (right positive)
@@ -38,7 +38,7 @@ var gis_steer := 0.0
 
 func _to_string() -> String:
 	return "PLID:%d, Info:%d, Sp2:%d, Steer:%d, ThrBrk:%d, CluHan:%d, GearSp:%d, Speed:%d" % \
-			[player_id, info, sp2, steer, throttle_brake, clutch_handbrake, gear_spare, speed] \
+			[plid, info, sp2, steer, throttle_brake, clutch_handbrake, gear_spare, speed] \
 			+ ", Direction:%d, Heading:%d, AccelF:%d, AccelR:%d, X:%d, Y:%d" % \
 			[direction, heading, accel_forward, accel_right, x, y]
 
@@ -46,7 +46,7 @@ func _to_string() -> String:
 func _get_buffer() -> PackedByteArray:
 	var buffer := PackedByteArray()
 	var _discard := buffer.resize(STRUCT_SIZE)
-	buffer.encode_u8(0, player_id)
+	buffer.encode_u8(0, plid)
 	buffer.encode_u8(1, info)
 	buffer.encode_u8(2, sp2)
 	buffer.encode_u8(3, steer)
@@ -66,7 +66,7 @@ func _get_buffer() -> PackedByteArray:
 func _set_from_buffer(buffer: PackedByteArray) -> void:
 	if buffer.size() != STRUCT_SIZE:
 		push_error("Wrong buffer size, expected %d, got %d" % [STRUCT_SIZE, buffer.size()])
-	player_id = buffer.decode_u8(0)
+	plid = buffer.decode_u8(0)
 	info = buffer.decode_u8(1)
 	sp2 = buffer.decode_u8(2)
 	steer = buffer.decode_u8(3)

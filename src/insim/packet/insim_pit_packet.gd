@@ -7,7 +7,7 @@ const MAX_TYRES := 4
 
 const PACKET_SIZE := 24
 const PACKET_TYPE := InSim.Packet.ISP_PIT
-var player_id := 0  ## player's unique id
+var plid := 0  ## player's unique id
 
 var laps_done := 0  ## laps completed
 var flags := 0  ## player flags
@@ -35,7 +35,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 		push_error("%s packet expected size %d, got %d." % [InSim.Packet.keys()[type], size, packet_size])
 		return
 	super(packet)
-	player_id = read_byte()
+	plid = read_byte()
 	laps_done = read_word()
 	flags = read_word()
 	fuel_add = read_byte()
@@ -51,7 +51,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 
 func _get_data_dictionary() -> Dictionary:
 	return {
-		"PLID": player_id,
+		"PLID": plid,
 		"LapsDone": laps_done,
 		"Flags": flags,
 		"FuelAdd": fuel_add,

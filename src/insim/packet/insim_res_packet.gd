@@ -11,7 +11,7 @@ const PLATE_MAX_LENGTH := 8
 
 const PACKET_SIZE := 84
 const PACKET_TYPE := InSim.Packet.ISP_RES
-var player_id := 0  ## player's unique id (0 = player left before result was sent)
+var plid := 0  ## player's unique id (0 = player left before result was sent)
 
 var username := ""  ## username
 var player_name := ""  ## nickame
@@ -49,7 +49,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 		push_error("%s packet expected size %d, got %d." % [InSim.Packet.keys()[type], size, packet_size])
 		return
 	super(packet)
-	player_id = read_byte()
+	plid = read_byte()
 	username = read_string(USERNAME_MAX_LENGTH)
 	player_name = read_string(PLAYER_NAME_MAX_LENGTH)
 	plate = read_string(PLATE_MAX_LENGTH, false)
@@ -69,7 +69,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 
 func _get_data_dictionary() -> Dictionary:
 	return {
-		"PLID": player_id,
+		"PLID": plid,
 		"UName": username,
 		"PName": player_name,
 		"Plate": plate,

@@ -11,7 +11,7 @@ const TEXT_MAX_LENGTH := 128  # last byte must be zero, actual length is one cha
 var sound := InSim.MessageSound.SND_SILENT  ## sound effect (see [enum InSim.MessageSound])
 
 var ucid := 0  ## connection's unique id (0 = host / 255 = all)
-var player_id := 0  ## player's unique id (if zero, use [member ucid])
+var plid := 0  ## player's unique id (if zero, use [member ucid])
 var sp2 := 0
 var sp3 := 0
 
@@ -28,7 +28,7 @@ func _fill_buffer() -> void:
 	super()
 	add_byte(sound)
 	add_byte(ucid)
-	add_byte(player_id)
+	add_byte(plid)
 	add_byte(sp2)
 	add_byte(sp3)
 	add_string_variable_length(text, TEXT_MAX_LENGTH, SIZE_MULTIPLIER)
@@ -39,7 +39,7 @@ func _get_data_dictionary() -> Dictionary:
 	return {
 		"Sound": sound,
 		"UCID": ucid,
-		"PLID": player_id,
+		"PLID": plid,
 		"Sp2": sp2,
 		"Sp3": sp3,
 		"Text": text,
