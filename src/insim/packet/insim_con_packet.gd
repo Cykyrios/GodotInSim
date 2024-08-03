@@ -1,7 +1,7 @@
 class_name InSimCONPacket
 extends InSimPacket
 
-## CONtact packet - between two cars ([member car_a] and [member car_b] are sorted by [member player_id])
+## CONtact packet - between two cars ([member car_a] and [member car_b] are sorted by PLID)
 
 const CLOSING_SPEED_MASK := 0x0fff
 const CLOSING_SPEED_MULTIPLIER := 10.0
