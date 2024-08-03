@@ -290,8 +290,12 @@ static func _remove_inner_zeros(buffer: PackedByteArray) -> PackedByteArray:
 static func _translate_specials(text: String) -> String:
 	var message := text
 	for i in SPECIAL_CHARACTERS.size():
-		message = message.replace(SPECIAL_CHARACTERS.values()[i] as String,
-				SPECIAL_CHARACTERS.keys()[i] as String)
+		message = message.replace(str(SPECIAL_CHARACTERS.values()[i]),
+				str(SPECIAL_CHARACTERS.keys()[i]))
+	# Keep "basic" slash (U+2F) at beginning of message so it can be interpreted
+	# as an LFS command instead of text. This should not affect text representation otherwise.
+	if message.begins_with(str(SPECIAL_CHARACTERS.keys()[SPECIAL_CHARACTERS.values().find("/")])):
+		message = "/" + message.substr(2)
 	return message
 
 

@@ -17,3 +17,5 @@ func test_unicode_to_lfs() -> void:
 	assert_eq(LFSText.unicode_to_lfs_string("ě ш ﾏ"), "^Eì ^Cø ^JÏ")
 	assert_eq(LFSText.unicode_to_lfs_string("^72^45 ^7B2^4ﾏ ^1Ayoub"), "^72^45 ^7B2^4^JÏ ^1Ayoub")
 	assert_eq(LFSText.unicode_to_lfs_string("^405 ｢^7ﾏｧ^4｣ ^7TJ"), "^405 ^J¢^7Ï§^4£ ^7TJ")
+	assert_eq(LFSText.unicode_to_lfs_string("/command test"), "/command test")
+	assert_eq(LFSText.unicode_to_lfs_string("/command with a /slash"), "/command with a ^sslash")
