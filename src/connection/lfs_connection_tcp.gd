@@ -19,7 +19,9 @@ func connect_to_host(_address: String, _port: int, _udp_port := 0) -> void:
 	while status == stream.STATUS_CONNECTING:
 		await get_tree().create_timer(0.5).timeout
 		status = stream.get_status()
-	print("TCP status: %d%s" % [status, (" - %s:%d" % [stream.get_connected_host(),
+	var status_string := "connected" if status == stream.STATUS_CONNECTED \
+			else "error" if status == stream.STATUS_ERROR else str(status)
+	print("TCP status: %s%s" % [status_string, (" - %s:%d" % [stream.get_connected_host(),
 			stream.get_connected_port()]) if status == stream.STATUS_CONNECTED else ""])
 	if status == stream.STATUS_CONNECTED:
 		connected.emit()
