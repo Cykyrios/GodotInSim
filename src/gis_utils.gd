@@ -116,6 +116,9 @@ static func get_time_string_from_seconds(
 	var seconds := time - 3600 * hours - 60 * minutes
 	var seconds_int := floori(seconds)
 	var seconds_decimals := roundi((seconds - seconds_int) * pow(10, decimal_places))
+	if len(str(seconds_decimals)) > decimal_places:
+		seconds_int += 1
+		seconds_decimals = 0
 	if negative:
 		time = -time
 	return "%s%s%s%02d.%0*d" % ["+" if show_plus_sign and not negative else "-" if negative else "",
