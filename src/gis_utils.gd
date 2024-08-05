@@ -103,11 +103,17 @@ static func get_seconds_from_time_string(time: String) -> float:
 ## Returns a time string from provided [param time] in seconds as "hh:mm:ss.ddd". Hours and minutes
 ## are omitted if they are leading zeros. The intended valid range is 0 to 360,000 seconds
 ## (100 hours) excluded, values outside this range return 0.
-static func get_time_string_from_seconds(time: float) -> String:
+static func get_time_string_from_seconds(
+	time: float, decimal_places := 2, show_plus_sign := false, simplify_zero := false
+) -> String:
 	if time < 0 or time >= 360_000:
-		return get_time_string_from_seconds(0)
+		return get_time_string_from_seconds(0, decimal_places, show_plus_sign, simplify_zero)
 	var hours := floori(time / 3600)
 	var minutes := floori((time - 3600 * hours) / 60)
 	var seconds := time - 3600 * hours - 60 * minutes
-	return "%s%s%06.3f" % ["" if time < 3600 else "%d:" % [hours],
-			"" if (time < 60 and time != 0) else "%02d:" % [minutes], seconds]
+	var seconds_int := floori(seconds)
+	var seconds_decimals := roundi((seconds - seconds_int) * pow(10, decimal_places))
+	return "%s%s%s%02d.%0*d" % ["+" if show_plus_sign else "",
+			"" if time < 3600 or simplify_zero else "%d:" % [hours],
+			"" if (time < 60 or simplify_zero) else "%02d:" % [minutes],
+			seconds_int, decimal_places, seconds_decimals]
