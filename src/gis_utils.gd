@@ -106,14 +106,19 @@ static func get_seconds_from_time_string(time: String) -> float:
 static func get_time_string_from_seconds(
 	time: float, decimal_places := 2, show_plus_sign := false, simplify_zero := false
 ) -> String:
-	if time < 0 or time >= 360_000:
+	var negative := true if time < 0 else false
+	if negative:
+		time = -time
+	if time >= 360_000:
 		return get_time_string_from_seconds(0, decimal_places, show_plus_sign, simplify_zero)
 	var hours := floori(time / 3600)
 	var minutes := floori((time - 3600 * hours) / 60)
 	var seconds := time - 3600 * hours - 60 * minutes
 	var seconds_int := floori(seconds)
 	var seconds_decimals := roundi((seconds - seconds_int) * pow(10, decimal_places))
-	return "%s%s%s%02d.%0*d" % ["+" if show_plus_sign else "",
+	if negative:
+		time = -time
+	return "%s%s%s%02d.%0*d" % ["+" if show_plus_sign and not negative else "-" if negative else "",
 			"" if time < 3600 or simplify_zero else "%d:" % [hours],
 			"" if (time < 60 or simplify_zero) else "%02d:" % [minutes],
 			seconds_int, decimal_places, seconds_decimals]
