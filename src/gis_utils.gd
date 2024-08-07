@@ -104,7 +104,7 @@ static func get_seconds_from_time_string(time: String) -> float:
 ## are omitted if they are leading zeros. The intended valid range is 0 to 360,000 seconds
 ## (100 hours) excluded, values outside this range return 0.
 static func get_time_string_from_seconds(
-	time: float, decimal_places := 2, show_plus_sign := false, simplify_zero := false
+	time: float, decimal_places := 2, simplify_zero := false, show_plus_sign := false
 ) -> String:
 	var negative := true if time < 0 else false
 	if negative:
@@ -119,9 +119,7 @@ static func get_time_string_from_seconds(
 	if len(str(seconds_decimals)) > decimal_places:
 		seconds_int += 1
 		seconds_decimals = 0
-	if negative:
-		time = -time
 	return "%s%s%s%02d.%0*d" % ["+" if show_plus_sign and not negative else "-" if negative else "",
-			"" if time < 3600 or simplify_zero else "%d:" % [hours],
-			"" if (time < 60 or simplify_zero) else "%02d:" % [minutes],
+			"" if hours == 0 else "%d:" % [hours],
+			"" if (minutes == 0 and simplify_zero) else "%02d:" % [minutes],
 			seconds_int, decimal_places, seconds_decimals]

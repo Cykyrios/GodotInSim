@@ -2,11 +2,14 @@ extends GutTest
 
 
 func test_time_float_to_string() -> void:
-	assert_eq(GISUtils.get_time_string_from_seconds(0), "00:00.000")
-	assert_eq(GISUtils.get_time_string_from_seconds(42.21), "42.210")
-	assert_eq(GISUtils.get_time_string_from_seconds(-10), "00:00.000")
-	assert_eq(GISUtils.get_time_string_from_seconds(3600), "1:00:00.000")
-	assert_eq(GISUtils.get_time_string_from_seconds(3599.99), "59:59.990")
+	assert_eq(GISUtils.get_time_string_from_seconds(0), "00:00.00")
+	assert_eq(GISUtils.get_time_string_from_seconds(0, 2, true), "00.00")
+	assert_eq(GISUtils.get_time_string_from_seconds(42.21), "00:42.21")
+	assert_eq(GISUtils.get_time_string_from_seconds(42.21, 2, true), "42.21")
+	assert_eq(GISUtils.get_time_string_from_seconds(-10, 2, true), "-10.00")
+	assert_eq(GISUtils.get_time_string_from_seconds(3600), "1:00:00.00")
+	assert_eq(GISUtils.get_time_string_from_seconds(3599.99), "59:59.99")
+	assert_eq(GISUtils.get_time_string_from_seconds(-65.842, 1, true, true), "-01:05.8")
 
 
 func test_time_string_to_float() -> void:
