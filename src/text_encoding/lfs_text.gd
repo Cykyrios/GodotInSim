@@ -9,7 +9,7 @@ extends RefCounted
 ## everything is converted, but characters are encoded in UTF16 instead of proper LFS format
 ## (which removes intermediate zeros).
 
-enum ColorCode {BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE}
+enum ColorCode {BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE, DEFAULT}
 
 const CODE_PAGES := {
 	"^L": "CP1252",
@@ -45,6 +45,7 @@ const COLORS: Array[Color] = [
 	Color(1, 0, 1),
 	Color(0, 1, 1),
 	Color(1, 1, 1),
+	Color(0.58, 0.58, 0.58),
 ]
 const FALLBACK_CHARACTER := "?"
 
