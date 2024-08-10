@@ -104,13 +104,15 @@ static func get_seconds_from_time_string(time: String) -> float:
 ## are omitted if they are leading zeros. The intended valid range is 0 to 360,000 seconds
 ## (100 hours) excluded, values outside this range return 0.
 static func get_time_string_from_seconds(
-	time: float, decimal_places := 2, simplify_zero := false, show_plus_sign := false
+	time: float, decimal_places := 2, simplify_zero := false, show_plus_sign := false,
+	always_show_minutes := false
 ) -> String:
 	var negative := true if time < 0 else false
 	if negative:
 		time = -time
 	if time >= 360_000:
-		return get_time_string_from_seconds(0, decimal_places, show_plus_sign, simplify_zero)
+		return get_time_string_from_seconds(0, decimal_places, show_plus_sign, simplify_zero,
+				always_show_minutes)
 	var hours := floori(time / 3600)
 	var minutes := floori((time - 3600 * hours) / 60)
 	var seconds := time - 3600 * hours - 60 * minutes
@@ -119,7 +121,13 @@ static func get_time_string_from_seconds(
 	if len(str(seconds_decimals)) > decimal_places:
 		seconds_int += 1
 		seconds_decimals = 0
-	return "%s%s%s%02d.%0*d" % ["+" if show_plus_sign and not negative else "-" if negative else "",
+	return "%s%s%s%s" % ["+" if show_plus_sign and not negative else "-" if negative else "",
 			"" if hours == 0 else "%d:" % [hours],
-			"" if (minutes == 0 and simplify_zero) else "%02d:" % [minutes],
-			seconds_int, decimal_places, seconds_decimals]
+			"" if minutes == 0 and hours == 0 and not always_show_minutes \
+					else "%d:" % [minutes] if simplify_zero and \
+					(hours == 0 or always_show_minutes) \
+					else "%02d:" % [minutes],
+			("%d" % [seconds_int] if simplify_zero and minutes == 0 and hours == 0 \
+					and not always_show_minutes \
+					else "%02d" % [seconds_int]) \
+					+ ".%0*d" % [decimal_places, seconds_decimals]]
