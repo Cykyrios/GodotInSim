@@ -236,6 +236,9 @@ static func _get_bytes_from_string(code: int, code_page: String, keep_utf16: boo
 static func _get_string_from_bytes(buffer: PackedByteArray, code_page: String) -> String:
 	var text := ""
 	var page := code_page
+	# Workaround for ^8 implying ^L (both represent CP1252)
+	if page == "^8":
+		page = "^L"
 	if page.length() > 1:
 		page = page.substr(1, 1)
 
