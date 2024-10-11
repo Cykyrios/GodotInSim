@@ -47,7 +47,7 @@ const COLORS: Array[Color] = [
 	Color(1, 1, 1),
 	Color(0.58, 0.58, 0.58),
 ]
-const FALLBACK_CHARACTER := "?"
+const FALLBACK_CHARACTER := "\ufffd"
 
 
 ## Converts BBCode color tags to LFS colors (only works for LFS preset colors, see [enum ColorCode].
