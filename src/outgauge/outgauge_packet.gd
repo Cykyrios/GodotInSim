@@ -47,6 +47,8 @@ const DISPLAY_2_SIZE := 16
 const SIZE_WITHOUT_ID := 92
 const SIZE_WITH_ID := SIZE_WITHOUT_ID + 4
 
+const TIME_MULTIPLIER := 1000.0
+
 var time := 0  ## time in milliseconds (to check order)
 var car_name := ""  ## Car name
 var flags := 0  ## Info (see [enum OGFlags])
@@ -68,6 +70,8 @@ var display1 := ""  ## Usually Fuel
 var display2 := ""  ## Usually Settings
 var id := 0  ## optional - only if OutGauge ID is specified
 
+var gis_time := 0.0
+
 
 func _init(packet := PackedByteArray()) -> void:
 	if not packet.is_empty():
@@ -82,6 +86,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 				[SIZE_WITHOUT_ID, SIZE_WITH_ID, packet_size])
 		return
 	time = read_unsigned()
+	gis_time = time / TIME_MULTIPLIER
 	car_name = read_car_name()
 	flags = read_word()
 	gear = read_byte()

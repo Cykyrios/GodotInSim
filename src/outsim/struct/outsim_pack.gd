@@ -9,6 +9,8 @@ enum WheelIndex {
 	FRONT_RIGHT,
 }
 
+const TIME_MULTIPLIER := 1000.0
+
 const OUTSIM_PACK1_SIZE := 64
 const OUTSIM_PACK1_ID_SIZE := 4
 
@@ -42,6 +44,8 @@ var os_wheels: Array[OutSimWheel] = []
 
 var steer_torque := 0.0
 var spare := 0.0
+
+var gis_time := 0.0
 
 
 func _init() -> void:
@@ -85,6 +89,7 @@ func set_from_buffer(buffer: PackedByteArray) -> void:
 		data_offset += 4
 	if outsim_options & OutSim.OutSimOpts.OSO_TIME:
 		time = buffer.decode_u32(data_offset)
+		gis_time = time / TIME_MULTIPLIER
 		data_offset += 4
 	if outsim_options & OutSim.OutSimOpts.OSO_MAIN:
 		os_main.set_from_buffer(buffer.slice(data_offset, data_offset + OutSimMain.STRUCT_SIZE))
