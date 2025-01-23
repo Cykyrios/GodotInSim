@@ -23,6 +23,7 @@ const SENDABLES := [
 	InSim.Small.SMALL_ALC,
 	InSim.Small.SMALL_LCS,
 	InSim.Small.SMALL_LCL,
+	InSim.Small.SMALL_AII,
 ]
 
 const PACKET_SIZE := 8
