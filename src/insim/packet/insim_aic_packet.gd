@@ -3,37 +3,36 @@ extends InSimPacket
 
 ## AI Control packet
 
-const PACKET_SIZE := 8
+const MAX_INPUTS := 20
+const PACKET_MIN_SIZE := 4
+const PACKET_MAX_SIZE := 4 + MAX_INPUTS * AIInputVal.STRUCT_SIZE
 const PACKET_TYPE := InSim.Packet.ISP_AIC
-var zero := 0
 
 var plid := 0  ## Unique ID of AI player to control
-## Select input value to set
-## Special values for Input:
-## 254 - reset all
-## 255 - stop control
-var input := InSim.AIControl.CS_NUM
-var value := 0  ## Value to set
+
+var inputs: Array[AIInputVal] = []
 
 
 func _init() -> void:
-	size = PACKET_SIZE
+	size = PACKET_MAX_SIZE
 	type = PACKET_TYPE
 	sendable = true
 
 
 func _fill_buffer() -> void:
 	super()
-	add_byte(zero)
 	add_byte(plid)
-	add_byte(input)
-	add_word(value)
+	if inputs.size() > MAX_INPUTS:
+		var _discard := inputs.resize(MAX_INPUTS)
+	for input in inputs:
+		add_byte(input.input)
+		add_byte(input.time)
+		add_word(input.value)
+	resize_buffer(PACKET_MIN_SIZE + inputs.size() * AIInputVal.STRUCT_SIZE)
 
 
 func _get_data_dictionary() -> Dictionary:
 	return {
-		"Zero": zero,
 		"PLID": plid,
-		"Input": input,
-		"Value": value,
+		"Inputs": inputs,
 	}
