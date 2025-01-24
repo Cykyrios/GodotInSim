@@ -55,6 +55,10 @@ static func create_packet_from_buffer(packet_buffer: PackedByteArray) -> InSimPa
 	match packet_type:
 		InSim.Packet.ISP_ACR:
 			packet = InSimACRPacket.new()
+		InSim.Packet.ISP_AIC:
+			packet = InSimAICPacket.new()
+		InSim.Packet.ISP_AII:
+			packet = InSimAIIPacket.new()
 		InSim.Packet.ISP_AXI:
 			packet = InSimAXIPacket.new()
 		InSim.Packet.ISP_AXM:

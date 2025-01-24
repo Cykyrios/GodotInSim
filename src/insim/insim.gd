@@ -80,6 +80,8 @@ signal isp_cim_received(packet: InSimCIMPacket)
 signal isp_mal_received(packet: InSimMALPacket)
 signal isp_plh_received(packet: InSimPLHPacket)
 signal isp_ipb_received(packet: InSimIPBPacket)
+signal isp_aic_received(packet: InSimAICPacket)
+signal isp_aii_received(packet: InSimAIIPacket)
 signal small_vta_received(packet: InSimSmallPacket)
 signal small_rtp_received(packet: InSimSmallPacket)
 signal small_alc_received(packet: InSimSmallPacket)
@@ -162,6 +164,8 @@ enum Packet {
 	ISP_MAL,  ## 65 - both ways: set mods allowed
 	ISP_PLH,  ## 66 - both ways: set player handicaps
 	ISP_IPB,  ## 67 - both ways: set IP bans
+	ISP_AIC,  ## 68 - instruction: set AI control values
+	ISP_AII,  ## 69 - info: info about AI car
 	IRP_ARQ = 250,  ## Send : request if we are host admin (after connecting to a host)
 	IRP_ARP,  ## Receive : replies if you are admin (after connecting to a host)
 	IRP_HLR,  ## Send : To request a hostlist
@@ -213,6 +217,7 @@ enum Small {
 	SMALL_ALC,  ## 8 - both ways: set or get allowed cars (TINY_ALC)
 	SMALL_LCS,  ## 9 - instruction: set local car switches (flash, horn, siren)
 	SMALL_LCL,  ## 10 - instruction: set local car lights
+	SMALL_AII,  ## 11 - info request: get local AI info
 }
 enum TTC {
 	TTC_NONE,  ## 0: not used
@@ -238,6 +243,34 @@ enum RelayFlag {
 	HOS_LAST = 128,  ## Indicates the last host in the list
 }
 
+enum AIControl {
+	CS_MSX,  ## 0 - steering : 32768 is centre
+	CS_THROTTLE,  ## 1 - 0 to 65535
+	CS_BRAKE,  ## 2 - 0 to 65535
+	CS_CHUP,  ## 3 - shift up (set to 1 for a short time then set back to 0)
+	CS_CHDN,  ## 4 - shift down
+	CS_IGNITION,  ## 5 - set to 1 (auto switch off)
+	CS_EXTRALIGHT,  ## 6
+	CS_HEADLIGHTS,  ## 7 - 1: off / 2: side / 3: low / 4: high
+	CS_SIREN,  ## 8
+	CS_HORN,  ## 9
+	CS_FLASH,  ## 10
+	CS_CLUTCH,  ## 11 - 0 to 65535
+	CS_HANDBRAKE,  ## 12 - 0 to 65535
+	CS_INDICATORS,  ## 13 - 1: cancel / 2: left / 3: right / 4: hazard
+	CS_GEAR,  ## 14 - for shifter (leave at 255 for sequential control)
+	CS_LOOK,  ## 15 - 0: none / 4: left / 5: left+ / 6: right / 7: right+
+	CS_PITSPEED,  ## 16
+	CS_TCDISABLE,  ## 17
+	CS_FOGREAR,  ## 18
+	CS_FOGFRONT,  ## 19
+	CS_NUM,  ## 20 - number of values above
+}
+enum AIFlags {
+	AIFLAGS_IGNITION = 1,  ## detect if engine running
+	AIFLAGS_CHUP = 4,  ## upshift lever currently held
+	AIFLAGS_CHDN = 8,  ## downshift lever currently held
+}
 enum AutoCrossObject {
 	AXO_START_LIGHTS1 = 149,
 	AXO_START_LIGHTS2 = 150,
@@ -927,6 +960,10 @@ func _on_packet_received(packet_buffer: PackedByteArray) -> void:
 			isp_plh_received.emit(packet)
 		Packet.ISP_IPB:
 			isp_ipb_received.emit(packet)
+		Packet.ISP_AIC:
+			isp_aic_received.emit(packet)
+		Packet.ISP_AII:
+			isp_aii_received.emit(packet)
 		Packet.IRP_ARP:
 			irp_arp_received.emit(packet)
 		Packet.IRP_HOS:
