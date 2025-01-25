@@ -265,6 +265,9 @@ enum AIControl {
 	CS_FOGREAR,  ## 18
 	CS_FOGFRONT,  ## 19
 	CS_NUM,  ## 20 - number of values above
+	CS_FLAGS = 253, ## 253: set help flags (PIF_AUTOGEARS, PIF_HELP_B, PIF_AUTOCLUTCH)
+	CS_RESET,  ## 254: reset all inputs, CS_MSX is 32768, CS_GEAR is 255, other inputs are 0
+	CS_STOP,  ## 255: stop control, the AI driver will stop the car
 }
 enum AIFlags {
 	AIFLAGS_IGNITION = 1,  ## detect if engine running
