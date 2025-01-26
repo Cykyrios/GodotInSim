@@ -1,16 +1,23 @@
 class_name AIInputVal
 extends InSimStruct
 
+## InSim struct for AI control input
 
 const TIME_MULTIPLIER := 100.0
 
 const STRUCT_SIZE := 4
 
 ## Select input value to set
-## Special values for Input:
-## 254 - reset all
-## 255 - stop control
-var input := 0
+## Inputs marked 'hold' must be set back to zero after some time.
+## This can be done either by use of the [param time] field or by sending a
+## later packet with [param value] = 0.
+## E.g. Set time to 10 when issuing a CS_CHUP - hold shift up lever for 0.1 sec.
+## E.g. Set time to 50 when issuing a CS_HORN - sound horn for 0.5 sec.
+## Inputs marked 'toggle' accept the following values:
+## 1 - toggle
+## 2 - switch off
+## 3 - switch on
+var input := InSim.AIControl.CS_MSX
 var time := 0  ## Time to hold (optional, hundredths of a second)
 var value := 0  ## Value to set
 
@@ -33,7 +40,7 @@ func _get_buffer() -> PackedByteArray:
 func _set_from_buffer(buffer: PackedByteArray) -> void:
 	if buffer.size() != STRUCT_SIZE:
 		push_error("Wrong buffer size, expected %d, got %d" % [STRUCT_SIZE, buffer.size()])
-	input = buffer.decode_u8(0)
+	input = buffer.decode_u8(0) as InSim.AIControl
 	time = buffer.decode_u8(1)
 	value = buffer.decode_u16(2)
 

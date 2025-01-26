@@ -243,31 +243,33 @@ enum RelayFlag {
 	HOS_LAST = 128,  ## Indicates the last host in the list
 }
 
+## See [AIInputVal] for more details
 enum AIControl {
-	CS_MSX,  ## 0 - steering : 32768 is centre
+	CS_MSX,  ## 0 - steering : 1 hard left / 32768 centre / 65535 hard right
 	CS_THROTTLE,  ## 1 - 0 to 65535
 	CS_BRAKE,  ## 2 - 0 to 65535
-	CS_CHUP,  ## 3 - shift up (set to 1 for a short time then set back to 0)
-	CS_CHDN,  ## 4 - shift down
-	CS_IGNITION,  ## 5 - set to 1 (auto switch off)
-	CS_EXTRALIGHT,  ## 6
+	CS_CHUP,  ## 3 - hold shift up lever
+	CS_CHDN,  ## 4 - hold shift down lever
+	CS_IGNITION,  ## 5 - toggle
+	CS_EXTRALIGHT,  ## 6 - toggle
 	CS_HEADLIGHTS,  ## 7 - 1: off / 2: side / 3: low / 4: high
-	CS_SIREN,  ## 8
-	CS_HORN,  ## 9
-	CS_FLASH,  ## 10
+	CS_SIREN,  ## 8 - hold siren - 1: fast / 2: slow
+	CS_HORN,  ## 9 - hold horn - 1 to 5
+	CS_FLASH,  ## 10 - hold flash - 1: on
 	CS_CLUTCH,  ## 11 - 0 to 65535
 	CS_HANDBRAKE,  ## 12 - 0 to 65535
 	CS_INDICATORS,  ## 13 - 1: cancel / 2: left / 3: right / 4: hazard
 	CS_GEAR,  ## 14 - for shifter (leave at 255 for sequential control)
 	CS_LOOK,  ## 15 - 0: none / 4: left / 5: left+ / 6: right / 7: right+
-	CS_PITSPEED,  ## 16
-	CS_TCDISABLE,  ## 17
-	CS_FOGREAR,  ## 18
-	CS_FOGFRONT,  ## 19
-	CS_NUM,  ## 20 - number of values above
-	CS_FLAGS = 253, ## 253: set help flags (PIF_AUTOGEARS, PIF_HELP_B, PIF_AUTOCLUTCH)
-	CS_RESET,  ## 254: reset all inputs, CS_MSX is 32768, CS_GEAR is 255, other inputs are 0
-	CS_STOP,  ## 255: stop control, the AI driver will stop the car
+	CS_PITSPEED,  ## 16 - toggle
+	CS_TCDISABLE,  ## 17 - toggle
+	CS_FOGREAR,  ## 18 - toggle
+	CS_FOGFRONT,  ## 19 - toggle
+	CS_SEND_AI_INFO = 240,  ## 240
+	CS_REPEAT_AI_INFO,  ## 241
+	CS_SET_HELP_FLAGS = 253, ## 253: set help flags (PIF_AUTOGEARS, PIF_HELP_B, PIF_AUTOCLUTCH)
+	CS_RESET_INPUTS,  ## 254: reset all inputs, CS_MSX is 32768, CS_GEAR is 255, other inputs are 0
+	CS_STOP_CONTROL,  ## 255: stop control, the AI driver will stop the car
 }
 enum AIFlags {
 	AIFLAGS_IGNITION = 1,  ## detect if engine running
