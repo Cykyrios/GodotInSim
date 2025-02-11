@@ -183,32 +183,10 @@ func read_byte() -> int:
 
 
 func read_car_name() -> String:
-	var is_alphanumeric := func is_alphanumeric(character: int) -> bool:
-		var string := String.chr(character)
-		if (
-			string >= "0" and string <= "9"
-			or string >= "A" and string <= "Z"
-			or string >= "a" and string <= "z"
-		):
-			return true
-		return false
-
 	const CAR_NAME_LENGTH := 4
 	var car_name_buffer := buffer.slice(data_offset, data_offset + CAR_NAME_LENGTH)
 	data_offset += CAR_NAME_LENGTH
-	var car_name := ""
-	if (
-		car_name_buffer[-1] == 0
-		and is_alphanumeric.call(car_name_buffer[0])
-		and is_alphanumeric.call(car_name_buffer[1])
-		and is_alphanumeric.call(car_name_buffer[2])
-	):
-		car_name = car_name_buffer.get_string_from_utf8()
-	else:
-		var _discard := car_name_buffer.resize(3)
-		car_name_buffer.reverse()
-		car_name = car_name_buffer.hex_encode().to_upper()
-	return car_name
+	return LFSText.car_name_from_buffer(car_name_buffer)
 
 
 func read_char() -> String:

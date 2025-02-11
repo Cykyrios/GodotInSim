@@ -68,6 +68,31 @@ static func bbcode_to_lfs_colors(text: String) -> String:
 	return lfs_text
 
 
+static func car_name_from_buffer(buffer: PackedByteArray) -> String:
+	var is_alphanumeric := func is_alphanumeric(character: int) -> bool:
+		var string := String.chr(character)
+		if (
+			string >= "0" and string <= "9"
+			or string >= "A" and string <= "Z"
+			or string >= "a" and string <= "z"
+		):
+			return true
+		return false
+	var car_name := ""
+	if (
+		buffer[-1] == 0
+		and is_alphanumeric.call(buffer[0])
+		and is_alphanumeric.call(buffer[1])
+		and is_alphanumeric.call(buffer[2])
+	):
+		car_name = buffer.get_string_from_utf8()
+	else:
+		var _discard := buffer.resize(3)
+		buffer.reverse()
+		car_name = buffer.hex_encode().to_upper()
+	return car_name
+
+
 ## Converts a text string in binary LFS format to a UTF8 string.
 static func lfs_bytes_to_unicode(bytes: PackedByteArray, zero_terminated := true) -> String:
 	# Largely based on Sim Broadcasts' code: https://github.com/simbroadcasts/parse-lfs-message
