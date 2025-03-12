@@ -573,7 +573,7 @@ enum PitWork {
 	PSE_REFUEL,
 	PSE_NUM
 }
-enum Player {
+enum PlayerFlag {
 	PIF_LEFTSIDE = 1,
 	PIF_RESERVED_2 = 2,
 	PIF_RESERVED_4 = 4,

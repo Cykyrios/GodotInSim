@@ -18,7 +18,7 @@ var confirm := 0  ## confirmation flags: disqualified etc - see [enum InSim.Conf
 var sp_b := 0
 
 var laps_done := 0  ## laps completed
-var flags := 0  ## player flags: help settings etc - see [enum InSim.Player]
+var flags := 0  ## player flags: help settings etc - see [enum InSim.PlayerFlag]
 
 var gis_race_time := 0.0
 var gis_best_lap := 0.0

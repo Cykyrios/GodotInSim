@@ -15,7 +15,7 @@ var plid := 0  ## player's newly assigned unique id
 
 var ucid := 0  ## connection's unique id
 var player_type := 0  ## bit 0: female / bit 1: AI / bit 2: remote
-var flags := 0  ## player flags (see [enum InSim.Player])
+var flags := 0  ## player flags (see [enum InSim.PlayerFlag])
 
 var player_name := ""  ## nickname
 var plate := ""  ## number plate - NO ZERO AT END!

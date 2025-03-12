@@ -7,7 +7,7 @@ const PACKET_SIZE := 8
 const PACKET_TYPE := InSim.Packet.ISP_PFL
 var plid := 0  ## player's unique id
 
-var flags := 0  ## player flags (see [enum InSim.Player])
+var flags := 0  ## player flags (see [enum InSim.PlayerFlag])
 var spare := 0
 
 

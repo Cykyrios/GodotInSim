@@ -27,7 +27,7 @@ var confirm := 0  ## confirmation flags: disqualified etc - see [enum InSim.Conf
 var sp_b := 0
 
 var laps_done := 0  ## laps completed
-var flags := 0  ## player flags: help settings etc - see [enum InSim.Player]
+var flags := 0  ## player flags: help settings etc - see [enum InSim.PlayerFlag]
 
 var result_num := 0  ## finish or qualify pos (0 = win / 255 = not added to table)
 var num_results := 0  ## total number of results (qualify doesn't always add a new one)
