@@ -689,7 +689,7 @@ enum Vote {
 }
 
 const VERSION := 9
-const PING_INTERVAL := 30
+const PING_INTERVAL := 31
 const TIMEOUT_DELAY := 10
 
 const RELAY_ADDRESS := "isrelay.lfs.net"
