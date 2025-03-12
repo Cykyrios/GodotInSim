@@ -34,6 +34,8 @@ func disconnect_from_host() -> void:
 
 
 func get_incoming_packets() -> void:
+	if not stream:
+		return
 	var packet_buffer := PackedByteArray()
 	var _discard := stream.poll()
 	if (
