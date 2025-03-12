@@ -80,6 +80,6 @@ func _get_data_dictionary() -> Dictionary:
 		"InSimVer": insim_version,
 		"Prefix": prefix,
 		"Interval": interval,
-		"Admin": admin,
+		"Admin": "***" if not admin.is_empty() else "",
 		"IName": i_name,
 	}
