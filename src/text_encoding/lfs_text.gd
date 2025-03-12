@@ -93,6 +93,11 @@ static func car_name_from_buffer(buffer: PackedByteArray) -> String:
 	return car_name
 
 
+## Returns a color code string (^0 to ^8)
+static func get_color_code(color: ColorCode) -> String:
+	return "^%d" % [color]
+
+
 ## Converts a text string in binary LFS format to a UTF8 string.
 static func lfs_bytes_to_unicode(bytes: PackedByteArray, zero_terminated := true) -> String:
 	# Largely based on Sim Broadcasts' code: https://github.com/simbroadcasts/parse-lfs-message
