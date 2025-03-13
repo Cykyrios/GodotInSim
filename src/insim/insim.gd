@@ -26,8 +26,12 @@ signal connected
 signal disconnected
 signal timeout
 
+## Emitted when a packet is received from LFS.
 signal packet_received(packet: InSimPacket)
-signal packet_sent(packet: InSimPacket)
+## Emitted when a packet is sent successfully. [code]sender[/code] can be used
+## to identify the source of the packet (InSim itself, or the user application),
+## and defaults to [code]InSim[/code] in [method send_packet].
+signal packet_sent(packet: InSimPacket, sender: String)
 signal isp_ver_received(packet: InSimVERPacket)
 signal isp_tiny_received(packet: InSimTinyPacket)
 signal isp_small_received(packet: InSimSmallPacket)
@@ -820,7 +824,10 @@ func send_keep_alive_packet() -> void:
 	reset_timeout_timer()
 
 
-func send_packet(packet: InSimPacket) -> void:
+## Call this function to send an InSim packet to LFS. You can pass the name
+## of your application to [param sender] if you want to identify the origin of
+## sent packets (by connecting the [signal packet_sent] signal).
+func send_packet(packet: InSimPacket, sender := "InSim") -> void:
 	if not lfs_connection:
 		push_error("No connection, cannot send packet.")
 		return
@@ -835,7 +842,7 @@ func send_packet(packet: InSimPacket) -> void:
 	packet.fill_buffer()
 	var packet_sent_successfully := lfs_connection.send_packet(packet.buffer)
 	if packet_sent_successfully:
-		packet_sent.emit(packet)
+		packet_sent.emit(packet, sender)
 
 
 func send_ping() -> void:
