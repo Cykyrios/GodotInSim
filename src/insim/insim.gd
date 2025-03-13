@@ -709,6 +709,14 @@ var insim_connected := false
 var ping_timer := Timer.new()
 var timeout_timer := Timer.new()
 
+## Current state of the game, as per IS_STA documentation. Updated automatically upon
+## receiving an IS_STA packet. Does not include packet header.
+var lfs_state := LFSState.new()
+## Dictionary of UCID/license name pairs, updated automatically.
+var connections: Dictionary[int, Connection] = {}
+## Dictionary of PLID/UCID pairs, updated automatically.
+var players: Dictionary[int, Player] = {}
+
 
 func _ready() -> void:
 	add_child(nlp_mci_connection)
@@ -724,6 +732,12 @@ func _ready() -> void:
 	_discard = isp_ver_received.connect(read_version_packet)
 	_discard = isp_tiny_received.connect(_on_tiny_packet_received)
 	_discard = isp_small_received.connect(_on_small_packet_received)
+	_discard = isp_sta_received.connect(_on_sta_packet_received)
+	_discard = isp_ncn_received.connect(_on_ncn_packet_received)
+	_discard = isp_cnl_received.connect(_on_cnl_packet_received)
+	_discard = isp_cpr_received.connect(_on_cpr_packet_received)
+	_discard = isp_npl_received.connect(_on_npl_packet_received)
+	_discard = isp_pll_received.connect(_on_pll_packet_received)
 
 
 func close() -> void:
@@ -795,13 +809,17 @@ func read_ping_reply() -> void:
 
 
 func read_version_packet(packet: InSimVERPacket) -> void:
-	insim_connected = true
 	if packet.insim_ver != VERSION:
 		print("Host InSim version (%d) is different from local version (%d)." % \
 				[packet.insim_ver, VERSION])
 		close()
 		return
-	print("Host InSim version matches local version (%d)." % [VERSION])
+	if not insim_connected:
+		insim_connected = true
+		print("Host InSim version matches local version (%d)." % [VERSION])
+		send_packet(InSimTinyPacket.create(1, InSim.Tiny.TINY_SST))
+		send_packet(InSimTinyPacket.create(1, InSim.Tiny.TINY_NCN))
+		send_packet(InSimTinyPacket.create(1, InSim.Tiny.TINY_NPL))
 
 
 func reset_timeout_timer() -> void:
@@ -993,6 +1011,32 @@ func _on_small_packet_received(packet: InSimSmallPacket) -> void:
 			small_alc_received.emit(packet)
 		_:
 			push_error_unknown_packet_subtype(packet.type, packet.sub_type)
+
+
+func _on_sta_packet_received(packet: InSimSTAPacket) -> void:
+	lfs_state.set_from_sta_packet(packet)
+
+
+#region connections and players
+func _on_cnl_packet_received(packet: InSimCNLPacket) -> void:
+	var _discard := connections.erase(packet.ucid)
+
+
+func _on_cpr_packet_received(packet: InSimCPRPacket) -> void:
+	connections[packet.ucid].nickname = packet.player_name
+
+
+func _on_ncn_packet_received(packet: InSimNCNPacket) -> void:
+	connections[packet.ucid] = Connection.create_from_ncn_packet(packet)
+
+
+func _on_npl_packet_received(packet: InSimNPLPacket) -> void:
+	players[packet.plid] = Player.create_from_npl_packet(packet)
+
+
+func _on_pll_packet_received(packet: InSimPLLPacket) -> void:
+	var _discard := players.erase(packet.plid)
+#endregion
 
 
 func _on_tiny_packet_received(packet: InSimTinyPacket) -> void:
