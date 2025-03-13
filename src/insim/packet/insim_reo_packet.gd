@@ -43,8 +43,8 @@ func _fill_buffer() -> void:
 
 func _get_data_dictionary() -> Dictionary:
 	return {
-		"PLID": num_players,
-		"NumP": plids,
+		"NumP": num_players,
+		"PLID": plids,
 	}
 
 

@@ -8,7 +8,7 @@ const PACKET_TYPE := InSim.Packet.ISP_SCC
 var zero := 0
 
 var view_plid := 255  ## unique ID of player to view
-var ingame_cam := 255  ## as reported in [InSimSTAPacket]
+var ingame_cam := InSim.View.VIEW_MAX  ## as reported in [InSimSTAPacket]
 var sp2 := 0
 var sp3 := 0
 
@@ -41,5 +41,5 @@ func _get_data_dictionary() -> Dictionary:
 static func create(scc_plid: int, scc_cam: int) -> InSimSCCPacket:
 	var packet := InSimSCCPacket.new()
 	packet.view_plid = scc_plid
-	packet.ingame_cam = scc_cam
+	packet.ingame_cam = scc_cam as InSim.View
 	return packet
