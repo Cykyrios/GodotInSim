@@ -6,10 +6,12 @@ extends Node
 ## InSim initialization automatically creates either a TCP connection or a UDP connection,
 ## depending on parameters passed.
 
+@warning_ignore_start("unused_signal")
 signal connection_failed
 signal connected
 signal disconnected
 signal packet_received(packet: PackedByteArray)
+@warning_ignore_restore("unused_signal")
 
 var address := ""
 var port := 0
