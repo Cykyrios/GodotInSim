@@ -9,9 +9,7 @@ var flags := 0
 
 var prefix := "":
 	set(text):
-		text = prefix
-		if text.length() > PREFIX_LENGTH:
-			prefix = text.left(PREFIX_LENGTH)
+		prefix = text.left(PREFIX_LENGTH)
 var interval := 0:
 	set(value):
 		interval = value
