@@ -32,18 +32,6 @@ var sub_type := InSim.Small.SMALL_NONE
 var value := 0
 
 
-func _init(req := 0, subt := InSim.Small.SMALL_NONE, uval := 0) -> void:
-	size = PACKET_SIZE
-	type = PACKET_TYPE
-	req_i = req
-	sub_type = subt
-	value = uval
-	if sub_type in RECEIVABLES:
-		receivable = true
-	if sub_type in SENDABLES:
-		sendable = true
-
-
 func _decode_packet(packet: PackedByteArray) -> void:
 	var packet_size := packet.size()
 	if packet_size != PACKET_SIZE:
@@ -66,3 +54,17 @@ func _get_data_dictionary() -> Dictionary:
 		"SubT": sub_type,
 		"UVal": value,
 	}
+
+
+static func create(req := 0, subt := InSim.Small.SMALL_NONE, uval := 0) -> InSimSmallPacket:
+	var packet := InSimSmallPacket.new()
+	packet.size = PACKET_SIZE
+	packet.type = PACKET_TYPE
+	packet.req_i = req
+	packet.sub_type = subt
+	packet.value = uval
+	if packet.sub_type in RECEIVABLES:
+		packet.receivable = true
+	if packet.sub_type in SENDABLES:
+		packet.sendable = true
+	return packet

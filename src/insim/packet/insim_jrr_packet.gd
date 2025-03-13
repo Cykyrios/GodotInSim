@@ -42,3 +42,14 @@ func _get_data_dictionary() -> Dictionary:
 		"Sp3": sp3,
 		"StartPos": start_pos,
 	}
+
+
+static func create(
+	jrr_plid: int, jrr_ucid: int, jrr_action: InSim.JRRAction, jrr_pos: ObjectInfo
+) -> InSimJRRPacket:
+	var packet := InSimJRRPacket.new()
+	packet.plid = jrr_plid
+	packet.ucid = jrr_ucid
+	packet.action = jrr_action
+	packet.start_pos = jrr_pos
+	return packet

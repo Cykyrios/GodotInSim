@@ -79,6 +79,13 @@ func _get_data_dictionary() -> Dictionary:
 	}
 
 
+static func create(ipb_numb: int, ipb_array: Array[IPAddress]) -> InSimIPBPacket:
+	var packet := InSimIPBPacket.new()
+	packet.numb = ipb_numb
+	packet.ban_ips = ipb_array.duplicate()
+	return packet
+
+
 func remove_unused_data() -> void:
 	size = PACKET_BASE_SIZE + IPB_DATA_SIZE * ban_ips.size()
 	resize_buffer(size)

@@ -106,3 +106,37 @@ func _set_values_from_gis() -> void:
 	roll = wrapi(int(rad_to_deg(2 * PI - gis_angles.y) * ANGLE_MULTIPLIER), 0, 65536)
 	heading = wrapi(int((180 + rad_to_deg(gis_angles.z)) * ANGLE_MULTIPLIER), 0, 65536)
 	time = int(gis_time * TIME_MULTIPLIER)
+
+
+static func create(
+	cpp_pos: Vector3i, cpp_rot: Vector3i, cpp_plid: int, cpp_cam: int, cpp_fov: float,
+	cpp_time := 0, cpp_flags := 0
+) -> InSimCPPPacket:
+	var packet := InSimCPPPacket.new()
+	packet.pos = cpp_pos
+	packet.heading = cpp_rot.z
+	packet.pitch = cpp_rot.x
+	packet.roll = cpp_rot.y
+	packet.view_plid = cpp_plid
+	packet.ingame_cam = cpp_cam
+	packet.fov = cpp_fov
+	packet.time = cpp_time
+	packet.flags = cpp_flags
+	packet._update_gis_values()
+	return packet
+
+
+static func create_from_gis_values(
+	cpp_pos: Vector3, cpp_rot: Vector3, cpp_plid: int, cpp_cam: int, cpp_fov: float,
+	cpp_time := 0.0, cpp_flags := 0
+) -> InSimCPPPacket:
+	var packet := InSimCPPPacket.new()
+	packet.gis_position = cpp_pos
+	packet.gis_angles = cpp_rot
+	packet.view_plid = cpp_plid
+	packet.ingame_cam = cpp_cam
+	packet.fov = cpp_fov
+	packet.gis_time = cpp_time
+	packet.flags = cpp_flags
+	packet._set_values_from_gis()
+	return packet

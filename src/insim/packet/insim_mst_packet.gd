@@ -32,3 +32,9 @@ func _get_data_dictionary() -> Dictionary:
 		"Zero": zero,
 		"Msg": msg,
 	}
+
+
+static func create(message: String) -> InSimMSTPacket:
+	var packet := InSimMSTPacket.new()
+	packet.msg = message
+	return packet

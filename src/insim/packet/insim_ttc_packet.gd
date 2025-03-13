@@ -17,18 +17,6 @@ var b2 := 0
 var b3 := 0
 
 
-func _init(req := 0, subt := InSim.TTC.TTC_NONE, _ucid := 0, _b1 := 0, _b2 := 0, _b3 := 0) -> void:
-	size = PACKET_SIZE
-	type = PACKET_TYPE
-	req_i = req
-	sub_type = subt
-	ucid = _ucid
-	b1 = _b1
-	b2 = _b2
-	b3 = _b3
-	sendable = true if sub_type != InSim.TTC.TTC_NONE else false
-
-
 func _decode_packet(packet: PackedByteArray) -> void:
 	var packet_size := packet.size()
 	if packet_size != PACKET_SIZE:
@@ -60,3 +48,19 @@ func _get_data_dictionary() -> Dictionary:
 		"B2": b2,
 		"B3": b3,
 	}
+
+
+static func create(
+	req := 0, subt := InSim.TTC.TTC_NONE, ttc_ucid := 0, ttc_b1 := 0, ttc_b2 := 0, ttc_b3 := 0
+) -> InSimTTCPacket:
+	var packet := InSimTTCPacket.new()
+	packet.size = PACKET_SIZE
+	packet.type = PACKET_TYPE
+	packet.req_i = req
+	packet.sub_type = subt
+	packet.ucid = ttc_ucid
+	packet.b1 = ttc_b1
+	packet.b2 = ttc_b2
+	packet.b3 = ttc_b3
+	packet.sendable = true if packet.sub_type != InSim.TTC.TTC_NONE else false
+	return packet

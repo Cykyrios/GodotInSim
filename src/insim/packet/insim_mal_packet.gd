@@ -66,3 +66,14 @@ func _get_data_dictionary() -> Dictionary:
 		"Sp3": sp3,
 		"SkinID": skin_id,
 	}
+
+
+static func create(
+	mal_num: int, mal_ucid: int, mal_flags: int, mal_skin: Array[int]
+) -> InSimMALPacket:
+	var packet := InSimMALPacket.new()
+	packet.num_mods = mal_num
+	packet.ucid = mal_ucid
+	packet.flags = mal_flags
+	packet.skin_id = mal_skin.duplicate()
+	return packet

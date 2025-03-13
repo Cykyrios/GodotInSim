@@ -36,3 +36,14 @@ func _get_data_dictionary() -> Dictionary:
 		"Width": width,
 		"Height": height,
 	}
+
+
+static func create(
+	mod_width: int, mod_height: int, mod_refresh := 0, mod_bits16 := 0
+) -> InSimMODPacket:
+	var packet := InSimMODPacket.new()
+	packet.bits16 = mod_bits16
+	packet.refresh_rate = mod_refresh
+	packet.width = mod_width
+	packet.height = mod_height
+	return packet

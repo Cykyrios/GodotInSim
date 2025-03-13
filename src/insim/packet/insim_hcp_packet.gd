@@ -37,3 +37,9 @@ func _get_data_dictionary() -> Dictionary:
 		"Zero": zero,
 		"CarHCP": car_hcp,
 	}
+
+
+static func create(hcp_array: Array[CarHandicap]) -> InSimHCPPacket:
+	var packet := InSimHCPPacket.new()
+	packet.car_hcp = hcp_array.duplicate()
+	return packet

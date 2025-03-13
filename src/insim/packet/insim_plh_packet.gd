@@ -64,6 +64,13 @@ func _get_data_dictionary() -> Dictionary:
 	}
 
 
+static func create(plh_nump: int, plh_hcaps: Array[PlayerHandicap]) -> InSimPLHPacket:
+	var packet := InSimPLHPacket.new()
+	packet.nump = plh_nump
+	packet.hcaps = plh_hcaps.duplicate()
+	return packet
+
+
 func remove_unused_data() -> void:
 	size = PACKET_BASE_SIZE + PLH_DATA_SIZE * hcaps.size()
 	resize_buffer(size)

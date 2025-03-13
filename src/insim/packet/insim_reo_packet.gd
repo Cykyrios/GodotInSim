@@ -46,3 +46,10 @@ func _get_data_dictionary() -> Dictionary:
 		"PLID": num_players,
 		"NumP": plids,
 	}
+
+
+static func create(reo_num: int, reo_plids: Array[int]) -> InSimREOPacket:
+	var packet := InSimREOPacket.new()
+	packet.num_players = reo_num
+	packet.plids = reo_plids.duplicate()
+	return packet

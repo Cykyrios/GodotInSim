@@ -59,3 +59,10 @@ func _get_data_dictionary() -> Dictionary:
 		"Sp3": sp3,
 		"Name": screenshot_name,
 	}
+
+
+static func create(ssh_error: int, ssh_name: String) -> InSimSSHPacket:
+	var packet := InSimSSHPacket.new()
+	packet.error = ssh_error
+	packet.screenshot_name = ssh_name
+	return packet

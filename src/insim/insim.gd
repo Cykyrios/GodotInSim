@@ -728,7 +728,7 @@ func _ready() -> void:
 func close() -> void:
 	if not lfs_connection:
 		return
-	send_packet(InSimTinyPacket.new(0, Tiny.TINY_CLOSE))
+	send_packet(InSimTinyPacket.create(0, Tiny.TINY_CLOSE))
 	print("Closing InSim connection.")
 	lfs_connection.disconnect_from_host()
 	nlp_mci_connection.disconnect_from_host()
@@ -741,17 +741,6 @@ func connect_lfs_connection_signals() -> void:
 	var _discard := lfs_connection.connected.connect(_on_connected_to_host)
 	_discard = lfs_connection.connection_failed.connect(_on_connection_failed)
 	_discard = lfs_connection.packet_received.connect(_on_packet_received)
-
-
-func create_initialization_packet() -> InSimISIPacket:
-	var initialization_packet := InSimISIPacket.new()
-	initialization_packet.udp_port = initialization_data.udp_port
-	initialization_packet.flags = initialization_data.flags
-	initialization_packet.prefix = initialization_data.prefix
-	initialization_packet.interval = initialization_data.interval
-	initialization_packet.admin = initialization_data.admin
-	initialization_packet.i_name = initialization_data.i_name
-	return initialization_packet
 
 
 func handle_timeout() -> void:
@@ -820,7 +809,7 @@ func reset_timeout_timer() -> void:
 
 
 func send_keep_alive_packet() -> void:
-	send_packet(InSimTinyPacket.new(0, Tiny.TINY_NONE))
+	send_packet(InSimTinyPacket.create(0, Tiny.TINY_NONE))
 	reset_timeout_timer()
 
 
@@ -847,12 +836,19 @@ func send_packet(packet: InSimPacket, sender := "InSim") -> void:
 
 func send_ping() -> void:
 	timeout_timer.start(TIMEOUT_DELAY)
-	send_packet(InSimTinyPacket.new(1, Tiny.TINY_PING))
+	send_packet(InSimTinyPacket.create(1, Tiny.TINY_PING))
 
 
 func _on_connected_to_host() -> void:
 	if not is_relay:
-		send_packet(create_initialization_packet())
+		send_packet(InSimISIPacket.create(
+			initialization_data.udp_port,
+			initialization_data.flags,
+			initialization_data.prefix,
+			initialization_data.interval,
+			initialization_data.admin,
+			initialization_data.i_name
+		))
 		nlp_mci_connection.disconnect_from_host()
 		if initialization_data.udp_port != 0:
 			nlp_mci_connection.connect_to_host(lfs_connection.address, lfs_connection.udp_port, 0, true)

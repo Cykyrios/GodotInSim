@@ -83,3 +83,35 @@ func _set_values_from_gis() -> void:
 func _update_gis_values() -> void:
 	gis_c_time = c_time / TIME_MULTIPLIER
 	gis_t_time = t_time / TIME_MULTIPLIER
+
+
+static func create(
+	rip_error: int, rip_mpr: int, rip_paused: int, rip_options: int,
+	rip_c_time: int, rip_t_time: int, rip_name: String
+) -> InSimRIPPacket:
+	var packet := InSimRIPPacket.new()
+	packet.error = rip_error
+	packet.mpr = rip_mpr
+	packet.paused = rip_paused
+	packet.options = rip_options
+	packet.c_time = rip_c_time
+	packet.t_time = rip_t_time
+	packet.replay_name = rip_name
+	packet._update_gis_values()
+	return packet
+
+
+static func create_from_gis_values(
+	rip_error: int, rip_mpr: int, rip_paused: int, rip_options: int,
+	rip_c_time: float, rip_t_time: float, rip_name: String
+) -> InSimRIPPacket:
+	var packet := InSimRIPPacket.new()
+	packet.error = rip_error
+	packet.mpr = rip_mpr
+	packet.paused = rip_paused
+	packet.options = rip_options
+	packet.gis_c_time = rip_c_time
+	packet.gis_t_time = rip_t_time
+	packet.replay_name = rip_name
+	packet._set_values_from_gis()
+	return packet

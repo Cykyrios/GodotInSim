@@ -36,3 +36,10 @@ func _get_data_dictionary() -> Dictionary:
 		"PLID": plid,
 		"Inputs": inputs,
 	}
+
+
+static func create(car_plid: int, car_inputs: Array[AIInputVal]) -> InSimAICPacket:
+	var packet := InSimAICPacket.new()
+	packet.plid = car_plid
+	packet.inputs = car_inputs.duplicate()
+	return packet

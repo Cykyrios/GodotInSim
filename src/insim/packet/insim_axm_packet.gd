@@ -78,6 +78,19 @@ func _get_data_dictionary() -> Dictionary:
 	}
 
 
+static func create(
+	axm_num_objects: int, axm_ucid: int, axm_action: InSim.PMOAction, axm_flags: int,
+	axm_info: Array[ObjectInfo]
+) -> InSimAXMPacket:
+	var packet := InSimAXMPacket.new()
+	packet.num_objects = axm_num_objects
+	packet.ucid = axm_ucid
+	packet.pmo_action = axm_action
+	packet.pmo_flags = axm_flags
+	packet.info = axm_info.duplicate()
+	return packet
+
+
 func trim_packet_size() -> void:
 	size = PACKET_BASE_SIZE + num_objects * ObjectInfo.STRUCT_SIZE
 	resize_buffer(size)

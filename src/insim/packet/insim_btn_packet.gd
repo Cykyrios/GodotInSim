@@ -68,6 +68,26 @@ func _get_data_dictionary() -> Dictionary:
 	}
 
 
+static func create(
+	btn_ucid: int, btn_click_id: int, btn_inst: int, btn_style: int,
+	btn_type := 0, btn_left := 0, btn_top := 0, btn_width := 0, btn_height := 0,
+	btn_text := "", btn_caption := ""
+) -> InSimBTNPacket:
+	var packet := InSimBTNPacket.new()
+	packet.ucid = btn_ucid
+	packet.click_id = btn_click_id
+	packet.inst = btn_inst
+	packet.button_style = btn_style
+	packet.type_in = btn_type
+	packet.left = btn_left
+	packet.top = btn_top
+	packet.width = btn_width
+	packet.height = btn_height
+	packet.text = btn_text
+	packet.caption = btn_caption
+	return packet
+
+
 func trim_packet_size() -> void:
 	for i in TEXT_MAX_LENGTH:
 		if buffer[PACKET_MAX_SIZE - i - 1] != 0:

@@ -40,3 +40,10 @@ func _get_data_dictionary() -> Dictionary:
 		"Sp3": sp3,
 		"Cars": cars,
 	}
+
+
+static func create(plc_ucid: int, plc_cars: int) -> InSimPLCPacket:
+	var packet := InSimPLCPacket.new()
+	packet.ucid = plc_ucid
+	packet.cars = plc_cars
+	return packet

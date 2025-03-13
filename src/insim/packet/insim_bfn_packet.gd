@@ -50,3 +50,14 @@ func _get_data_dictionary() -> Dictionary:
 		"ClickMax": click_max,
 		"Inst": inst,
 	}
+
+
+static func create(
+	bfn_subtype: InSim.ButtonFunction, bfn_ucid: int, bfn_click_id: int, bfn_click_max: int
+) -> InSimBFNPacket:
+	var packet := InSimBFNPacket.new()
+	packet.subtype = bfn_subtype
+	packet.ucid = bfn_ucid
+	packet.click_id = bfn_click_id
+	packet.click_max = bfn_click_max
+	return packet

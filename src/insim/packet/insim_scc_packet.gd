@@ -36,3 +36,10 @@ func _get_data_dictionary() -> Dictionary:
 		"Sp2": sp2,
 		"Sp3": sp3,
 	}
+
+
+static func create(scc_plid: int, scc_cam: int) -> InSimSCCPacket:
+	var packet := InSimSCCPacket.new()
+	packet.view_plid = scc_plid
+	packet.ingame_cam = scc_cam
+	return packet

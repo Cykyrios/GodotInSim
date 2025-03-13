@@ -42,3 +42,10 @@ func _get_data_dictionary() -> Dictionary:
 		"Spare2": spare2,
 		"Spare3": spare3,
 	}
+
+
+static func create(sch_char: int, sch_flags: int) -> InSimSCHPacket:
+	var packet := InSimSCHPacket.new()
+	packet.char_byte = sch_char
+	packet.flags = sch_flags
+	return packet

@@ -83,3 +83,18 @@ func _get_data_dictionary() -> Dictionary:
 		"Admin": "***" if not admin.is_empty() else "",
 		"IName": i_name,
 	}
+
+
+static func create(
+	isi_udp: int, isi_flags: int, isi_prefix: String, isi_interval: int,
+	isi_admin: String, isi_name: String
+) -> InSimISIPacket:
+	var packet := InSimISIPacket.new()
+	packet.udp_port = isi_udp
+	packet.flags = isi_flags
+	packet.insim_version = InSim.VERSION  ## The INSIM_VERSION used by your program
+	packet.prefix = isi_prefix
+	packet.interval = isi_interval
+	packet.admin = isi_admin
+	packet.i_name = isi_name
+	return packet

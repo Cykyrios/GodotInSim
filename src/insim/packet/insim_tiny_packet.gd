@@ -51,17 +51,6 @@ const PACKET_TYPE := InSim.Packet.ISP_TINY
 var sub_type := InSim.Tiny.TINY_NONE
 
 
-func _init(req := 0, subt := InSim.Tiny.TINY_NONE) -> void:
-	size = PACKET_SIZE
-	type = PACKET_TYPE
-	req_i = req
-	sub_type = subt
-	if sub_type in RECEIVABLES:
-		receivable = true
-	if sub_type in SENDABLES:
-		sendable = true
-
-
 func _decode_packet(packet: PackedByteArray) -> void:
 	var packet_size := packet.size()
 	if packet_size != PACKET_SIZE:
@@ -81,3 +70,16 @@ func _get_data_dictionary() -> Dictionary:
 	return {
 		"SubT": sub_type,
 	}
+
+
+static func create(req := 0, subt := InSim.Tiny.TINY_NONE) -> InSimTinyPacket:
+	var packet := InSimTinyPacket.new()
+	packet.size = PACKET_SIZE
+	packet.type = PACKET_TYPE
+	packet.req_i = req
+	packet.sub_type = subt
+	if packet.sub_type in RECEIVABLES:
+		packet.receivable = true
+	if packet.sub_type in SENDABLES:
+		packet.sendable = true
+	return packet

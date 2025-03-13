@@ -46,6 +46,17 @@ func _get_data_dictionary() -> Dictionary:
 	}
 
 
+static func create(
+	mtc_sound: InSim.MessageSound, mtc_ucid: int, mtc_plid: int, mtc_text: String
+) -> InSimMTCPacket:
+	var packet := InSimMTCPacket.new()
+	packet.sound = mtc_sound
+	packet.ucid = mtc_ucid
+	packet.plid = mtc_plid
+	packet.text = mtc_text
+	return packet
+
+
 func trim_packet_size() -> void:
 	for i in TEXT_MAX_LENGTH:
 		if buffer[PACKET_MAX_SIZE - i - 1] != 0:
