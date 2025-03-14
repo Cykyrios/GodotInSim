@@ -31,33 +31,33 @@ func get_flags_changes(new_flags: int) -> Dictionary[String, String]:
 func get_state_changes(state_packet: InSimSTAPacket) -> Dictionary[String, Variant]:
 	var changes: Dictionary[String, Variant] = {}
 	if state_packet.replay_speed != replay_speed:
-		changes["Replay Speed"] = replay_speed
+		changes["Replay Speed"] = state_packet.replay_speed
 	if state_packet.flags != flags:
 		changes["Flags"] = get_flags_changes(state_packet.flags)
 	if state_packet.ingame_cam != ingame_cam:
-		changes["InGame Cam"] = InSim.View.keys()[ingame_cam]
+		changes["InGame Cam"] = InSim.View.keys()[state_packet.ingame_cam]
 	if state_packet.view_plid != view_plid:
-		changes["View PLID"] = view_plid
+		changes["View PLID"] = state_packet.view_plid
 	if state_packet.num_players != num_players:
-		changes["Num Players"] = num_players
+		changes["Num Players"] = state_packet.num_players
 	if state_packet.num_connections != num_connections:
-		changes["Num Connections"] = num_connections
+		changes["Num Connections"] = state_packet.num_connections
 	if state_packet.num_finished != num_finished:
-		changes["Num Finished"] = num_finished
+		changes["Num Finished"] = state_packet.num_finished
 	if state_packet.race_in_progress != race_in_progress:
-		changes["Race In Progress"] = race_in_progress
+		changes["Race In Progress"] = state_packet.race_in_progress
 	if state_packet.qual_mins != qual_minutes:
-		changes["Quali Minutes"] = qual_minutes
+		changes["Quali Minutes"] = state_packet.qual_mins
 	if state_packet.race_laps != race_laps:
-		changes["Race Laps"] = race_laps
+		changes["Race Laps"] = state_packet.race_laps
 	if state_packet.server_status != server_status:
-		changes["Server Status"] = server_status
+		changes["Server Status"] = state_packet.server_status
 	if state_packet.track != track:
-		changes["Track"] = track
+		changes["Track"] = state_packet.track
 	if state_packet.weather != weather:
-		changes["Weather"] = weather
+		changes["Weather"] = state_packet.weather
 	if state_packet.wind != wind:
-		changes["Wind"] = wind
+		changes["Wind"] = state_packet.wind
 	return changes
 
 
