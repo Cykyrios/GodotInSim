@@ -40,3 +40,7 @@ func _get_data_dictionary() -> Dictionary:
 		"Spare2": spare2,
 		"Spare3": spare3,
 	}
+
+
+func _get_pretty_text() -> String:
+	return "UCID %d voted %s" % [ucid, InSim.Vote.keys()[action]]

@@ -50,6 +50,11 @@ func _get_data_dictionary() -> Dictionary:
 	}
 
 
+func _get_pretty_text() -> String:
+	return "(ReqI %d) %s (UCID %d B1=%d B2=%d B3=%d)" % [req_i, InSim.TTC.keys()[sub_type],
+			ucid, b1, b2, b3]
+
+
 static func create(
 	req := 0, subt := InSim.TTC.TTC_NONE, ttc_ucid := 0, ttc_b1 := 0, ttc_b2 := 0, ttc_b3 := 0
 ) -> InSimTTCPacket:

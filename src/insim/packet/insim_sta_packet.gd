@@ -88,3 +88,7 @@ func _get_data_dictionary() -> Dictionary:
 		"Weather": weather,
 		"Wind": wind,
 	}
+
+
+func _get_pretty_text() -> String:
+	return "State changed"

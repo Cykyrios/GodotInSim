@@ -56,6 +56,10 @@ func _get_data_dictionary() -> Dictionary:
 	}
 
 
+func _get_pretty_text() -> String:
+	return "(ReqI %d) %s (Value %d)" % [req_i, InSim.Small.keys()[sub_type], value]
+
+
 static func create(req := 0, subt := InSim.Small.SMALL_NONE, uval := 0) -> InSimSmallPacket:
 	var packet := InSimSmallPacket.new()
 	packet.size = PACKET_SIZE

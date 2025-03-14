@@ -85,6 +85,11 @@ func _get_data_dictionary() -> Dictionary:
 	}
 
 
+func _get_pretty_text() -> String:
+	return "Starting %s, InSim version %d, prefix=\"%s\", flags=%d, interval=%d, UDP=%d" % \
+			[i_name, insim_version, prefix, flags, interval, udp_port]
+
+
 static func create(
 	isi_udp: int, isi_flags: int, isi_prefix: String, isi_interval: int,
 	isi_admin: String, isi_name: String

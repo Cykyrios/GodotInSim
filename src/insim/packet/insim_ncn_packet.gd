@@ -50,3 +50,8 @@ func _get_data_dictionary() -> Dictionary:
 		"Flags": flags,
 		"Sp3": sp3,
 	}
+
+
+func _get_pretty_text() -> String:
+	return "%s %s" % ["host" if ucid == 0 else "UCID %d" % [ucid],
+			"connected" if req_i == 0 else "is online"]
