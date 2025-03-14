@@ -98,6 +98,16 @@ static func get_color_code(color: ColorCode) -> String:
 	return "^%d" % [color]
 
 
+## Returns a regular expression matching "PLID x" where x is a PLID number.
+static func get_regex_plid() -> RegEx:
+	return RegEx.create_from_string(r"PLID (\d+)")
+
+
+## Returns a regular expression matching "UCID x" where x is a UCID number.
+static func get_regex_ucid() -> RegEx:
+	return RegEx.create_from_string(r"UCID (\d+)")
+
+
 ## Converts a text string in binary LFS format to a UTF8 string.
 static func lfs_bytes_to_unicode(bytes: PackedByteArray, zero_terminated := true) -> String:
 	# Largely based on Sim Broadcasts' code: https://github.com/simbroadcasts/parse-lfs-message
@@ -183,6 +193,27 @@ static func lfs_string_to_unicode(text: String) -> String:
 		i += 2
 	buffer = _remove_inner_zeros(buffer)
 	return lfs_bytes_to_unicode(buffer)
+
+
+static func replace_plid_with_name(text: String, insim: InSim) -> String:
+	var output := text
+	var regex := LFSText.get_regex_plid()
+	var results := regex.search_all(text)
+	for i in results.size():
+		var player_name := insim.players[results[i].strings[1] as int].player_name
+		output = regex.sub(output, LFSText.lfs_colors_to_bbcode(player_name))
+	return output
+
+
+static func replace_ucid_with_name(text: String, insim: InSim) -> String:
+	var output := text
+	var regex := LFSText.get_regex_ucid()
+	var results := regex.search_all(text)
+	for i in results.size():
+		var connection := insim.connections[results[i].strings[1] as int]
+		output = regex.sub(output, "%s%s" % [LFSText.lfs_colors_to_bbcode(connection.nickname),
+				"" if connection.username.is_empty() else " (%s)" % [connection.username]])
+	return output
 
 
 ## Removes all colors from [param text], including LFS colors and BBCode tags.
