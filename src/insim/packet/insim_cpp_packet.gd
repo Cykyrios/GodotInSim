@@ -88,6 +88,10 @@ func _get_data_dictionary() -> Dictionary:
 	}
 
 
+func _get_pretty_text() -> String:
+	return get_lfs_cam_command()
+
+
 func _update_gis_values() -> void:
 	gis_position = Vector3(pos) / POSITION_MULTIPLIER
 	gis_angles = Vector3(
@@ -140,3 +144,7 @@ static func create_from_gis_values(
 	packet.flags = cpp_flags
 	packet._set_values_from_gis()
 	return packet
+
+
+func get_lfs_cam_command() -> String:
+	return "/cp %d %d %d %d %d %.1f %.1f" % [pos.x, pos.y, pos.z, heading, pitch, roll, fov]

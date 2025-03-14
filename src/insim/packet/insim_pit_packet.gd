@@ -62,3 +62,34 @@ func _get_data_dictionary() -> Dictionary:
 		"Work": work,
 		"Spare": spare,
 	}
+
+
+func _get_pretty_text() -> String:
+	var pitwork: Array[String] = []
+	if (work >> InSim.PitWork.PSE_NOTHING) & 1:
+		pitwork.append("nothing")
+	if (
+		(work >> InSim.PitWork.PSE_FR_DAM) & 1
+		or (work >> InSim.PitWork.PSE_LE_FR_DAM) & 1
+		or (work >> InSim.PitWork.PSE_RI_FR_DAM) & 1
+		or (work >> InSim.PitWork.PSE_RE_DAM) & 1
+		or (work >> InSim.PitWork.PSE_LE_RE_DAM) & 1
+		or (work >> InSim.PitWork.PSE_RI_RE_DAM) & 1
+		or (work >> InSim.PitWork.PSE_BODY_MINOR) & 1
+		or (work >> InSim.PitWork.PSE_BODY_MAJOR) & 1
+	):
+		pitwork.append("damage")
+	if (
+		(work >> InSim.PitWork.PSE_FR_WHL) & 1
+		or (work >> InSim.PitWork.PSE_LE_FR_WHL) & 1
+		or (work >> InSim.PitWork.PSE_RI_FR_WHL) & 1
+		or (work >> InSim.PitWork.PSE_RE_WHL) & 1
+		or (work >> InSim.PitWork.PSE_LE_RE_WHL) & 1
+		or (work >> InSim.PitWork.PSE_RI_RE_WHL) & 1
+	):
+		pitwork.append("tyres")
+	if (work >> InSim.PitWork.PSE_SETUP) & 1:
+		pitwork.append("setup")
+	if (work >> InSim.PitWork.PSE_REFUEL) & 1:
+		pitwork.append("refuel")
+	return "PLID %d made a pit stop (pitwork: %s)" % [plid, ", ".join(pitwork)]

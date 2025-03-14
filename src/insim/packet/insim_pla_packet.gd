@@ -40,3 +40,16 @@ func _get_data_dictionary() -> Dictionary:
 		"Sp2": sp2,
 		"Sp3": sp3,
 	}
+
+
+func _get_pretty_text() -> String:
+	var fact_string := "%s the pit lane" % ["exited" if fact == InSim.PitLane.PITLANE_EXIT \
+			else "entered"]
+	match fact:
+		InSim.PitLane.PITLANE_NO_PURPOSE:
+			fact_string += " for no purpose"
+		InSim.PitLane.PITLANE_DT:
+			fact_string += " for drive-through penalty"
+		InSim.PitLane.PITLANE_SG:
+			fact_string += " for stop-go penalty"
+	return "PLID %d %s" % [plid, fact_string]

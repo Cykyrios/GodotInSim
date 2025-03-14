@@ -40,3 +40,36 @@ func _get_data_dictionary() -> Dictionary:
 		"Reason": reason,
 		"Sp3": sp3,
 	}
+
+
+func _get_pretty_text() -> String:
+	var penalty_string := "penalty cleared"
+	match new_penalty:
+		InSim.Penalty.PENALTY_DT:
+			penalty_string = "drive-through penalty"
+		InSim.Penalty.PENALTY_DT_VALID:
+			penalty_string = "completed drive-through penalty"
+		InSim.Penalty.PENALTY_SG:
+			penalty_string = "stop-go penalty"
+		InSim.Penalty.PENALTY_SG_VALID:
+			penalty_string = "completed stop-go penalty"
+		InSim.Penalty.PENALTY_30:
+			penalty_string = "30s penalty"
+		InSim.Penalty.PENALTY_45:
+			penalty_string = "45s penalty"
+	var reason_string := ""
+	match reason:
+		InSim.PenaltyReason.PENR_ADMIN:
+			reason_string = "admin"
+		InSim.PenaltyReason.PENR_WRONG_WAY:
+			reason_string = "wrong way"
+		InSim.PenaltyReason.PENR_FALSE_START:
+			reason_string = "false start"
+		InSim.PenaltyReason.PENR_SPEEDING:
+			reason_string = "speeding"
+		InSim.PenaltyReason.PENR_STOP_SHORT:
+			reason_string = "stop too short"
+		InSim.PenaltyReason.PENR_STOP_LATE:
+			reason_string = "stop too late"
+	return "PLID %d: %s" % [plid, "%s%s" % [penalty_string,
+			"" if reason == InSim.PenaltyReason.PENR_UNKNOWN else " (%s)" % [reason_string]]]
