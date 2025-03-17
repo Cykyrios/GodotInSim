@@ -70,3 +70,8 @@ func _get_data_dictionary() -> Dictionary:
 		"SPU2": spu2,
 		"SPU3": spu3,
 	}
+
+
+func _get_pretty_text() -> String:
+	var gear_string := "R" if gear == 0 else "N" if gear == 1 else "%d" % [gear + 1]
+	return "PLID %d: gear=%s, rpm=%d, flags=%d" % [plid, gear_string, roundi(rpm), flags]

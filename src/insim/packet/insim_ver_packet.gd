@@ -43,3 +43,7 @@ func _get_data_dictionary() -> Dictionary:
 		"InSimVer": insim_ver,
 		"Spare": 0,
 	}
+
+
+func _get_pretty_text() -> String:
+	return "%s %s - InSim version %d" % [version, product, insim_ver]

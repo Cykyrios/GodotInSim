@@ -52,6 +52,15 @@ func _get_data_dictionary() -> Dictionary:
 	}
 
 
+func _get_pretty_text() -> String:
+	var bfn_type := ("button(s) deleted (%d/%D)" % [click_id, click_max]) \
+			if subtype == InSim.ButtonFunction.BFN_DEL_BTN \
+			else "buttons cleared by InSim" if subtype == InSim.ButtonFunction.BFN_CLEAR \
+			else "buttons cleared by user" if subtype == InSim.ButtonFunction.BFN_USER_CLEAR \
+			else "Shift+B or Shift+I"
+	return "UCID %d: %s" % [ucid, bfn_type]
+
+
 static func create(
 	bfn_subtype: InSim.ButtonFunction, bfn_ucid: int, bfn_click_id: int, bfn_click_max: int
 ) -> InSimBFNPacket:

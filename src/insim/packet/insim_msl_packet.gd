@@ -34,6 +34,10 @@ func _get_data_dictionary() -> Dictionary:
 	}
 
 
+func _get_pretty_text() -> String:
+	return LFSText.lfs_colors_to_bbcode(msg)
+
+
 static func create(message: String) -> InSimMSLPacket:
 	var packet := InSimMSLPacket.new()
 	packet.msg = message

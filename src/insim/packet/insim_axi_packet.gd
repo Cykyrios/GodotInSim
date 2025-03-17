@@ -43,3 +43,9 @@ func _get_data_dictionary() -> Dictionary:
 		"NumO": num_objects,
 		"LName": layout_name,
 	}
+
+
+func _get_pretty_text() -> String:
+	return "%s layout: %s (start %d, %d checkpoints, %d objects)" % [
+		"Loaded" if req_i == 0 else "Current", layout_name, ax_start, num_checkpoints, num_objects
+	]

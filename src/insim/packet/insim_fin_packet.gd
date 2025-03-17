@@ -61,6 +61,11 @@ func _get_data_dictionary() -> Dictionary:
 	}
 
 
+func _get_pretty_text() -> String:
+	return "PLID %d finished (best lap: %s)" % [plid,
+			GISUtils.get_time_string_from_seconds(gis_best_lap)]
+
+
 func _update_gis_values() -> void:
 	gis_race_time = race_time / TIME_MULTIPLIER
 	gis_best_lap = best_lap / TIME_MULTIPLIER

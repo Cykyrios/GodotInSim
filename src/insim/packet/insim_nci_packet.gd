@@ -47,3 +47,10 @@ func _get_data_dictionary() -> Dictionary:
 		"UserID": user_id,
 		"IPAddress": ip_address.address_string,
 	}
+
+
+func _get_pretty_text() -> String:
+	return "UCID %d (%s license): ID=%s, lang=%s, IP=%s" % [ucid,
+			"demo" if license == 0 else "S%d" % [license],
+			user_id, (InSim.Language.keys()[language] as String).trim_prefix("LFS_").capitalize(),
+			ip_address]

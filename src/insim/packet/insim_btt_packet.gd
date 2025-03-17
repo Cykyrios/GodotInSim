@@ -46,3 +46,8 @@ func _get_data_dictionary() -> Dictionary:
 		"Sp3": sp3,
 		"Text": text,
 	}
+
+
+func _get_pretty_text() -> String:
+	return "Button type in (%s): ID %d, %s" % ["local" if ucid == 0 else "UCID %d" % [ucid],
+			click_id, text]

@@ -46,6 +46,10 @@ func _get_data_dictionary() -> Dictionary:
 	}
 
 
+func _get_pretty_text() -> String:
+	return "(UCID %d)(PLID %d)(%s) %s" % [ucid, plid, InSim.MessageSound.keys()[sound], text]
+
+
 static func create(
 	mtc_sound: InSim.MessageSound, mtc_ucid: int, mtc_plid: int, mtc_text: String
 ) -> InSimMTCPacket:

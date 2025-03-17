@@ -79,6 +79,14 @@ func _get_data_dictionary() -> Dictionary:
 	}
 
 
+func _get_pretty_text() -> String:
+	var ips := ""
+	for i in ban_ips.size():
+		var ip := ban_ips[i]
+		ips += ("" if i == 0 else ", ") + ip.to_string()
+	return "IP bans: %s" % ["NONE" if numb == 0 else ips]
+
+
 static func create(ipb_numb: int, ipb_array: Array[IPAddress]) -> InSimIPBPacket:
 	var packet := InSimIPBPacket.new()
 	packet.numb = ipb_numb

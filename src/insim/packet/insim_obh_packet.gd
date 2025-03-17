@@ -77,6 +77,15 @@ func _get_data_dictionary() -> Dictionary:
 	}
 
 
+func _get_pretty_text() -> String:
+	var flags: Array[String] = []
+	for i in InSim.OBHFlag.size():
+		if obh_flags & InSim.OBHFlag.values()[i]:
+			flags.append(InSim.OBHFlag.keys()[i])
+	return "PLID %d hit an object: %s (%s) at coordinates %.1v (closing speed %s m/s)" % [plid,
+			InSim.AXOIndex.keys()[index], flags, gis_position, gis_closing_speed]
+
+
 func _update_gis_values() -> void:
 	gis_closing_speed = (sp_close & CLOSING_SPEED_MASK) / CLOSING_SPEED_MULTIPLIER
 	gis_position = Vector3(x / POSITION_XY_MULTIPLIER, y / POSITION_XY_MULTIPLIER,

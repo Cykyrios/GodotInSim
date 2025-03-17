@@ -38,6 +38,14 @@ func _get_data_dictionary() -> Dictionary:
 	}
 
 
+func _get_pretty_text() -> String:
+	var details_actions: Array[InSim.OCOAction] = [InSim.OCOAction.OCO_LIGHTS_SET,
+			InSim.OCOAction.OCO_LIGHTS_UNSET]
+	var details_string := " (index=%d, identifier=%d, data=%d)" % [index, identifier, data]
+	return "%s%s" % [InSim.OCOAction.keys()[action], details_string if action in details_actions \
+			else ""]
+
+
 static func create(
 	oco_action: InSim.OCOAction, oco_index: int, oco_id: int, oco_data: int
 ) -> InSimOCOPacket:

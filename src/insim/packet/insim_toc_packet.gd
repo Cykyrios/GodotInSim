@@ -40,3 +40,7 @@ func _get_data_dictionary() -> Dictionary:
 		"Sp2": sp2,
 		"Sp3": sp3,
 	}
+
+
+func _get_pretty_text() -> String:
+	return "UCID %d took over from UCID %d" % [new_ucid, old_ucid]

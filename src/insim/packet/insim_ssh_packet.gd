@@ -61,6 +61,10 @@ func _get_data_dictionary() -> Dictionary:
 	}
 
 
+func _get_pretty_text() -> String:
+	return "Screenshot: %s - %s" % [InSim.Screenshot.keys()[error], screenshot_name]
+
+
 static func create(ssh_error: int, ssh_name: String) -> InSimSSHPacket:
 	var packet := InSimSSHPacket.new()
 	packet.error = ssh_error

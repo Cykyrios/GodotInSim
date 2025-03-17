@@ -68,6 +68,16 @@ func _get_data_dictionary() -> Dictionary:
 	}
 
 
+func _get_pretty_text() -> String:
+	var button_flags: Array[String] = []
+	for i in InSim.ButtonStyle.size():
+		if button_style & InSim.ButtonStyle.values()[i]:
+			button_flags.append(InSim.ButtonStyle.keys()[i])
+	var target := "local" if ucid == 0 else "everyone" if ucid == 255 else "UCID %d" % [ucid]
+	return "Button for %s: ID %d, %s, %d-%d:%dx%d, \"%s\"" % [target, click_id, button_flags,
+			left, top, width, height, text]
+
+
 static func create(
 	btn_ucid: int, btn_click_id: int, btn_inst: int, btn_style: int,
 	btn_type := 0, btn_left := 0, btn_top := 0, btn_width := 0, btn_height := 0,

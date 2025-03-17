@@ -40,3 +40,9 @@ func _get_data_dictionary() -> Dictionary:
 		"CarBehind": car_behind,
 		"Sp3": sp3,
 	}
+
+
+func _get_pretty_text() -> String:
+	var flag_color := "Blue" if flag == 1 else "Yellow" if flag == 2 else "Unknown"
+	var flag_string := " cleared for" if off_on == 0 else " caused by" if flag == 2 else " for"
+	return "%s flag%s PLID %d" % [flag_color, flag_string, plid]

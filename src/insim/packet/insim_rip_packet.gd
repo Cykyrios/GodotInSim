@@ -75,6 +75,13 @@ func _get_data_dictionary() -> Dictionary:
 	}
 
 
+func _get_pretty_text() -> String:
+	return "Replay %s: %sPR, %s @ %s%s" % ["reply" if req_i == 0 else "request",
+			"S" if mpr == 0 else "M", replay_name,
+			GISUtils.get_time_string_from_seconds(gis_t_time),
+			" (%s)" % [InSim.Replay.keys()[error]]]
+
+
 func _set_values_from_gis() -> void:
 	c_time = int(gis_c_time * TIME_MULTIPLIER)
 	t_time = int(gis_t_time * TIME_MULTIPLIER)

@@ -38,6 +38,10 @@ func _get_data_dictionary() -> Dictionary:
 	}
 
 
+func _get_pretty_text() -> String:
+	return "PLID %d set camera to %s" % [view_plid, InSim.View.keys()[ingame_cam]]
+
+
 static func create(scc_plid: int, scc_cam: int) -> InSimSCCPacket:
 	var packet := InSimSCCPacket.new()
 	packet.view_plid = scc_plid

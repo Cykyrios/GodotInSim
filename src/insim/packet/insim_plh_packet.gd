@@ -64,6 +64,15 @@ func _get_data_dictionary() -> Dictionary:
 	}
 
 
+func _get_pretty_text() -> String:
+	var handicaps := ""
+	for i in hcaps.size():
+		var hcap := hcaps[i]
+		handicaps += "" if i == 0 else ", " + "PLID %d (%d kg, %d %%)" % [hcap.plid, hcap.h_mass,
+				hcap.h_tres]
+	return "Players handicaps: %s" % [handicaps]
+
+
 static func create(plh_nump: int, plh_hcaps: Array[PlayerHandicap]) -> InSimPLHPacket:
 	var packet := InSimPLHPacket.new()
 	packet.nump = plh_nump

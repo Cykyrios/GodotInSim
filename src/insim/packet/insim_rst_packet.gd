@@ -76,3 +76,16 @@ func _get_data_dictionary() -> Dictionary:
 		"Split2": split2,
 		"Split3": split3,
 	}
+
+
+func _get_pretty_text() -> String:
+	var session_type := 0 if race_laps == 0 and qual_mins == 0 \
+			else 1 if race_laps == 0 else 2
+	var session := "Practice" if session_type == 0 else "Qualifying" if session_type == 1 \
+			else "Race"
+	var duration := "" if session_type == 0 else (" (%d minutes)" % [qual_mins]) if session_type == 1 \
+			else (" (%d %s)" % [race_laps if race_laps < 100 \
+			else (100 + 10 * (race_laps - 100)) if race_laps <= 190 else (race_laps - 190),
+			"laps" if race_laps <= 190 else "hour%s" % ["" if race_laps == 191 else "s"]])
+	var wind_strength := "no" if wind == 0 else "low" if wind == 1 else "high"
+	return "%s started%s at %s (%s wind)" % [session, duration, track, wind_strength]

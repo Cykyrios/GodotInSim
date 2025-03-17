@@ -38,6 +38,15 @@ func _get_data_dictionary() -> Dictionary:
 	}
 
 
+func _get_pretty_text() -> String:
+	var input_array: Array[String] = []
+	for i in inputs.size():
+		var input := inputs[i]
+		input_array.append("%s (%d, %d ms)" % [InSim.AIControl.keys().find(input.input),
+				input.value, input.time * 10])
+	return "PLID %d input: %s" % [plid, input_array]
+
+
 static func create(car_plid: int, car_inputs: Array[AIInputVal]) -> InSimAICPacket:
 	var packet := InSimAICPacket.new()
 	packet.plid = car_plid

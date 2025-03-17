@@ -44,3 +44,12 @@ func _get_data_dictionary() -> Dictionary:
 		"NumC": num_cars,
 		"Info": info,
 	}
+
+
+func _get_pretty_text() -> String:
+	var text := ""
+	for i in info.size():
+		var info_string := "PLID %d (P%d, lap %d, node %d)" % [info[i].plid, info[i].position,
+				info[i].lap, info[i].node]
+		text += "%s%s" % ["" if i == 0 else ", ", info_string]
+	return text

@@ -31,3 +31,7 @@ func _get_data_dictionary() -> Dictionary:
 		"UCID": ucid,
 		"CName": car_name,
 	}
+
+
+func _get_pretty_text() -> String:
+	return "UCID %d changed car: %s" % [ucid, car_name]

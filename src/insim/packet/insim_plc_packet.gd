@@ -42,6 +42,22 @@ func _get_data_dictionary() -> Dictionary:
 	}
 
 
+func _get_pretty_text() -> String:
+	var car_array: Array[String] = []
+	for i in InSim.Car.size():
+		if InSim.Car.values()[i] in [InSim.Car.CAR_NONE, InSim.Car.CAR_ALL]:
+			continue
+		if cars & InSim.Car.values()[i]:
+			car_array.append((InSim.Car.keys()[i] as String).split("_")[-1])
+	var car_list := "NONE" if cars == InSim.Car.CAR_NONE else "ALL" if cars == InSim.Car.CAR_ALL \
+			else ""
+	if car_list.is_empty():
+		for i in car_array.size():
+			car_list += "%s%s" % ["" if i == 0 else ", ", car_array[i]]
+	return "Allowed cars for %s: %s" % ["everyone" if ucid == 255 else "host" if ucid == 0 \
+			else "UCID %d" % [ucid], car_list]
+
+
 static func create(plc_ucid: int, plc_cars: int) -> InSimPLCPacket:
 	var packet := InSimPLCPacket.new()
 	packet.ucid = plc_ucid

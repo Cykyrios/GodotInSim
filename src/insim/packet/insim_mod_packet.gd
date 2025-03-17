@@ -38,6 +38,10 @@ func _get_data_dictionary() -> Dictionary:
 	}
 
 
+func _get_pretty_text() -> String:
+	return "%dx%d@%dHz%s" % [width, height, refresh_rate, " (16bit)" if bits16 == 1 else ""]
+
+
 static func create(
 	mod_width: int, mod_height: int, mod_refresh := 0, mod_bits16 := 0
 ) -> InSimMODPacket:

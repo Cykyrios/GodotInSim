@@ -72,6 +72,17 @@ func _get_data_dictionary() -> Dictionary:
 	}
 
 
+func _get_pretty_text() -> String:
+	var mods := ""
+	for i in skin_id.size():
+		var id := skin_id[i]
+		var id_bytes := PackedByteArray()
+		var _resize := id_bytes.resize(4)
+		id_bytes.encode_u32(0, id)
+		mods += ("" if i == 0 else ", ") + LFSText.car_name_from_buffer(id_bytes)
+	return "Allowed mods: %s" % ["ALL" if num_mods == 0 else mods]
+
+
 static func create(
 	mal_num: int, mal_ucid: int, mal_flags: int, mal_skin: Array[int]
 ) -> InSimMALPacket:

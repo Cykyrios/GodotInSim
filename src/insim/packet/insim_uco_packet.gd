@@ -60,5 +60,18 @@ func _get_data_dictionary() -> Dictionary:
 	}
 
 
+func _get_pretty_text() -> String:
+	var checkpoint_id := 0
+	if uco_action in [InSim.UCOAction.UCO_CP_FWD, InSim.UCOAction.UCO_CP_REV]:
+		if info.index == 252:
+			checkpoint_id = info.flags && 0b11
+	var action_string := ("%s circle %d" % ["entered" if uco_action == \
+			InSim.UCOAction.UCO_CIRCLE_ENTER else "exited", object.heading]) if uco_action in \
+			[InSim.UCOAction.UCO_CIRCLE_ENTER, InSim.UCOAction.UCO_CIRCLE_LEAVE] \
+			else "crossed checkpoint %d%s at %.1v" % [checkpoint_id,
+			"" if uco_action == InSim.UCOAction.UCO_CP_FWD else " backward", object.gis_position]
+	return "PLID %d %s" % [plid, action_string]
+
+
 func _update_gis_values() -> void:
 	gis_time = time / TIME_MULTIPLIER

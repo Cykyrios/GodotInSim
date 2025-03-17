@@ -48,6 +48,15 @@ func _get_data_dictionary() -> Dictionary:
 	}
 
 
+func _get_pretty_text() -> String:
+	var text := "%d player%s" % [num_players, "s" if num_players > 1 else ""]
+	for i in plids.size():
+		if plids[i] == 0:
+			break
+		text += "%s %s" % [":" if i == 0 else ",", "PLID %d" % [plids[i]]]
+	return text
+
+
 static func create(reo_num: int, reo_plids: Array[int]) -> InSimREOPacket:
 	var packet := InSimREOPacket.new()
 	packet.num_players = reo_num

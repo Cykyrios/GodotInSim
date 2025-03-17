@@ -40,3 +40,7 @@ func _get_data_dictionary() -> Dictionary:
 		"Sp2": sp2,
 		"Sp3": sp3,
 	}
+
+
+func _get_pretty_text() -> String:
+	return "%s disconnected" % ["host" if ucid == 0 else "UCID %d" % [ucid]]

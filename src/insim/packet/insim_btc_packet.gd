@@ -40,3 +40,12 @@ func _get_data_dictionary() -> Dictionary:
 		"CFlags": click_flags,
 		"Sp3": sp3,
 	}
+
+
+func _get_pretty_text() -> String:
+	var flags_string: Array[String] = []
+	for i in InSim.ButtonClick.size():
+		if click_flags & InSim.ButtonClick.values()[i]:
+			flags_string.append(InSim.ButtonClick.keys()[i])
+	return "Button clicked: %s, ID %d, %s" % ["local" if ucid == 0 else "UCID %d" % [ucid],
+			click_id, flags_string]

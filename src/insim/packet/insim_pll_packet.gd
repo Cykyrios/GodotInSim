@@ -27,3 +27,7 @@ func _get_data_dictionary() -> Dictionary:
 	return {
 		"PLID": plid,
 	}
+
+
+func _get_pretty_text() -> String:
+	return "PLID %d joined the spectators" % [plid]

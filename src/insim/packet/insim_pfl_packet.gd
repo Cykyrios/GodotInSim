@@ -34,3 +34,7 @@ func _get_data_dictionary() -> Dictionary:
 		"Flags": flags,
 		"Spare": spare,
 	}
+
+
+func _get_pretty_text() -> String:
+	return "PLID %d changed flags: %s" % [plid, flags]

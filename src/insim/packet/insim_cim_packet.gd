@@ -47,3 +47,15 @@ func _get_data_dictionary() -> Dictionary:
 		"SelType": sel_type,
 		"Sp3": sp3,
 	}
+
+
+func _get_pretty_text() -> String:
+	var submode_filter: Array[InSim.InterfaceMode] = [InSim.InterfaceMode.CIM_NORMAL,
+			InSim.InterfaceMode.CIM_GARAGE, InSim.InterfaceMode.CIM_SHIFTU]
+	var submode_string := (" (%s)" % [InSim.InterfaceNormal.keys()[submode] \
+			if mode == InSim.InterfaceMode.CIM_NORMAL else InSim.InterfaceGarage.keys()[submode] \
+			if mode == InSim.InterfaceMode.CIM_GARAGE else InSim.InterfaceShiftU.keys()[submode] \
+			if mode == InSim.InterfaceMode.CIM_SHIFTU else "?"]) if mode in submode_filter \
+			else ""
+	return "UCID %d: %s%s" % [ucid, InSim.InterfaceMode.keys()[mode],
+			submode_string if mode in submode_filter else ""]

@@ -55,5 +55,10 @@ func _get_data_dictionary() -> Dictionary:
 	}
 
 
+func _get_pretty_text() -> String:
+	var action := "started" if csc_action == InSim.CSCAction.CSC_START else "stopped"
+	return "PLID %d %s moving at %.1v" % [plid, action, object.gis_position]
+
+
 func _update_gis_values() -> void:
 	gis_time = time / TIME_MULTIPLIER

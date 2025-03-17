@@ -78,6 +78,16 @@ func _get_data_dictionary() -> Dictionary:
 	}
 
 
+func _get_pretty_text() -> String:
+	var flags: Array[String] = []
+	for i in InSim.PMOFlags.size():
+		if pmo_flags & InSim.PMOFlags.values()[i]:
+			flags.append(InSim.PMOFlags.keys()[i])
+	return "UCID %d: %s for %d object%s%s" % [ucid, InSim.PMOAction.keys()[pmo_action],
+			num_objects, "" if num_objects < 2 else "s",
+			"" if pmo_flags == 0 else " (%s)" % [flags]]
+
+
 static func create(
 	axm_num_objects: int, axm_ucid: int, axm_action: InSim.PMOAction, axm_flags: int,
 	axm_info: Array[ObjectInfo]

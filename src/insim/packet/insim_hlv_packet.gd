@@ -49,5 +49,11 @@ func _get_data_dictionary() -> Dictionary:
 	}
 
 
+func _get_pretty_text() -> String:
+	return "PLID %d: invalid hotlap (%s at coordinates %.1v)" % [plid, "ground" if hlvc == 0 \
+			else "wall" if hlvc == 1 else "speeding" if hlvc == 4 \
+			else "out of bounds" if hlvc == 5 else "?", object.gis_position]
+
+
 func _update_gis_values() -> void:
 	gis_time = time / TIME_MULTIPLIER

@@ -42,6 +42,10 @@ func _get_data_dictionary() -> Dictionary:
 	}
 
 
+func _get_pretty_text() -> String:
+	return "Set flag %s to %s" % [InSim.State.keys()[flag], "OFF" if off_on == 0 else "ON"]
+
+
 static func create(sfp_flag: InSim.State, sfp_on: bool) -> InSimSFPPacket:
 	var packet := InSimSFPPacket.new()
 	packet.flag = sfp_flag

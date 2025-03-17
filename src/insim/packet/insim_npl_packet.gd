@@ -101,3 +101,7 @@ func _get_data_dictionary() -> Dictionary:
 		"Config": config,
 		"Fuel": fuel,
 	}
+
+
+func _get_pretty_text() -> String:
+	return "PLID %d %s (%s)" % [plid, "left the pits" if req_i == 0 else "is driving", car_name]

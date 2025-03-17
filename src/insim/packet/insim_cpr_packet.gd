@@ -37,3 +37,7 @@ func _get_data_dictionary() -> Dictionary:
 		"PName": player_name,
 		"Plate": plate,
 	}
+
+
+func _get_pretty_text() -> String:
+	return "UCID %d renamed to %s" % [ucid, LFSText.lfs_colors_to_bbcode(player_name)]

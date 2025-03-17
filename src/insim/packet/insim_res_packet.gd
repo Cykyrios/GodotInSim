@@ -88,6 +88,11 @@ func _get_data_dictionary() -> Dictionary:
 	}
 
 
+func _get_pretty_text() -> String:
+	return "PLID %d %s" % [plid, ("finished P%d" % [result_num + 1]) if result_num != 255 \
+			else "did not finish"]
+
+
 func _update_gis_values() -> void:
 	gis_total_time = total_time / TIME_MULTIPLIER
 	gis_best_lap = best_lap / TIME_MULTIPLIER

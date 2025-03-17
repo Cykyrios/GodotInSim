@@ -52,3 +52,9 @@ func _get_data_dictionary() -> Dictionary:
 		"Sp3": sp3,
 		"Text": text,
 	}
+
+
+func _get_pretty_text() -> String:
+	var result_string := "Processed" if result == 1 else "Rejected" if result == 2 else "Unknown"
+	return "%s admin command from UCID %d (%sadmin): %s" % [result_string, ucid,
+			"not " if admin == 0 else "", text]

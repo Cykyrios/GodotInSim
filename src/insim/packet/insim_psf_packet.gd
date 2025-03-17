@@ -40,5 +40,10 @@ func _get_data_dictionary() -> Dictionary:
 	}
 
 
+func _get_pretty_text() -> String:
+	return "PLID %d stopped for %ss" % [plid,
+			GISUtils.get_time_string_from_seconds(gis_stop_time, 3, true)]
+
+
 func _update_gis_values() -> void:
 	gis_stop_time = stop_time / TIME_MULTIPLIER

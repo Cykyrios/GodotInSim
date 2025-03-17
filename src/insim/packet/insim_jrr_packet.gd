@@ -44,6 +44,13 @@ func _get_data_dictionary() -> Dictionary:
 	}
 
 
+func _get_pretty_text() -> String:
+	return ("UCID %d: %s" % ["join request rejected" if action == InSim.JRRAction.JRR_REJECT \
+			else "join request accepted"]) if plid == 0 else ("PLID %d: car reset (%s, %s)" % [plid,
+			"repaired" if action == InSim.JRRAction.JRR_RESET else "no repair",
+			("%.1v" % [start_pos.gis_position]) if (start_pos.flags & 0x80) else "in place"])
+
+
 static func create(
 	jrr_plid: int, jrr_ucid: int, jrr_action: InSim.JRRAction, jrr_pos: ObjectInfo
 ) -> InSimJRRPacket:

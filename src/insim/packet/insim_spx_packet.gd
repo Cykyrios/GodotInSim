@@ -56,6 +56,12 @@ func _get_data_dictionary() -> Dictionary:
 	}
 
 
+func _get_pretty_text() -> String:
+	return "PLID %d crossed split %d (%s, %d pit stop%s)" % [plid, split,
+			GISUtils.get_time_string_from_seconds(split_time / 1000.0), num_stops,
+			"" if num_stops <= 1 else "s"]
+
+
 func _update_gis_values() -> void:
 	gis_split_time = split_time / TIME_MULTIPLIER
 	gis_elapsed_time = elapsed_time / TIME_MULTIPLIER

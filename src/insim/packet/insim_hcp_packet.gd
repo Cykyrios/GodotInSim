@@ -39,6 +39,15 @@ func _get_data_dictionary() -> Dictionary:
 	}
 
 
+func _get_pretty_text() -> String:
+	var handicaps: Array[String] = []
+	for i in car_hcp.size():
+		var hcp := car_hcp[i]
+		handicaps.append("%s (%d/%d)" % [(InSim.Car.keys()[i + 1] as String).split("_")[-1],
+				roundi(hcp.gis_mass), hcp.h_tres])
+	return "Car handicaps (mass kg/intake %%): %s" % [handicaps]
+
+
 static func create(hcp_array: Array[CarHandicap]) -> InSimHCPPacket:
 	var packet := InSimHCPPacket.new()
 	packet.car_hcp = hcp_array.duplicate()

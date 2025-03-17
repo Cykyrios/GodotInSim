@@ -39,6 +39,11 @@ func _get_dictionary() -> Dictionary:
 	return {}
 
 
+## Override to define "pretty" text for this packet.
+func _get_pretty_text() -> String:
+	return str(get_dictionary())
+
+
 ## Override to update values with non-standard units from gis (GodotInSim) prefixed values, e.g.[br]
 ## [code]position = gis_position * 65536[/code].
 func _set_values_from_gis() -> void:
@@ -71,6 +76,10 @@ func fill_buffer() -> void:
 
 func get_dictionary() -> Dictionary:
 	return _get_dictionary()
+
+
+func get_pretty_text() -> String:
+	return _get_pretty_text()
 
 
 #region buffer I/O
