@@ -39,3 +39,13 @@ static func create_from_npl_packet(packet: InSimNPLPacket) -> Player:
 	new_player.setup_flags = packet.setup_flags
 	new_player.config = packet.config
 	return new_player
+
+
+func get_flags_changes(new_flags: int) -> Dictionary[String, String]:
+	var changes: Dictionary[String, String] = {}
+	for i in InSim.PlayerFlag.size():
+		var key := InSim.PlayerFlag.keys()[i] as String
+		var value := InSim.PlayerFlag.values()[i] as int
+		if new_flags & value != flags & value:
+			changes[key] = "ON" if new_flags & value else "OFF"
+	return changes
