@@ -44,3 +44,11 @@ func _set_values_from_gis() -> void:
 
 func _update_gis_values() -> void:
 	gis_mass = h_mass / MASS_MULTIPLIER
+
+
+static func create(added_mass: int, intake_restriction: int) -> CarHandicap:
+	var handicap := CarHandicap.new()
+	handicap.h_mass = added_mass
+	handicap.h_tres = intake_restriction
+	handicap._update_gis_values()
+	return handicap
