@@ -5,7 +5,7 @@ extends InSimPacket
 
 const PACKET_SIZE := 16
 const PACKET_TYPE := InSim.Packet.ISP_JRR
-var plid := 0  ## ZERO when this is a replay to a join request - SET to move a car
+var plid := 0  ## ZERO when this is a reply to a join request - SET to move a car
 
 var ucid := 0  ## set when this is a reply to a join request - ignored when moving a car
 var action := 0  ## 1 - allow / 0 - reject (should send message to user)
