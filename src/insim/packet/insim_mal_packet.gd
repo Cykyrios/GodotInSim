@@ -38,6 +38,10 @@ func _decode_packet(packet: PackedByteArray) -> void:
 		return
 	super(packet)
 	num_mods = read_byte()
+	ucid = read_byte()
+	flags = read_byte()
+	sp2 = read_byte()
+	sp3 = read_byte()
 	skin_id.clear()
 	for i in num_mods:
 		skin_id.append(read_unsigned())
