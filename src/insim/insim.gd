@@ -478,6 +478,10 @@ enum AXOIndex {
 	AXO_189,
 	AXO_190,
 	AXO_191,
+	AXO_IS_CP = 252,
+	AXO_IS_AREA,
+	AXO_MARSHAL,
+	AXO_ROUTE,
 }
 enum ButtonClick {
 	ISB_LMB = 1,  ## left click
