@@ -608,7 +608,8 @@ enum InterfaceGarage {
 	GRG_TYRES,
 	GRG_AERO,
 	GRG_PASS,
-	GRG_NUM
+	GRG_NUM,
+	GRG_RATING = 255
 }
 enum InterfaceShiftU {
 	FVM_PLAIN,
