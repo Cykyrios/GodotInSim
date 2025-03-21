@@ -50,12 +50,39 @@ func _get_data_dictionary() -> Dictionary:
 
 
 func _get_pretty_text() -> String:
-	var submode_filter: Array[InSim.InterfaceMode] = [InSim.InterfaceMode.CIM_NORMAL,
-			InSim.InterfaceMode.CIM_GARAGE, InSim.InterfaceMode.CIM_SHIFTU]
-	var submode_string := (" (%s)" % [InSim.InterfaceNormal.keys()[submode] \
-			if mode == InSim.InterfaceMode.CIM_NORMAL else InSim.InterfaceGarage.keys()[submode] \
-			if mode == InSim.InterfaceMode.CIM_GARAGE else InSim.InterfaceShiftU.keys()[submode] \
-			if mode == InSim.InterfaceMode.CIM_SHIFTU else "?"]) if mode in submode_filter \
-			else ""
+	var submode_filter: Array[InSim.InterfaceMode] = [
+		InSim.InterfaceMode.CIM_NORMAL,
+		InSim.InterfaceMode.CIM_GARAGE,
+		InSim.InterfaceMode.CIM_SHIFTU,
+	]
+	var get_submode_string := func get_submode_string(
+		packet_mode: InSim.InternalMode, packet_submode: int
+	) -> String:
+		var key_string := "?"
+		if packet_mode not in submode_filter:
+			return key_string
+		var enum_keys := (
+			InSim.InterfaceNormal.keys() if mode == InSim.InterfaceMode.CIM_NORMAL
+			else InSim.InterfaceGarage.keys() if mode == InSim.InterfaceMode.CIM_GARAGE
+			else InSim.InterfaceShiftU.keys()
+		)
+		var enum_values := (
+			InSim.InterfaceNormal.values() if mode == InSim.InterfaceMode.CIM_NORMAL
+			else InSim.InterfaceGarage.values() if mode == InSim.InterfaceMode.CIM_GARAGE
+			else InSim.InterfaceShiftU.values()
+		)
+		var idx := enum_values.find(packet_submode)
+		if idx != -1:
+			key_string = enum_keys[idx]
+		return key_string
+	var get_selection := func get_selection(value: int) -> String:
+		var idx := InSim.AXOIndex.values().find(value)
+		return InSim.AXOIndex.keys()[idx] if idx != -1 else "no selection"
+
+	var submode_string := " (%s%s)" % [get_submode_string.call(mode, submode),
+			(", %s" % [get_selection.call(sel_type)]) if (
+				mode == InSim.InterfaceMode.CIM_SHIFTU
+				and submode == InSim.InterfaceShiftU.FVM_EDIT
+			) else ""]
 	return "UCID %d: %s%s" % [ucid, InSim.InterfaceMode.keys()[mode],
 			submode_string if mode in submode_filter else ""]
