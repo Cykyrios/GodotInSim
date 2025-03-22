@@ -197,7 +197,7 @@ func read_car_name() -> String:
 
 
 func read_char() -> String:
-	return read_string(1)
+	return read_string(1, false)
 
 
 func read_float() -> float:
