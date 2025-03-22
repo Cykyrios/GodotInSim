@@ -68,7 +68,7 @@ static func bbcode_to_lfs_colors(text: String) -> String:
 	return lfs_text
 
 
-static func car_name_from_buffer(buffer: PackedByteArray) -> String:
+static func car_name_from_lfs_bytes(buffer: PackedByteArray) -> String:
 	var is_alphanumeric := func is_alphanumeric(character: int) -> bool:
 		var string := String.chr(character)
 		if (
@@ -91,6 +91,21 @@ static func car_name_from_buffer(buffer: PackedByteArray) -> String:
 		buffer.reverse()
 		car_name = buffer.hex_encode().to_upper()
 	return car_name
+
+
+static func car_name_to_lfs_bytes(car_name: String) -> PackedByteArray:
+	var buffer := PackedByteArray([0, 0, 0, 0])
+	if car_name.length() not in [3, 6]:
+		return buffer
+	if car_name.length() == 3:
+		for i in car_name.length():
+			var utf := car_name[i].to_utf8_buffer()
+			buffer[i] = utf[0]
+		return buffer
+	for i in 3:
+		var byte := car_name[2 * i] + car_name[2 * i + 1]
+		buffer[2 - i] = byte.hex_to_int()
+	return buffer
 
 
 ## Returns a color code string (^0 to ^8)

@@ -193,7 +193,7 @@ func read_car_name() -> String:
 	const CAR_NAME_LENGTH := 4
 	var car_name_buffer := buffer.slice(data_offset, data_offset + CAR_NAME_LENGTH)
 	data_offset += CAR_NAME_LENGTH
-	return LFSText.car_name_from_buffer(car_name_buffer)
+	return LFSText.car_name_from_lfs_bytes(car_name_buffer)
 
 
 func read_char() -> String:
