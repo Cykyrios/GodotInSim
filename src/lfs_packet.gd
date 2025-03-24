@@ -81,6 +81,19 @@ func get_pretty_text() -> String:
 
 
 #region buffer I/O
+func add_buffer(data: PackedByteArray) -> void:
+	if data.is_empty():
+		push_error("Cannot add data, buffer is empty")
+		return
+	var available_space := buffer.size() - data_offset
+	if data.size() > available_space:
+		push_error("Not enough space to add buffer (size %d, available %d)" % [data.size(),
+				available_space])
+		return
+	for byte in data:
+		add_byte(byte)
+
+
 func add_byte(data: int) -> void:
 	if data > 0xFF:
 		push_error("Data too large for unsigned byte, max 255, got %d." % [data])
@@ -181,6 +194,12 @@ func add_word(data: int) -> void:
 		return
 	buffer.encode_u16(data_offset, data)
 	data_offset += 2
+
+
+func read_buffer(bytes: int) -> PackedByteArray:
+	var result := buffer.slice(data_offset, data_offset + bytes)
+	data_offset += bytes
+	return result
 
 
 func read_byte() -> int:
