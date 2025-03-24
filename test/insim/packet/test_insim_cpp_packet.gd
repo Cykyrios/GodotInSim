@@ -33,13 +33,25 @@ func test_decode_packet(buffer: PackedByteArray, test_parameters := buffers) -> 
 		buffer.decode_s32(8),
 		buffer.decode_s32(12)
 	))
+	_test = assert_vector(packet.gis_position).is_equal_approx(Vector3i(
+		buffer.decode_s32(4),
+		buffer.decode_s32(8),
+		buffer.decode_s32(12)
+	) / InSimCPPPacket.POSITION_MULTIPLIER, epsilon * Vector3.ONE)
 	_test = assert_int(packet.heading).is_equal(buffer.decode_u16(16))
 	_test = assert_int(packet.pitch).is_equal(buffer.decode_u16(18))
 	_test = assert_int(packet.roll).is_equal(buffer.decode_u16(20))
+	_test = assert_vector(packet.gis_angles).is_equal_approx(Vector3(
+		wrapf(deg_to_rad(-buffer.decode_u16(18) / InSimCPPPacket.ANGLE_MULTIPLIER), -PI, PI),
+		wrapf(deg_to_rad(buffer.decode_u16(20) / InSimCPPPacket.ANGLE_MULTIPLIER), -PI, PI),
+		wrapf(deg_to_rad(buffer.decode_u16(16) / InSimCPPPacket.ANGLE_MULTIPLIER - 180), -PI, PI)
+	), epsilon * Vector3.ONE)
 	_test = assert_int(packet.view_plid).is_equal(buffer.decode_u8(22))
 	_test = assert_int(packet.ingame_cam).is_equal(buffer.decode_u8(23))
-	_test = assert_float(packet.fov).is_equal(buffer.decode_float(24))
+	_test = assert_float(packet.fov).is_equal_approx(buffer.decode_float(24), epsilon)
 	_test = assert_int(packet.time).is_equal(buffer.decode_u16(28))
+	_test = assert_float(packet.gis_time) \
+			.is_equal_approx(buffer.decode_u16(28) / InSimCPPPacket.TIME_MULTIPLIER, epsilon)
 	_test = assert_int(packet.flags).is_equal(buffer.decode_u16(30))
 	packet.fill_buffer()
 	_test = assert_array(packet.buffer).is_equal(buffer)
