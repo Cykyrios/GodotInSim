@@ -3,8 +3,6 @@ extends TestInSimPacketGeneric
 # TestSuite generated from
 const __source = "res://addons/godot_insim/src/insim/packet/insim_crs_packet.gd"
 
-var epsilon := 1e-5
-
 
 func test_receivable_sendable() -> void:
 	_test_receivable_sendable(preload(__source).new())
