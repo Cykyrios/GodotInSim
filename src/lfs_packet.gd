@@ -115,8 +115,8 @@ func add_float(data: float) -> void:
 
 
 func add_int(data: int) -> void:
-	var min_value := -0x1000_0000
-	var max_value := 0xFFF_FFFF
+	var min_value := -0x8000_0000
+	var max_value := 0x7FFF_FFFF
 	if data > max_value:
 		push_error("Data too large for signed integer, max %d, got %d." % [max_value, data])
 		return
@@ -128,8 +128,8 @@ func add_int(data: int) -> void:
 
 
 func add_short(data: int) -> void:
-	var min_value := -0x1000
-	var max_value := 0xFFF
+	var min_value := -0x8000
+	var max_value := 0x7FFF
 	if data > max_value:
 		push_error("Data too large for short integer, max %d, got %d." % [max_value, data])
 		return
