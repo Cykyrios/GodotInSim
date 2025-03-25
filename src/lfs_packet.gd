@@ -106,7 +106,7 @@ func add_byte(data: int) -> void:
 
 
 func add_char(data: String) -> void:
-	add_string(1, data)
+	var _buffer := add_string(1, data)
 
 
 func add_float(data: float) -> void:
@@ -140,23 +140,27 @@ func add_short(data: int) -> void:
 	data_offset += 2
 
 
-func add_string(length: int, data: String) -> void:
+func add_string(length: int, data: String, zero_terminated := true) -> PackedByteArray:
 	var temp_buffer := LFSText.unicode_to_lfs_bytes(data)
 	var _discard := temp_buffer.resize(length)
 	for i in length:
 		buffer.encode_u8(data_offset, temp_buffer[i])
 		data_offset += 1
+	if zero_terminated:
+		temp_buffer[-1] = 0
+	return temp_buffer
 
 
-func add_string_as_utf8(length: int, data: String) -> void:
+func add_string_as_utf8(length: int, data: String) -> PackedByteArray:
 	var temp_buffer := data.to_utf8_buffer()
 	var _discard := temp_buffer.resize(length)
 	for i in length:
 		buffer.encode_u8(data_offset, temp_buffer[i])
 		data_offset += 1
+	return temp_buffer
 
 
-func add_string_variable_length(data: String, max_length: int, length_step := 1) -> void:
+func add_string_variable_length(data: String, max_length: int, length_step: int) -> PackedByteArray:
 	var temp_buffer := LFSText.unicode_to_lfs_bytes(data)
 	var length := temp_buffer.size()
 	var remainder := length % length_step
@@ -164,10 +168,12 @@ func add_string_variable_length(data: String, max_length: int, length_step := 1)
 	if length > max_length:
 		length = max_length
 	var _discard := temp_buffer.resize(length)
+	var encode_start := data_offset
 	for i in length:
 		buffer.encode_u8(data_offset, temp_buffer[i])
 		data_offset += 1
 	buffer.encode_u8(data_offset - 1, 0)
+	return buffer.slice(encode_start, data_offset)
 
 
 func add_unsigned(data: int) -> void:

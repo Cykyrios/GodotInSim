@@ -24,9 +24,9 @@ func _init() -> void:
 func _fill_buffer() -> void:
 	super()
 	add_byte(zero)
-	add_string(HOST_NAME_LENGTH, host_name)
-	add_string(ADMIN_LENGTH, admin)
-	add_string(SPEC_LENGTH, spec)
+	var _buffer := add_string(HOST_NAME_LENGTH, host_name)
+	_buffer = add_string(ADMIN_LENGTH, admin)
+	_buffer = add_string(SPEC_LENGTH, spec)
 
 
 func _get_data_dictionary() -> Dictionary:

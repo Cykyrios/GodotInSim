@@ -45,7 +45,7 @@ func _fill_buffer() -> void:
 	add_byte(sp1)
 	add_byte(sp2)
 	add_byte(sp3)
-	add_string(SCREENSHOT_NAME_MAX_LENGTH, screenshot_name)
+	var _buffer := add_string(SCREENSHOT_NAME_MAX_LENGTH, screenshot_name)
 	data_offset -= 1
 	add_byte(0)  # last byte in replay name must be zero
 

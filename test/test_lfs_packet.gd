@@ -80,7 +80,7 @@ func test_add_string() -> void:
 	var buffer_size := 24
 	var text := "test"
 	packet.resize_buffer(buffer_size)
-	packet.add_string(buffer_size, text)
+	var _buffer := packet.add_string(buffer_size, text)
 	var _test: GdUnitAssert = assert_str(LFSText.lfs_bytes_to_unicode(packet.buffer)) \
 			.is_equal(text)
 	var expected := LFSText.unicode_to_lfs_bytes(text)
@@ -92,7 +92,7 @@ func test_add_string_as_utf8() -> void:
 	var buffer_size := 24
 	var text := "test"
 	packet.resize_buffer(buffer_size)
-	packet.add_string_as_utf8(buffer_size, text)
+	var _buffer := packet.add_string_as_utf8(buffer_size, text)
 	var _test: GdUnitAssert = assert_str(packet.buffer.get_string_from_utf8()) \
 			.is_equal(text)
 	var expected := LFSText.unicode_to_lfs_bytes(text)
@@ -108,7 +108,7 @@ func test_add_string_variable_length(text: String, max_length: int, step: int, t
 ]
 ) -> void:
 	packet.resize_buffer(max_length)
-	packet.add_string_variable_length(text, max_length, step)
+	var _buffer := packet.add_string_variable_length(text, max_length, step)
 	var expected := LFSText.unicode_to_lfs_bytes(text)
 	var needed_size := (text.length() + step) - ((text.length() + step) % step)
 	var _discard := expected.resize(mini(needed_size, max_length))

@@ -45,10 +45,11 @@ func _fill_buffer() -> void:
 	var caption_length := caption.length()  # NOTE: max caption length is 128
 	if caption_length > 0:
 		add_byte(0)
-		add_string(caption_length, caption)
+		var _caption := add_string(caption_length, caption)
 		add_byte(0)
 		caption_length += 2
-	add_string_variable_length(text, TEXT_MAX_LENGTH - caption_length, SIZE_MULTIPLIER)
+	var _buffer := add_string_variable_length(text, TEXT_MAX_LENGTH - caption_length,
+			SIZE_MULTIPLIER)
 	trim_packet_size()
 
 
