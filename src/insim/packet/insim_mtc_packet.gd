@@ -52,7 +52,7 @@ func _get_pretty_text() -> String:
 
 
 static func create(
-	mtc_sound: InSim.MessageSound, mtc_ucid: int, mtc_plid: int, mtc_text: String
+	mtc_ucid: int, mtc_plid: int, mtc_text: String, mtc_sound := InSim.MessageSound.SND_SILENT
 ) -> InSimMTCPacket:
 	var packet := InSimMTCPacket.new()
 	packet.sound = mtc_sound
