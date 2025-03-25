@@ -31,3 +31,18 @@ func test_encode_packet(buffer: PackedByteArray, test_parameters := buffers) -> 
 		fail("Incorrect packet type")
 		return
 	var _test := assert_array(packet.buffer).is_equal(buffer)
+
+
+@warning_ignore("unused_parameter")
+func test_too_long_message(text: String, test_parameters := [
+	["123456789_123456789_123456789_123456789_123456789_123456789_1234"],
+	["123456789_123456789_123456789_123456789_123456789_123456789_123夢"],
+	["123456789_123456789_123456789_123456789_123456789_123456789_12夢"],
+	["123456789_123456789_123456789_123456789_123456789_123456789_1夢"],
+	["123456789_123456789_123456789_123456789_123456789_123456789_夢"],
+]) -> void:
+	var packet := InSimMSTPacket.create(text)
+	packet.fill_buffer()
+	var _test := assert_str(packet.msg).is_not_equal(text)
+	_test = assert_str(packet.msg) \
+			.starts_with(text.left(mini(text.length(), InSimMSTPacket.MSG_MAX_LENGTH) - 1))
