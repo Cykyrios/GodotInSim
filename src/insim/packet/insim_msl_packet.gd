@@ -36,7 +36,8 @@ func _get_pretty_text() -> String:
 	return LFSText.lfs_colors_to_bbcode(msg)
 
 
-static func create(message: String) -> InSimMSLPacket:
+static func create(message: String, msg_sound := InSim.MessageSound.SND_SILENT) -> InSimMSLPacket:
 	var packet := InSimMSLPacket.new()
 	packet.msg = message
+	packet.sound = msg_sound
 	return packet
