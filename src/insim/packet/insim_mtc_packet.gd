@@ -68,3 +68,6 @@ func trim_packet_size() -> void:
 			size = PACKET_MAX_SIZE - i + 1  # + 1 to keep final zero
 			resize_buffer(size)
 			break
+	if size == PACKET_MAX_SIZE and text.length() < 10:
+		size = PACKET_MIN_SIZE
+		resize_buffer(size)
