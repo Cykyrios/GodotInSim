@@ -54,7 +54,9 @@ func _decode_packet(packet: PackedByteArray) -> void:
 func _fill_buffer() -> void:
 	super()
 	update_req_i()
-	numb = mini(numb, ban_ips.size())
+	numb = mini(numb, mini(ban_ips.size(), IPB_MAX_BANS))
+	if ban_ips.size() > numb:
+		var _resize := ban_ips.resize(numb)
 	add_byte(numb)
 	add_byte(sp0)
 	add_byte(sp1)
@@ -62,10 +64,11 @@ func _fill_buffer() -> void:
 	add_byte(sp3)
 	resize_buffer(PACKET_BASE_SIZE + numb * IPB_DATA_SIZE)
 	for i in numb:
-		add_byte(ban_ips[i].address_array[0])
-		add_byte(ban_ips[i].address_array[1])
-		add_byte(ban_ips[i].address_array[2])
-		add_byte(ban_ips[i].address_array[3])
+		var ip := ban_ips[i].address_array
+		add_byte(ip[0])
+		add_byte(ip[1])
+		add_byte(ip[2])
+		add_byte(ip[3])
 
 
 func _get_data_dictionary() -> Dictionary:
