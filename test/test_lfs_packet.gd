@@ -10,28 +10,52 @@ func before_test() -> void:
 	packet = auto_free(preload(__source).new())
 
 
-func test_add_byte() -> void:
-	packet.resize_buffer(1)
-	packet.add_byte(42)
-	var _test := assert_array(packet.buffer).is_equal([42])
-
-
-func test_add_char() -> void:
-	packet.resize_buffer(1)
-	packet.add_char("A")
-	var _test := assert_array(packet.buffer).is_equal(LFSText.unicode_to_lfs_bytes("A"))
-
-
-func test_add_float() -> void:
-	packet.resize_buffer(4)
-	packet.add_float(PI)
-	var buffer := PackedByteArray([0, 0, 0, 0])
-	buffer.encode_float(0, PI)
+@warning_ignore("unused_parameter")
+func test_add_buffer(buffer: PackedByteArray, test_parameters := [
+	[],
+]) -> void:
+	packet.resize_buffer(buffer.size())
+	packet.add_buffer(buffer)
 	var _test := assert_array(packet.buffer).is_equal(buffer)
 
 
-func test_add_int() -> void:
-	var number := int(PI * 1_000_000)
+@warning_ignore("unused_parameter")
+func test_add_byte(byte: int, test_parameters := [
+	[0],
+	[255],
+	[42],
+]) -> void:
+	packet.resize_buffer(1)
+	packet.add_byte(byte)
+	var _test := assert_array(packet.buffer).is_equal([byte])
+
+
+@warning_ignore("unused_parameter")
+func test_add_char(character: String, test_parameters := [
+	["A"],
+]) -> void:
+	packet.resize_buffer(1)
+	packet.add_char(character)
+	var _test := assert_array(packet.buffer).is_equal(LFSText.unicode_to_lfs_bytes(character))
+
+
+@warning_ignore("unused_parameter")
+func test_add_float(number: float, test_parameters := [
+	[PI],
+]) -> void:
+	packet.resize_buffer(4)
+	packet.add_float(number)
+	var buffer := PackedByteArray([0, 0, 0, 0])
+	buffer.encode_float(0, number)
+	var _test := assert_array(packet.buffer).is_equal(buffer)
+
+
+@warning_ignore("unused_parameter")
+func test_add_int(number: int, test_parameters := [
+	[-0x8000_0000],
+	[0x7FFF_FFFF],
+	[int(PI * 1_000_000)],
+]) -> void:
 	packet.resize_buffer(4)
 	packet.add_int(number)
 	var buffer := PackedByteArray([0, 0, 0, 0])
@@ -39,8 +63,12 @@ func test_add_int() -> void:
 	var _test := assert_array(packet.buffer).is_equal(buffer)
 
 
-func test_add_short() -> void:
-	var number := int(1337)
+@warning_ignore("unused_parameter")
+func test_add_short(number: int, test_parameters := [
+	[-0x8000],
+	[0x7FFF],
+	[1337],
+]) -> void:
 	packet.resize_buffer(2)
 	packet.add_short(number)
 	var buffer := PackedByteArray([0, 0])
@@ -91,8 +119,12 @@ func test_add_string_variable_length(text: String, max_length: int, step: int, t
 			.is_equal(LFSText.lfs_bytes_to_unicode(expected))
 
 
-func test_add_unsigned() -> void:
-	var number := int(PI * 1_000_000)
+@warning_ignore("unused_parameter")
+func test_add_unsigned(number: int, test_parameters := [
+	[0],
+	[0xFFFF_FFFF],
+	[int(PI * 1_000_000)],
+]) -> void:
 	packet.resize_buffer(4)
 	packet.add_unsigned(number)
 	var buffer := PackedByteArray([0, 0, 0, 0])
@@ -100,8 +132,12 @@ func test_add_unsigned() -> void:
 	var _test := assert_array(packet.buffer).is_equal(buffer)
 
 
-func test_add_word() -> void:
-	var number := int(1337)
+@warning_ignore("unused_parameter")
+func test_add_word(number: int, test_parameters := [
+	[0],
+	[0xFFFF],
+	[1337],
+]) -> void:
 	packet.resize_buffer(2)
 	packet.add_word(number)
 	var buffer := PackedByteArray([0, 0])
@@ -110,7 +146,19 @@ func test_add_word() -> void:
 
 
 @warning_ignore("unused_parameter")
+func test_read_buffer(buffer: PackedByteArray, test_parameters := [
+	[PackedByteArray([0])],
+	[PackedByteArray([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])],
+	[PackedByteArray([])],
+]) -> void:
+	packet.buffer = buffer
+	var _test := assert_array(packet.read_buffer(buffer.size())).is_equal(buffer)
+
+
+@warning_ignore("unused_parameter")
 func test_read_byte(number: int, test_parameters := [
+	[0],
+	[255],
 	[42],
 ]) -> void:
 	var buffer := PackedByteArray([0])
