@@ -168,8 +168,13 @@ static func lfs_bytes_to_unicode(bytes: PackedByteArray, zero_terminated := true
 		elif _is_multibyte(current_code_page, buffer[i]):
 			block_end += 2
 			skip_next = true
-		elif buffer[i] == 0x5e:
-			# Found "^"
+		elif buffer[i] == 0x5e:  # Found "^"
+			# Special case for ^* characters cut in half at the end of the message buffer
+			if buffer[i + 1] == 0:
+				block_end += 2
+				if block_start < block_end:
+					message += _get_string_from_bytes(buffer.slice(block_start, block_end),
+							current_code_page)
 			var code_page_check := "^%s" % [char(buffer[i + 1])]
 			if CODE_PAGES.has(code_page_check):
 				if block_start < block_end:
