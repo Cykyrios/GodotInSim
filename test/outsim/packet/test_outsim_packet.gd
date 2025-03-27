@@ -51,14 +51,8 @@ func test_decode_packet(
 	var _test: GdUnitAssert = assert_int(packet.outsim_options).is_equal(outsim_opts)
 	var offset := 0
 	if packet.outsim_options & OutSim.OutSimOpts.OSO_HEADER:
-		_test = assert_str(packet.outsim_pack.header_l) \
-				.is_equal(LFSText.lfs_bytes_to_unicode([buffer[offset]], false))
-		_test = assert_str(packet.outsim_pack.header_f) \
-				.is_equal(LFSText.lfs_bytes_to_unicode([buffer[offset + 1]], false))
-		_test = assert_str(packet.outsim_pack.header_s) \
-				.is_equal(LFSText.lfs_bytes_to_unicode([buffer[offset + 2]], false))
-		_test = assert_str(packet.outsim_pack.header_t) \
-				.is_equal(LFSText.lfs_bytes_to_unicode([buffer[offset + 3]], false))
+		_test = assert_str(packet.outsim_pack.header) \
+				.is_equal(LFSText.lfs_bytes_to_unicode(buffer.slice(offset, offset + 4), false))
 		offset += 4
 	if packet.outsim_options & OutSim.OutSimOpts.OSO_ID:
 		_test = assert_int(packet.outsim_pack.id).is_equal(buffer.decode_s32(offset))

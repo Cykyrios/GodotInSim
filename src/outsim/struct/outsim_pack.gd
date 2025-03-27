@@ -18,10 +18,7 @@ const WHEEL_COUNT := 4
 
 var outsim_options := 0
 
-var header_l := ""
-var header_f := ""
-var header_s := ""
-var header_t := ""
+var header := ""
 
 var id := 0
 
@@ -79,10 +76,7 @@ func set_from_buffer(buffer: PackedByteArray) -> void:
 					[OUTSIM_PACK1_SIZE, OUTSIM_PACK1_SIZE + OUTSIM_PACK1_ID_SIZE, buffer_size])
 			return
 	if outsim_options & OutSim.OutSimOpts.OSO_HEADER:
-		header_l = buffer.slice(data_offset + 0, data_offset + 1).get_string_from_utf8()
-		header_f = buffer.slice(data_offset + 1, data_offset + 2).get_string_from_utf8()
-		header_s = buffer.slice(data_offset + 2, data_offset + 3).get_string_from_utf8()
-		header_t = buffer.slice(data_offset + 3, data_offset + 4).get_string_from_utf8()
+		header = buffer.slice(data_offset, data_offset + 4).get_string_from_utf8()
 		data_offset += 4
 	if outsim_options & OutSim.OutSimOpts.OSO_ID:
 		id = buffer.decode_u32(data_offset)
