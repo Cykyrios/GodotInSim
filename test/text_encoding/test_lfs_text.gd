@@ -16,7 +16,7 @@ func test_car_name_from_lfs_bytes(buffer: PackedByteArray, car_name: String, tes
 
 
 @warning_ignore("unused_parameter")
-func test_car_name_to_lfs_bytes(car_name: String, buffer: PackedByteArray, test_parameters := [
+func test_car_name_to_lfs_bytes(buffer: PackedByteArray, car_name: String, test_parameters := [
 	[PackedByteArray([85, 70, 49, 0]), "UF1"],
 	[PackedByteArray([88, 82, 84, 0]), "XRT"],
 	[PackedByteArray([70, 66, 77, 0]), "FBM"],
