@@ -932,15 +932,17 @@ func _ready() -> void:
 	timeout_timer.one_shot = true
 	_discard = timeout_timer.timeout.connect(handle_timeout)
 
-	_discard = isp_ver_received.connect(read_version_packet)
-	_discard = isp_tiny_received.connect(_on_tiny_packet_received)
-	_discard = isp_small_received.connect(_on_small_packet_received)
-	_discard = isp_sta_received.connect(_on_sta_packet_received)
-	_discard = isp_ncn_received.connect(_on_ncn_packet_received)
 	_discard = isp_cnl_received.connect(_on_cnl_packet_received)
 	_discard = isp_cpr_received.connect(_on_cpr_packet_received)
+	_discard = isp_ism_received.connect(_on_ism_packet_received)
+	_discard = isp_ncn_received.connect(_on_ncn_packet_received)
 	_discard = isp_npl_received.connect(_on_npl_packet_received)
 	_discard = isp_pll_received.connect(_on_pll_packet_received)
+	_discard = isp_small_received.connect(_on_small_packet_received)
+	_discard = isp_sta_received.connect(_on_sta_packet_received)
+	_discard = isp_tiny_received.connect(_on_tiny_packet_received)
+	_discard = isp_ver_received.connect(read_version_packet)
+	_discard = tiny_mpe_received.connect(_on_tiny_mpe_received)
 
 
 func close() -> void:
@@ -1251,32 +1253,6 @@ func _on_small_packet_received(packet: InSimSmallPacket) -> void:
 			push_error_unknown_packet_subtype(packet.type, packet.sub_type)
 
 
-func _on_sta_packet_received(packet: InSimSTAPacket) -> void:
-	lfs_state.set_from_sta_packet(packet)
-
-
-#region connections and players
-func _on_cnl_packet_received(packet: InSimCNLPacket) -> void:
-	var _discard := connections.erase(packet.ucid)
-
-
-func _on_cpr_packet_received(packet: InSimCPRPacket) -> void:
-	connections[packet.ucid].nickname = packet.player_name
-
-
-func _on_ncn_packet_received(packet: InSimNCNPacket) -> void:
-	connections[packet.ucid] = Connection.create_from_ncn_packet(packet)
-
-
-func _on_npl_packet_received(packet: InSimNPLPacket) -> void:
-	players[packet.plid] = Player.create_from_npl_packet(packet)
-
-
-func _on_pll_packet_received(packet: InSimPLLPacket) -> void:
-	var _discard := players.erase(packet.plid)
-#endregion
-
-
 func _on_tiny_packet_received(packet: InSimTinyPacket) -> void:
 	match packet.sub_type:
 		Tiny.TINY_NONE:
@@ -1296,3 +1272,43 @@ func _on_tiny_packet_received(packet: InSimTinyPacket) -> void:
 			tiny_axc_received.emit(packet)
 		_:
 			push_error_unknown_packet_subtype(packet.type, packet.sub_type)
+
+
+#region InSim event management: connections, players, state
+func _on_cnl_packet_received(packet: InSimCNLPacket) -> void:
+	var _discard := connections.erase(packet.ucid)
+
+
+func _on_cpr_packet_received(packet: InSimCPRPacket) -> void:
+	connections[packet.ucid].nickname = packet.player_name
+
+
+func _on_ism_packet_received(packet: InSimISMPacket) -> void:
+	if packet.req_i == 0:
+		connections.clear()
+		players.clear()
+	send_packet(InSimTinyPacket.create(GISRequest.REQ_0, InSim.Tiny.TINY_NCN))
+	send_packet(InSimTinyPacket.create(GISRequest.REQ_0, InSim.Tiny.TINY_NPL))
+
+
+func _on_ncn_packet_received(packet: InSimNCNPacket) -> void:
+	connections[packet.ucid] = Connection.create_from_ncn_packet(packet)
+
+
+func _on_npl_packet_received(packet: InSimNPLPacket) -> void:
+	players[packet.plid] = Player.create_from_npl_packet(packet)
+
+
+func _on_pll_packet_received(packet: InSimPLLPacket) -> void:
+	var _discard := players.erase(packet.plid)
+
+
+func _on_sta_packet_received(packet: InSimSTAPacket) -> void:
+	lfs_state.set_from_sta_packet(packet)
+
+
+func _on_tiny_mpe_received(_packet: InSimTinyPacket) -> void:
+	connections.clear()
+	players.clear()
+	send_packet(InSimTinyPacket.create(GISRequest.REQ_0, InSim.Tiny.TINY_NCN))
+#endregion
