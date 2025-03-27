@@ -942,6 +942,7 @@ func _ready() -> void:
 	_discard = isp_sta_received.connect(_on_sta_packet_received)
 	_discard = isp_tiny_received.connect(_on_tiny_packet_received)
 	_discard = isp_ver_received.connect(read_version_packet)
+	_discard = tiny_clr_received.connect(_on_tiny_clr_received)
 	_discard = tiny_mpe_received.connect(_on_tiny_mpe_received)
 
 
@@ -1305,6 +1306,10 @@ func _on_pll_packet_received(packet: InSimPLLPacket) -> void:
 
 func _on_sta_packet_received(packet: InSimSTAPacket) -> void:
 	lfs_state.set_from_sta_packet(packet)
+
+
+func _on_tiny_clr_received(_packet: InSimTinyPacket) -> void:
+	players.clear()
 
 
 func _on_tiny_mpe_received(_packet: InSimTinyPacket) -> void:
