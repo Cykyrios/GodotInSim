@@ -65,8 +65,11 @@ func _get_pretty_text() -> String:
 	return "Screenshot: %s - %s" % [InSim.Screenshot.keys()[error], screenshot_name]
 
 
-static func create(ssh_error: int, ssh_name: String) -> InSimSSHPacket:
+static func create(
+	reqi: int, ssh_name: String, ssh_error := InSim.Screenshot.SSH_OK
+) -> InSimSSHPacket:
 	var packet := InSimSSHPacket.new()
+	packet.req_i = reqi
 	packet.error = ssh_error
 	packet.screenshot_name = ssh_name
 	return packet
