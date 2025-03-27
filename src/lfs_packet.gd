@@ -73,7 +73,7 @@ func fill_buffer(use_gis_values := false) -> void:
 
 
 func get_dictionary(replace_colors := false) -> Dictionary:
-	var dictionary := _get_dictionary()
+	var dictionary := _get_dictionary().duplicate()
 	if replace_colors:
 		for key: Variant in dictionary.keys():
 			if typeof(dictionary[key]) == TYPE_STRING:
