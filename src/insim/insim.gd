@@ -1035,6 +1035,41 @@ func send_keep_alive_packet() -> void:
 	reset_timeout_timer()
 
 
+## Call this function to send a UTF8-formatted text string to LFS as a local message.
+func send_local_message(
+	message: String, sound := InSim.MessageSound.SND_SILENT, sender := "InSim"
+) -> void:
+	send_packet(InSimMSLPacket.create(message, sound), sender)
+
+
+## Call this function to send a UTF8-formatted message to LFS as user. Color codes
+## (e.g. ^1 for red) will be converted accordingly.
+func send_message(message: String, sender := "InSim") -> void:
+	var message_buffer := LFSText.unicode_to_lfs_bytes(message)
+	var packet: InSimPacket = null
+	if message_buffer.size() < 64:
+		packet = InSimMSTPacket.create(message)
+	else:
+		packet = InSimMSXPacket.create(message)
+	send_packet(packet, sender)
+
+
+## Call this function to send a UTF8-formatted message to a specific connection, identified
+## by its [param ucid]. A value of 255 will send the message to everyone.
+func send_message_to_connection(
+	ucid: int, message: String, sound := InSim.MessageSound.SND_SILENT, sender := "InSim"
+) -> void:
+	send_packet(InSimMTCPacket.create(ucid, 0, message, sound), sender)
+
+
+## Call this function to send a UTF8-formatted message to a specific player, identified
+## by their [param plid].
+func send_message_to_player(
+	plid: int, message: String, sound := InSim.MessageSound.SND_SILENT, sender := "InSim"
+) -> void:
+	send_packet(InSimMTCPacket.create(0, plid, message, sound), sender)
+
+
 ## Call this function to send an InSim packet to LFS. You can pass the name
 ## of your application to [param sender] if you want to identify the origin of
 ## sent packets (by connecting the [signal packet_sent] signal).
