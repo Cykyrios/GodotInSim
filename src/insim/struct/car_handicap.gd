@@ -39,7 +39,7 @@ func _set_from_buffer(buffer: PackedByteArray) -> void:
 
 
 func _set_values_from_gis() -> void:
-	h_mass = int(gis_mass * MASS_MULTIPLIER)
+	h_mass = roundi(gis_mass * MASS_MULTIPLIER)
 
 
 func _update_gis_values() -> void:
@@ -51,4 +51,12 @@ static func create(added_mass: int, intake_restriction: int) -> CarHandicap:
 	handicap.h_mass = added_mass
 	handicap.h_tres = intake_restriction
 	handicap._update_gis_values()
+	return handicap
+
+
+static func create_from_gis_values(added_mass: float, intake_restriction: int) -> CarHandicap:
+	var handicap := CarHandicap.new()
+	handicap.gis_mass = added_mass
+	handicap.h_tres = intake_restriction
+	handicap._set_values_from_gis()
 	return handicap

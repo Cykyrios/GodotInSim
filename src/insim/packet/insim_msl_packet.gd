@@ -21,9 +21,7 @@ func _init() -> void:
 func _fill_buffer() -> void:
 	super()
 	add_byte(sound)
-	if msg.length() >= MSG_MAX_LENGTH:
-		msg = msg.left(MSG_MAX_LENGTH - 1)  # last byte must be zero
-	add_string(MSG_MAX_LENGTH, msg)
+	msg = LFSText.lfs_bytes_to_unicode(add_string(MSG_MAX_LENGTH, msg))
 	buffer.encode_u8(size - 1, 0)  # last byte must be zero
 
 
@@ -38,7 +36,8 @@ func _get_pretty_text() -> String:
 	return LFSText.lfs_colors_to_bbcode(msg)
 
 
-static func create(message: String) -> InSimMSLPacket:
+static func create(message: String, msg_sound := InSim.MessageSound.SND_SILENT) -> InSimMSLPacket:
 	var packet := InSimMSLPacket.new()
 	packet.msg = message
+	packet.sound = msg_sound
 	return packet

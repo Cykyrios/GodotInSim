@@ -103,13 +103,13 @@ func _update_gis_values() -> void:
 
 
 func _set_values_from_gis() -> void:
-	pos.x = int(gis_position.x * POSITION_MULTIPLIER)
-	pos.y = int(gis_position.y * POSITION_MULTIPLIER)
-	pos.z = int(gis_position.z * POSITION_MULTIPLIER)
-	pitch = wrapi(int(-rad_to_deg(gis_angles.x) * ANGLE_MULTIPLIER), 0, 65536)
-	roll = wrapi(int(rad_to_deg(2 * PI - gis_angles.y) * ANGLE_MULTIPLIER), 0, 65536)
-	heading = wrapi(int((180 + rad_to_deg(gis_angles.z)) * ANGLE_MULTIPLIER), 0, 65536)
-	time = int(gis_time * TIME_MULTIPLIER)
+	pos.x = roundi(gis_position.x * POSITION_MULTIPLIER)
+	pos.y = roundi(gis_position.y * POSITION_MULTIPLIER)
+	pos.z = roundi(gis_position.z * POSITION_MULTIPLIER)
+	pitch = wrapi(roundi(-rad_to_deg(gis_angles.x) * ANGLE_MULTIPLIER), 0, 65536)
+	roll = wrapi(roundi(rad_to_deg(2 * PI - gis_angles.y) * ANGLE_MULTIPLIER), 0, 65536)
+	heading = wrapi(roundi((180 + rad_to_deg(gis_angles.z)) * ANGLE_MULTIPLIER), 0, 65536)
+	time = roundi(gis_time * TIME_MULTIPLIER)
 
 
 static func create(

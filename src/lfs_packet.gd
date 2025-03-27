@@ -81,6 +81,19 @@ func get_pretty_text() -> String:
 
 
 #region buffer I/O
+func add_buffer(data: PackedByteArray) -> void:
+	if data.is_empty():
+		push_error("Cannot add data, buffer is empty")
+		return
+	var available_space := buffer.size() - data_offset
+	if data.size() > available_space:
+		push_error("Not enough space to add buffer (size %d, available %d)" % [data.size(),
+				available_space])
+		return
+	for byte in data:
+		add_byte(byte)
+
+
 func add_byte(data: int) -> void:
 	if data > 0xFF:
 		push_error("Data too large for unsigned byte, max 255, got %d." % [data])
@@ -93,7 +106,7 @@ func add_byte(data: int) -> void:
 
 
 func add_char(data: String) -> void:
-	add_string(1, data)
+	var _buffer := add_string(1, data)
 
 
 func add_float(data: float) -> void:
@@ -102,8 +115,8 @@ func add_float(data: float) -> void:
 
 
 func add_int(data: int) -> void:
-	var min_value := -0x1000_0000
-	var max_value := 0xFFF_FFFF
+	var min_value := -0x8000_0000
+	var max_value := 0x7FFF_FFFF
 	if data > max_value:
 		push_error("Data too large for signed integer, max %d, got %d." % [max_value, data])
 		return
@@ -115,8 +128,8 @@ func add_int(data: int) -> void:
 
 
 func add_short(data: int) -> void:
-	var min_value := -0x1000
-	var max_value := 0xFFF
+	var min_value := -0x8000
+	var max_value := 0x7FFF
 	if data > max_value:
 		push_error("Data too large for short integer, max %d, got %d." % [max_value, data])
 		return
@@ -127,23 +140,27 @@ func add_short(data: int) -> void:
 	data_offset += 2
 
 
-func add_string(length: int, data: String) -> void:
+func add_string(length: int, data: String, zero_terminated := true) -> PackedByteArray:
 	var temp_buffer := LFSText.unicode_to_lfs_bytes(data)
 	var _discard := temp_buffer.resize(length)
 	for i in length:
 		buffer.encode_u8(data_offset, temp_buffer[i])
 		data_offset += 1
+	if zero_terminated:
+		temp_buffer[-1] = 0
+	return temp_buffer
 
 
-func add_string_as_utf8(length: int, data: String) -> void:
+func add_string_as_utf8(length: int, data: String) -> PackedByteArray:
 	var temp_buffer := data.to_utf8_buffer()
 	var _discard := temp_buffer.resize(length)
 	for i in length:
 		buffer.encode_u8(data_offset, temp_buffer[i])
 		data_offset += 1
+	return temp_buffer
 
 
-func add_string_variable_length(data: String, max_length: int, length_step := 1) -> void:
+func add_string_variable_length(data: String, max_length: int, length_step: int) -> PackedByteArray:
 	var temp_buffer := LFSText.unicode_to_lfs_bytes(data)
 	var length := temp_buffer.size()
 	var remainder := length % length_step
@@ -151,10 +168,12 @@ func add_string_variable_length(data: String, max_length: int, length_step := 1)
 	if length > max_length:
 		length = max_length
 	var _discard := temp_buffer.resize(length)
+	var encode_start := data_offset
 	for i in length:
 		buffer.encode_u8(data_offset, temp_buffer[i])
 		data_offset += 1
 	buffer.encode_u8(data_offset - 1, 0)
+	return buffer.slice(encode_start, data_offset)
 
 
 func add_unsigned(data: int) -> void:
@@ -183,6 +202,12 @@ func add_word(data: int) -> void:
 	data_offset += 2
 
 
+func read_buffer(bytes: int) -> PackedByteArray:
+	var result := buffer.slice(data_offset, data_offset + bytes)
+	data_offset += bytes
+	return result
+
+
 func read_byte() -> int:
 	var result := buffer.decode_u8(data_offset)
 	data_offset += 1
@@ -193,11 +218,11 @@ func read_car_name() -> String:
 	const CAR_NAME_LENGTH := 4
 	var car_name_buffer := buffer.slice(data_offset, data_offset + CAR_NAME_LENGTH)
 	data_offset += CAR_NAME_LENGTH
-	return LFSText.car_name_from_buffer(car_name_buffer)
+	return LFSText.car_name_from_lfs_bytes(car_name_buffer)
 
 
 func read_char() -> String:
-	return read_string(1)
+	return read_string(1, false)
 
 
 func read_float() -> float:

@@ -31,7 +31,8 @@ func _fill_buffer() -> void:
 	add_byte(plid)
 	add_byte(sp2)
 	add_byte(sp3)
-	add_string_variable_length(text, TEXT_MAX_LENGTH, SIZE_MULTIPLIER)
+	text = LFSText.lfs_bytes_to_unicode(add_string_variable_length(
+			text, TEXT_MAX_LENGTH, SIZE_MULTIPLIER))
 	trim_packet_size()
 
 
@@ -51,7 +52,7 @@ func _get_pretty_text() -> String:
 
 
 static func create(
-	mtc_sound: InSim.MessageSound, mtc_ucid: int, mtc_plid: int, mtc_text: String
+	mtc_ucid: int, mtc_plid: int, mtc_text: String, mtc_sound := InSim.MessageSound.SND_SILENT
 ) -> InSimMTCPacket:
 	var packet := InSimMTCPacket.new()
 	packet.sound = mtc_sound
@@ -67,3 +68,6 @@ func trim_packet_size() -> void:
 			size = PACKET_MAX_SIZE - i + 1  # + 1 to keep final zero
 			resize_buffer(size)
 			break
+	if size == PACKET_MAX_SIZE and text.length() < 10:
+		size = PACKET_MIN_SIZE
+		resize_buffer(size)

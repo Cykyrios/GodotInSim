@@ -51,3 +51,22 @@ func _set_values_from_gis() -> void:
 
 func _update_gis_values() -> void:
 	gis_time = time / TIME_MULTIPLIER
+
+
+static func create(aic_input: InSim.AIControl, aic_time: int, aic_value: int) -> AIInputVal:
+	var ai_input_val := AIInputVal.new()
+	ai_input_val.input = aic_input
+	ai_input_val.time = aic_time
+	ai_input_val.value = aic_value
+	return ai_input_val
+
+
+static func create_from_gis_values(
+	aic_input: InSim.AIControl, aic_time: float, aic_value: int
+) -> AIInputVal:
+	var ai_input_val := AIInputVal.new()
+	ai_input_val.input = aic_input
+	ai_input_val.gis_time = aic_time
+	ai_input_val.value = aic_value
+	ai_input_val._set_values_from_gis()
+	return ai_input_val

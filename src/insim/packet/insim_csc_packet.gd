@@ -37,7 +37,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	csc_action = read_byte() as InSim.CSCAction
 	sp2 = read_byte()
 	sp3 = read_byte()
-	time = read_word()
+	time = read_unsigned()
 	var struct_size := CarContObj.STRUCT_SIZE
 	object.set_from_buffer(packet.slice(data_offset, data_offset + struct_size))
 	data_offset += struct_size

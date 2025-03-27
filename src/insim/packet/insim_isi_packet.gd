@@ -65,11 +65,11 @@ func _fill_buffer() -> void:
 	add_word(flags)
 
 	add_byte(insim_version)
-	add_string(PREFIX_LENGTH, prefix)
+	var _buffer := add_string(PREFIX_LENGTH, prefix)
 	add_word(interval)
 
-	add_string(ADMIN_LENGTH, admin)
-	add_string(NAME_LENGTH, i_name)
+	_buffer = add_string(ADMIN_LENGTH, admin)
+	_buffer = add_string(NAME_LENGTH, i_name)
 
 
 func _get_data_dictionary() -> Dictionary:

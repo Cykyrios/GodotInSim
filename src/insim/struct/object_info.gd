@@ -39,8 +39,8 @@ func _get_buffer() -> PackedByteArray:
 func _set_from_buffer(buffer: PackedByteArray) -> void:
 	if buffer.size() != STRUCT_SIZE:
 		push_error("Wrong buffer size, expected %d, got %d" % [STRUCT_SIZE, buffer.size()])
-	x = buffer.decode_u16(0)
-	y = buffer.decode_u16(2)
+	x = buffer.decode_s16(0)
+	y = buffer.decode_s16(2)
 	z = buffer.decode_u8(4)
 	flags = buffer.decode_u8(5)
 	index = buffer.decode_u8(6)
@@ -48,10 +48,10 @@ func _set_from_buffer(buffer: PackedByteArray) -> void:
 
 
 func _set_values_from_gis() -> void:
-	x = int(gis_position.x * POSITION_MULTIPLIER)
-	y = int(gis_position.y * POSITION_MULTIPLIER)
-	z = int(gis_position.z * Z_MULTIPLIER)
-	heading = int((180 + rad_to_deg(gis_heading)) * ANGLE_MULTIPLIER)
+	x = roundi(gis_position.x * POSITION_MULTIPLIER)
+	y = roundi(gis_position.y * POSITION_MULTIPLIER)
+	z = roundi(gis_position.z * Z_MULTIPLIER)
+	heading = roundi((180 + rad_to_deg(gis_heading)) * ANGLE_MULTIPLIER)
 
 
 func _update_gis_values() -> void:
