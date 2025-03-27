@@ -93,10 +93,11 @@ func _update_gis_values() -> void:
 
 
 static func create(
-	rip_error: int, rip_mpr: int, rip_paused: int, rip_options: int,
-	rip_c_time: int, rip_t_time: int, rip_name: String
+	reqi: int, rip_name: String, rip_mpr: int, rip_c_time: int, rip_options: int,
+	rip_paused := 0, rip_t_time := 0, rip_error := 0
 ) -> InSimRIPPacket:
 	var packet := InSimRIPPacket.new()
+	packet.req_i = reqi
 	packet.error = rip_error
 	packet.mpr = rip_mpr
 	packet.paused = rip_paused
@@ -109,10 +110,11 @@ static func create(
 
 
 static func create_from_gis_values(
-	rip_error: int, rip_mpr: int, rip_paused: int, rip_options: int,
-	rip_c_time: float, rip_t_time: float, rip_name: String
+	reqi: int, rip_name: String, rip_mpr: int, rip_c_time: float, rip_options: int,
+	rip_paused := 0, rip_t_time := 0.0, rip_error := 0
 ) -> InSimRIPPacket:
 	var packet := InSimRIPPacket.new()
+	packet.req_i = reqi
 	packet.error = rip_error
 	packet.mpr = rip_mpr
 	packet.paused = rip_paused
