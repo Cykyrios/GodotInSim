@@ -72,8 +72,13 @@ func fill_buffer(use_gis_values := false) -> void:
 	_fill_buffer()
 
 
-func get_dictionary() -> Dictionary:
-	return _get_dictionary()
+func get_dictionary(replace_colors := false) -> Dictionary:
+	var dictionary := _get_dictionary()
+	if replace_colors:
+		for key: Variant in dictionary.keys():
+			if typeof(dictionary[key]) == TYPE_STRING:
+				dictionary[key] = LFSText.lfs_colors_to_bbcode(str(dictionary[key]))
+	return dictionary
 
 
 func get_pretty_text() -> String:
