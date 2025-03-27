@@ -12,11 +12,27 @@ func before_test() -> void:
 
 @warning_ignore("unused_parameter")
 func test_add_buffer(buffer: PackedByteArray, test_parameters := [
-	[],
+	[PackedByteArray([0])],
+	[PackedByteArray([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])],
 ]) -> void:
 	packet.resize_buffer(buffer.size())
 	packet.add_buffer(buffer)
 	var _test := assert_array(packet.buffer).is_equal(buffer)
+
+
+func test_add_buffer_empty_buffer() -> void:
+	packet.resize_buffer(10)
+	var _test := await assert_error(func() -> void: packet.add_buffer(PackedByteArray())) \
+			.is_push_error("Cannot add data, buffer is empty")
+
+
+func test_add_buffer_not_enough_space() -> void:
+	packet.resize_buffer(2)
+	var buffer := PackedByteArray([0, 1, 2])
+	var _test := await assert_error(func() -> void:
+		packet.add_buffer(buffer)
+	).is_push_error("Not enough space to add buffer (size %d, available %d)" % [buffer.size(),
+			packet.buffer.size()])
 
 
 @warning_ignore("unused_parameter")
@@ -143,6 +159,17 @@ func test_add_word(number: int, test_parameters := [
 	var buffer := PackedByteArray([0, 0])
 	buffer.encode_u16(0, number)
 	var _test := assert_array(packet.buffer).is_equal(buffer)
+
+
+func test_get_dictionary_color_conversion() -> void:
+	var mock_packet := mock(LFSPacket, CALL_REAL_FUNC) as LFSPacket
+	var base_text := "^1Colored ^6text"
+	var converted_text := "[color=#ff0000]Colored [/color][color=#00ffff]text[/color]"
+	@warning_ignore("unsafe_method_access")
+	do_return({"key": base_text}).on(mock_packet)._get_dictionary()
+	var _test := assert_str(str(mock_packet.get_dictionary(false))).contains(base_text)
+	_test = assert_str(str(mock_packet.get_dictionary(true))) \
+			.contains(LFSText.lfs_colors_to_bbcode(converted_text))
 
 
 @warning_ignore("unused_parameter")
