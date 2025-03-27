@@ -80,7 +80,7 @@ func _get_pretty_text() -> String:
 		var _resize := id_bytes.resize(4)
 		id_bytes.encode_u32(0, id)
 		mods += ("" if i == 0 else ", ") + LFSText.car_name_from_lfs_bytes(id_bytes)
-	return "Allowed mods: %s" % ["ALL" if num_mods == 0 else mods]
+	return "Allowed mods: %s" % ["ALL/NONE" if num_mods == 0 else mods]
 
 
 static func create(

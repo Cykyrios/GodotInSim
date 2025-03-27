@@ -34,4 +34,5 @@ func _get_data_dictionary() -> Dictionary:
 
 
 func _get_pretty_text() -> String:
-	return "UCID %d changed car: %s" % [ucid, car_name]
+	return "UCID %d %s car: %s" % [ucid, "changed" if req_i == 0 else "current",
+			car_name if car_name != "000000" else "nothing"]

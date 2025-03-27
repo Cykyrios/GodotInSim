@@ -52,6 +52,6 @@ func _get_data_dictionary() -> Dictionary:
 func _get_pretty_text() -> String:
 	return "%s host %s (%s)" % [
 		"Current" if req_i != 0 else "Created" if host == 1 else "Joined",
-		h_name,
+		LFSText.lfs_colors_to_bbcode(h_name),
 		"host" if host == 1 else "guest"
 	]

@@ -104,4 +104,8 @@ func _get_data_dictionary() -> Dictionary:
 
 
 func _get_pretty_text() -> String:
-	return "PLID %d %s (%s)" % [plid, "left the pits" if req_i == 0 else "is driving", car_name]
+	return "PLID %d %s" % [
+		plid,
+		"is in the pits" if car_name == "000000" \
+		else "%s (%s)" % ["left the pits" if req_i == 0 else "is driving", car_name]
+	]
