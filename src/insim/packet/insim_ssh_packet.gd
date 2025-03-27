@@ -7,7 +7,7 @@ const SCREENSHOT_NAME_MAX_LENGTH := 32  # last byte must be zero, so actual valu
 
 const PACKET_SIZE := 40
 const PACKET_TYPE := InSim.Packet.ISP_SSH
-var error := 0  ## 0 = OK / other values are listed in [enum InSim.Screenshot]
+var error := InSim.Screenshot.SSH_OK  ## 0 = OK / other values are listed in [enum InSim.Screenshot]
 
 var sp0 := 0
 var sp1 := 0
@@ -30,7 +30,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 		push_error("%s packet expected size %d, got %d." % [InSim.Packet.keys()[type], size, packet_size])
 		return
 	super(packet)
-	error = read_byte()
+	error = read_byte() as InSim.Screenshot
 	sp0 = read_byte()
 	sp1 = read_byte()
 	sp2 = read_byte()
