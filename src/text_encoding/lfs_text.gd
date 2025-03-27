@@ -68,6 +68,8 @@ static func bbcode_to_lfs_colors(text: String) -> String:
 	return lfs_text
 
 
+## Converts an LFS-encoded car name to a readable text string, in the 3-letter format for
+## official cars (e.g. FBM), or the 6-character hexadecimal code for mods (e.g. DBF12E).
 static func car_name_from_lfs_bytes(buffer: PackedByteArray) -> String:
 	var is_alphanumeric := func is_alphanumeric(character: int) -> bool:
 		var string := String.chr(character)
@@ -93,6 +95,8 @@ static func car_name_from_lfs_bytes(buffer: PackedByteArray) -> String:
 	return car_name
 
 
+## Converts a 3-letter car name (e.g. FBM) or a mod's 6-character hexadecimal code
+## to the LFS-encoded format.
 static func car_name_to_lfs_bytes(car_name: String) -> PackedByteArray:
 	var buffer := PackedByteArray([0, 0, 0, 0])
 	if car_name.length() not in [3, 6]:
@@ -108,7 +112,7 @@ static func car_name_to_lfs_bytes(car_name: String) -> PackedByteArray:
 	return buffer
 
 
-## Returns a color code string (^0 to ^8)
+## Returns a color code string (^0 to ^8).
 static func get_color_code(color: ColorCode) -> String:
 	return "^%d" % [color]
 
@@ -135,11 +139,12 @@ static func get_mso_start(mso_packet: InSimMSOPacket, insim: InSim) -> int:
 	return 0
 
 
+## Returns a regular expression matching [code]PLID x[/code] where x is a PLID number.
 static func get_regex_plid() -> RegEx:
 	return RegEx.create_from_string(r"PLID (\d+)")
 
 
-## Returns a regular expression matching "UCID x" where x is a UCID number.
+## Returns a regular expression matching [code]UCID x[/code] where x is a UCID number.
 static func get_regex_ucid() -> RegEx:
 	return RegEx.create_from_string(r"UCID (\d+)")
 
@@ -163,7 +168,8 @@ static func lfs_bytes_to_unicode(bytes: PackedByteArray, zero_terminated := true
 			continue
 		if buffer[i] == 0:
 			if block_start < block_end:
-				message += _get_string_from_bytes(buffer.slice(block_start, block_end), current_code_page)
+				message += _get_string_from_bytes(buffer.slice(block_start, block_end),
+						current_code_page)
 			break
 		elif _is_multibyte(current_code_page, buffer[i]):
 			block_end += 2
@@ -178,7 +184,8 @@ static func lfs_bytes_to_unicode(bytes: PackedByteArray, zero_terminated := true
 			var code_page_check := "^%s" % [char(buffer[i + 1])]
 			if CODE_PAGES.has(code_page_check):
 				if block_start < block_end:
-					message += _get_string_from_bytes(buffer.slice(block_start, block_end), current_code_page)
+					message += _get_string_from_bytes(buffer.slice(block_start, block_end),
+							current_code_page)
 				current_code_page = code_page_check
 				if buffer[i + 1] == 0x38:
 					block_start = i
@@ -220,6 +227,8 @@ static func lfs_colors_to_bbcode(text: String) -> String:
 	return colored_text
 
 
+## Convert the intermediate string representation of LFS text to UTF8. You should only need
+## to use [method lfs_bytes_to_unicode] or [method unicode_to_lfs_bytes] for text conversion.
 static func lfs_string_to_unicode(text: String) -> String:
 	var buffer := text.to_utf16_buffer()
 	var _discard := buffer.append(0)
@@ -236,6 +245,8 @@ static func lfs_string_to_unicode(text: String) -> String:
 	return lfs_bytes_to_unicode(buffer)
 
 
+## Replaces all occurrences, in the given [param text], of [code]PLID #[/code],
+## where [code]#[/code] is a number, with the corresponding player names.
 static func replace_plid_with_name(text: String, insim: InSim, convert_colors := false) -> String:
 	var output := text
 	var regex := LFSText.get_regex_plid()
@@ -254,6 +265,8 @@ static func replace_plid_with_name(text: String, insim: InSim, convert_colors :=
 	return output
 
 
+## Replaces all occurrences, in the given [param text], of [code]UCID #[/code],
+## where [code]#[/code] is a number, with the corresponding connection name.
 static func replace_ucid_with_name(
 	text: String, insim: InSim, include_username := false, convert_colors := false
 ) -> String:
@@ -313,7 +326,8 @@ static func unicode_to_lfs_bytes(text: String, keep_utf16 := false) -> PackedByt
 		else:
 			var code_page_found := false
 			for code_page: String in CODE_PAGES.keys():
-				temp_bytes = _get_bytes_from_string(message.unicode_at(i), code_page.substr(1, 1), keep_utf16)
+				temp_bytes = _get_bytes_from_string(message.unicode_at(i), code_page.substr(1, 1),
+						keep_utf16)
 				if not temp_bytes.is_empty():
 					code_page_found = true
 					page = code_page.substr(1, 1)
@@ -338,7 +352,9 @@ static func _escape_circumflex(text: String) -> String:
 	return regex.sub(text, "^^", true)
 
 
-static func _get_bytes_from_string(code: int, code_page: String, keep_utf16: bool) -> PackedByteArray:
+static func _get_bytes_from_string(
+	code: int, code_page: String, keep_utf16: bool
+) -> PackedByteArray:
 	if not LFSCodePages.CODE_PAGE_TABLES.has(code_page):
 		return []
 	for key: String in LFSCodePages.CODE_PAGE_TABLES.keys():
@@ -397,7 +413,10 @@ static func _is_multibyte(code_page: String, character: int) -> bool:
 		"^L", "^8", "^G", "^C", "^E", "^T", "^B":
 			return false
 		"^J":
-			return (character > 0x80 and character < 0xa0) or (character >= 0xe0 and character < 0xfd)
+			return (
+				character > 0x80 and character < 0xa0
+				or character >= 0xe0 and character < 0xfd
+			)
 		"^H", "^S", "^K":
 			return character > 0x80 and character < 0xff
 		_:
