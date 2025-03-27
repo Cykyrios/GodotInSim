@@ -892,6 +892,10 @@ enum Vote {
 	VOTE_NUM
 }
 
+enum GISRequest {
+	REQ_0 = 250,  ## Standard request ID for automatic requests
+}
+
 const VERSION := 9
 const PING_INTERVAL := 31
 const TIMEOUT_DELAY := 10
@@ -1016,9 +1020,9 @@ func read_version_packet(packet: InSimVERPacket) -> void:
 	if not insim_connected:
 		insim_connected = true
 		print("Host InSim version matches local version (%d)." % [VERSION])
-		send_packet(InSimTinyPacket.create(1, InSim.Tiny.TINY_SST))
-		send_packet(InSimTinyPacket.create(1, InSim.Tiny.TINY_NCN))
-		send_packet(InSimTinyPacket.create(1, InSim.Tiny.TINY_NPL))
+		send_packet(InSimTinyPacket.create(GISRequest.REQ_0, InSim.Tiny.TINY_SST))
+		send_packet(InSimTinyPacket.create(GISRequest.REQ_0, InSim.Tiny.TINY_NCN))
+		send_packet(InSimTinyPacket.create(GISRequest.REQ_0, InSim.Tiny.TINY_NPL))
 
 
 func reset_timeout_timer() -> void:
@@ -1054,7 +1058,7 @@ func send_packet(packet: InSimPacket, sender := "InSim") -> void:
 
 func send_ping() -> void:
 	timeout_timer.start(TIMEOUT_DELAY)
-	send_packet(InSimTinyPacket.create(1, Tiny.TINY_PING))
+	send_packet(InSimTinyPacket.create(GISRequest.REQ_0, Tiny.TINY_PING))
 
 
 func _on_connected_to_host() -> void:
