@@ -236,24 +236,46 @@ static func lfs_string_to_unicode(text: String) -> String:
 	return lfs_bytes_to_unicode(buffer)
 
 
-static func replace_plid_with_name(text: String, insim: InSim) -> String:
+static func replace_plid_with_name(text: String, insim: InSim, convert_colors := false) -> String:
 	var output := text
 	var regex := LFSText.get_regex_plid()
 	var results := regex.search_all(text)
 	for i in results.size():
-		var player_name := insim.players[results[i].strings[1] as int].player_name
-		output = regex.sub(output, LFSText.lfs_colors_to_bbcode(player_name))
+		var result := results[results.size() - 1 - i]
+		var plid := result.strings[1] as int
+		var player_found := insim.players.has(plid)
+		if not player_found:
+			push_error("Failed to convert PLID %d, list is %s" % [plid, insim.players.keys()])
+		var player_name := insim.players[plid].player_name if player_found \
+				else "^%d%s" % [LFSText.ColorCode.RED, result.strings[0]]
+		if convert_colors:
+			player_name = lfs_colors_to_bbcode(player_name)
+		output = regex.sub(output, player_name, false, result.get_start())
 	return output
 
 
-static func replace_ucid_with_name(text: String, insim: InSim) -> String:
+static func replace_ucid_with_name(
+	text: String, insim: InSim, include_username := false, convert_colors := false
+) -> String:
 	var output := text
 	var regex := LFSText.get_regex_ucid()
 	var results := regex.search_all(text)
 	for i in results.size():
-		var connection := insim.connections[results[i].strings[1] as int]
-		output = regex.sub(output, "%s%s" % [LFSText.lfs_colors_to_bbcode(connection.nickname),
-				"" if connection.username.is_empty() else " (%s)" % [connection.username]])
+		var result := results[results.size() - 1 - i]
+		var ucid := result.strings[1] as int
+		var connection: Connection = insim.connections[ucid] if insim.connections.has(ucid) \
+				else null
+		if not connection:
+			push_error("Failed to convert UCID %d, list is %s" % [ucid, insim.connections.keys()])
+		var nickname := connection.nickname if connection \
+				else "^%d%s" % [LFSText.COLORS[LFSText.ColorCode.RED], result.strings[0]]
+		if convert_colors:
+			nickname = lfs_colors_to_bbcode(nickname)
+		output = regex.sub(output, "%s%s" % [
+			nickname,
+			"" if connection.username.is_empty() or not include_username \
+			else " (%s)" % [connection.username]
+		], false, result.get_start())
 	return output
 
 
