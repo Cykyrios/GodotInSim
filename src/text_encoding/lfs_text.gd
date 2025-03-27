@@ -113,7 +113,28 @@ static func get_color_code(color: ColorCode) -> String:
 	return "^%d" % [color]
 
 
-## Returns a regular expression matching "PLID x" where x is a PLID number.
+## Returns the start position of the actual message, since [member InSimMSOPacket.text_start]
+## in unreliable when multi-byte characters appear in the connection/player name (LFS issue).
+## /me messages return 0, as the name is part of the message for those (same behavior as LFS).
+static func get_mso_start(mso_packet: InSimMSOPacket, insim: InSim) -> int:
+	var use_plid := true if mso_packet.plid != 0 else false
+	var id := "%s %d" % [
+		"PLID" if use_plid else "UCID",
+		mso_packet.plid if use_plid else mso_packet.ucid
+	]
+	id = replace_plid_with_name(id, insim) if use_plid \
+			else replace_ucid_with_name(id, insim)
+	var pattern := r"\^7%s \^7: \^8" % [id]
+	var caret_regex := RegEx.create_from_string(r"(?<!\\)\^")
+	for result in caret_regex.search_all(pattern):
+		pattern = caret_regex.sub(pattern, r"\^", true)
+	var regex := RegEx.create_from_string(pattern)
+	var result := regex.search(mso_packet.msg)
+	if result:
+		return result.strings[0].length()
+	return 0
+
+
 static func get_regex_plid() -> RegEx:
 	return RegEx.create_from_string(r"PLID (\d+)")
 
