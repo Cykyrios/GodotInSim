@@ -52,3 +52,10 @@ func _get_data_dictionary() -> Dictionary:
 		"Sp3": sp3,
 		"Msg": msg,
 	}
+
+
+func _get_pretty_text() -> String:
+	return "/i message from %s: %s" % [
+		("PLID %d" % [plid]) if plid != 0 else ("UCID %d" % [ucid]),
+		msg,
+	]
