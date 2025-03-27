@@ -7,6 +7,13 @@ extends InSimPacket
 ## [br]
 ## See [enum InSim.TTC] for the list of TTC_ packets.
 
+const RECEIVABLES := []
+const SENDABLES := [
+	InSim.TTC.TTC_SEL,
+	InSim.TTC.TTC_SEL_START,
+	InSim.TTC.TTC_SEL_STOP,
+]
+
 const PACKET_SIZE := 8
 const PACKET_TYPE := InSim.Packet.ISP_TTC
 var sub_type := InSim.TTC.TTC_NONE
@@ -15,6 +22,11 @@ var ucid := 0
 var b1 := 0
 var b2 := 0
 var b3 := 0
+
+
+func _init() -> void:
+	size = PACKET_SIZE
+	type = PACKET_TYPE
 
 
 func _decode_packet(packet: PackedByteArray) -> void:
@@ -59,13 +71,14 @@ static func create(
 	req := 0, subt := InSim.TTC.TTC_NONE, ttc_ucid := 0, ttc_b1 := 0, ttc_b2 := 0, ttc_b3 := 0
 ) -> InSimTTCPacket:
 	var packet := InSimTTCPacket.new()
-	packet.size = PACKET_SIZE
-	packet.type = PACKET_TYPE
 	packet.req_i = req
 	packet.sub_type = subt
 	packet.ucid = ttc_ucid
 	packet.b1 = ttc_b1
 	packet.b2 = ttc_b2
 	packet.b3 = ttc_b3
-	packet.sendable = true if packet.sub_type != InSim.TTC.TTC_NONE else false
+	if packet.sub_type in RECEIVABLES:
+		packet.receivable = true
+	if packet.sub_type in SENDABLES:
+		packet.sendable = true
 	return packet

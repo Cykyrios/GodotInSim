@@ -32,6 +32,11 @@ var sub_type := InSim.Small.SMALL_NONE
 var value := 0
 
 
+func _init() -> void:
+	size = PACKET_SIZE
+	type = PACKET_TYPE
+
+
 func _decode_packet(packet: PackedByteArray) -> void:
 	var packet_size := packet.size()
 	if packet_size != PACKET_SIZE:
@@ -62,8 +67,6 @@ func _get_pretty_text() -> String:
 
 static func create(req := 0, subt := InSim.Small.SMALL_NONE, uval := 0) -> InSimSmallPacket:
 	var packet := InSimSmallPacket.new()
-	packet.size = PACKET_SIZE
-	packet.type = PACKET_TYPE
 	packet.req_i = req
 	packet.sub_type = subt
 	packet.value = uval
