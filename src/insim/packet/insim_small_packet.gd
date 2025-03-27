@@ -62,7 +62,34 @@ func _get_data_dictionary() -> Dictionary:
 
 
 func _get_pretty_text() -> String:
-	return "(ReqI %d) %s (Value %d)" % [req_i, InSim.Small.keys()[sub_type], value]
+	var small_description := "ISP_SMALL"
+	match sub_type:
+		InSim.Small.SMALL_NONE:
+			small_description = "not used"
+		InSim.Small.SMALL_SSP:
+			small_description = "start sending positions"
+		InSim.Small.SMALL_SSG:
+			small_description = "start sending gauges"
+		InSim.Small.SMALL_VTA:
+			small_description = "vote action"
+		InSim.Small.SMALL_TMS:
+			small_description = "time stop"
+		InSim.Small.SMALL_STP:
+			small_description = "time step"
+		InSim.Small.SMALL_RTP:
+			small_description = "session time"
+		InSim.Small.SMALL_NLI:
+			small_description = "set node lap interval"
+		InSim.Small.SMALL_ALC:
+			small_description = "get/set allowed cars"
+		InSim.Small.SMALL_LCS:
+			small_description = "set local car switches"
+		InSim.Small.SMALL_LCL:
+			small_description = "set local car lights"
+		InSim.Small.SMALL_AII:
+			small_description = "get local AI info"
+	return "(ReqI %d) %s (Value %d) - %s" % [req_i, InSim.Small.keys()[sub_type],
+			value, small_description]
 
 
 static func create(req := 0, subt := InSim.Small.SMALL_NONE, uval := 0) -> InSimSmallPacket:

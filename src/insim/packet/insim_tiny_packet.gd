@@ -78,7 +78,69 @@ func _get_data_dictionary() -> Dictionary:
 
 
 func _get_pretty_text() -> String:
-	return "(ReqI %d) %s" % [req_i, InSim.Tiny.keys()[sub_type]]
+	var tiny_description := "ISP_TINY"
+	match sub_type:
+		InSim.Tiny.TINY_NONE:
+			tiny_description = "keep alive"
+		InSim.Tiny.TINY_VER:
+			tiny_description = "request version"
+		InSim.Tiny.TINY_CLOSE:
+			tiny_description = "close InSim"
+		InSim.Tiny.TINY_PING:
+			tiny_description = "ping"
+		InSim.Tiny.TINY_REPLY:
+			tiny_description = "ping reply"
+		InSim.Tiny.TINY_VTC:
+			tiny_description = "cancel vote"
+		InSim.Tiny.TINY_SCP:
+			tiny_description = "request camera packet"
+		InSim.Tiny.TINY_SST:
+			tiny_description = "request state packet"
+		InSim.Tiny.TINY_GTH:
+			tiny_description = "request time"
+		InSim.Tiny.TINY_MPE:
+			tiny_description = "multiplayer ended"
+		InSim.Tiny.TINY_ISM:
+			tiny_description = "request multiplayer info"
+		InSim.Tiny.TINY_REN:
+			tiny_description = "race ended"
+		InSim.Tiny.TINY_CLR:
+			tiny_description = "grid cleared"
+		InSim.Tiny.TINY_NCN:
+			tiny_description = "request connections"
+		InSim.Tiny.TINY_NPL:
+			tiny_description = "request players"
+		InSim.Tiny.TINY_RES:
+			tiny_description = "request results"
+		InSim.Tiny.TINY_NLP:
+			tiny_description = "request NLP"
+		InSim.Tiny.TINY_MCI:
+			tiny_description = "request MCI"
+		InSim.Tiny.TINY_REO:
+			tiny_description = "request start order"
+		InSim.Tiny.TINY_RST:
+			tiny_description = "request session info"
+		InSim.Tiny.TINY_AXI:
+			tiny_description = "request autocross info"
+		InSim.Tiny.TINY_AXC:
+			tiny_description = "autocross cleared"
+		InSim.Tiny.TINY_RIP:
+			tiny_description = "request replay info"
+		InSim.Tiny.TINY_NCI:
+			tiny_description = "request connection info"
+		InSim.Tiny.TINY_ALC:
+			tiny_description = "request allowed car list"
+		InSim.Tiny.TINY_AXM:
+			tiny_description = "request layout info"
+		InSim.Tiny.TINY_SLC:
+			tiny_description = "request selected cars"
+		InSim.Tiny.TINY_MAL:
+			tiny_description = "request allowed mod list"
+		InSim.Tiny.TINY_PLH:
+			tiny_description = "request player handicaps"
+		InSim.Tiny.TINY_IPB:
+			tiny_description = "request IP ban list"
+	return "(ReqI %d) %s - %s" % [req_i, InSim.Tiny.keys()[sub_type], tiny_description]
 
 
 static func create(req := 0, subt := InSim.Tiny.TINY_NONE) -> InSimTinyPacket:

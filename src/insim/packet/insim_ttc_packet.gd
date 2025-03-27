@@ -63,8 +63,18 @@ func _get_data_dictionary() -> Dictionary:
 
 
 func _get_pretty_text() -> String:
-	return "(ReqI %d) %s (UCID %d B1=%d B2=%d B3=%d)" % [req_i, InSim.TTC.keys()[sub_type],
-			ucid, b1, b2, b3]
+	var ttc_description := "ISP_TTC"
+	match sub_type:
+		InSim.TTC.TTC_NONE:
+			ttc_description = "not used"
+		InSim.TTC.TTC_SEL:
+			ttc_description = "request editor selection info"
+		InSim.TTC.TTC_SEL_START:
+			ttc_description = "request info for every selection change"
+		InSim.TTC.TTC_SEL_STOP:
+			ttc_description = "disable info for every selection change"
+	return "(ReqI %d) %s (UCID %d B1=%d B2=%d B3=%d) - %s" % [req_i, InSim.TTC.keys()[sub_type],
+			ucid, b1, b2, b3, ttc_description]
 
 
 static func create(
