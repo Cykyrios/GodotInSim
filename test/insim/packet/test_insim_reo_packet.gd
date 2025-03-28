@@ -43,3 +43,29 @@ func test_encode_packet(buffer: PackedByteArray, test_parameters := buffers) -> 
 		fail("Incorrect packet type")
 		return
 	var _test := assert_array(packet.buffer).is_equal(buffer)
+
+
+func test_send_packet() -> void:
+	var packet := InSimREOPacket.new()
+	packet.num_players = 3
+	packet.plids = [1, 2, 3]
+	packet.fill_buffer()
+	var _test := assert_array(packet.buffer).is_equal(PackedByteArray([
+		11, 36, 0, 3, 1, 2, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+		0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+	]))
+
+
+func test_send_too_many_players() -> void:
+	var packet := InSimREOPacket.new()
+	var plids: Array[int] = []
+	for i in 41:
+		plids.append(i + 1)
+	packet.num_players = plids.size()
+	packet.plids = plids
+	packet.fill_buffer()
+	var _test := assert_array(packet.buffer).is_equal(PackedByteArray([
+		11, 36, 0, 40, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
+		18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35,
+		36, 37, 38, 39, 40
+	]))

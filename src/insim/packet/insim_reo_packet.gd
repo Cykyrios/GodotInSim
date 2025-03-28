@@ -36,9 +36,12 @@ func _decode_packet(packet: PackedByteArray) -> void:
 
 func _fill_buffer() -> void:
 	super()
+	num_players = mini(num_players, MAX_PLAYERS)
 	add_byte(num_players)
-	for i in MAX_PLAYERS:
+	for i in num_players:
 		add_byte(plids[i])
+	for i in MAX_PLAYERS - num_players:
+		add_byte(0)
 
 
 func _get_data_dictionary() -> Dictionary:
