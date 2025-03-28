@@ -1,6 +1,10 @@
 class_name WheelInfo
 extends RefCounted
 
+## Wheel Info
+##
+## This class describes a wheel and suspension's complete characteristics, as part of the
+## [CarInfo] object.
 
 const STRUCT_SIZE := 128
 

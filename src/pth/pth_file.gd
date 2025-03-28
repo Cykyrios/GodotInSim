@@ -1,6 +1,9 @@
 class_name PTHFile
 extends LFSPacket
 
+## PTH File
+##
+## This class can read PTH files and extract the [PathNode]s contained in it.
 
 var lfspth := ""
 var version := 0

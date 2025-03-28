@@ -1,6 +1,9 @@
 class_name PathNode
 extends RefCounted
 
+## PTH Node
+##
+## This class contains data about each path node contained in a [PTHFile].
 
 var centre_x := 0
 var centre_y := 0

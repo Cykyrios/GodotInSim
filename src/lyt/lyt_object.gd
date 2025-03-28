@@ -1,6 +1,9 @@
 class_name LYTObject
 extends RefCounted
 
+## LYT object
+##
+## This class describes a layout object, as included in a layout (LYT) file.
 
 const STRUCT_SIZE := 8
 

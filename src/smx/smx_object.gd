@@ -1,6 +1,10 @@
 class_name SMXObject
 extends RefCounted
 
+## SMX Object
+##
+## Describes an SMX object as included in an [SMXFile].
+
 
 var centre_x := 0
 var centre_y := 0

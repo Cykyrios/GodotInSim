@@ -1,6 +1,10 @@
 class_name SMXPoint
 extends RefCounted
 
+## SMX Point
+##
+## Point data included in an [SMXObject].
+
 
 var x := 0
 var y := 0

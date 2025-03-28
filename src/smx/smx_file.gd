@@ -1,6 +1,9 @@
 class_name SMXFile
 extends LFSPacket
 
+## SMX file parser
+##
+## This class can read SMX files in order to recreate the corresponding 3D models.
 
 var lfssmx := ""
 var game_version := 0

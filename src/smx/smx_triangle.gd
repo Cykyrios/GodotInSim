@@ -1,6 +1,9 @@
 class_name SMXTriangle
 extends RefCounted
 
+## SMX Triangle
+##
+## Triangle data included in an [SMXObject].
 
 var vertex_a := 0
 var vertex_b := 0

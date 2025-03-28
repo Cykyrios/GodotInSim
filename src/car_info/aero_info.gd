@@ -1,6 +1,10 @@
 class_name AeroInfo
 extends RefCounted
 
+## Aero Info
+##
+## This class describes an aero object (rear wing, front wing, undertray or main body), as part
+## of the [CarInfo] object.
 
 const STRUCT_SIZE := 20
 

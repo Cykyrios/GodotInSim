@@ -1,6 +1,17 @@
 class_name CarInfo
 extends LFSPacket
 
+## Car info
+##
+## Reads car info as exported from the game's garage view, which you can generate by pressing O
+## in the garage view. This will generate a [code]car_info.bin[/code] file, where [code]car[/code]
+## is the car's 3-letter (or the mod's 6-character) identifier. This file is created in the
+## [code]data/raf[/code] folder. The data contained in this file depends on the current setup,
+## including fuel and passengers status (in/out).[br]
+## [br]
+## Beside specific setup-related physics data, this file can be used to get some info on the car,
+## such as maximum suspension deflection and full tyre/rim data, as well as power/torque values
+## corresponding to the current intake restriction.
 
 enum Drive {NONE, RWD, FWD, AWD}
 

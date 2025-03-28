@@ -1,6 +1,9 @@
 class_name LYTFile
 extends LFSPacket
 
+## LYT file parser
+##
+## This class can read and write LFS layouts.
 
 const HEADER_SIZE := 12
 
