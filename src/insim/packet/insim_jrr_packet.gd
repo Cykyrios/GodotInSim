@@ -52,7 +52,7 @@ func _get_pretty_text() -> String:
 
 
 static func create(
-	jrr_plid: int, jrr_ucid: int, jrr_action: InSim.JRRAction, jrr_pos: ObjectInfo
+	jrr_plid: int, jrr_ucid: int, jrr_action: InSim.JRRAction, jrr_pos := ObjectInfo.new()
 ) -> InSimJRRPacket:
 	var packet := InSimJRRPacket.new()
 	packet.plid = jrr_plid
