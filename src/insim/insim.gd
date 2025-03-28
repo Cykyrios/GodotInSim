@@ -1300,6 +1300,15 @@ func _on_npl_packet_received(packet: InSimNPLPacket) -> void:
 	players[packet.plid] = Player.create_from_npl_packet(packet)
 
 
+func _on_pfl_packet_received(packet: InSimPFLPacket) -> void:
+	var plid := packet.plid
+	if not players.has(plid):
+		push_warning("%s: No player found with PLID %d" % [Packet.keys()[packet.type], plid])
+		return
+	var player := players[plid]
+	player.flags = packet.flags
+
+
 func _on_pll_packet_received(packet: InSimPLLPacket) -> void:
 	var _discard := players.erase(packet.plid)
 
