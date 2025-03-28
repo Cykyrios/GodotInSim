@@ -5,7 +5,7 @@ extends RefCounted
 enum AccelerationUnit {METER_PER_SECOND_SQUARED, G}
 enum AngleUnit {RADIAN, DEGREE}
 enum ForceUnit {NEWTON}
-enum LengthUnit {METER, KILOMETER, CENTIMETER, MILLIMETER, MILE}
+enum LengthUnit {METER, KILOMETER, CENTIMETER, MILLIMETER, MILE, INCH}
 enum MassUnit {KILOGRAM, TONNE, POUND}
 enum PowerUnit {WATT}
 enum SpeedUnit {METER_PER_SECOND, KPH, MPH}
@@ -28,6 +28,7 @@ const LENGTHS: Array[float] = [
 	100.0,
 	1000.0,
 	0.000_621_371_192_2,
+	39.370_078_74,
 ]
 const MASSES: Array[float] = [
 	1.0,

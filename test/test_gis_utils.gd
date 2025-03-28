@@ -3,7 +3,6 @@ extends GdUnitTestSuite
 # TestSuite generated from
 const __source = "res://addons/godot_insim/src/gis_utils.gd"
 
-
 var epsilon := 1e-5
 
 
@@ -50,6 +49,7 @@ func test_length_conversion(
 	expected: float, test_parameters := [
 		[10.0, GISUtils.LengthUnit.CENTIMETER, GISUtils.LengthUnit.KILOMETER, 0.0001],
 		[10.0, GISUtils.LengthUnit.KILOMETER, GISUtils.LengthUnit.MILE, 6.213_711_922],
+		[1.0, GISUtils.LengthUnit.INCH, GISUtils.LengthUnit.MILLIMETER, 25.4],
 	]
 ) -> void:
 	var _test := assert_float(GISUtils.convert_length(value, unit_in, unit_out)) \
