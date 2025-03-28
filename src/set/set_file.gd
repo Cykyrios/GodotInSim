@@ -29,12 +29,12 @@ var tc_slip := 5.0
 var tc_speed := 50
 
 var suspension_rear_height := 0.1
-var suspension_rear_stiffness := 100.0
+var suspension_rear_stiffness := 30.0
 var suspension_rear_bump_damping := 5.0
 var suspension_rear_rebound_damping := 5.0
 var suspension_rear_arb := 0.0
 var suspension_front_height := 0.1
-var suspension_front_stiffness := 100.0
+var suspension_front_stiffness := 30.0
 var suspension_front_bump_damping := 5.0
 var suspension_front_rebound_damping := 5.0
 var suspension_front_arb := 0.0
@@ -59,27 +59,27 @@ var rear_diff_preload := 0
 var torque_split := 50
 var center_diff_type := 0
 var center_diff_viscous := 0
-var final_drive := 0.5
-var gear_1 := 7.5
-var gear_2 := 6.5
-var gear_3 := 5.5
-var gear_4 := 4.5
-var gear_5 := 3.5
-var gear_6 := 2.5
-var gear_7 := 1.5
+var final_drive := 2.5
+var gear_1 := 6.0
+var gear_2 := 4.2
+var gear_3 := 3.0
+var gear_4 := 2.2
+var gear_5 := 1.6
+var gear_6 := 1.2
+var gear_7 := 1.0
 
 var tyre_manufacturer := 0
 var symmetric_wheels := true
 var front_tyre_size := 0
-var front_tyre_compound := 0
-var front_tyre_pressure_left := 0
-var front_tyre_pressure_right := 0
+var front_tyre_compound := InSim.Tyre.TYRE_R1
+var front_tyre_pressure_left := 200
+var front_tyre_pressure_right := 200
 var front_tyre_camber_left := 0.0
 var front_tyre_camber_right := 0.0
 var rear_tyre_size := 0
-var rear_tyre_compound := 0
-var rear_tyre_pressure_left := 0
-var rear_tyre_pressure_right := 0
+var rear_tyre_compound := InSim.Tyre.TYRE_R1
+var rear_tyre_pressure_left := 200
+var rear_tyre_pressure_right := 200
 var rear_tyre_camber_left := 0.0
 var rear_tyre_camber_right := 0.0
 
@@ -169,7 +169,7 @@ func decode_setup_buffer(data_buffer: PackedByteArray) -> void:
 	handbrake = int(read_float())
 	toe_rear = toe_from_LFS_value(read_byte())
 	caster_rear = read_byte() / 10.0
-	rear_tyre_compound = read_byte()
+	rear_tyre_compound = read_byte() as InSim.Tyre
 	_discard = read_buffer(1)
 	rear_tyre_camber_left = camber_from_LFS_value(read_byte())
 	rear_tyre_camber_right = camber_from_LFS_value(read_byte())
@@ -189,7 +189,7 @@ func decode_setup_buffer(data_buffer: PackedByteArray) -> void:
 	_discard = read_buffer(4)
 	toe_front = toe_from_LFS_value(read_byte())
 	caster_front = read_byte() / 10.0
-	front_tyre_compound = read_byte()
+	front_tyre_compound = read_byte() as InSim.Tyre
 	_discard = read_buffer(1)
 	front_tyre_camber_left = camber_from_LFS_value(read_byte())
 	front_tyre_camber_right = camber_from_LFS_value(read_byte())
@@ -212,6 +212,7 @@ func encode_setup_buffer() -> PackedByteArray:
 	add_byte(internal_version)
 	add_byte(format_version)
 	add_buffer([0, 0, 0])
+	update_flags()
 	add_byte(flags)
 	add_buffer([0])
 	add_byte(added_mass_position)
@@ -301,3 +302,11 @@ func save_to_file(path: String) -> void:
 		return
 	if not file.store_buffer(encode_setup_buffer()):
 		print("Failed to write setup to file")
+
+
+func update_flags() -> void:
+	flags = (
+		int(symmetric_wheels) * InSim.Setup.SETF_SYMM_WHEELS
+		+ int(abs_enabled) * InSim.Setup.SETF_ABS_ENABLE
+		+ int(tc_enabled) * InSim.Setup.SETF_TC_ENABLE
+	)
