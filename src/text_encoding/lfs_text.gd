@@ -52,6 +52,7 @@ const SPECIAL_CHARACTERS: Dictionary[String, String] = {
 	"^s": "/",
 	"^t": '"',
 	"^v": "|",
+	"^^": "^^",  # parses carets but keeps them, dedoubling occurs separately
 }
 const COLORS: Array[Color] = [
 	Color(0, 0, 0),  ## 0
@@ -66,6 +67,8 @@ const COLORS: Array[Color] = [
 	Color(0.58, 0.58, 0.58),  ## 9 - default color (context-dependent in LFS, gray here)
 ]
 const FALLBACK_CHARACTER := "\ufffd"
+
+static var specials := "".join(SPECIAL_CHARACTERS.keys()).replace("^", "")
 
 
 ## Converts BBCode color tags to LFS colors (only works for LFS preset colors, see [enum ColorCode].
@@ -167,7 +170,11 @@ static func get_regex_ucid() -> RegEx:
 	return RegEx.create_from_string(r"UCID (\d+)")
 
 
-## Converts a text string in binary LFS format to a UTF8 string.
+## Converts a text string in binary LFS format to a UTF8 string. If [param zero_terminated]
+## is true, a zero is appended to the buffer if needed. Double carets [code]^^[/code] do not
+## get converted to a single [code]^[/code], which allows to unambiguously make the difference
+## between actual caret characters and color escape sequences, but requires futher processing
+## for display; you can call [method remove_double_carets] for this purpose.
 static func lfs_bytes_to_unicode(bytes: PackedByteArray, zero_terminated := true) -> String:
 	# Largely based on Sim Broadcasts' code: https://github.com/simbroadcasts/parse-lfs-message
 	var buffer := bytes.duplicate()
@@ -199,6 +206,7 @@ static func lfs_bytes_to_unicode(bytes: PackedByteArray, zero_terminated := true
 				if block_start < block_end:
 					message += _get_string_from_bytes(buffer.slice(block_start, block_end),
 							current_code_page)
+					continue
 			var code_page_check := "^%s" % [char(buffer[i + 1])]
 			if CODE_PAGES.has(code_page_check):
 				if block_start < block_end:
@@ -216,10 +224,13 @@ static func lfs_bytes_to_unicode(bytes: PackedByteArray, zero_terminated := true
 				skip_next = true
 		else:
 			block_end += 1
-	for i in SPECIAL_CHARACTERS.size():
-		var regexp := RegEx.create_from_string(r"(?<!\^)\%s" % [SPECIAL_CHARACTERS.keys()[i]])
-		message = regexp.sub(message, SPECIAL_CHARACTERS.values()[i] as String, true)
-	message = message.replace("^^", "^")
+	var regex_specials := RegEx.create_from_string(r"\^(.)")
+	var results_specials := regex_specials.search_all(message)
+	for i in results_specials.size():
+		var result := results_specials[results_specials.size() - 1 - i]
+		if SPECIAL_CHARACTERS.has(result.strings[0]):
+			message = regex_specials.sub(message, SPECIAL_CHARACTERS[result.strings[0]],
+					false, result.get_start())
 	return message
 
 
@@ -261,6 +272,14 @@ static func lfs_string_to_unicode(text: String) -> String:
 		i += 2
 	buffer = _remove_inner_zeros(buffer)
 	return lfs_bytes_to_unicode(buffer)
+
+
+## Replaces double carets [code]^^[/code] with a single one. This is meant as a final cleanup step
+## before displaying a string converted from LFS as obtained from [method lfs_bytes_to_unicode],
+## which keeps double carets to avoid ambiguity between caret characters and color escape codes.
+static func remove_double_carets(text: String) -> String:
+	var regex := RegEx.create_from_string(r"\^\^")
+	return regex.sub(text, "^", true)
 
 
 ## Replaces all occurrences, in the given [param text], of [code]PLID #[/code],
@@ -328,11 +347,14 @@ static func strip_colors(text: String) -> String:
 
 
 ## Converts [param text] from UTF8 to LFS encoding as a [PackedByteArray]. If [param keep_utf16] is
-## true, the array can be converted back to text as UTF16.
+## true, the array can be converted back to text as UTF16.[br]
+## Invalid escape sequences replace the single caret with 2 (LFS displays a single ^).
+## For instance, if [param text] is [code]^b[/code], it will be read as [code]^^b[/code] and the
+## resulting buffer will be [code][94, 94, 98][/code].
 static func unicode_to_lfs_bytes(text: String, keep_utf16 := false) -> PackedByteArray:
 	# Largely based on Sim Broadcasts' code: https://github.com/simbroadcasts/unicode-to-lfs
 	var page := "L"
-	var message := _translate_specials(_escape_circumflex(text))
+	var message := _escape_circumflex(text)
 	var buffer := PackedByteArray()
 	for i in message.length():
 		if message.unicode_at(i) < 128:
@@ -366,7 +388,7 @@ static func unicode_to_lfs_string(text: String) -> String:
 
 
 static func _escape_circumflex(text: String) -> String:
-	var regex := RegEx.create_from_string(r"\^(?!\d)")
+	var regex := RegEx.create_from_string(r"(?<!\^)\^(?![\d%s\^])" % [specials])
 	return regex.sub(text, "^^", true)
 
 
