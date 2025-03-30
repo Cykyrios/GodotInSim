@@ -9,9 +9,26 @@ extends RefCounted
 ## everything is converted, but characters are encoded in UTF16 instead of proper LFS format
 ## (which removes intermediate zeros).
 
-enum ColorCode {BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE, DEFAULT}
+enum ColorCode {
+	BLACK,  ## 0
+	RED,  ## 1
+	GREEN,  ## 2
+	YELLOW,  ## 3
+	BLUE,  ## 4
+	MAGENTA,  ## 5
+	CYAN,  ## 6
+	WHITE,  ## 7
+	RESET,  ## 8 - also resets code page
+	DEFAULT,  ## 9 - default color (context-dependent in LFS, gray here)
+}
+enum ColorType {
+	LFS,  ## Use LFS colors (^0 to ^9)
+	BBCODE,  ## Use bbcode tags
+	ANSI,  ## Use ANSI escape sequences
+	STRIP,  ## Remove colors
+}
 
-const CODE_PAGES := {
+const CODE_PAGES: Dictionary[String, String] = {
 	"^L": "CP1252",
 	"^G": "CP1253",
 	"^C": "CP1251",
@@ -24,7 +41,7 @@ const CODE_PAGES := {
 	"^K": "euc-kr",
 	"^8": "CP1252",
 }
-const SPECIAL_CHARACTERS := {
+const SPECIAL_CHARACTERS: Dictionary[String, String] = {
 	"^a": "*",
 	"^c": ":",
 	"^d": "\\",
@@ -37,15 +54,16 @@ const SPECIAL_CHARACTERS := {
 	"^v": "|",
 }
 const COLORS: Array[Color] = [
-	Color(0, 0, 0),
-	Color(1, 0, 0),
-	Color(0, 1, 0),
-	Color(1, 1, 0),
-	Color(0, 0, 1),
-	Color(1, 0, 1),
-	Color(0, 1, 1),
-	Color(1, 1, 1),
-	Color(0.58, 0.58, 0.58),
+	Color(0, 0, 0),  ## 0
+	Color(1, 0, 0),  ## 1
+	Color(0, 1, 0),  ## 2
+	Color(1, 1, 0),  ## 3
+	Color(0, 0, 1),  ## 4
+	Color(1, 0, 1),  ## 5
+	Color(0, 1, 1),  ## 6
+	Color(1, 1, 1),  ## 7
+	Color(0.58, 0.58, 0.58),  ## 8 - also resets code page
+	Color(0.58, 0.58, 0.58),  ## 9 - default color (context-dependent in LFS, gray here)
 ]
 const FALLBACK_CHARACTER := "\ufffd"
 
