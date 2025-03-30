@@ -486,8 +486,3 @@ static func _translate_specials(text: String) -> String:
 	if message.begins_with(str(SPECIAL_CHARACTERS.keys()[SPECIAL_CHARACTERS.values().find("/")])):
 		message = message.replace("^s", "/")
 	return message
-
-
-static func _unescape_circumflex(text: String) -> String:
-	var result := text
-	return result
