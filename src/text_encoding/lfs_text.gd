@@ -325,6 +325,42 @@ static func replace_ucid_with_name(
 	return output
 
 
+## Splits the given [param message] and returns an array of 2 strings, with the first one
+## being trimmed to [param max_length] ([PackedByteArray] length after converting to LFS bytes)
+## and moving characters broken by the trim to the second string, which contains the rest
+## of the [param message], with the last used color code prepended to it.
+static func split_message(message: String, max_length: int) -> Array[String]:
+	var message_buffer := LFSText.unicode_to_lfs_bytes(message)
+	var first_buffer := message_buffer.slice(0, max_length - 1)
+	var first_message := LFSText.lfs_bytes_to_unicode(first_buffer)
+	if (
+		first_buffer[-1] == 94
+		and first_buffer[-2] != 94
+		and first_message.ends_with("^")
+	):
+		first_message = first_message.trim_suffix("^")
+	var size := first_message.find(LFSText.FALLBACK_CHARACTER)
+	if size != -1:
+		first_message = first_message.left(size)
+	var second_message := message.right(
+		message.length() - (first_message.length() if size == -1 else size)
+	)
+	if not(
+		second_message[0] == "^"
+		and char(second_message.unicode_at(1)) >= "0"
+		and char(second_message.unicode_at(1)) <= "9"
+	):
+		var last_color := ""
+		var color_results := LFSText.get_regex_color_lfs().search_all(first_message)
+		if not color_results.is_empty():
+			for i in color_results.size():
+				if color_results[i].strings[0] != "^^":
+					last_color = color_results[-1].strings[0]
+					second_message = last_color + second_message
+					break
+	return [first_message, second_message]
+
+
 ## Removes all colors from [param text], including LFS colors and BBCode tags.
 static func strip_colors(text: String) -> String:
 	var result := text

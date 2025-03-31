@@ -1042,7 +1042,8 @@ func send_keep_alive_packet() -> void:
 func send_local_message(
 	message: String, sound := InSim.MessageSound.SND_SILENT, sender := "InSim"
 ) -> void:
-	send_packet(InSimMSLPacket.create(message, sound), sender)
+	for split_message in LFSText.split_message(message, InSimMSLPacket.MSG_MAX_LENGTH):
+		send_local_message(split_message, sound, sender)
 
 
 ## Call this function to send a UTF8-formatted message to LFS as user. Color codes
@@ -1050,10 +1051,16 @@ func send_local_message(
 func send_message(message: String, sender := "InSim") -> void:
 	var message_buffer := LFSText.unicode_to_lfs_bytes(message)
 	var packet: InSimPacket = null
-	if message_buffer.size() < 64:
+	if message.begins_with("/"):
 		packet = InSimMSTPacket.create(message)
-	else:
+	elif message_buffer.size() < InSimMSTPacket.MSG_MAX_LENGTH:
+		packet = InSimMSTPacket.create(message)
+	elif message_buffer.size() < InSimMSXPacket.MSG_MAX_LENGTH:
 		packet = InSimMSXPacket.create(message)
+	else:
+		for split_message in LFSText.split_message(message, InSimMSXPacket.MSG_MAX_LENGTH):
+			send_message(split_message)
+		return
 	send_packet(packet, sender)
 
 
@@ -1062,7 +1069,8 @@ func send_message(message: String, sender := "InSim") -> void:
 func send_message_to_connection(
 	ucid: int, message: String, sound := InSim.MessageSound.SND_SILENT, sender := "InSim"
 ) -> void:
-	send_packet(InSimMTCPacket.create(ucid, 0, message, sound), sender)
+	for split_message in LFSText.split_message(message, InSimMTCPacket.TEXT_MAX_LENGTH):
+		send_message_to_connection(ucid, split_message, sound, sender)
 
 
 ## Call this function to send a UTF8-formatted message to a specific player, identified
@@ -1070,7 +1078,8 @@ func send_message_to_connection(
 func send_message_to_player(
 	plid: int, message: String, sound := InSim.MessageSound.SND_SILENT, sender := "InSim"
 ) -> void:
-	send_packet(InSimMTCPacket.create(0, plid, message, sound), sender)
+	for split_message in LFSText.split_message(message, InSimMTCPacket.TEXT_MAX_LENGTH):
+		send_message_to_player(plid, split_message, sound, sender)
 
 
 ## Call this function to send an InSim packet to LFS. You can pass the name
