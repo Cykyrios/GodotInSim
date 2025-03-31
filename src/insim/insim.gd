@@ -904,13 +904,13 @@ const RELAY_ADDRESS := "isrelay.lfs.net"
 const RELAY_PORT := 47474
 
 var lfs_connection: LFSConnection = null
-var nlp_mci_connection := LFSConnectionUDP.new()
+var nlp_mci_connection: LFSConnectionUDP = null
 var is_relay := false
 var initialization_data: InSimInitializationData = null
 
 var insim_connected := false
-var ping_timer := Timer.new()
-var timeout_timer := Timer.new()
+var ping_timer: Timer = null
+var timeout_timer: Timer = null
 
 ## Current state of the game, as per IS_STA documentation. Updated automatically upon
 ## receiving an IS_STA packet. Does not include packet header.
@@ -921,14 +921,20 @@ var connections: Dictionary[int, Connection] = {}
 var players: Dictionary[int, Player] = {}
 
 
-func _ready() -> void:
+func _init() -> void:
+	nlp_mci_connection = LFSConnectionUDP.new()
 	add_child(nlp_mci_connection)
+	ping_timer = Timer.new()
+	add_child(ping_timer)
+	timeout_timer = Timer.new()
+	add_child(timeout_timer)
+
+
+func _ready() -> void:
 	var _discard := nlp_mci_connection.packet_received.connect(_on_packet_received)
 
-	add_child(ping_timer)
 	ping_timer.one_shot = true
 	_discard = ping_timer.timeout.connect(send_ping)
-	add_child(timeout_timer)
 	timeout_timer.one_shot = true
 	_discard = timeout_timer.timeout.connect(handle_timeout)
 
