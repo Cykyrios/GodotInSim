@@ -31,7 +31,7 @@ func test_lfs_string_to_unicode() -> void:
 			.is_equal("Test string, ASCII only.")
 	_test = assert_str(LFSText.lfs_string_to_unicode(
 			"Other scripts and special characters^c ^J鏺陻質, ^^a^a^v^d.")) \
-			.is_equal("Other scripts and special characters: 日本語, ^a*|\\.")
+			.is_equal("Other scripts and special characters: 日本語, ^^a*|\\.")
 	_test = assert_str(LFSText.lfs_string_to_unicode("^Eì ^Cø ^JÏ")) \
 			.is_equal("ě ш ﾏ")
 	_test = assert_str(LFSText.lfs_string_to_unicode("^72^45 ^7B2^4^JÏ ^1Ayoub")) \
@@ -45,9 +45,10 @@ func test_lfs_string_to_unicode() -> void:
 func test_unicode_to_lfs_string() -> void:
 	var _test := assert_str(LFSText.unicode_to_lfs_string("Test string, ASCII only.")) \
 			.is_equal("Test string, ASCII only.")
+	# Do not convert escapable characters from unicode to LFS format as they work anyway.
 	_test = assert_str(LFSText.unicode_to_lfs_string(
-			"Other scripts and special characters: 日本語, ^a*|\\.")) \
-			.is_equal("Other scripts and special characters^c ^J鏺陻質, ^^a^a^v^d.")
+			"Other scripts and special characters: 日本語, ^^a*|\\.")) \
+			.is_equal("Other scripts and special characters: ^J鏺陻質, ^^a*|\\.")
 	_test = assert_str(LFSText.unicode_to_lfs_string("ě ш ﾏ")) \
 			.is_equal("^Eì ^Cø ^JÏ")
 	_test = assert_str(LFSText.unicode_to_lfs_string("^72^45 ^7B2^4ﾏ ^1Ayoub")) \
@@ -57,6 +58,6 @@ func test_unicode_to_lfs_string() -> void:
 	_test = assert_str(LFSText.unicode_to_lfs_string("/command test")) \
 			.is_equal("/command test")
 	_test = assert_str(LFSText.unicode_to_lfs_string("/command with a /slash")) \
-			.is_equal("/command with a ^sslash")
+			.is_equal("/command with a /slash")
 	_test = assert_str(LFSText.unicode_to_lfs_string("^8^1‹^7—^2›")) \
 			.is_equal("^8^1^7^2")
