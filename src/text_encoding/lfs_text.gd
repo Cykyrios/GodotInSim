@@ -178,7 +178,7 @@ static func get_regex_ucid() -> RegEx:
 static func lfs_bytes_to_unicode(bytes: PackedByteArray, zero_terminated := true) -> String:
 	# Largely based on Sim Broadcasts' code: https://github.com/simbroadcasts/parse-lfs-message
 	var buffer := bytes.duplicate()
-	if not zero_terminated:
+	if not zero_terminated or zero_terminated and bytes[-1] != 0:
 		var _discard := buffer.append(0)
 
 	var current_code_page := "^L"
@@ -190,6 +190,9 @@ static func lfs_bytes_to_unicode(bytes: PackedByteArray, zero_terminated := true
 	for i in buffer.size():
 		if skip_next:
 			skip_next = false
+			if i == buffer.size() - 1 and block_start < block_end:
+				message += _get_string_from_bytes(buffer.slice(block_start, block_end),
+						current_code_page)
 			continue
 		if buffer[i] == 0:
 			if block_start < block_end:
@@ -200,13 +203,6 @@ static func lfs_bytes_to_unicode(bytes: PackedByteArray, zero_terminated := true
 			block_end += 2
 			skip_next = true
 		elif buffer[i] == 0x5e:  # Found "^"
-			# Special case for ^* characters cut in half at the end of the message buffer
-			if buffer[i + 1] == 0:
-				block_end += 2
-				if block_start < block_end:
-					message += _get_string_from_bytes(buffer.slice(block_start, block_end),
-							current_code_page)
-					continue
 			var code_page_check := "^%s" % [char(buffer[i + 1])]
 			if CODE_PAGES.has(code_page_check):
 				if block_start < block_end:
