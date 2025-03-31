@@ -475,10 +475,4 @@ static func _translate_specials(text: String) -> String:
 	for i in SPECIAL_CHARACTERS.size():
 		message = message.replace(str(SPECIAL_CHARACTERS.values()[i]),
 				str(SPECIAL_CHARACTERS.keys()[i]))
-	# Replace LFS slashes ^s with "normal" slashes (U+2F) if the message starts with /,
-	# so it can be interpreted as an LFS command instead of text. Replacing all slashes
-	# also allows multi-commands to work (e.g. /laps 20 /qual 10 /wind 1), and does not
-	# otherwise impact the rendered text.
-	if message.begins_with(str(SPECIAL_CHARACTERS.keys()[SPECIAL_CHARACTERS.values().find("/")])):
-		message = message.replace("^s", "/")
 	return message
