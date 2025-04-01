@@ -272,6 +272,17 @@ static func get_color_code(color: ColorCode) -> String:
 	return "^%d" % [color]
 
 
+## Returns the display string version of [param text], with color codes converted to the target
+## [param colors] (from LFS colors) and double carets escaped. For instance:
+## [codeblock]
+## LFSText.get_display_string("^^1test ^1red^^")
+## # returns "^1test [color=#ff0000]red^[/color]"
+## [/codeblock]
+static func get_display_string(text: String, colors := ColorType.BBCODE) -> String:
+	var output := convert_colors(text, colors)
+	return remove_double_carets(output)
+
+
 ## Returns the start position of the actual message, since [member InSimMSOPacket.text_start]
 ## in unreliable when multi-byte characters appear in the connection/player name (LFS issue).
 ## /me messages return 0, as the name is part of the message for those (same behavior as LFS).
