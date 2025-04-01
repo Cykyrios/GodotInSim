@@ -68,6 +68,7 @@ const COLORS: Array[Color] = [
 ]
 const FALLBACK_CHARACTER := "\ufffd"
 
+static var code_pages := "".join(CODE_PAGES.keys()).replace("^", "")
 static var specials := "".join(SPECIAL_CHARACTERS.keys()).replace("^", "")
 
 
