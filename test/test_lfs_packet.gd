@@ -161,17 +161,6 @@ func test_add_word(number: int, test_parameters := [
 	var _test := assert_array(packet.buffer).is_equal(buffer)
 
 
-func test_get_dictionary_color_conversion() -> void:
-	var mock_packet := mock(LFSPacket, CALL_REAL_FUNC) as LFSPacket
-	var base_text := "^1Colored ^6text"
-	var converted_text := "[color=#ff0000]Colored [/color][color=#00ffff]text[/color]"
-	@warning_ignore("unsafe_method_access")
-	do_return({"key": base_text}).on(mock_packet)._get_dictionary()
-	var _test := assert_str(str(mock_packet.get_dictionary(false))).contains(base_text)
-	_test = assert_str(str(mock_packet.get_dictionary(true))) \
-			.contains(LFSText.lfs_colors_to_bbcode(converted_text))
-
-
 @warning_ignore("unused_parameter")
 func test_read_buffer(buffer: PackedByteArray, test_parameters := [
 	[PackedByteArray([0])],

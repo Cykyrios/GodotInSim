@@ -56,4 +56,4 @@ func _get_data_dictionary() -> Dictionary:
 
 
 func _get_pretty_text() -> String:
-	return "(%s) %s" % [InSim.MessageUserValue.keys()[user_type], LFSText.lfs_colors_to_bbcode(msg)]
+	return "(%s) %s" % [InSim.MessageUserValue.keys()[user_type], msg]

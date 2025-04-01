@@ -9,9 +9,26 @@ extends RefCounted
 ## everything is converted, but characters are encoded in UTF16 instead of proper LFS format
 ## (which removes intermediate zeros).
 
-enum ColorCode {BLACK, RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, WHITE, DEFAULT}
+enum ColorCode {
+	BLACK,  ## 0
+	RED,  ## 1
+	GREEN,  ## 2
+	YELLOW,  ## 3
+	BLUE,  ## 4
+	MAGENTA,  ## 5
+	CYAN,  ## 6
+	WHITE,  ## 7
+	RESET,  ## 8 - also resets code page
+	DEFAULT,  ## 9 - default color (context-dependent in LFS, gray here)
+}
+enum ColorType {
+	LFS,  ## Use LFS colors (^0 to ^9)
+	BBCODE,  ## Use bbcode tags
+	ANSI,  ## Use ANSI escape sequences
+	STRIP,  ## Remove colors
+}
 
-const CODE_PAGES := {
+const CODE_PAGES: Dictionary[String, String] = {
 	"^L": "CP1252",
 	"^G": "CP1253",
 	"^C": "CP1251",
@@ -24,7 +41,7 @@ const CODE_PAGES := {
 	"^K": "euc-kr",
 	"^8": "CP1252",
 }
-const SPECIAL_CHARACTERS := {
+const SPECIAL_CHARACTERS: Dictionary[String, String] = {
 	"^a": "*",
 	"^c": ":",
 	"^d": "\\",
@@ -35,37 +52,24 @@ const SPECIAL_CHARACTERS := {
 	"^s": "/",
 	"^t": '"',
 	"^v": "|",
+	"^^": "^^",  # parses carets but keeps them, dedoubling occurs separately
 }
 const COLORS: Array[Color] = [
-	Color(0, 0, 0),
-	Color(1, 0, 0),
-	Color(0, 1, 0),
-	Color(1, 1, 0),
-	Color(0, 0, 1),
-	Color(1, 0, 1),
-	Color(0, 1, 1),
-	Color(1, 1, 1),
-	Color(0.58, 0.58, 0.58),
+	Color(0, 0, 0),  ## 0
+	Color(1, 0, 0),  ## 1
+	Color(0, 1, 0),  ## 2
+	Color(1, 1, 0),  ## 3
+	Color(0, 0, 1),  ## 4
+	Color(1, 0, 1),  ## 5
+	Color(0, 1, 1),  ## 6
+	Color(1, 1, 1),  ## 7
+	Color(0.58, 0.58, 0.58),  ## 8 - also resets code page
+	Color(0.58, 0.58, 0.58),  ## 9 - default color (context-dependent in LFS, gray here)
 ]
 const FALLBACK_CHARACTER := "\ufffd"
 
-
-## Converts BBCode color tags to LFS colors (only works for LFS preset colors, see [enum ColorCode].
-static func bbcode_to_lfs_colors(text: String) -> String:
-	var lfs_text := text
-	var regex := RegEx.create_from_string(r"(?U)(?:\^[89])?\[color=#([A-Fa-f0-9]+)\](.+)\[/color\]")
-	var regex_match := regex.search(lfs_text)
-	var get_color_index := func get_color_index(hex_color: String) -> int:
-		for index in COLORS.size():
-			if COLORS[index].to_html(false) == hex_color:
-				return index
-		return COLORS.size()
-	while regex_match:
-		var color_index := get_color_index.call(regex_match.strings[1]) as int
-		lfs_text = regex.sub(lfs_text, "^%d%s^8" % [color_index, regex_match.strings[2]])
-		regex_match = regex.search(lfs_text)
-	lfs_text = lfs_text.trim_suffix("^8")
-	return lfs_text
+static var code_pages := "".join(CODE_PAGES.keys()).replace("^", "")
+static var specials := "".join(SPECIAL_CHARACTERS.keys()).replace("^", "")
 
 
 ## Converts an LFS-encoded car name to a readable text string, in the 3-letter format for
@@ -112,9 +116,171 @@ static func car_name_to_lfs_bytes(car_name: String) -> PackedByteArray:
 	return buffer
 
 
-## Returns a color code string (^0 to ^8).
+## Converts ANSI escape sequences to BBCode color tags.
+static func colors_ansi_to_bbcode(text: String) -> String:
+	var color_is_active := false
+	var regex := get_regex_color_ansi()
+	var offset := 0
+	var output := text
+	for result in regex.search_all(output):
+		if (
+			result.strings[0].ends_with("[39m")
+			or result.strings[0].ends_with("[0m")
+			or result.strings[0].ends_with("[m")
+		):
+			var replacement := "[/color]"
+			output = regex.sub(output, replacement, false, result.get_start() + offset)
+			offset += replacement.length() - result.strings[0].length()
+			color_is_active = false
+		else:
+			var color := COLORS[ColorCode.DEFAULT]
+			var group := result.strings[1]
+			if group.length() <= 2:
+				match result.strings[1]:
+					"30":
+						color = Color.BLACK
+					"31", "91":
+						color = Color.RED
+					"32", "92":
+						color = Color.GREEN
+					"33", "93":
+						color = Color.YELLOW
+					"34", "94":
+						color = Color.BLUE
+					"35", "95":
+						color = Color.MAGENTA
+					"36", "96":
+						color = Color.CYAN
+					"37", "97":
+						color = Color.WHITE
+			elif group.begins_with("38;2"):
+				var components := group.split(";")
+				color = Color(
+					components[2].to_int() / 255.0,
+					components[3].to_int() / 255.0,
+					components[4].to_int() / 255.0
+				)
+			var replacement := "%s[color=#%s]" % [
+				"[/color]" if color_is_active else "",
+				color.to_html(false),
+			]
+			output = regex.sub(output, replacement, false, result.get_start() + offset)
+			offset += replacement.length() - result.strings[0].length()
+			color_is_active = true
+	if color_is_active:
+		output += "[/color]"
+	return output
+
+## Converts BBCode color tags to ANSI escape sequences.
+static func colors_bbcode_to_ansi(text: String) -> String:
+	var output := text.replace("[/color][color=", "[color=")
+	output = output.replace("[/color]", "\u001b[39m")
+	var regex := RegEx.create_from_string(r"\[color=#([\dA-Fa-f]{6})\]")
+	for result in regex.search_all(output):
+		var rgb := Vector3i(
+			result.strings[1].substr(0, 2).hex_to_int(),
+			result.strings[1].substr(2, 2).hex_to_int(),
+			result.strings[1].substr(4, 2).hex_to_int()
+		)
+		output = regex.sub(output, "\u001b[38;2;%d;%d;%dm" % [rgb.x, rgb.y, rgb.z])
+	return output
+
+
+## Converts BBCode color tags to LFS colors (only works for LFS preset colors, see [enum ColorCode].
+static func colors_bbcode_to_lfs(text: String) -> String:
+	var output := text.replace("[/color][color=", "[color=")
+	output = output.replace("[/color]", "^9")
+	var get_color_index := func get_color_index(hex_color: String) -> int:
+		for index in COLORS.size():
+			if COLORS[index].to_html(false) == hex_color:
+				return index
+		return 9
+	var regex := RegEx.create_from_string(r"\[color=#([A-Fa-f\d]{6})\]")
+	var regex_match := regex.search(output)
+	while regex_match:
+		var color_index := get_color_index.call(regex_match.strings[1]) as int
+		output = regex.sub(output, "^%d" % [color_index])
+		regex_match = regex.search(output)
+	output = output.trim_suffix("^8")
+	return output
+
+
+## Converts LFS colors to BBCode color tags, for displaying text in [RichTextLabel] or html pages.
+static func colors_lfs_to_bbcode(text: String) -> String:
+	var colored_text := text
+	var color_regex := get_regex_color_lfs()
+	var regex_match := color_regex.search(colored_text)
+	var colors_found := false
+	var offset := 0
+	while regex_match:
+		var replacement := ""
+		if regex_match.strings[1] == "^":
+			replacement = regex_match.strings[0]
+		else:
+			var color_index := regex_match.strings[1].to_int()
+			if color_index >= 8:
+				replacement = "[/color]" if colors_found else ""
+				colors_found = false
+			else:
+				replacement = "%s[color=#%s]" % [
+					"[/color]" if colors_found else "",
+					COLORS[color_index].to_html(false)
+				]
+				colors_found = true
+			colored_text = color_regex.sub(colored_text, replacement, false, offset)
+		offset = regex_match.get_start() + replacement.length()
+		regex_match = color_regex.search(colored_text, offset)
+	if colors_found:
+		colored_text += "[/color]"
+	return colored_text
+
+
+## Converts colors in the given [param text] string to the [param to] color type. If [param to]
+## is [ColorType.LFS], [method strip_colors] is called instead.
+static func convert_colors(text: String, to: ColorType, from := ColorType.LFS) -> String:
+	if from == ColorType.STRIP:
+		push_warning("LFSText cannot convert colors from no colors!")
+		return text
+	if to == ColorType.STRIP:
+		return strip_colors(text)
+	if to == ColorType.ANSI:
+		if from == ColorType.ANSI:
+			return text
+		if from == ColorType.BBCODE:
+			return colors_bbcode_to_ansi(text)
+		if from == ColorType.LFS:
+			return colors_bbcode_to_ansi(colors_lfs_to_bbcode(text))
+	elif to == ColorType.BBCODE:
+		if from == ColorType.BBCODE:
+			return text
+		if from == ColorType.ANSI:
+			return colors_ansi_to_bbcode(text)
+		if from == ColorType.LFS:
+			return colors_lfs_to_bbcode(text)
+	elif to == ColorType.LFS:
+		if from == ColorType.LFS:
+			return text
+		if from == ColorType.ANSI:
+			return colors_bbcode_to_lfs(colors_ansi_to_bbcode(text))
+		if from == ColorType.BBCODE:
+			return colors_bbcode_to_lfs(text)
+	return ""
+
+
+## Returns a color code string (^0 to ^9).
 static func get_color_code(color: ColorCode) -> String:
 	return "^%d" % [color]
+
+
+## Returns the display string version of [param text], with color codes converted to the target
+## [param colors] (from LFS colors) and double carets escaped. For instance:
+## [codeblock]
+## LFSText.get_display_string("^^1test ^1red^^")
+## # returns "^1test [color=#ff0000]red^[/color]"
+## [/codeblock]
+static func get_display_string(text: String, colors := ColorType.BBCODE) -> String:
+	var output := convert_colors(text, colors)
+	return remove_double_carets(output)
 
 
 ## Returns the start position of the actual message, since [member InSimMSOPacket.text_start]
@@ -139,6 +305,23 @@ static func get_mso_start(mso_packet: InSimMSOPacket, insim: InSim) -> int:
 	return 0
 
 
+## Returns a regular expression matching ANSI escape sequences for foreground color.
+static func get_regex_color_ansi() -> RegEx:
+	return RegEx.create_from_string("\u001b" + r"\[(3\d|9[0-7]|(?:\d|;)*)m")
+
+
+## Returns a regular expression matching bbcode color tags.
+static func get_regex_color_bbcode() -> RegEx:
+	return RegEx.create_from_string(r"\[color=#([A-Fa-f\d]+)\](.+?)\[/color\]")
+
+
+## Returns a regular expression matching LFS color codes ([code]^0[/code] through [code]^9[/code]).
+## [br][u][b]Note:[/b][/u] The expression also matches [code]^^[/code] to prevent false positives
+## such as [code]^^1[code], so results should be filtered accordingly.
+static func get_regex_color_lfs() -> RegEx:
+	return RegEx.create_from_string(r"\^(\^|\d)")
+
+
 ## Returns a regular expression matching [code]PLID x[/code] where x is a PLID number.
 static func get_regex_plid() -> RegEx:
 	return RegEx.create_from_string(r"PLID (\d+)")
@@ -149,11 +332,15 @@ static func get_regex_ucid() -> RegEx:
 	return RegEx.create_from_string(r"UCID (\d+)")
 
 
-## Converts a text string in binary LFS format to a UTF8 string.
+## Converts a text string in binary LFS format to a UTF8 string. If [param zero_terminated]
+## is true, a zero is appended to the buffer if needed. Double carets [code]^^[/code] do not
+## get converted to a single [code]^[/code], which allows to unambiguously make the difference
+## between actual caret characters and color escape sequences, but requires futher processing
+## for display; you can call [method remove_double_carets] for this purpose.
 static func lfs_bytes_to_unicode(bytes: PackedByteArray, zero_terminated := true) -> String:
 	# Largely based on Sim Broadcasts' code: https://github.com/simbroadcasts/parse-lfs-message
 	var buffer := bytes.duplicate()
-	if not zero_terminated:
+	if not zero_terminated or zero_terminated and bytes[-1] != 0:
 		var _discard := buffer.append(0)
 
 	var current_code_page := "^L"
@@ -165,6 +352,9 @@ static func lfs_bytes_to_unicode(bytes: PackedByteArray, zero_terminated := true
 	for i in buffer.size():
 		if skip_next:
 			skip_next = false
+			if i == buffer.size() - 1 and block_start < block_end:
+				message += _get_string_from_bytes(buffer.slice(block_start, block_end),
+						current_code_page)
 			continue
 		if buffer[i] == 0:
 			if block_start < block_end:
@@ -175,12 +365,6 @@ static func lfs_bytes_to_unicode(bytes: PackedByteArray, zero_terminated := true
 			block_end += 2
 			skip_next = true
 		elif buffer[i] == 0x5e:  # Found "^"
-			# Special case for ^* characters cut in half at the end of the message buffer
-			if buffer[i + 1] == 0:
-				block_end += 2
-				if block_start < block_end:
-					message += _get_string_from_bytes(buffer.slice(block_start, block_end),
-							current_code_page)
 			var code_page_check := "^%s" % [char(buffer[i + 1])]
 			if CODE_PAGES.has(code_page_check):
 				if block_start < block_end:
@@ -198,33 +382,14 @@ static func lfs_bytes_to_unicode(bytes: PackedByteArray, zero_terminated := true
 				skip_next = true
 		else:
 			block_end += 1
-	for i in SPECIAL_CHARACTERS.size():
-		var regexp := RegEx.create_from_string(r"(?<!\^)\%s" % [SPECIAL_CHARACTERS.keys()[i]])
-		message = regexp.sub(message, SPECIAL_CHARACTERS.values()[i] as String, true)
-	message = message.replace("^^", "^")
+	var regex_specials := RegEx.create_from_string(r"\^(.)")
+	var results_specials := regex_specials.search_all(message)
+	for i in results_specials.size():
+		var result := results_specials[results_specials.size() - 1 - i]
+		if SPECIAL_CHARACTERS.has(result.strings[0]):
+			message = regex_specials.sub(message, SPECIAL_CHARACTERS[result.strings[0]],
+					false, result.get_start())
 	return message
-
-
-## Converts LFS colors to BBCode color tags, for displaying text in [RichTextLabel] or html pages.
-static func lfs_colors_to_bbcode(text: String) -> String:
-	var colored_text := text
-	var color_regex := RegEx.create_from_string(r"\^\d")
-	var regex_match := color_regex.search(colored_text)
-	var colors_found := false
-	while regex_match:
-		var color_index := regex_match.strings[0].right(1).to_int()
-		if color_index >= 8:
-			colored_text = color_regex.sub(colored_text, "[/color]" if colors_found else "")
-			colors_found = false
-		else:
-			colored_text = color_regex.sub(colored_text,
-					"%s[color=#%s]" % ["[/color]" if colors_found else "",
-					COLORS[color_index].to_html(false)])
-			colors_found = true
-		regex_match = color_regex.search(colored_text)
-	if colors_found:
-		colored_text += "[/color]"
-	return colored_text
 
 
 ## Convert the intermediate string representation of LFS text to UTF8. You should only need
@@ -245,9 +410,17 @@ static func lfs_string_to_unicode(text: String) -> String:
 	return lfs_bytes_to_unicode(buffer)
 
 
+## Replaces double carets [code]^^[/code] with a single one. This is meant as a final cleanup step
+## before displaying a string converted from LFS as obtained from [method lfs_bytes_to_unicode],
+## which keeps double carets to avoid ambiguity between caret characters and color escape codes.
+static func remove_double_carets(text: String) -> String:
+	var regex := RegEx.create_from_string(r"\^\^")
+	return regex.sub(text, "^", true)
+
+
 ## Replaces all occurrences, in the given [param text], of [code]PLID #[/code],
 ## where [code]#[/code] is a number, with the corresponding player names.
-static func replace_plid_with_name(text: String, insim: InSim, convert_colors := false) -> String:
+static func replace_plid_with_name(text: String, insim: InSim) -> String:
 	var output := text
 	var regex := LFSText.get_regex_plid()
 	var results := regex.search_all(text)
@@ -259,17 +432,13 @@ static func replace_plid_with_name(text: String, insim: InSim, convert_colors :=
 			push_error("Failed to convert PLID %d, list is %s" % [plid, insim.players.keys()])
 		var player_name := insim.players[plid].player_name if player_found \
 				else "^%d%s" % [LFSText.ColorCode.RED, result.strings[0]]
-		if convert_colors:
-			player_name = lfs_colors_to_bbcode(player_name)
 		output = regex.sub(output, player_name, false, result.get_start())
 	return output
 
 
 ## Replaces all occurrences, in the given [param text], of [code]UCID #[/code],
 ## where [code]#[/code] is a number, with the corresponding connection name.
-static func replace_ucid_with_name(
-	text: String, insim: InSim, include_username := false, convert_colors := false
-) -> String:
+static func replace_ucid_with_name(text: String, insim: InSim, include_username := false) -> String:
 	var output := text
 	var regex := LFSText.get_regex_ucid()
 	var results := regex.search_all(text)
@@ -282,8 +451,6 @@ static func replace_ucid_with_name(
 			push_error("Failed to convert UCID %d, list is %s" % [ucid, insim.connections.keys()])
 		var nickname := connection.nickname if connection \
 				else "^%d%s" % [LFSText.COLORS[LFSText.ColorCode.RED], result.strings[0]]
-		if convert_colors:
-			nickname = lfs_colors_to_bbcode(nickname)
 		output = regex.sub(output, "%s%s" % [
 			nickname,
 			"" if connection.username.is_empty() or not include_username \
@@ -292,29 +459,78 @@ static func replace_ucid_with_name(
 	return output
 
 
-## Removes all colors from [param text], including LFS colors and BBCode tags.
+## Splits the given [param message] and returns an array of 2 strings, with the first one
+## being trimmed to [param max_length] ([PackedByteArray] length after converting to LFS bytes)
+## and moving characters broken by the trim to the second string, which contains the rest
+## of the [param message], with the last used color code prepended to it.
+static func split_message(message: String, max_length: int) -> Array[String]:
+	var message_buffer := LFSText.unicode_to_lfs_bytes(message)
+	var first_buffer := message_buffer.slice(0, max_length - 1)
+	var first_message := LFSText.lfs_bytes_to_unicode(first_buffer)
+	if (
+		first_buffer[-1] == 94
+		and first_buffer[-2] != 94
+		and first_message.ends_with("^")
+	):
+		first_message = first_message.trim_suffix("^")
+	var size := first_message.find(LFSText.FALLBACK_CHARACTER)
+	if size != -1:
+		first_message = first_message.left(size)
+	var second_message := message.right(
+		message.length() - (first_message.length() if size == -1 else size)
+	)
+	if not(
+		second_message[0] == "^"
+		and char(second_message.unicode_at(1)) >= "0"
+		and char(second_message.unicode_at(1)) <= "9"
+	):
+		var last_color := ""
+		var color_results := LFSText.get_regex_color_lfs().search_all(first_message)
+		if not color_results.is_empty():
+			for i in color_results.size():
+				if color_results[i].strings[0] != "^^":
+					last_color = color_results[-1].strings[0]
+					second_message = last_color + second_message
+					break
+	return [first_message, second_message]
+
+
+## Removes all colors from [param text], including LFS colors, BBCode tags and ANSI sequences.
 static func strip_colors(text: String) -> String:
 	var result := text
-	var regex := RegEx.create_from_string(r"\^\d")
+	var regex := get_regex_color_lfs()
 	var regex_match := regex.search(result)
+	var offset := 0
 	while regex_match:
-		var color_code := regex_match.strings[0].substr(1, 1).to_int()
-		result = regex.sub(result, "^L" if color_code == 9 else "")
-		regex_match = regex.search(result)
-	regex = RegEx.create_from_string(r"(?U)\[color=#[A-Fa-f0-9]\](.+)\[/color\]")
+		if regex_match.strings[0].substr(1, 1) == "^":
+			offset = regex_match.get_start() + regex_match.strings[0].length()
+			regex_match = regex.search(result, offset)
+			continue
+		result = regex.sub(result, "", false, offset)
+		offset = regex_match.get_start()
+		regex_match = regex.search(result, offset)
+	regex = get_regex_color_bbcode()
 	regex_match = regex.search(result)
 	while regex_match:
-		result = regex.sub(result, regex_match.strings[1])
+		result = regex.sub(result, regex_match.strings[2])
+		regex_match = regex.search(result)
+	regex = get_regex_color_ansi()
+	regex_match = regex.search(result)
+	while regex_match:
+		result = regex.sub(result, "")
 		regex_match = regex.search(result)
 	return result
 
 
 ## Converts [param text] from UTF8 to LFS encoding as a [PackedByteArray]. If [param keep_utf16] is
-## true, the array can be converted back to text as UTF16.
+## true, the array can be converted back to text as UTF16.[br]
+## Invalid escape sequences replace the single caret with 2 (LFS displays a single ^).
+## For instance, if [param text] is [code]^b[/code], it will be read as [code]^^b[/code] and the
+## resulting buffer will be [code][94, 94, 98][/code].
 static func unicode_to_lfs_bytes(text: String, keep_utf16 := false) -> PackedByteArray:
 	# Largely based on Sim Broadcasts' code: https://github.com/simbroadcasts/unicode-to-lfs
 	var page := "L"
-	var message := _translate_specials(_escape_circumflex(text))
+	var message := _escape_circumflex(text)
 	var buffer := PackedByteArray()
 	for i in message.length():
 		if message.unicode_at(i) < 128:
@@ -348,7 +564,7 @@ static func unicode_to_lfs_string(text: String) -> String:
 
 
 static func _escape_circumflex(text: String) -> String:
-	var regex := RegEx.create_from_string(r"\^(?!\d)")
+	var regex := RegEx.create_from_string(r"(?<!\^)\^(?![\d%s\^])" % [specials])
 	return regex.sub(text, "^^", true)
 
 
@@ -439,13 +655,4 @@ static func _translate_specials(text: String) -> String:
 	for i in SPECIAL_CHARACTERS.size():
 		message = message.replace(str(SPECIAL_CHARACTERS.values()[i]),
 				str(SPECIAL_CHARACTERS.keys()[i]))
-	# Keep "basic" slash (U+2F) at beginning of message so it can be interpreted
-	# as an LFS command instead of text. This should not affect text representation otherwise.
-	if message.begins_with(str(SPECIAL_CHARACTERS.keys()[SPECIAL_CHARACTERS.values().find("/")])):
-		message = "/" + message.substr(2)
 	return message
-
-
-static func _unescape_circumflex(text: String) -> String:
-	var result := text
-	return result

@@ -40,4 +40,4 @@ func _get_data_dictionary() -> Dictionary:
 
 
 func _get_pretty_text() -> String:
-	return "UCID %d renamed to %s" % [ucid, LFSText.lfs_colors_to_bbcode(player_name)]
+	return "UCID %d renamed to %s" % [ucid, player_name]

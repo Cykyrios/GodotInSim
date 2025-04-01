@@ -33,7 +33,7 @@ func _get_data_dictionary() -> Dictionary:
 
 
 func _get_pretty_text() -> String:
-	return LFSText.lfs_colors_to_bbcode(msg)
+	return msg
 
 
 static func create(message: String, msg_sound := InSim.MessageSound.SND_SILENT) -> InSimMSLPacket:
