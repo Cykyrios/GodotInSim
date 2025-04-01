@@ -71,24 +71,6 @@ const FALLBACK_CHARACTER := "\ufffd"
 static var specials := "".join(SPECIAL_CHARACTERS.keys()).replace("^", "")
 
 
-## Converts BBCode color tags to LFS colors (only works for LFS preset colors, see [enum ColorCode].
-static func bbcode_to_lfs_colors(text: String) -> String:
-	var lfs_text := text
-	var regex := RegEx.create_from_string(r"(?U)(?:\^[89])?\[color=#([A-Fa-f0-9]+)\](.+)\[/color\]")
-	var regex_match := regex.search(lfs_text)
-	var get_color_index := func get_color_index(hex_color: String) -> int:
-		for index in COLORS.size():
-			if COLORS[index].to_html(false) == hex_color:
-				return index
-		return COLORS.size()
-	while regex_match:
-		var color_index := get_color_index.call(regex_match.strings[1]) as int
-		lfs_text = regex.sub(lfs_text, "^%d%s^8" % [color_index, regex_match.strings[2]])
-		regex_match = regex.search(lfs_text)
-	lfs_text = lfs_text.trim_suffix("^8")
-	return lfs_text
-
-
 ## Converts an LFS-encoded car name to a readable text string, in the 3-letter format for
 ## official cars (e.g. FBM), or the 6-character hexadecimal code for mods (e.g. DBF12E).
 static func car_name_from_lfs_bytes(buffer: PackedByteArray) -> String:
@@ -133,7 +115,158 @@ static func car_name_to_lfs_bytes(car_name: String) -> PackedByteArray:
 	return buffer
 
 
-## Returns a color code string (^0 to ^8).
+## Converts ANSI escape sequences to BBCode color tags.
+static func colors_ansi_to_bbcode(text: String) -> String:
+	var color_is_active := false
+	var regex := get_regex_color_ansi()
+	var offset := 0
+	var output := text
+	for result in regex.search_all(output):
+		if (
+			result.strings[0].ends_with("[39m")
+			or result.strings[0].ends_with("[0m")
+			or result.strings[0].ends_with("[m")
+		):
+			var replacement := "[/color]"
+			output = regex.sub(output, replacement, false, result.get_start() + offset)
+			offset += replacement.length() - result.strings[0].length()
+			color_is_active = false
+		else:
+			var color := COLORS[ColorCode.DEFAULT]
+			var group := result.strings[1]
+			if group.length() <= 2:
+				match result.strings[1]:
+					"30":
+						color = Color.BLACK
+					"31", "91":
+						color = Color.RED
+					"32", "92":
+						color = Color.GREEN
+					"33", "93":
+						color = Color.YELLOW
+					"34", "94":
+						color = Color.BLUE
+					"35", "95":
+						color = Color.MAGENTA
+					"36", "96":
+						color = Color.CYAN
+					"37", "97":
+						color = Color.WHITE
+			elif group.begins_with("38;2"):
+				var components := group.split(";")
+				color = Color(
+					components[2].to_int() / 255.0,
+					components[3].to_int() / 255.0,
+					components[4].to_int() / 255.0
+				)
+			var replacement := "%s[color=#%s]" % [
+				"[/color]" if color_is_active else "",
+				color.to_html(false),
+			]
+			output = regex.sub(output, replacement, false, result.get_start() + offset)
+			offset += replacement.length() - result.strings[0].length()
+			color_is_active = true
+	if color_is_active:
+		output += "[/color]"
+	return output
+
+## Converts BBCode color tags to ANSI escape sequences.
+static func colors_bbcode_to_ansi(text: String) -> String:
+	var output := text.replace("[/color][color=", "[color=")
+	output = output.replace("[/color]", "\u001b[39m")
+	var regex := RegEx.create_from_string(r"\[color=#([\dA-Fa-f]{6})\]")
+	for result in regex.search_all(output):
+		var rgb := Vector3i(
+			result.strings[1].substr(0, 2).hex_to_int(),
+			result.strings[1].substr(2, 2).hex_to_int(),
+			result.strings[1].substr(4, 2).hex_to_int()
+		)
+		output = regex.sub(output, "\u001b[38;2;%d;%d;%dm" % [rgb.x, rgb.y, rgb.z])
+	return output
+
+
+## Converts BBCode color tags to LFS colors (only works for LFS preset colors, see [enum ColorCode].
+static func colors_bbcode_to_lfs(text: String) -> String:
+	var output := text.replace("[/color][color=", "[color=")
+	output = output.replace("[/color]", "^9")
+	var get_color_index := func get_color_index(hex_color: String) -> int:
+		for index in COLORS.size():
+			if COLORS[index].to_html(false) == hex_color:
+				return index
+		return 9
+	var regex := RegEx.create_from_string(r"\[color=#([A-Fa-f\d]{6})\]")
+	var regex_match := regex.search(output)
+	while regex_match:
+		var color_index := get_color_index.call(regex_match.strings[1]) as int
+		output = regex.sub(output, "^%d" % [color_index])
+		regex_match = regex.search(output)
+	output = output.trim_suffix("^8")
+	return output
+
+
+## Converts LFS colors to BBCode color tags, for displaying text in [RichTextLabel] or html pages.
+static func colors_lfs_to_bbcode(text: String) -> String:
+	var colored_text := text
+	var color_regex := get_regex_color_lfs()
+	var regex_match := color_regex.search(colored_text)
+	var colors_found := false
+	var offset := 0
+	while regex_match:
+		var replacement := ""
+		if regex_match.strings[1] == "^":
+			replacement = regex_match.strings[0]
+		else:
+			var color_index := regex_match.strings[1].to_int()
+			if color_index >= 8:
+				replacement = "[/color]" if colors_found else ""
+				colors_found = false
+			else:
+				replacement = "%s[color=#%s]" % [
+					"[/color]" if colors_found else "",
+					COLORS[color_index].to_html(false)
+				]
+				colors_found = true
+			colored_text = color_regex.sub(colored_text, replacement, false, offset)
+		offset = regex_match.get_start() + replacement.length()
+		regex_match = color_regex.search(colored_text, offset)
+	if colors_found:
+		colored_text += "[/color]"
+	return colored_text
+
+
+## Converts colors in the given [param text] string to the [param to] color type. If [param to]
+## is [ColorType.LFS], [method strip_colors] is called instead.
+static func convert_colors(text: String, to: ColorType, from := ColorType.LFS) -> String:
+	if from == ColorType.STRIP:
+		push_warning("LFSText cannot convert colors from no colors!")
+		return text
+	if to == ColorType.STRIP:
+		return strip_colors(text)
+	if to == ColorType.ANSI:
+		if from == ColorType.ANSI:
+			return text
+		if from == ColorType.BBCODE:
+			return colors_bbcode_to_ansi(text)
+		if from == ColorType.LFS:
+			return colors_bbcode_to_ansi(colors_lfs_to_bbcode(text))
+	elif to == ColorType.BBCODE:
+		if from == ColorType.BBCODE:
+			return text
+		if from == ColorType.ANSI:
+			return colors_ansi_to_bbcode(text)
+		if from == ColorType.LFS:
+			return colors_lfs_to_bbcode(text)
+	elif to == ColorType.LFS:
+		if from == ColorType.LFS:
+			return text
+		if from == ColorType.ANSI:
+			return colors_bbcode_to_lfs(colors_ansi_to_bbcode(text))
+		if from == ColorType.BBCODE:
+			return colors_bbcode_to_lfs(text)
+	return ""
+
+
+## Returns a color code string (^0 to ^9).
 static func get_color_code(color: ColorCode) -> String:
 	return "^%d" % [color]
 
@@ -158,6 +291,23 @@ static func get_mso_start(mso_packet: InSimMSOPacket, insim: InSim) -> int:
 	if result:
 		return result.strings[0].length()
 	return 0
+
+
+## Returns a regular expression matching ANSI escape sequences for foreground color.
+static func get_regex_color_ansi() -> RegEx:
+	return RegEx.create_from_string("\u001b" + r"\[(3\d|9[0-7]|(?:\d|;)*)m")
+
+
+## Returns a regular expression matching bbcode color tags.
+static func get_regex_color_bbcode() -> RegEx:
+	return RegEx.create_from_string(r"\[color=#([A-Fa-f\d]+)\](.+?)\[/color\]")
+
+
+## Returns a regular expression matching LFS color codes ([code]^0[/code] through [code]^9[/code]).
+## [br][u][b]Note:[/b][/u] The expression also matches [code]^^[/code] to prevent false positives
+## such as [code]^^1[code], so results should be filtered accordingly.
+static func get_regex_color_lfs() -> RegEx:
+	return RegEx.create_from_string(r"\^(\^|\d)")
 
 
 ## Returns a regular expression matching [code]PLID x[/code] where x is a PLID number.
@@ -230,28 +380,6 @@ static func lfs_bytes_to_unicode(bytes: PackedByteArray, zero_terminated := true
 	return message
 
 
-## Converts LFS colors to BBCode color tags, for displaying text in [RichTextLabel] or html pages.
-static func lfs_colors_to_bbcode(text: String) -> String:
-	var colored_text := text
-	var color_regex := RegEx.create_from_string(r"\^\d")
-	var regex_match := color_regex.search(colored_text)
-	var colors_found := false
-	while regex_match:
-		var color_index := regex_match.strings[0].right(1).to_int()
-		if color_index >= 8:
-			colored_text = color_regex.sub(colored_text, "[/color]" if colors_found else "")
-			colors_found = false
-		else:
-			colored_text = color_regex.sub(colored_text,
-					"%s[color=#%s]" % ["[/color]" if colors_found else "",
-					COLORS[color_index].to_html(false)])
-			colors_found = true
-		regex_match = color_regex.search(colored_text)
-	if colors_found:
-		colored_text += "[/color]"
-	return colored_text
-
-
 ## Convert the intermediate string representation of LFS text to UTF8. You should only need
 ## to use [method lfs_bytes_to_unicode] or [method unicode_to_lfs_bytes] for text conversion.
 static func lfs_string_to_unicode(text: String) -> String:
@@ -280,7 +408,7 @@ static func remove_double_carets(text: String) -> String:
 
 ## Replaces all occurrences, in the given [param text], of [code]PLID #[/code],
 ## where [code]#[/code] is a number, with the corresponding player names.
-static func replace_plid_with_name(text: String, insim: InSim, convert_colors := false) -> String:
+static func replace_plid_with_name(text: String, insim: InSim) -> String:
 	var output := text
 	var regex := LFSText.get_regex_plid()
 	var results := regex.search_all(text)
@@ -292,17 +420,13 @@ static func replace_plid_with_name(text: String, insim: InSim, convert_colors :=
 			push_error("Failed to convert PLID %d, list is %s" % [plid, insim.players.keys()])
 		var player_name := insim.players[plid].player_name if player_found \
 				else "^%d%s" % [LFSText.ColorCode.RED, result.strings[0]]
-		if convert_colors:
-			player_name = lfs_colors_to_bbcode(player_name)
 		output = regex.sub(output, player_name, false, result.get_start())
 	return output
 
 
 ## Replaces all occurrences, in the given [param text], of [code]UCID #[/code],
 ## where [code]#[/code] is a number, with the corresponding connection name.
-static func replace_ucid_with_name(
-	text: String, insim: InSim, include_username := false, convert_colors := false
-) -> String:
+static func replace_ucid_with_name(text: String, insim: InSim, include_username := false) -> String:
 	var output := text
 	var regex := LFSText.get_regex_ucid()
 	var results := regex.search_all(text)
@@ -315,8 +439,6 @@ static func replace_ucid_with_name(
 			push_error("Failed to convert UCID %d, list is %s" % [ucid, insim.connections.keys()])
 		var nickname := connection.nickname if connection \
 				else "^%d%s" % [LFSText.COLORS[LFSText.ColorCode.RED], result.strings[0]]
-		if convert_colors:
-			nickname = lfs_colors_to_bbcode(nickname)
 		output = regex.sub(output, "%s%s" % [
 			nickname,
 			"" if connection.username.is_empty() or not include_username \
@@ -361,19 +483,29 @@ static func split_message(message: String, max_length: int) -> Array[String]:
 	return [first_message, second_message]
 
 
-## Removes all colors from [param text], including LFS colors and BBCode tags.
+## Removes all colors from [param text], including LFS colors, BBCode tags and ANSI sequences.
 static func strip_colors(text: String) -> String:
 	var result := text
-	var regex := RegEx.create_from_string(r"\^\d")
+	var regex := get_regex_color_lfs()
 	var regex_match := regex.search(result)
+	var offset := 0
 	while regex_match:
-		var color_code := regex_match.strings[0].substr(1, 1).to_int()
-		result = regex.sub(result, "^L" if color_code == 9 else "")
-		regex_match = regex.search(result)
-	regex = RegEx.create_from_string(r"(?U)\[color=#[A-Fa-f0-9]\](.+)\[/color\]")
+		if regex_match.strings[0].substr(1, 1) == "^":
+			offset = regex_match.get_start() + regex_match.strings[0].length()
+			regex_match = regex.search(result, offset)
+			continue
+		result = regex.sub(result, "", false, offset)
+		offset = regex_match.get_start()
+		regex_match = regex.search(result, offset)
+	regex = get_regex_color_bbcode()
 	regex_match = regex.search(result)
 	while regex_match:
-		result = regex.sub(result, regex_match.strings[1])
+		result = regex.sub(result, regex_match.strings[2])
+		regex_match = regex.search(result)
+	regex = get_regex_color_ansi()
+	regex_match = regex.search(result)
+	while regex_match:
+		result = regex.sub(result, "")
 		regex_match = regex.search(result)
 	return result
 
