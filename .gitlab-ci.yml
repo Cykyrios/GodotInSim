@@ -1,0 +1,37 @@
+image: registry.gitlab.com/cykyrios/godot-builder:4.4.1-stable
+
+workflow:
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+
+stages:
+  - setup
+  - test
+
+variables:
+  # Update submodules and force https
+  # (doesn't seem to work for submodules hosted on GitHub, update .gitmodules manually)
+  GIT_SUBMODULE_STRATEGY: recursive
+  GIT_SUBMODULE_FORCE_HTTPS: "true"
+
+setup-project:
+  stage: setup
+  script:
+    - mv .submodules/gdUnit4/addons/gdUnit4 addons/
+    - rm -rf addons/gdUnit4/test
+    - godot --headless -v --import
+  artifacts:
+    expire_in: 20 minutes
+    paths:
+      - .godot/
+      - addons/gdUnit4/
+
+run-tests:
+  stage: test
+  script:
+    - export GODOT_BIN=$(which godot)
+    - ./addons/gdUnit4/runtest.sh --headless --ignoreHeadlessMode -c -a addons/godot_insim/test
+  artifacts:
+    name: "Test Report"
+    paths:
+      - reports/report_1/*
