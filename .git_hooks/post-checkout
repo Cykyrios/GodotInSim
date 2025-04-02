@@ -15,3 +15,14 @@ if [ -d "$TARGET_DIR" ]; then
 	echo "Removing GdUnit4 test directory"
 	rm -rf "$TARGET_DIR"
 fi
+
+# Uncomment this to setup the GodotInSim addon directory symlink
+## GodotInSim
+#rm -rf ./addons/godot_insim
+#ln -s -r -P .submodules/godot_insim/addons/godot_insim ./addons/
+## Remove GodotInSim tests
+#TARGET_DIR="addons/godot_insim/test"
+#if [ -d "$TARGET_DIR" ]; then
+#	echo "Removing GodotInSim test directory"
+#	rm -rf "$TARGET_DIR"
+#fi
