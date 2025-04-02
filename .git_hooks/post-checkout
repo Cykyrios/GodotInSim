@@ -1,0 +1,17 @@
+#!/bin/sh
+
+git submodule sync
+git submodule update --init
+
+
+mkdir -p addons
+
+# GdUnit
+rm -rf ./addons/gdUnit4
+ln -s -r -P .submodules/gdUnit4/addons/gdUnit4 ./addons/
+# Remove GdUnit4 tests
+TARGET_DIR="addons/gdUnit4/test"
+if [ -d "$TARGET_DIR" ]; then
+	echo "Removing GdUnit4 test directory"
+	rm -rf "$TARGET_DIR"
+fi
