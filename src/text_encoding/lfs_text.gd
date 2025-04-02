@@ -492,6 +492,7 @@ static func split_message(message: String, max_length: int) -> Array[String]:
 					last_color = color_results[-1].strings[0]
 					second_message = last_color + second_message
 					break
+	second_message = second_message.trim_prefix("^8").trim_prefix("^9")
 	return [first_message, second_message]
 
 
