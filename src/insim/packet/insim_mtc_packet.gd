@@ -26,6 +26,8 @@ func _init() -> void:
 
 func _fill_buffer() -> void:
 	super()
+	if InSim.MessageSound.values().find(sound) == -1:
+		sound = InSim.MessageSound.SND_SILENT
 	add_byte(sound)
 	add_byte(ucid)
 	add_byte(plid)
@@ -48,7 +50,11 @@ func _get_data_dictionary() -> Dictionary:
 
 
 func _get_pretty_text() -> String:
-	return "(UCID %d)(PLID %d)(%s) %s" % [ucid, plid, InSim.MessageSound.keys()[sound], text]
+	return "(%s)(%s) %s" % [
+		("PLID %d" % [plid]) if plid != 0 else ("UCID %d" % [ucid]),
+		InSim.MessageSound.keys()[sound],
+		text,
+	]
 
 
 static func create(

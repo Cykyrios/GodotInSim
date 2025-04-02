@@ -20,6 +20,8 @@ func _init() -> void:
 
 func _fill_buffer() -> void:
 	super()
+	if InSim.MessageSound.values().find(sound) == -1:
+		sound = InSim.MessageSound.SND_SILENT
 	add_byte(sound)
 	msg = LFSText.lfs_bytes_to_unicode(add_string(MSG_MAX_LENGTH, msg))
 	buffer.encode_u8(size - 1, 0)  # last byte must be zero
@@ -33,7 +35,7 @@ func _get_data_dictionary() -> Dictionary:
 
 
 func _get_pretty_text() -> String:
-	return msg
+	return "(%s) %s" % [InSim.MessageSound.keys()[sound], msg]
 
 
 static func create(message: String, msg_sound := InSim.MessageSound.SND_SILENT) -> InSimMSLPacket:
