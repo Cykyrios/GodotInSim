@@ -287,6 +287,10 @@ static func get_display_string(text: String, colors := ColorType.BBCODE) -> Stri
 ## in unreliable when multi-byte characters appear in the connection/player name (LFS issue).
 ## /me messages return 0, as the name is part of the message for those (same behavior as LFS).
 static func get_mso_start(mso_packet: InSimMSOPacket, insim: InSim) -> int:
+	if mso_packet.text_start == 0:
+		# /me message, always returns 0
+		return 0
+	const FORMATTING_LENGTH := 9  # length of LFS formatting: "^7 ^7: ^8"
 	var use_plid := true if mso_packet.plid != 0 else false
 	var id := "%s %d" % [
 		"PLID" if use_plid else "UCID",
@@ -294,15 +298,7 @@ static func get_mso_start(mso_packet: InSimMSOPacket, insim: InSim) -> int:
 	]
 	id = replace_plid_with_name(id, insim) if use_plid \
 			else replace_ucid_with_name(id, insim)
-	var pattern := r"\^7%s \^7: \^8" % [id]
-	var caret_regex := RegEx.create_from_string(r"(?<!\\)\^")
-	for result in caret_regex.search_all(pattern):
-		pattern = caret_regex.sub(pattern, r"\^", true)
-	var regex := RegEx.create_from_string(pattern)
-	var result := regex.search(mso_packet.msg)
-	if result:
-		return result.strings[0].length()
-	return 0
+	return id.length() + FORMATTING_LENGTH
 
 
 ## Returns a regular expression matching ANSI escape sequences for foreground color.

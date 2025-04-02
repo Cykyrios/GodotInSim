@@ -283,6 +283,33 @@ func test_strip_colors(text: String, expected: String, test_parameters := [
 #endregion
 
 
+@warning_ignore("unused_parameter")
+func test_get_mso_start(player_name: String, message: String, test_parameters := [
+	["Player", "Message"],
+	["Nick\\^^name", "Message"],
+	["^1red^7白white", "Message"],
+]) -> void:
+	const UCID := 1
+	const PLID := 2
+	var insim := auto_free(InSim.new()) as InSim
+	var connection := Connection.new()
+	connection.nickname = player_name
+	insim.connections = {UCID: connection}
+	var player := Player.new()
+	player.player_name = player_name
+	player.ucid = UCID
+	insim.players = {PLID: player}
+	for i in 3:  # Send via UCID, then via PLID, then /me via PLID
+		var expected := message if i < 2 else "%s ^8%s" % [player_name, message]
+		var mso := InSimMSOPacket.new()
+		mso.ucid = UCID
+		mso.plid = PLID if i > 0 else 0
+		mso.msg = ("^7%s ^7: ^8%s" if i < 2 else "%s ^8%s") % [player_name, message]
+		mso.text_start = 1 if i < 2 else 0
+		var _test := assert_str(mso.msg.substr(LFSText.get_mso_start(mso, insim))) \
+				.is_equal(expected)
+
+
 #region unicode/LFS
 @warning_ignore("unused_parameter")
 func test_lfs_string_to_unicode(text: String, expected: String, test_parameters := [
