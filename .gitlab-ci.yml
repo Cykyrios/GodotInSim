@@ -32,6 +32,7 @@ run-tests:
     - export GODOT_BIN=$(which godot)
     - ./addons/gdUnit4/runtest.sh --headless --ignoreHeadlessMode -c -a addons/godot_insim/test
   artifacts:
+    when: always
     name: "Test Report"
     paths:
       - reports/*
