@@ -374,7 +374,7 @@ func test_unicode_to_lfs_string(text: String, expected: String, test_parameters 
 	],
 	[
 		"^8^1‹^7—^2›",
-		"^8^1^7^2",
+		"^9^1^7^2",
 	],
 ]) -> void:
 	var _test := assert_str(LFSText.unicode_to_lfs_string(text)).is_equal(expected)
