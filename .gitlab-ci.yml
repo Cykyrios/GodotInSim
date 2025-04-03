@@ -34,4 +34,4 @@ run-tests:
   artifacts:
     name: "Test Report"
     paths:
-      - reports/report_1/*
+      - reports/*
