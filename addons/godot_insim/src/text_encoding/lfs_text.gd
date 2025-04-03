@@ -426,8 +426,10 @@ static func replace_plid_with_name(text: String, insim: InSim) -> String:
 		var player_found := insim.players.has(plid)
 		if not player_found:
 			push_error("Failed to convert PLID %d, list is %s" % [plid, insim.players.keys()])
-		var player_name := insim.players[plid].player_name if player_found \
-				else "^%d%s" % [LFSText.ColorCode.RED, result.strings[0]]
+		var player_name := (
+			(insim.players[plid].player_name + get_color_code(ColorCode.DEFAULT)) if player_found \
+			else ("^%d%s^%d" % [LFSText.ColorCode.RED, result.strings[0], ColorCode.DEFAULT])
+		)
 		output = regex.sub(output, player_name, false, result.get_start())
 	return output
 
@@ -445,8 +447,14 @@ static func replace_ucid_with_name(text: String, insim: InSim, include_username 
 				else null
 		if not connection:
 			push_error("Failed to convert UCID %d, list is %s" % [ucid, insim.connections.keys()])
-		var nickname := connection.nickname if connection \
-				else "^%d%s" % [LFSText.COLORS[LFSText.ColorCode.RED], result.strings[0]]
+		var nickname := (
+			(connection.nickname + get_color_code(ColorCode.DEFAULT)) if connection \
+			else ("^%d%s^%d" % [
+				LFSText.COLORS[LFSText.ColorCode.RED],
+				result.strings[0],
+				ColorCode.DEFAULT
+			])
+		)
 		output = regex.sub(output, "%s%s" % [
 			nickname,
 			"" if connection.username.is_empty() or not include_username \
