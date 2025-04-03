@@ -528,6 +528,9 @@ static func unicode_to_lfs_bytes(text: String, keep_utf16 := false) -> PackedByt
 	# Largely based on Sim Broadcasts' code: https://github.com/simbroadcasts/unicode-to-lfs
 	var page := "L"
 	var message := _escape_circumflex(text)
+	# The color + code page reset (^8) should not be sent from unicode, so we replace it with ^9,
+	# which also resets color. Code page changes are handled purely based on found characters.
+	message = message.replace("^8", "^9")
 	var buffer := PackedByteArray()
 	for i in message.length():
 		if message.unicode_at(i) < 128:

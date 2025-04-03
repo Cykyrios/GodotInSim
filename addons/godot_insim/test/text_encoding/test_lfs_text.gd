@@ -378,6 +378,13 @@ func test_unicode_to_lfs_string(text: String, expected: String, test_parameters 
 	],
 ]) -> void:
 	var _test := assert_str(LFSText.unicode_to_lfs_string(text)).is_equal(expected)
+
+
+func test_code_page_reset() -> void:
+	# Color + code page reset ^8 should be replaced with simply color reset ^9.
+	var _test := assert_str(
+		LFSText.lfs_bytes_to_unicode(LFSText.unicode_to_lfs_bytes("夢^8夢"))
+	).is_equal("夢^9夢")
 #endregion
 
 
