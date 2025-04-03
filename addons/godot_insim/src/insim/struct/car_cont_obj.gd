@@ -2,8 +2,8 @@ class_name CarContObj
 extends InSimStruct
 
 
-const POSITION_MULTIPLIER := 65536.0
-const Z_MULTIPLIER := 256.0
+const POSITION_MULTIPLIER := 16.0
+const Z_MULTIPLIER := 4.0
 const SPEED_MULTIPLIER := 1.0
 const ANGLE_MULTIPLIER := 256 / 360.0
 
