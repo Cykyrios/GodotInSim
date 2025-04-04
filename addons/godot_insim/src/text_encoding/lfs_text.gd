@@ -296,8 +296,8 @@ static func get_mso_start(mso_packet: InSimMSOPacket, insim: InSim) -> int:
 		"PLID" if use_plid else "UCID",
 		mso_packet.plid if use_plid else mso_packet.ucid
 	]
-	id = replace_plid_with_name(id, insim) if use_plid \
-			else replace_ucid_with_name(id, insim)
+	id = replace_plid_with_name(id, insim, false) if use_plid \
+			else replace_ucid_with_name(id, insim, false, false)
 	return id.length() + FORMATTING_LENGTH
 
 
@@ -416,7 +416,8 @@ static func remove_double_carets(text: String) -> String:
 
 ## Replaces all occurrences, in the given [param text], of [code]PLID #[/code],
 ## where [code]#[/code] is a number, with the corresponding player names.
-static func replace_plid_with_name(text: String, insim: InSim) -> String:
+## If [param reset_color] is [code]true[/code], [code]^9[/code] is appended to the names.
+static func replace_plid_with_name(text: String, insim: InSim, reset_color := true) -> String:
 	var output := text
 	var regex := LFSText.get_regex_plid()
 	var results := regex.search_all(text)
@@ -428,15 +429,22 @@ static func replace_plid_with_name(text: String, insim: InSim) -> String:
 			push_error("Failed to convert PLID %d, list is %s" % [plid, insim.players.keys()])
 		var player_name := (
 			(insim.players[plid].player_name + get_color_code(ColorCode.DEFAULT)) if player_found \
-			else ("^%d%s^%d" % [LFSText.ColorCode.RED, result.strings[0], ColorCode.DEFAULT])
+			else ("^%d%s%s" % [
+				LFSText.ColorCode.RED,
+				result.strings[0],
+				get_color_code(ColorCode.DEFAULT) if reset_color else "",
+			])
 		)
 		output = regex.sub(output, player_name, false, result.get_start())
 	return output
 
 
 ## Replaces all occurrences, in the given [param text], of [code]UCID #[/code],
-## where [code]#[/code] is a number, with the corresponding connection name.
-static func replace_ucid_with_name(text: String, insim: InSim, include_username := false) -> String:
+## where [code]#[/code] is a number, with the corresponding connection names.
+## If [param reset_color] is [code]true[/code], [code]^9[/code] is appended to the names.
+static func replace_ucid_with_name(
+	text: String, insim: InSim, include_username := false, reset_color := true
+) -> String:
 	var output := text
 	var regex := LFSText.get_regex_ucid()
 	var results := regex.search_all(text)
@@ -448,11 +456,11 @@ static func replace_ucid_with_name(text: String, insim: InSim, include_username 
 		if not connection:
 			push_error("Failed to convert UCID %d, list is %s" % [ucid, insim.connections.keys()])
 		var nickname := (
-			(connection.nickname + get_color_code(ColorCode.DEFAULT)) if connection \
-			else ("^%d%s^%d" % [
+			(connection.nickname + (get_color_code(ColorCode.DEFAULT) if reset_color else "")) \
+			if connection else ("^%d%s%s" % [
 				LFSText.COLORS[LFSText.ColorCode.RED],
 				result.strings[0],
-				ColorCode.DEFAULT
+				get_color_code(ColorCode.DEFAULT) if reset_color else "",
 			])
 		)
 		output = regex.sub(output, "%s%s" % [
