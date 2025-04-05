@@ -89,8 +89,8 @@ func _get_pretty_text() -> String:
 
 
 static func create(
-	axm_num_objects: int, axm_ucid: int, axm_action: InSim.PMOAction, axm_flags: int,
-	axm_info: Array[ObjectInfo]
+	axm_num_objects: int, axm_ucid: int, axm_action: InSim.PMOAction, axm_flags := 0,
+	axm_info: Array[ObjectInfo] = []
 ) -> InSimAXMPacket:
 	var packet := InSimAXMPacket.new()
 	packet.num_objects = axm_num_objects

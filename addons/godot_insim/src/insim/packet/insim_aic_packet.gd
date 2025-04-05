@@ -47,7 +47,7 @@ func _get_pretty_text() -> String:
 	return "PLID %d input: %s" % [plid, input_array]
 
 
-static func create(car_plid: int, car_inputs: Array[AIInputVal]) -> InSimAICPacket:
+static func create(car_plid: int, car_inputs: Array[AIInputVal] = []) -> InSimAICPacket:
 	var packet := InSimAICPacket.new()
 	packet.plid = car_plid
 	packet.inputs = car_inputs.duplicate()
