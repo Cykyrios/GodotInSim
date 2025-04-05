@@ -2,7 +2,7 @@ class_name CarContObj
 extends InSimStruct
 
 
-const POSITION_MULTIPLIER := 16.0
+const XY_MULTIPLIER := 16.0
 const Z_MULTIPLIER := 4.0
 const SPEED_MULTIPLIER := 1.0
 const ANGLE_MULTIPLIER := 256 / 360.0
@@ -51,8 +51,8 @@ func _set_from_buffer(buffer: PackedByteArray) -> void:
 
 
 func _set_values_from_gis() -> void:
-	x = roundi(gis_position.x * POSITION_MULTIPLIER)
-	y = roundi(gis_position.y * POSITION_MULTIPLIER)
+	x = roundi(gis_position.x * XY_MULTIPLIER)
+	y = roundi(gis_position.y * XY_MULTIPLIER)
 	z = roundi(gis_position.z * Z_MULTIPLIER)
 	heading = roundi(gis_heading * ANGLE_MULTIPLIER)
 	direction = roundi(gis_direction * ANGLE_MULTIPLIER)
@@ -60,7 +60,7 @@ func _set_values_from_gis() -> void:
 
 
 func _update_gis_values() -> void:
-	gis_position = Vector3(x / POSITION_MULTIPLIER, y / POSITION_MULTIPLIER, z / Z_MULTIPLIER)
+	gis_position = Vector3(x / XY_MULTIPLIER, y / XY_MULTIPLIER, z / Z_MULTIPLIER)
 	gis_direction = direction / ANGLE_MULTIPLIER
 	gis_heading = heading / ANGLE_MULTIPLIER
 	gis_speed = speed / SPEED_MULTIPLIER

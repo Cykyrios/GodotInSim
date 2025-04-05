@@ -28,8 +28,8 @@ func test_buffer_to_struct(
 	_test = assert_float(struct.gis_heading).is_equal_approx(struct.heading / CarContObj.ANGLE_MULTIPLIER, epsilon)
 	_test = assert_float(struct.gis_speed).is_equal_approx(struct.speed / CarContObj.SPEED_MULTIPLIER, epsilon)
 	_test = assert_vector(struct.gis_position).is_equal_approx(Vector3(
-		struct.x / CarContObj.POSITION_MULTIPLIER,
-		struct.y / CarContObj.POSITION_MULTIPLIER,
+		struct.x / CarContObj.XY_MULTIPLIER,
+		struct.y / CarContObj.XY_MULTIPLIER,
 		struct.z / CarContObj.Z_MULTIPLIER
 	), epsilon * Vector3.ONE)
 
@@ -59,8 +59,8 @@ func test_gis_struct_to_buffer(
 	struct.gis_heading = heading / CarContObj.ANGLE_MULTIPLIER
 	struct.gis_speed = speed / CarContObj.SPEED_MULTIPLIER
 	struct.gis_position = Vector3(
-		x as int / CarContObj.POSITION_MULTIPLIER,
-		y as int / CarContObj.POSITION_MULTIPLIER,
+		x as int / CarContObj.XY_MULTIPLIER,
+		y as int / CarContObj.XY_MULTIPLIER,
 		z as int / CarContObj.Z_MULTIPLIER
 	)
 	var _test := assert_array(struct.get_buffer(true)).is_equal(buffer)

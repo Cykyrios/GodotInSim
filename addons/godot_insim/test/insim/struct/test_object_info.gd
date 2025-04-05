@@ -26,8 +26,8 @@ func test_buffer_to_struct(
 	_test = assert_int(struct.index).is_equal(index)
 	_test = assert_int(struct.heading).is_equal(heading)
 	_test = assert_vector(struct.gis_position).is_equal_approx(Vector3(
-		struct.x / ObjectInfo.POSITION_MULTIPLIER,
-		struct.y / ObjectInfo.POSITION_MULTIPLIER,
+		struct.x / ObjectInfo.XY_MULTIPLIER,
+		struct.y / ObjectInfo.XY_MULTIPLIER,
 		struct.z / ObjectInfo.Z_MULTIPLIER
 	), epsilon * Vector3.ONE)
 	var angle := deg_to_rad(struct.heading / ObjectInfo.ANGLE_MULTIPLIER - 180)
@@ -57,7 +57,10 @@ func test_gis_struct_to_buffer(
 	var struct := ObjectInfo.new()
 	struct.flags = flags
 	struct.index = index
-	struct.gis_position = Vector3(x, y, z) \
-			/ ObjectInfo.POSITION_MULTIPLIER
+	struct.gis_position = Vector3(
+		x / ObjectInfo.XY_MULTIPLIER,
+		y / ObjectInfo.XY_MULTIPLIER,
+		z / ObjectInfo.Z_MULTIPLIER
+	)
 	struct.gis_heading = deg_to_rad(heading / ObjectInfo.ANGLE_MULTIPLIER - 180)
 	var _test := assert_array(struct.get_buffer(true)).is_equal(buffer)

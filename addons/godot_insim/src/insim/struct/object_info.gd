@@ -2,7 +2,7 @@ class_name ObjectInfo
 extends InSimStruct
 
 
-const POSITION_MULTIPLIER := 16.0
+const XY_MULTIPLIER := 16.0
 const Z_MULTIPLIER := 4.0
 const ANGLE_MULTIPLIER := 256 / 360.0
 
@@ -48,12 +48,46 @@ func _set_from_buffer(buffer: PackedByteArray) -> void:
 
 
 func _set_values_from_gis() -> void:
-	x = roundi(gis_position.x * POSITION_MULTIPLIER)
-	y = roundi(gis_position.y * POSITION_MULTIPLIER)
+	x = roundi(gis_position.x * XY_MULTIPLIER)
+	y = roundi(gis_position.y * XY_MULTIPLIER)
 	z = roundi(gis_position.z * Z_MULTIPLIER)
 	heading = roundi((180 + rad_to_deg(gis_heading)) * ANGLE_MULTIPLIER)
 
 
 func _update_gis_values() -> void:
-	gis_position = Vector3(x / POSITION_MULTIPLIER, y / POSITION_MULTIPLIER, z / Z_MULTIPLIER)
+	gis_position = Vector3(x / XY_MULTIPLIER, y / XY_MULTIPLIER, z / Z_MULTIPLIER)
 	gis_heading = deg_to_rad(heading / ANGLE_MULTIPLIER - 180)
+
+
+static func create(
+	obj_x: int, obj_y: int, obj_z: int, obj_heading: int, obj_flags: int, obj_index: int
+) -> ObjectInfo:
+	var object := ObjectInfo.new()
+	object.x = obj_x
+	object.y = obj_y
+	object.z = obj_z
+	object.gis_position = Vector3(
+		obj_x / XY_MULTIPLIER,
+		obj_y / XY_MULTIPLIER,
+		obj_z / Z_MULTIPLIER
+	)
+	object.flags = obj_flags
+	object.index = obj_index
+	object.heading = obj_heading
+	object.gis_heading = deg_to_rad(object.heading / ANGLE_MULTIPLIER - 180)
+	return object
+
+
+static func create_from_gis(
+	obj_position: Vector3, obj_heading: float, obj_flags: int, obj_index: int
+) -> ObjectInfo:
+	var object := ObjectInfo.new()
+	object.gis_position = obj_position
+	object.x = roundi(obj_position.x * XY_MULTIPLIER)
+	object.y = roundi(obj_position.y * XY_MULTIPLIER)
+	object.z = roundi(obj_position.z * Z_MULTIPLIER)
+	object.flags = obj_flags
+	object.index = obj_index
+	object.gis_heading = obj_heading
+	object.heading = roundi((rad_to_deg(obj_heading) + 180) * ANGLE_MULTIPLIER)
+	return object
