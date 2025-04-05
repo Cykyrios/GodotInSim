@@ -298,6 +298,7 @@ static func get_mso_start(mso_packet: InSimMSOPacket, insim: InSim) -> int:
 	]
 	id = replace_plid_with_name(id, insim, false) if use_plid \
 			else replace_ucid_with_name(id, insim, false, false)
+	id = id.trim_suffix("^9")
 	return id.length() + FORMATTING_LENGTH
 
 
