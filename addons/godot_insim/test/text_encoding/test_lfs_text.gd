@@ -403,7 +403,7 @@ func test_replace_plid_with_name() -> void:
 	}
 	var _test := assert_str(
 		LFSText.replace_plid_with_name("Players: PLID 1, PLID 2, PLID 9", insim)
-	).is_equal("Players: Player ^71, Second ^^Player^^, Skipped ^1PLIDs")
+	).is_equal("Players: Player ^71^9, Second ^^Player^^^9, Skipped ^1PLIDs^9")
 
 
 func test_replace_ucid_with_name() -> void:
@@ -424,11 +424,11 @@ func test_replace_ucid_with_name() -> void:
 	}
 	var _test := assert_str(
 		LFSText.replace_ucid_with_name("Connections: UCID 1, UCID 2, UCID 9", insim, false)
-	).is_equal("Connections: Player ^71, Second ^^Player^^, Skipped ^1PLIDs")
+	).is_equal("Connections: Player ^71^9, Second ^^Player^^^9, Skipped ^1PLIDs^9")
 	_test = assert_str(
 		LFSText.replace_ucid_with_name("Connections: UCID 1, UCID 2, UCID 9", insim, true)
-	).is_equal("Connections: Player ^71 (SuperPlayer), Second ^^Player^^ (TestPlayer), " \
-			+ "Skipped ^1PLIDs (AnotherPlayer)")
+	).is_equal("Connections: Player ^71^9 (SuperPlayer), Second ^^Player^^^9 (TestPlayer), " \
+			+ "Skipped ^1PLIDs^9 (AnotherPlayer)")
 
 
 @warning_ignore("unused_parameter")
