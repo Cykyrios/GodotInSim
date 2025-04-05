@@ -83,16 +83,16 @@ func get_tyre_ratio() -> int:
 
 
 func get_rim_diameter_inch() -> int:
-	return roundi(GISUtils.convert_length(
+	return roundi(GISUnit.convert_length(
 		rim_radius * 2,
-		GISUtils.LengthUnit.METER,
-		GISUtils.LengthUnit.INCH
+		GISUnit.Length.METER,
+		GISUnit.Length.INCH
 	))
 
 
 func get_rim_width_inch() -> float:
-	return snappedf(GISUtils.convert_length(
+	return snappedf(GISUnit.convert_length(
 		rim_width,
-		GISUtils.LengthUnit.METER,
-		GISUtils.LengthUnit.INCH
+		GISUnit.Length.METER,
+		GISUnit.Length.INCH
 	), 0.25)

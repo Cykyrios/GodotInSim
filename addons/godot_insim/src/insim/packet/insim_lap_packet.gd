@@ -65,7 +65,7 @@ func _get_data_dictionary() -> Dictionary:
 
 func _get_pretty_text() -> String:
 	return "PLID %d completed a lap (%s, %d lap%s completed, %d pit stop%s)" % [plid,
-			GISUtils.get_time_string_from_seconds(lap_time / 1000.0), laps_done,
+			GISTime.get_time_string_from_seconds(lap_time / 1000.0), laps_done,
 			"" if laps_done <= 1 else "s", num_stops, "" if num_stops <= 1 else "s"]
 
 
