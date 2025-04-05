@@ -1048,6 +1048,10 @@ func send_keep_alive_packet() -> void:
 func send_local_message(
 	message: String, sound := InSim.MessageSound.SND_SILENT, sender := "InSim"
 ) -> void:
+	var message_buffer := LFSText.unicode_to_lfs_bytes(message)
+	if message_buffer.size() < InSimMSLPacket.MSG_MAX_LENGTH:
+		send_packet(InSimMSLPacket.create(message, sound), sender)
+		return
 	for split_message in LFSText.split_message(message, InSimMSLPacket.MSG_MAX_LENGTH):
 		send_local_message(split_message, sound, sender)
 
@@ -1075,6 +1079,10 @@ func send_message(message: String, sender := "InSim") -> void:
 func send_message_to_connection(
 	ucid: int, message: String, sound := InSim.MessageSound.SND_SILENT, sender := "InSim"
 ) -> void:
+	var message_buffer := LFSText.unicode_to_lfs_bytes(message)
+	if message_buffer.size() < InSimMTCPacket.TEXT_MAX_LENGTH:
+		send_packet(InSimMTCPacket.create(ucid, 0, message, sound), sender)
+		return
 	for split_message in LFSText.split_message(message, InSimMTCPacket.TEXT_MAX_LENGTH):
 		send_message_to_connection(ucid, split_message, sound, sender)
 
@@ -1084,6 +1092,10 @@ func send_message_to_connection(
 func send_message_to_player(
 	plid: int, message: String, sound := InSim.MessageSound.SND_SILENT, sender := "InSim"
 ) -> void:
+	var message_buffer := LFSText.unicode_to_lfs_bytes(message)
+	if message_buffer.size() < InSimMTCPacket.TEXT_MAX_LENGTH:
+		send_packet(InSimMTCPacket.create(0, plid, message, sound), sender)
+		return
 	for split_message in LFSText.split_message(message, InSimMTCPacket.TEXT_MAX_LENGTH):
 		send_message_to_player(plid, split_message, sound, sender)
 
