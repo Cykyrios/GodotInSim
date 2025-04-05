@@ -48,6 +48,7 @@ func _set_from_buffer(buffer: PackedByteArray) -> void:
 	z = buffer.decode_u8(3)
 	x = buffer.decode_s16(4)
 	y = buffer.decode_s16(6)
+	update_gis_values()
 
 
 func _set_values_from_gis() -> void:

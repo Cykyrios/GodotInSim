@@ -45,6 +45,7 @@ func _set_from_buffer(buffer: PackedByteArray) -> void:
 	flags = buffer.decode_u8(1)
 	h_mass = buffer.decode_u8(2)
 	h_tres = buffer.decode_u8(3)
+	update_gis_values()
 
 
 func _set_values_from_gis() -> void:
@@ -63,7 +64,7 @@ static func create(
 	handicap.flags = plh_flags
 	handicap.h_mass = added_mass
 	handicap.h_tres = intake_restriction
-	handicap._update_gis_values()
+	handicap.update_gis_values()
 	return handicap
 
 
@@ -75,5 +76,5 @@ static func create_from_gis_values(
 	handicap.flags = plh_flags
 	handicap.gis_mass = added_mass
 	handicap.h_tres = intake_restriction
-	handicap._set_values_from_gis()
+	handicap.set_values_from_gis()
 	return handicap

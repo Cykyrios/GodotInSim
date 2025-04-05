@@ -43,6 +43,7 @@ func _set_from_buffer(buffer: PackedByteArray) -> void:
 	input = buffer.decode_u8(0) as InSim.AIControl
 	time = buffer.decode_u8(1)
 	value = buffer.decode_u16(2)
+	update_gis_values()
 
 
 func _set_values_from_gis() -> void:
@@ -58,6 +59,7 @@ static func create(aic_input: InSim.AIControl, aic_time: int, aic_value: int) ->
 	ai_input_val.input = aic_input
 	ai_input_val.time = aic_time
 	ai_input_val.value = aic_value
+	ai_input_val.update_gis_values()
 	return ai_input_val
 
 
@@ -68,5 +70,5 @@ static func create_from_gis_values(
 	ai_input_val.input = aic_input
 	ai_input_val.gis_time = aic_time
 	ai_input_val.value = aic_value
-	ai_input_val._set_values_from_gis()
+	ai_input_val.set_values_from_gis()
 	return ai_input_val

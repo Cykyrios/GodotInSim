@@ -36,6 +36,7 @@ func _set_from_buffer(buffer: PackedByteArray) -> void:
 		push_error("Wrong buffer size, expected %d, got %d" % [STRUCT_SIZE, buffer.size()])
 	h_mass = buffer.decode_u8(0)
 	h_tres = buffer.decode_u8(1)
+	update_gis_values()
 
 
 func _set_values_from_gis() -> void:
@@ -50,7 +51,7 @@ static func create(added_mass: int, intake_restriction: int) -> CarHandicap:
 	var handicap := CarHandicap.new()
 	handicap.h_mass = added_mass
 	handicap.h_tres = intake_restriction
-	handicap._update_gis_values()
+	handicap.update_gis_values()
 	return handicap
 
 
@@ -58,5 +59,5 @@ static func create_from_gis_values(added_mass: float, intake_restriction: int) -
 	var handicap := CarHandicap.new()
 	handicap.gis_mass = added_mass
 	handicap.h_tres = intake_restriction
-	handicap._set_values_from_gis()
+	handicap.set_values_from_gis()
 	return handicap

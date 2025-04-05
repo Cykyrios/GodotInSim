@@ -45,6 +45,7 @@ func _set_from_buffer(buffer: PackedByteArray) -> void:
 	flags = buffer.decode_u8(5)
 	index = buffer.decode_u8(6)
 	heading = buffer.decode_u8(7)
+	update_gis_values()
 
 
 func _set_values_from_gis() -> void:
@@ -75,6 +76,7 @@ static func create(
 	object.index = obj_index
 	object.heading = obj_heading
 	object.gis_heading = deg_to_rad(object.heading / ANGLE_MULTIPLIER - 180)
+	object.update_gis_values()
 	return object
 
 
@@ -90,4 +92,5 @@ static func create_from_gis(
 	object.index = obj_index
 	object.gis_heading = obj_heading
 	object.heading = roundi((rad_to_deg(obj_heading) + 180) * ANGLE_MULTIPLIER)
+	object.set_values_from_gis()
 	return object

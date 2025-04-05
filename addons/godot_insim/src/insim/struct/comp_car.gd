@@ -71,6 +71,7 @@ func _set_from_buffer(buffer: PackedByteArray) -> void:
 	direction = buffer.decode_u16(22)
 	heading = buffer.decode_u16(24)
 	ang_vel = buffer.decode_s16(26)
+	update_gis_values()
 
 
 func _set_values_from_gis() -> void:
