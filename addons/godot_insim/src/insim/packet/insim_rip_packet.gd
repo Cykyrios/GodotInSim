@@ -105,7 +105,7 @@ static func create(
 	packet.c_time = rip_c_time
 	packet.t_time = rip_t_time
 	packet.replay_name = rip_name
-	packet._update_gis_values()
+	packet.update_gis_values()
 	return packet
 
 
@@ -122,5 +122,5 @@ static func create_from_gis_values(
 	packet.gis_c_time = rip_c_time
 	packet.gis_t_time = rip_t_time
 	packet.replay_name = rip_name
-	packet._set_values_from_gis()
+	packet.set_values_from_gis()
 	return packet

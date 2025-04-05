@@ -61,7 +61,7 @@ static func create_packet_from_buffer(packet_buffer: PackedByteArray) -> LFSPack
 
 func decode_packet(packet_buffer: PackedByteArray) -> void:
 	_decode_packet(packet_buffer)
-	_update_gis_values()
+	update_gis_values()
 
 
 ## Returns the raw byte data for this packet. If [param use_gis_values] is [code]true[/code],
@@ -273,3 +273,15 @@ func read_word() -> int:
 func resize_buffer(new_size: int) -> void:
 	size = new_size
 	var _discard := buffer.resize(size)
+
+
+## Updates LFS-style variables from [code]gis_*[/code] variables. This behavior is defined in
+## [method _set_values_from_gis].
+func set_values_from_gis() -> void:
+	_set_values_from_gis()
+
+
+## Updates [code]gis_*[/code] variables from LFS-style variables. This behavior is defined in
+## [method _update_gis_values].
+func update_gis_values() -> void:
+	_update_gis_values()

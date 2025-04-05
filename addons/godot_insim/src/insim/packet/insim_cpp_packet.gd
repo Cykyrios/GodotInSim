@@ -126,7 +126,7 @@ static func create(
 	packet.fov = cpp_fov
 	packet.time = cpp_time
 	packet.flags = cpp_flags
-	packet._update_gis_values()
+	packet.update_gis_values()
 	return packet
 
 
@@ -142,7 +142,7 @@ static func create_from_gis_values(
 	packet.fov = cpp_fov
 	packet.gis_time = cpp_time
 	packet.flags = cpp_flags
-	packet._set_values_from_gis()
+	packet.set_values_from_gis()
 	return packet
 
 

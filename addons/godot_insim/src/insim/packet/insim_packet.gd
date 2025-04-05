@@ -35,6 +35,15 @@ func _to_string() -> String:
 	return "%s: %s" % [InSim.Packet.keys()[type], buffer]
 
 
+func _decode_packet(packet_buffer: PackedByteArray) -> void:
+	super(packet_buffer)
+	decode_header(packet_buffer)
+
+
+func _fill_buffer() -> void:
+	write_header()
+
+
 func _get_data_dictionary() -> Dictionary:
 	return {}
 
@@ -242,12 +251,3 @@ func _adjust_packet_size() -> void:
 	var remainder := size % SIZE_MULTIPLIER
 	if remainder > 0:
 		size += SIZE_MULTIPLIER - remainder
-
-
-func _fill_buffer() -> void:
-	write_header()
-
-
-func _decode_packet(packet_buffer: PackedByteArray) -> void:
-	super(packet_buffer)
-	decode_header(packet_buffer)
