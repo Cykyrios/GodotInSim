@@ -31,6 +31,7 @@ func _fill_buffer() -> void:
 	pass
 
 
+## Override this to define packet behavior.
 func _get_dictionary() -> Dictionary:
 	return {}
 
@@ -52,6 +53,7 @@ func _update_gis_values() -> void:
 	pass
 
 
+## Creates a packet from the provided [param packet_buffer].
 static func create_packet_from_buffer(packet_buffer: PackedByteArray) -> LFSPacket:
 	var packet := LFSPacket.new()
 	packet.buffer = packet_buffer
@@ -59,6 +61,8 @@ static func create_packet_from_buffer(packet_buffer: PackedByteArray) -> LFSPack
 	return packet
 
 
+## Decodes the provided [param packet_buffer]. Define behavior by overriding
+## [method _decode_packet].
 func decode_packet(packet_buffer: PackedByteArray) -> void:
 	_decode_packet(packet_buffer)
 	update_gis_values()
@@ -72,15 +76,20 @@ func fill_buffer(use_gis_values := false) -> void:
 	_fill_buffer()
 
 
+## Returns the packet's contents as a dictionary. Define behavior by overriding
+## [method _get_dictionary].
 func get_dictionary() -> Dictionary:
 	return _get_dictionary().duplicate()
 
 
+## Returns a text representation of the packet formatted for readability. Define behavior
+## by overriding [method _get_pretty_text].
 func get_pretty_text() -> String:
 	return _get_pretty_text()
 
 
 #region buffer I/O
+## Adds the contents of [param data] to the packet's [member buffer].
 func add_buffer(data: PackedByteArray) -> void:
 	if data.is_empty():
 		push_error("Cannot add data, buffer is empty")
@@ -94,6 +103,7 @@ func add_buffer(data: PackedByteArray) -> void:
 		add_byte(byte)
 
 
+## Adds a byte (uint8) to the packet's [member buffer].
 func add_byte(data: int) -> void:
 	if data > 0xFF:
 		push_error("Data too large for unsigned byte, max 255, got %d." % [data])
@@ -105,15 +115,18 @@ func add_byte(data: int) -> void:
 	data_offset += 1
 
 
+## Adds a single character to the packet's [member buffer].
 func add_char(data: String) -> void:
 	var _buffer := add_string(1, data)
 
 
+## Adds a 32-bit float to the packet's [member buffer].
 func add_float(data: float) -> void:
 	buffer.encode_float(data_offset, data)
 	data_offset += 4
 
 
+## Adds an int (int32) to the packet's [member buffer].
 func add_int(data: int) -> void:
 	var min_value := -0x8000_0000
 	var max_value := 0x7FFF_FFFF
@@ -127,6 +140,7 @@ func add_int(data: int) -> void:
 	data_offset += 4
 
 
+## Adds a short (int16) to the packet's [member buffer].
 func add_short(data: int) -> void:
 	var min_value := -0x8000
 	var max_value := 0x7FFF
@@ -140,6 +154,8 @@ func add_short(data: int) -> void:
 	data_offset += 2
 
 
+## Adds a string to the packet's [member buffer]. The string is converted from UTF8 to LFS
+## and trimmed to [param length] bytes, including the last zero if [param zero_terminated] is true.
 func add_string(length: int, data: String, zero_terminated := true) -> PackedByteArray:
 	var temp_buffer := LFSText.unicode_to_lfs_bytes(data)
 	var _discard := temp_buffer.resize(length)
@@ -151,6 +167,7 @@ func add_string(length: int, data: String, zero_terminated := true) -> PackedByt
 	return temp_buffer
 
 
+## Adds a UTF8 string to the packet's [member buffer].
 func add_string_as_utf8(length: int, data: String) -> PackedByteArray:
 	var temp_buffer := data.to_utf8_buffer()
 	var _discard := temp_buffer.resize(length)
@@ -160,6 +177,9 @@ func add_string_as_utf8(length: int, data: String) -> PackedByteArray:
 	return temp_buffer
 
 
+## Adds a string to the packet's [member buffer]. The string is converted from UTF8 to LFS
+## and is kept at the smallest possible length with steps of [param length_step] and a maximum
+## of [param max_length].
 func add_string_variable_length(data: String, max_length: int, length_step: int) -> PackedByteArray:
 	var temp_buffer := LFSText.unicode_to_lfs_bytes(data)
 	var length := temp_buffer.size()
@@ -176,6 +196,7 @@ func add_string_variable_length(data: String, max_length: int, length_step: int)
 	return buffer.slice(encode_start, data_offset)
 
 
+## Adds an unsigned (uint32) to the packet's [member buffer].
 func add_unsigned(data: int) -> void:
 	var min_value := 0
 	var max_value := 0xFFFF_FFFF
@@ -189,6 +210,7 @@ func add_unsigned(data: int) -> void:
 	data_offset += 4
 
 
+## Adds a word (uint16) to the packet's [member buffer].
 func add_word(data: int) -> void:
 	var min_value := 0
 	var max_value := 0xFFFF
@@ -202,18 +224,21 @@ func add_word(data: int) -> void:
 	data_offset += 2
 
 
+## Reads [param bytes] bytes from the packet's [member buffer].
 func read_buffer(bytes: int) -> PackedByteArray:
 	var result := buffer.slice(data_offset, data_offset + bytes)
 	data_offset += bytes
 	return result
 
 
+## Reads a byte (uint8) from the packet's [member buffer].
 func read_byte() -> int:
 	var result := buffer.decode_u8(data_offset)
 	data_offset += 1
 	return result
 
 
+## Reads a car name (see [method LFSText.car_name_from_lfs_bytes] from the packet's [member buffer].
 func read_car_name() -> String:
 	const CAR_NAME_LENGTH := 4
 	var car_name_buffer := buffer.slice(data_offset, data_offset + CAR_NAME_LENGTH)
@@ -221,28 +246,34 @@ func read_car_name() -> String:
 	return LFSText.car_name_from_lfs_bytes(car_name_buffer)
 
 
+## Reads a single character from the packet's [member buffer].
 func read_char() -> String:
 	return read_string(1, false)
 
 
+## Reads a 32-bit float from the packet's [member buffer].
 func read_float() -> float:
 	var result := buffer.decode_float(data_offset)
 	data_offset += 4
 	return result
 
 
+## Reads an int (int32) from the packet's [member buffer].
 func read_int() -> int:
 	var result := buffer.decode_s32(data_offset)
 	data_offset += 4
 	return result
 
 
+## Reads a short (int16) from the packet's [member buffer].
 func read_short() -> int:
 	var result := buffer.decode_s16(data_offset)
 	data_offset += 2
 	return result
 
 
+## Reads [param length] bytes forming an LFS string from the packet's [member buffer],
+## and converts it to UTF8. See [method LFSText.lfs_bytes_to_unicode] for details.
 func read_string(length: int, zero_terminated := true) -> String:
 	var temp_buffer := buffer.slice(data_offset, data_offset + length)
 	var result := LFSText.lfs_bytes_to_unicode(temp_buffer, zero_terminated)
@@ -250,6 +281,7 @@ func read_string(length: int, zero_terminated := true) -> String:
 	return result
 
 
+## Reads a UTF8 string of [param length] characters from the packet's [member buffer].
 func read_string_as_utf8(length: int) -> String:
 	var temp_buffer := buffer.slice(data_offset, data_offset + length)
 	var result := temp_buffer.get_string_from_utf8()
@@ -257,12 +289,14 @@ func read_string_as_utf8(length: int) -> String:
 	return result
 
 
+## Reads an unsigned (uint32) from the packet's [member buffer].
 func read_unsigned() -> int:
 	var result := buffer.decode_u32(data_offset)
 	data_offset += 4
 	return result
 
 
+## Reads a word (uint16) from the packet's [member buffer].
 func read_word() -> int:
 	var result := buffer.decode_u16(data_offset)
 	data_offset += 2
@@ -270,6 +304,7 @@ func read_word() -> int:
 #endregion
 
 
+## Updates the packet's [member buffer] size to [param new_size].
 func resize_buffer(new_size: int) -> void:
 	size = new_size
 	var _discard := buffer.resize(size)

@@ -44,6 +44,7 @@ func _fill_buffer() -> void:
 	write_header()
 
 
+## Override to define packet behavior. This should return all non-header data from the packet.
 func _get_data_dictionary() -> Dictionary:
 	return {}
 
