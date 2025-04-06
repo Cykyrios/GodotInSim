@@ -165,7 +165,7 @@ func update_3d_mesh(
 	var mesh_line := pth_mesh.get_child(0) as MeshInstance3D
 	(mesh_line.mesh.surface_get_material(0) as StandardMaterial3D) \
 			.albedo_color = line_color
-	var mesh_road := pth_mesh.get_child(0) as MeshInstance3D
+	var mesh_road := pth_mesh.get_child(1) as MeshInstance3D
 	(mesh_road.mesh.surface_get_material(0) as StandardMaterial3D) \
 			.albedo_color = road_color
 	var mesh_limits := pth_mesh.get_child(2) as MeshInstance3D
