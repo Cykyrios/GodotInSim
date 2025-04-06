@@ -42,7 +42,7 @@ var tyre_deflection_current := 0.0
 static func create_from_buffer(buffer: PackedByteArray) -> WheelInfo:
 	var wheel := WheelInfo.new()
 	if buffer.size() != STRUCT_SIZE:
-		print("Wrong buffer size for WheelInfo: expected %d, got %d" % [STRUCT_SIZE, buffer.size()])
+		push_error("Wrong buffer size, expected %d, got %d" % [STRUCT_SIZE, buffer.size()])
 		return wheel
 	wheel.tyre_type = buffer.decode_u8(0) as InSim.Tyre
 	wheel.tyre_pressure = buffer.decode_float(4)

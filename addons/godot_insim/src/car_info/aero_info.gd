@@ -16,7 +16,7 @@ var drag := 0.0
 static func create_from_buffer(buffer: PackedByteArray) -> AeroInfo:
 	var aero := AeroInfo.new()
 	if buffer.size() != STRUCT_SIZE:
-		print("Wrong buffer size for AeroInfo: expected %d, got %d" % [STRUCT_SIZE, buffer.size()])
+		push_error("Wrong buffer size, expected %d, got %d" % [STRUCT_SIZE, buffer.size()])
 		return aero
 	aero.position = Vector3(
 		buffer.decode_float(0),
