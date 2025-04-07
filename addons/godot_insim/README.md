@@ -27,6 +27,8 @@ your `.gitignore` along with the `addons/godot_insim` directory. You should then
 `post-checkout` git hook to your `.git/hooks` directory, which will automatically symlink the
 `addons/godot_insim` directory to your project.
 
+You should also enable the `Godot InSim` plugin to enable features from autoloads.
+
 From there, you can manually create and manage `InSim`, `OutSim` and `OutGauge` nodes to communicate
 with LFS.  
 If you wish to connect to multiple InSim instances, you will need to create and manage several
