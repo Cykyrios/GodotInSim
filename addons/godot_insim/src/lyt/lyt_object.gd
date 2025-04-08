@@ -67,17 +67,135 @@ static func create_from_buffer(buffer: PackedByteArray) -> LYTObject:
 func _get_mesh() -> MeshInstance3D:
 	var mesh_instance := MeshInstance3D.new()
 	var mesh := ArrayMesh.new()
+	var color := Color.GRAY
 	var arrays := []
 	var _resize := arrays.resize(Mesh.ARRAY_MAX)
+	var dimensions := Vector3(0.5, 0.5, 1)
+	var offset := Vector3.ZERO  # offsets whole mesh
+	var taper_top := Vector2.ONE  # 0 to 1, scales top face
+	var shift_top_y := 0.0  # offset for top face along Y axis
+	match index:
+		InSim.AXOIndex.AXO_CHALK_LINE:
+			dimensions = Vector3(8, 0.25, 0.05)
+		InSim.AXOIndex.AXO_CHALK_LINE2:
+			dimensions = Vector3(0.2, 4.8, 0.05)
+		InSim.AXOIndex.AXO_CHALK_AHEAD:
+			dimensions = Vector3(0.4, 2, 0.05)
+		InSim.AXOIndex.AXO_CHALK_AHEAD2:
+			dimensions = Vector3(0.4, 3.5, 0.05)
+		InSim.AXOIndex.AXO_CHALK_LEFT, InSim.AXOIndex.AXO_CHALK_RIGHT:
+			dimensions = Vector3(0.7, 2, 0.05)
+		InSim.AXOIndex.AXO_CHALK_LEFT2, InSim.AXOIndex.AXO_CHALK_RIGHT2:
+			dimensions = Vector3(1.8, 2.5, 0.05)
+		InSim.AXOIndex.AXO_CHALK_LEFT3, InSim.AXOIndex.AXO_CHALK_RIGHT3:
+			dimensions = Vector3(0.7, 3.5, 0.05)
+		InSim.AXOIndex.AXO_CONE_RED, InSim.AXOIndex.AXO_CONE_RED2, InSim.AXOIndex.AXO_CONE_RED3, \
+		InSim.AXOIndex.AXO_CONE_BLUE, InSim.AXOIndex.AXO_CONE_BLUE2, \
+		InSim.AXOIndex.AXO_CONE_GREEN, InSim.AXOIndex.AXO_CONE_GREEN2, \
+		InSim.AXOIndex.AXO_CONE_ORANGE, InSim.AXOIndex.AXO_CONE_WHITE, \
+		InSim.AXOIndex.AXO_CONE_YELLOW, InSim.AXOIndex.AXO_CONE_YELLOW2:
+			dimensions = Vector3(0.38, 0.38, 0.65)
+			taper_top = Vector2.ONE * 0.25
+		InSim.AXOIndex.AXO_CONE_PTR_RED, InSim.AXOIndex.AXO_CONE_PTR_BLUE, \
+		InSim.AXOIndex.AXO_CONE_PTR_GREEN, InSim.AXOIndex.AXO_CONE_PTR_YELLOW:
+			dimensions = Vector3(0.45, 0.7, 0.45)
+		InSim.AXOIndex.AXO_TYRE_SINGLE, InSim.AXOIndex.AXO_TYRE_STACK2, \
+		InSim.AXOIndex.AXO_TYRE_STACK3, InSim.AXOIndex.AXO_TYRE_STACK4:
+			var stack_height := (index + 1 - InSim.AXOIndex.AXO_TYRE_SINGLE)
+			dimensions = Vector3(0.6, 0.6, 0.2 * stack_height)
+		InSim.AXOIndex.AXO_TYRE_SINGLE_BIG, InSim.AXOIndex.AXO_TYRE_STACK2_BIG, \
+		InSim.AXOIndex.AXO_TYRE_STACK3_BIG, InSim.AXOIndex.AXO_TYRE_STACK4_BIG:
+			var stack_height := (index + 1 - InSim.AXOIndex.AXO_TYRE_SINGLE_BIG)
+			dimensions = Vector3(0.78, 0.78, 0.27 * stack_height)
+		InSim.AXOIndex.AXO_MARKER_CURVE_L, InSim.AXOIndex.AXO_MARKER_CURVE_R, \
+		InSim.AXOIndex.AXO_MARKER_L, InSim.AXOIndex.AXO_MARKER_R, \
+		InSim.AXOIndex.AXO_MARKER_HARD_L, InSim.AXOIndex.AXO_MARKER_HARD_R, \
+		InSim.AXOIndex.AXO_MARKER_L_R, InSim.AXOIndex.AXO_MARKER_R_L, \
+		InSim.AXOIndex.AXO_MARKER_S_L, InSim.AXOIndex.AXO_MARKER_S_R, \
+		InSim.AXOIndex.AXO_MARKER_S2_L, InSim.AXOIndex.AXO_MARKER_S2_R, \
+		InSim.AXOIndex.AXO_MARKER_U_L, InSim.AXOIndex.AXO_MARKER_U_R, \
+		InSim.AXOIndex.AXO_DIST25, InSim.AXOIndex.AXO_DIST50, \
+		InSim.AXOIndex.AXO_DIST75, InSim.AXOIndex.AXO_DIST100, \
+		InSim.AXOIndex.AXO_DIST125, InSim.AXOIndex.AXO_DIST150, \
+		InSim.AXOIndex.AXO_DIST200, InSim.AXOIndex.AXO_DIST250:
+			dimensions = Vector3(1.42, 0.4, 1)
+			offset = Vector3(0, -0.02, 0)
+			taper_top = Vector2(1, 0.4)
+		InSim.AXOIndex.AXO_ARMCO1, InSim.AXOIndex.AXO_ARMCO3, InSim.AXOIndex.AXO_ARMCO5:
+			var length := 3.2 * (1 + 2 * (index - InSim.AXOIndex.AXO_ARMCO1)) + 0.55
+			dimensions = Vector3(0.3, length, 0.65)
+		InSim.AXOIndex.AXO_BARRIER_LONG, InSim.AXOIndex.AXO_BARRIER_RED, \
+		InSim.AXOIndex.AXO_BARRIER_WHITE:
+			var length := 1.375 * (1 if index > InSim.AXOIndex.AXO_BARRIER_LONG else 6)
+			dimensions = Vector3(0.35, length, 0.8)
+			if index == InSim.AXOIndex.AXO_BARRIER_LONG:
+				offset = Vector3(0, -0.69, 0)
+			taper_top = Vector2(0.4, 1)
+		InSim.AXOIndex.AXO_BANNER1, InSim.AXOIndex.AXO_BANNER2:
+			dimensions = Vector3(5.95, 0.85, 0.98)
+			taper_top = Vector2(1, 0)
+		InSim.AXOIndex.AXO_RAMP1, InSim.AXOIndex.AXO_RAMP2:
+			var width := 0.5 if index == InSim.AXOIndex.AXO_RAMP1 else 2.8
+			dimensions = Vector3(width, 11.25, 0.85)
+			offset = Vector3(0, 3.6, 0)
+			taper_top = Vector2(1, 0)
+			shift_top_y = 0.5 * dimensions.y
+		InSim.AXOIndex.AXO_SPEED_HUMP_10M, InSim.AXOIndex.AXO_SPEED_HUMP_6M:
+			var length := 9.75 if index == InSim.AXOIndex.AXO_SPEED_HUMP_10M else 5.75
+			dimensions = Vector3(0.5, length, 0.08)
+			offset = Vector3(0, -0.125, 0)
+			taper_top = Vector2(0.35, 1)
+		InSim.AXOIndex.AXO_POST_GREEN, InSim.AXOIndex.AXO_POST_ORANGE, \
+		InSim.AXOIndex.AXO_POST_RED, InSim.AXOIndex.AXO_POST_WHITE:
+			dimensions = Vector3(0.3, 0.3, 1.15)
+			taper_top = Vector2.ONE * 0.4
+		InSim.AXOIndex.AXO_BALE:
+			dimensions = Vector3(1.52, 0.7, 0.63)
+			offset = Vector3(0, -0.35, 0)
+		InSim.AXOIndex.AXO_RAILING:
+			dimensions = Vector3(2.35, 0.1, 1.1)
+		InSim.AXOIndex.AXO_START_LIGHTS:
+			dimensions = Vector3(0.5, 0.7, 2)
+		InSim.AXOIndex.AXO_SIGN_KEEP_LEFT, InSim.AXOIndex.AXO_SIGN_KEEP_RIGHT:
+			dimensions = Vector3(0.8, 0.65, 1.1)
+			offset = Vector3(0, -0.325, 0)
+			taper_top = Vector2(1, 0.1)
+			shift_top_y = -0.05
+		InSim.AXOIndex.AXO_SIGN_SPEED_80, InSim.AXOIndex.AXO_SIGN_SPEED_50:
+			dimensions = Vector3(1, 1.2, 1.3)
+			taper_top = Vector2(1, 0.1)
+		InSim.AXOIndex.AXO_START_POSITION:
+			dimensions = Vector3(2.4, 1, 0.05)
+			offset = Vector3(0, 1.6, 0)
+		InSim.AXOIndex.AXO_PIT_START_POINT:
+			dimensions = Vector3(0.4, 3, 0.05)
+		InSim.AXOIndex.AXO_PIT_STOP_BOX:
+			dimensions = Vector3(2.3, 4.2, 0.05)
 	var vertices := PackedVector3Array([
-		Vector3(-0.25, -0.25, 0),
-		Vector3(0.25, -0.25, 0),
-		Vector3(-0.25, 0.25, 0),
-		Vector3(0.25, 0.25, 0),
-		Vector3(-0.25, -0.25, 1),
-		Vector3(0.25, -0.25, 1),
-		Vector3(-0.25, 0.25, 1),
-		Vector3(0.25, 0.25, 1),
+		offset + Vector3(-0.5 * dimensions.x, -0.5 * dimensions.y, 0),
+		offset + Vector3(0.5 * dimensions.x, -0.5 * dimensions.y, 0),
+		offset + Vector3(-0.5 * dimensions.x, 0.5 * dimensions.y, 0),
+		offset + Vector3(0.5 * dimensions.x, 0.5 * dimensions.y, 0),
+		offset + Vector3(
+			-0.5 * dimensions.x * taper_top.x,
+			-0.5 * dimensions.y * taper_top.y + shift_top_y,
+			dimensions.z
+		),
+		offset + Vector3(
+			0.5 * dimensions.x * taper_top.x,
+			-0.5 * dimensions.y * taper_top.y + shift_top_y,
+			dimensions.z
+		),
+		offset + Vector3(
+			-0.5 * dimensions.x * taper_top.x,
+			0.5 * dimensions.y * taper_top.y + shift_top_y,
+			dimensions.z
+		),
+		offset + Vector3(
+			0.5 * dimensions.x * taper_top.x,
+			0.5 * dimensions.y * taper_top.y + shift_top_y,
+			dimensions.z
+		),
 	])
 	var indices := PackedInt32Array([
 		0, 1, 2,  # Z- face
@@ -97,6 +215,9 @@ func _get_mesh() -> MeshInstance3D:
 	arrays[Mesh.ARRAY_INDEX] = indices
 	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
 	mesh_instance.mesh = mesh
+	var mat := StandardMaterial3D.new()
+	mat.albedo_color = color
+	mesh.surface_set_material(0, mat)
 	return mesh_instance
 
 
