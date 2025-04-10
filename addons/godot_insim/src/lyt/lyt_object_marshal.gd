@@ -12,10 +12,10 @@ enum Marshal {
 	POINT_RIGHT,
 }
 
-var marshal := 0
+var marshal := Marshal.NONE
 var radius := 0:
 	set(value):
-		radius = clampi(value, 1, 31)
+		radius = clampi(value, 0 if is_marshal_visible() else 1, 31)
 
 
 static func create(
@@ -24,11 +24,23 @@ static func create(
 	var object := super(obj_x, obj_y, obj_z, obj_heading, obj_flags, obj_index)
 	var marshal_object := LYTObjectMarshal.new()
 	marshal_object.set_from_buffer(object.get_buffer())
-	marshal_object.marshal = marshal_object.flags & 0b11
+	marshal_object.marshal = marshal_object.flags & 0b11 as Marshal
 	marshal_object.radius = (marshal_object.flags >> 2) & 0b0001_1111
 	return marshal_object
+
+
+func _get_mesh() -> MeshInstance3D:
+	var mesh_instance := get_mesh_circle(radius)
+	var mat := mesh_instance.mesh.surface_get_material(0) as StandardMaterial3D
+	mat.albedo_color = Color.RED
+	#TODO: Add model for visible marshal
+	return mesh_instance
 
 
 func _update_flags() -> void:
 	flags = (flags & ~0b11) | marshal
 	flags = (flags & ~(0b0001_1111 << 2)) | (radius << 2)
+
+
+func is_marshal_visible() -> bool:
+	return marshal != Marshal.NONE

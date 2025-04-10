@@ -23,5 +23,12 @@ static func create(
 	return route_object
 
 
+func _get_mesh() -> MeshInstance3D:
+	var mesh_instance := get_mesh_circle(radius)
+	var mat := mesh_instance.mesh.surface_get_material(0) as StandardMaterial3D
+	mat.albedo_color = Color.GREEN
+	return mesh_instance
+
+
 func _update_flags() -> void:
 	flags = (flags & ~(0b0001_1111 << 2)) | (radius << 2)

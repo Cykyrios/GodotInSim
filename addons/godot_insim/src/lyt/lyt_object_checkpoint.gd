@@ -29,6 +29,13 @@ static func create(
 	return checkpoint_object
 
 
+func _get_mesh() -> MeshInstance3D:
+	var mesh_instance := get_mesh_checkpoint(half_width)
+	var mat := mesh_instance.mesh.surface_get_material(0) as StandardMaterial3D
+	mat.albedo_color = Color.YELLOW
+	return mesh_instance
+
+
 func _update_flags() -> void:
 	flags = (flags & ~0b11) | type
 	flags = (flags & ~(0b1111 << 2)) | (half_width << 2)
