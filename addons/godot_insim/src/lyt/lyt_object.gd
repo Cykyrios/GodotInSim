@@ -333,6 +333,7 @@ func get_mesh_armco() -> MeshInstance3D:
 			idx + 0, idx + 1, idx + 2, idx + 3, idx + 2, idx + 1,
 			idx + 2, idx + 1, idx + 0, idx + 1, idx + 2, idx + 3,
 		])
+	var smooth_groups: Array[Vector2i] = [Vector2i(0, -1)]
 	for l in 2:
 		if l == 1:
 			for v in end_vertices.size():
@@ -341,13 +342,19 @@ func get_mesh_armco() -> MeshInstance3D:
 		var offset := (vertices.size() - end_vertices.size()) if l == 0 else end_vertices.size()
 		for i in end_indices.size():
 			end_indices[i] = end_indices[i] + offset
+		for i in 10:  # 5 segments per round tip, front face + back face
+			smooth_groups.append(Vector2i(indices.size() + 12 + 6 * i, i % 2))
 		indices.append_array(end_indices.duplicate())
-	var arrays := []
-	var _resize := arrays.resize(Mesh.ARRAY_MAX)
-	arrays[Mesh.ARRAY_VERTEX] = vertices
-	arrays[Mesh.ARRAY_INDEX] = indices
-	var mesh := ArrayMesh.new()
-	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var s := 0
+	for i in indices.size():
+		if s < smooth_groups.size() and i == smooth_groups[s].x:
+			st.set_smooth_group(smooth_groups[s].y)
+			s += 1
+		st.add_vertex(vertices[indices[i]])
+	st.generate_normals()
+	var mesh := st.commit()
 	var mat := generate_default_material()
 	mat.albedo_color = Color.WEB_GRAY
 	mesh.surface_set_material(0, mat)
@@ -463,12 +470,15 @@ func get_mesh_arrow(axo_index: InSim.AXOIndex, color: Color) -> MeshInstance3D:
 		6, 7, 8,
 		9, 8, 7,
 	])
-	var arrays := []
-	var _resize := arrays.resize(Mesh.ARRAY_MAX)
-	arrays[Mesh.ARRAY_VERTEX] = vertices
-	arrays[Mesh.ARRAY_INDEX] = indices
-	var mesh := ArrayMesh.new()
-	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	st.set_smooth_group(-1)
+	for v in vertices:
+		st.add_vertex(v)
+	for idx in indices:
+		st.add_index(idx)
+	st.generate_normals()
+	var mesh := st.commit()
 	var mat := generate_default_material()
 	mat.albedo_color = color
 	mesh.surface_set_material(0, mat)
@@ -537,13 +547,17 @@ func get_mesh_barrier() -> MeshInstance3D:
 		last_face + 2, last_face + 3, last_face + 4, last_face + 5, last_face + 4, last_face + 3,
 		last_face + 4, last_face + 5, last_face + 6, last_face + 7, last_face + 6, last_face + 5,
 	])
-	var arrays := []
-	var _resize := arrays.resize(Mesh.ARRAY_MAX)
-	arrays[Mesh.ARRAY_VERTEX] = vertices
-	arrays[Mesh.ARRAY_COLOR] = colors
-	arrays[Mesh.ARRAY_INDEX] = indices
-	var mesh := ArrayMesh.new()
-	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	st.set_smooth_group(-1)
+	for i in vertices.size():
+		if i == 0 or colors[i] != colors[i - 1]:
+			st.set_color(colors[i])
+		st.add_vertex(vertices[i])
+	for idx in indices:
+		st.add_index(idx)
+	st.generate_normals()
+	var mesh := st.commit()
 	var mat := generate_default_material()
 	mat.vertex_color_use_as_albedo = true
 	mat.vertex_color_is_srgb = true
@@ -571,12 +585,15 @@ func get_mesh_checkpoint(half_width: int) -> MeshInstance3D:
 		0, 3, 7,
 		7, 4, 0,
 	])
-	var arrays := []
-	var _resize := arrays.resize(Mesh.ARRAY_MAX)
-	arrays[Mesh.ARRAY_VERTEX] = vertices
-	arrays[Mesh.ARRAY_INDEX] = indices
-	var mesh := ArrayMesh.new()
-	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	st.set_smooth_group(-1)
+	for v in vertices:
+		st.add_vertex(v)
+	for idx in indices:
+		st.add_index(idx)
+	st.generate_normals()
+	var mesh := st.commit()
 	var mat := generate_default_material()
 	mat.albedo_color = Color.YELLOW
 	mesh.surface_set_material(0, mat)
@@ -612,12 +629,15 @@ func get_mesh_circle(radius: int) -> MeshInstance3D:
 	var vertex_count := vertices.size()
 	for i in indices.size():
 		indices[i] = wrapi(indices[i], 0, vertex_count)
-	var arrays := []
-	_resize = arrays.resize(Mesh.ARRAY_MAX)
-	arrays[Mesh.ARRAY_VERTEX] = vertices
-	arrays[Mesh.ARRAY_INDEX] = indices
-	var mesh := ArrayMesh.new()
-	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	st.set_smooth_group(-1)
+	for v in vertices:
+		st.add_vertex(v)
+	for idx in indices:
+		st.add_index(idx)
+	st.generate_normals()
+	var mesh := st.commit()
 	var mat := generate_default_material()
 	mat.albedo_color = Color.YELLOW
 	mesh.surface_set_material(0, mat)
@@ -678,6 +698,15 @@ func get_mesh_cone() -> MeshInstance3D:
 		7, 9, 10, 6, 7, 10, 6, 10, 11,
 		6, 11, 12, 4, 6, 12, 4, 12, 13,
 	])
+	var smooth_groups: Array[Vector2i] = [
+		Vector2i(0, 0),
+		Vector2i(6 * 1, 1),
+		Vector2i(6 * 2, 2),
+		Vector2i(6 * 3, 3),
+		Vector2i(6 * 4, 4),
+		Vector2i(6 * 5, 0),
+		Vector2i(indices.size(), 1),
+	]
 	for i in SEGMENTS:
 		var offset := base_vertices + i
 		if i < SEGMENTS - 1:
@@ -694,6 +723,7 @@ func get_mesh_cone() -> MeshInstance3D:
 				offset + SEGMENTS,
 				offset + 1,
 			])
+	smooth_groups.append(Vector2i(indices.size(), 0))
 	var vertex_count := vertices.size()
 	for i in SEGMENTS:
 		var offset := vertex_count - 1 - SEGMENTS + i
@@ -705,13 +735,16 @@ func get_mesh_cone() -> MeshInstance3D:
 				offset + 1 - SEGMENTS,
 				offset,
 			])
-	var arrays := []
-	var _resize := arrays.resize(Mesh.ARRAY_MAX)
-	arrays[Mesh.ARRAY_VERTEX] = vertices
-	arrays[Mesh.ARRAY_INDEX] = indices
-	var mesh := ArrayMesh.new()
-	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
-	var mat := StandardMaterial3D.new()
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var s := 0
+	for i in indices.size():
+		if s < smooth_groups.size() and i == smooth_groups[s].x:
+			st.set_smooth_group(smooth_groups[s].y)
+			s += 1
+		st.add_vertex(vertices[indices[i]])
+	st.generate_normals()
+	var mesh := st.commit()
 	var color := Color.BLACK
 	match index:
 		InSim.AXOIndex.AXO_CONE_RED:
@@ -778,12 +811,15 @@ func get_mesh_marker() -> MeshInstance3D:
 		0, 2, 4, 6, 4, 2,  # X- face
 		5, 3, 1, 3, 5, 7,  # X+ face
 	])
-	var arrays_base := []
-	var _resize := arrays_base.resize(Mesh.ARRAY_MAX)
-	arrays_base[Mesh.ARRAY_VERTEX] = vertices_base
-	arrays_base[Mesh.ARRAY_INDEX] = indices_base
-	var mesh := ArrayMesh.new()
-	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays_base)
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	st.set_smooth_group(-1)
+	for v in vertices_base:
+		st.add_vertex(v)
+	for idx in indices_base:
+		st.add_index(idx)
+	st.generate_normals()
+	var mesh := st.commit()
 	var mat := generate_default_material()
 	mat.albedo_color = Color.BURLYWOOD.lightened(0.2)
 	mesh.surface_set_material(0, mat)
@@ -834,12 +870,15 @@ func get_mesh_pit_box() -> MeshInstance3D:
 	indices.append_array(indices)
 	for i in index_count:
 		indices[index_count + i] = indices[i] + vertex_count
-	var arrays := []
-	var _resize := arrays.resize(Mesh.ARRAY_MAX)
-	arrays[Mesh.ARRAY_VERTEX] = vertices
-	arrays[Mesh.ARRAY_INDEX] = indices
-	var mesh := ArrayMesh.new()
-	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	st.set_smooth_group(-1)
+	for v in vertices:
+		st.add_vertex(v)
+	for idx in indices:
+		st.add_index(idx)
+	st.generate_normals()
+	var mesh := st.commit()
 	var mat := generate_default_material()
 	mat.albedo_color = Color.GOLDENROD
 	mesh.surface_set_material(0, mat)
@@ -869,6 +908,7 @@ func get_mesh_post() -> MeshInstance3D:
 			))
 	_discard = vertices.push_back(Vector3(0, 0, HEIGHT))
 	var indices := PackedInt32Array()
+	var smooth_groups: Array[Vector2i] = [Vector2i(0, 0)]
 	for i in SEGMENTS:
 		if i < SEGMENTS - 1:
 			indices.append_array([0, i + 1, i + 2])
@@ -879,6 +919,7 @@ func get_mesh_post() -> MeshInstance3D:
 				1,
 			])
 	for r in 2:
+		smooth_groups.append(Vector2i(indices.size(), smooth_groups.size() % 2))
 		for i in SEGMENTS:
 			var offset := 1 + r * SEGMENTS + i
 			if i < SEGMENTS - 1:
@@ -895,6 +936,7 @@ func get_mesh_post() -> MeshInstance3D:
 					offset + SEGMENTS,
 					offset + 1,
 				])
+	smooth_groups.append(Vector2i(indices.size(), smooth_groups.size() % 2))
 	var vertex_count := vertices.size()
 	for i in SEGMENTS:
 		var offset := vertex_count - 1 - SEGMENTS + i
@@ -906,13 +948,16 @@ func get_mesh_post() -> MeshInstance3D:
 				offset + 1 - SEGMENTS,
 				offset,
 			])
-	var arrays := []
-	var _resize := arrays.resize(Mesh.ARRAY_MAX)
-	arrays[Mesh.ARRAY_VERTEX] = vertices
-	arrays[Mesh.ARRAY_INDEX] = indices
-	var mesh := ArrayMesh.new()
-	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
-	var mat := StandardMaterial3D.new()
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var s := 0
+	for i in indices.size():
+		if s < smooth_groups.size() and i == smooth_groups[s].x:
+			st.set_smooth_group(smooth_groups[s].y)
+			s += 1
+		st.add_vertex(vertices[indices[i]])
+	st.generate_normals()
+	var mesh := st.commit()
 	var color := Color.BLACK
 	match index:
 		InSim.AXOIndex.AXO_POST_GREEN:
@@ -948,12 +993,15 @@ func get_mesh_start_position() -> MeshInstance3D:
 		0, 3, 7,
 		7, 4, 0,
 	])
-	var arrays := []
-	var _resize := arrays.resize(Mesh.ARRAY_MAX)
-	arrays[Mesh.ARRAY_VERTEX] = vertices
-	arrays[Mesh.ARRAY_INDEX] = indices
-	var mesh := ArrayMesh.new()
-	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	st.set_smooth_group(-1)
+	for v in vertices:
+		st.add_vertex(v)
+	for idx in indices:
+		st.add_index(idx)
+	st.generate_normals()
+	var mesh := st.commit()
 	var mat := generate_default_material()
 	mat.albedo_color = Color.WHITE
 	mesh.surface_set_material(0, mat)

@@ -66,6 +66,7 @@ func get_mesh() -> MeshInstance3D:
 					tyre_width * h + loop_height,
 				))
 	var indices := PackedInt32Array()
+	var smooth_groups: Array[Vector2i] = [Vector2i(0, 0)]  # index + group
 	for i in SEGMENTS:
 		var _discard := indices.push_back(0)
 		_discard = indices.push_back(1 + i + (SEGMENTS if i == 0 else 0))
@@ -73,6 +74,10 @@ func get_mesh() -> MeshInstance3D:
 	for h in stack_height:
 		var h_offset := h * LOOPS * SEGMENTS
 		for l in 3:
+			smooth_groups.append(Vector2i(
+				indices.size(),
+				1 if smooth_groups[-1].y == 0 else 0
+			))
 			var l_offset := l * SEGMENTS
 			for i in SEGMENTS:
 				var offset := 2 + h_offset + l_offset
@@ -84,16 +89,26 @@ func get_mesh() -> MeshInstance3D:
 				_discard = indices.push_back(offset + SEGMENTS + i)
 				_discard = indices.push_back(offset + SEGMENTS + i + 1 - last_offset)
 	var vertex_count := vertices.size()
+	smooth_groups.append(Vector2i(
+		indices.size(),
+		1 if smooth_groups[-1].y == 0 else 0
+	))
 	for i in SEGMENTS:
 		var _discard := indices.push_back(1)
 		_discard = indices.push_back(vertex_count - 1 - i)
-		_discard = indices.push_back(vertex_count - 2 - i + (SEGMENTS if i == (SEGMENTS - 1) else 0))
-	var arrays := []
-	var _resize := arrays.resize(Mesh.ARRAY_MAX)
-	arrays[Mesh.ARRAY_VERTEX] = vertices
-	arrays[Mesh.ARRAY_INDEX] = indices
-	var mesh := ArrayMesh.new()
-	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+		_discard = indices.push_back(vertex_count - 2 - i \
+				+ (SEGMENTS if i == (SEGMENTS - 1) else 0))
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	st.set_smooth_group(0)
+	var s := 0
+	for i in indices.size():
+		if s < smooth_groups.size() and i == smooth_groups[s].x:
+			st.set_smooth_group(smooth_groups[s].y)
+			s += 1
+		st.add_vertex(vertices[indices[i]])
+	st.generate_normals()
+	var mesh := st.commit()
 	var mat := generate_default_material()
 	mat.albedo_color = COLORS[color]
 	mesh.surface_set_material(0, mat)

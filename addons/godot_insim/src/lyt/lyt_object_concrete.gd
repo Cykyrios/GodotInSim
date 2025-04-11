@@ -118,10 +118,6 @@ static func create(
 
 
 func _get_mesh() -> MeshInstance3D:
-	var mesh_instance := MeshInstance3D.new()
-	var mesh := ArrayMesh.new()
-	var arrays := []
-	var _resize := arrays.resize(Mesh.ARRAY_MAX)
 	var vertices := PackedVector3Array()
 	var indices := PackedInt32Array()
 	# Vertices are defined with axis order XYZ (X increases first, then Y, then Z)
@@ -261,13 +257,20 @@ func _get_mesh() -> MeshInstance3D:
 			5, 3, 1,  # X+ face
 			3, 5, 7,
 		])
-	arrays[Mesh.ARRAY_VERTEX] = vertices
-	arrays[Mesh.ARRAY_INDEX] = indices
-	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
-	mesh_instance.mesh = mesh
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	st.set_smooth_group(-1)
+	for v in vertices:
+		st.add_vertex(v)
+	for idx in indices:
+		st.add_index(idx)
+	st.generate_normals()
+	var mesh := st.commit()
 	var mat := generate_default_material()
 	mat.albedo_color = COLORS[color]
 	mesh.surface_set_material(0, mat)
+	var mesh_instance := MeshInstance3D.new()
+	mesh_instance.mesh = mesh
 	return mesh_instance
 
 

@@ -58,10 +58,15 @@ func _get_mesh() -> MeshInstance3D:
 			6, 5, 4,
 			6, 4, 1,
 		])
-		arrays[Mesh.ARRAY_VERTEX] = vertices
-		arrays[Mesh.ARRAY_INDEX] = indices
-		var mesh := ArrayMesh.new()
-		mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+		var st := SurfaceTool.new()
+		st.begin(Mesh.PRIMITIVE_TRIANGLES)
+		st.set_smooth_group(-1)
+		for v in vertices:
+			st.add_vertex(v)
+		for idx in indices:
+			st.add_index(idx)
+		st.generate_normals()
+		var mesh := st.commit()
 		var mat := generate_default_material()
 		mat.albedo_color = Color.GREEN
 		mesh.surface_set_material(0, mat)
