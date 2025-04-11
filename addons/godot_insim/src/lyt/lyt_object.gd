@@ -559,6 +559,7 @@ func get_mesh_barrier() -> MeshInstance3D:
 	st.generate_normals()
 	var mesh := st.commit()
 	var mat := generate_default_material()
+	mat.albedo_color = Color.WHITE
 	mat.vertex_color_use_as_albedo = true
 	mat.vertex_color_is_srgb = true
 	mesh.surface_set_material(0, mat)
