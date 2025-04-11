@@ -192,7 +192,7 @@ func _get_mesh() -> MeshInstance3D:
 	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
 	var mesh_instance := MeshInstance3D.new()
 	mesh_instance.mesh = mesh
-	var mat := StandardMaterial3D.new()
+	var mat := generate_default_material()
 	mat.albedo_color = color
 	mesh.surface_set_material(0, mat)
 	return mesh_instance
@@ -210,6 +210,13 @@ func _update_flags() -> void:
 ## as those get updated via the original variables' setter functions.
 func _update_flags_from_gis() -> void:
 	pass
+
+
+## Generates and returns a [StandardMaterial3D] as a default [LYTObject] material.
+func generate_default_material() -> StandardMaterial3D:
+	var mat := StandardMaterial3D.new()
+	mat.albedo_color = Color.WEB_GRAY
+	return mat
 
 
 ## Returns the object's complete data buffer.
@@ -341,7 +348,7 @@ func get_mesh_armco() -> MeshInstance3D:
 	arrays[Mesh.ARRAY_INDEX] = indices
 	var mesh := ArrayMesh.new()
 	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
-	var mat := StandardMaterial3D.new()
+	var mat := generate_default_material()
 	mat.albedo_color = Color.WEB_GRAY
 	mesh.surface_set_material(0, mat)
 	var mesh_instance := MeshInstance3D.new()
@@ -462,7 +469,7 @@ func get_mesh_arrow(axo_index: InSim.AXOIndex, color: Color) -> MeshInstance3D:
 	arrays[Mesh.ARRAY_INDEX] = indices
 	var mesh := ArrayMesh.new()
 	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
-	var mat := StandardMaterial3D.new()
+	var mat := generate_default_material()
 	mat.albedo_color = color
 	mesh.surface_set_material(0, mat)
 	var mesh_instance := MeshInstance3D.new()
@@ -537,7 +544,7 @@ func get_mesh_barrier() -> MeshInstance3D:
 	arrays[Mesh.ARRAY_INDEX] = indices
 	var mesh := ArrayMesh.new()
 	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
-	var mat := StandardMaterial3D.new()
+	var mat := generate_default_material()
 	mat.vertex_color_use_as_albedo = true
 	mat.vertex_color_is_srgb = true
 	mesh.surface_set_material(0, mat)
@@ -570,7 +577,7 @@ func get_mesh_checkpoint(half_width: int) -> MeshInstance3D:
 	arrays[Mesh.ARRAY_INDEX] = indices
 	var mesh := ArrayMesh.new()
 	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
-	var mat := StandardMaterial3D.new()
+	var mat := generate_default_material()
 	mat.albedo_color = Color.YELLOW
 	mesh.surface_set_material(0, mat)
 	var mesh_instance := MeshInstance3D.new()
@@ -611,7 +618,7 @@ func get_mesh_circle(radius: int) -> MeshInstance3D:
 	arrays[Mesh.ARRAY_INDEX] = indices
 	var mesh := ArrayMesh.new()
 	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
-	var mat := StandardMaterial3D.new()
+	var mat := generate_default_material()
 	mat.albedo_color = Color.YELLOW
 	mesh.surface_set_material(0, mat)
 	var mesh_instance := MeshInstance3D.new()
@@ -737,6 +744,7 @@ func get_mesh_cone() -> MeshInstance3D:
 			color = Color.GREEN
 		InSim.AXOIndex.AXO_CONE_PTR_YELLOW:
 			color = Color.GOLD
+	var mat := generate_default_material()
 	mat.albedo_color = color
 	mesh.surface_set_material(0, mat)
 	var mesh_instance := MeshInstance3D.new()
@@ -776,7 +784,7 @@ func get_mesh_marker() -> MeshInstance3D:
 	arrays_base[Mesh.ARRAY_INDEX] = indices_base
 	var mesh := ArrayMesh.new()
 	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays_base)
-	var mat := StandardMaterial3D.new()
+	var mat := generate_default_material()
 	mat.albedo_color = Color.BURLYWOOD.lightened(0.2)
 	mesh.surface_set_material(0, mat)
 
@@ -789,7 +797,7 @@ func get_mesh_marker() -> MeshInstance3D:
 	#arrays_marker[Mesh.ARRAY_INDEX] = indices_marker
 	#mesh = ArrayMesh.new()
 	#mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays_marker)
-	#mat = StandardMaterial3D.new()
+	#mat = generate_default_material()
 	#mat.albedo_color = Color.BLACK
 	#mesh.surface_set_material(1, mat)
 	var mesh_instance := MeshInstance3D.new()
@@ -832,7 +840,7 @@ func get_mesh_pit_box() -> MeshInstance3D:
 	arrays[Mesh.ARRAY_INDEX] = indices
 	var mesh := ArrayMesh.new()
 	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
-	var mat := StandardMaterial3D.new()
+	var mat := generate_default_material()
 	mat.albedo_color = Color.GOLDENROD
 	mesh.surface_set_material(0, mat)
 	var mesh_instance := MeshInstance3D.new()
@@ -915,6 +923,7 @@ func get_mesh_post() -> MeshInstance3D:
 			color = Color.RED
 		InSim.AXOIndex.AXO_POST_WHITE:
 			color = Color.WHITE
+	var mat := generate_default_material()
 	mat.albedo_color = color
 	mesh.surface_set_material(0, mat)
 	var mesh_instance := MeshInstance3D.new()
@@ -945,7 +954,7 @@ func get_mesh_start_position() -> MeshInstance3D:
 	arrays[Mesh.ARRAY_INDEX] = indices
 	var mesh := ArrayMesh.new()
 	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
-	var mat := StandardMaterial3D.new()
+	var mat := generate_default_material()
 	mat.albedo_color = Color.WHITE
 	mesh.surface_set_material(0, mat)
 	var mesh_instance := MeshInstance3D.new()

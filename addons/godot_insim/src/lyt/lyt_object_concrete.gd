@@ -265,7 +265,7 @@ func _get_mesh() -> MeshInstance3D:
 	arrays[Mesh.ARRAY_INDEX] = indices
 	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
 	mesh_instance.mesh = mesh
-	var mat := StandardMaterial3D.new()
+	var mat := generate_default_material()
 	mat.albedo_color = COLORS[color]
 	mesh.surface_set_material(0, mat)
 	return mesh_instance
