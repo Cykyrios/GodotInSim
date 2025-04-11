@@ -25,7 +25,7 @@ static func create(
 	var checkpoint_object := LYTObjectCheckpoint.new()
 	checkpoint_object.set_from_buffer(object.get_buffer())
 	checkpoint_object.type = checkpoint_object.flags & 0b11 as Type
-	checkpoint_object.half_width = (checkpoint_object.flags >> 2) & 0b1111
+	checkpoint_object.half_width = (checkpoint_object.flags >> 2) & 0b0001_1111
 	return checkpoint_object
 
 
