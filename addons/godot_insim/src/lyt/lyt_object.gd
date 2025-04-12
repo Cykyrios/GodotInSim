@@ -651,10 +651,13 @@ func get_mesh_cone() -> MeshInstance3D:
 	const SEGMENTS := 8
 	const CHAMFER := 0.02
 	const THICKNESS := 0.04
-	const RADIUS_BASE := 0.125
-	const RADIUS_TOP := 0.035
 	const HEIGHT := 0.66
 	const TIP_HEIGHT := 0.025
+	const RADIUS_TOP := 0.035
+	var radius_base := 0.12 if index == InSim.AXOIndex.AXO_CONE_RED \
+			else 0.15 if (
+				index == InSim.AXOIndex.AXO_CONE_RED3 or index >= InSim.AXOIndex.AXO_CONE_PTR_RED
+			) else 0.13
 	var base_width := 0.38 if index == InSim.AXOIndex.AXO_CONE_RED \
 			else 0.46 if (
 				index == InSim.AXOIndex.AXO_CONE_RED3 or index >= InSim.AXOIndex.AXO_CONE_PTR_RED
@@ -674,8 +677,8 @@ func get_mesh_cone() -> MeshInstance3D:
 	var base_vertices := vertices.size()
 	var _discard: Variant = null
 	for r in 2:
-		var radius := RADIUS_BASE if r == 0 else RADIUS_TOP
-		var ring_height := THICKNESS if r == 0 else HEIGHT - TIP_HEIGHT
+		var radius := radius_base if r == 0 else RADIUS_TOP
+		var ring_height := (1.5 * THICKNESS) if r == 0 else HEIGHT - TIP_HEIGHT
 		for i in SEGMENTS:
 			var angle := 2 * PI * i / SEGMENTS
 			_discard = vertices.push_back(Vector3(
