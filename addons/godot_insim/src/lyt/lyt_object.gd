@@ -100,22 +100,11 @@ func _get_mesh() -> MeshInstance3D:
 		InSim.AXOIndex.AXO_BARRIER_WHITE:
 			return get_mesh_barrier()
 		InSim.AXOIndex.AXO_BANNER1, InSim.AXOIndex.AXO_BANNER2:
-			dimensions = Vector3(5.95, 0.85, 0.98)
-			taper_top = Vector2(1, 0)
-			if index == InSim.AXOIndex.AXO_BANNER2:
-				color = Color.DIM_GRAY
+			return get_mesh_banner()
 		InSim.AXOIndex.AXO_RAMP1, InSim.AXOIndex.AXO_RAMP2:
-			var width := 0.5 if index == InSim.AXOIndex.AXO_RAMP1 else 2.8
-			dimensions = Vector3(width, 11.25, 0.85)
-			offset = Vector3(0, 3.6, 0)
-			taper_top = Vector2(1, 0)
-			shift_top_y = 0.5 * dimensions.y
+			return get_mesh_ramp()
 		InSim.AXOIndex.AXO_SPEED_HUMP_10M, InSim.AXOIndex.AXO_SPEED_HUMP_6M:
-			var length := 9.75 if index == InSim.AXOIndex.AXO_SPEED_HUMP_10M else 5.75
-			dimensions = Vector3(0.5, length, 0.08)
-			offset = Vector3(0, -0.125, 0)
-			taper_top = Vector2(0.35, 1)
-			color = Color.DARK_GOLDENROD
+			return get_mesh_speed_hump()
 		InSim.AXOIndex.AXO_POST_GREEN, InSim.AXOIndex.AXO_POST_ORANGE, \
 		InSim.AXOIndex.AXO_POST_RED, InSim.AXOIndex.AXO_POST_WHITE:
 			return get_mesh_post()
@@ -124,7 +113,7 @@ func _get_mesh() -> MeshInstance3D:
 			offset = Vector3(0, -0.35, 0)
 			color = Color.BURLYWOOD
 		InSim.AXOIndex.AXO_RAILING:
-			dimensions = Vector3(2.35, 0.1, 1.1)
+			return get_mesh_railing()
 		InSim.AXOIndex.AXO_START_LIGHTS:
 			dimensions = Vector3(0.5, 0.7, 2)
 			color = Color.GOLD
@@ -135,9 +124,7 @@ func _get_mesh() -> MeshInstance3D:
 			shift_top_y = -0.05
 			color = Color.ROYAL_BLUE
 		InSim.AXOIndex.AXO_SIGN_SPEED_80, InSim.AXOIndex.AXO_SIGN_SPEED_50:
-			dimensions = Vector3(1, 1.2, 1.3)
-			taper_top = Vector2(1, 0.1)
-			color = Color.RED
+			return get_mesh_sign_speed()
 		InSim.AXOIndex.AXO_START_POSITION:
 			return get_mesh_start_position()
 		InSim.AXOIndex.AXO_PIT_START_POINT:
@@ -487,6 +474,57 @@ func get_mesh_arrow(axo_index: InSim.AXOIndex, color: Color) -> MeshInstance3D:
 	return mesh_instance
 
 
+func get_mesh_banner() -> MeshInstance3D:
+	const WIDTH := 5.95
+	const SPREAD := 0.85
+	const HEIGHT := 1.0
+	const THICKNESS := 0.09
+	var angle := atan(HEIGHT / (0.5 * SPREAD))
+	var bottom_offset := THICKNESS / cos(PI / 2 - angle)
+	var top_offset := THICKNESS / sin(PI / 2 - angle)
+	var vertices := PackedVector3Array([
+		Vector3(-0.5 * WIDTH, -0.5 * SPREAD, 0),
+		Vector3(0.5 * WIDTH, -0.5 * SPREAD, 0),
+		Vector3(-0.5 * WIDTH, -0.5 * SPREAD + bottom_offset, 0),
+		Vector3(0.5 * WIDTH, -0.5 * SPREAD + bottom_offset, 0),
+		Vector3(-0.5 * WIDTH, 0, HEIGHT),
+		Vector3(0.5 * WIDTH, 0, HEIGHT),
+		Vector3(-0.5 * WIDTH, 0, HEIGHT - top_offset),
+		Vector3(0.5 * WIDTH, 0, HEIGHT - top_offset),
+		Vector3(-0.5 * WIDTH, 0.5 * SPREAD, 0),
+		Vector3(0.5 * WIDTH, 0.5 * SPREAD, 0),
+		Vector3(-0.5 * WIDTH, 0.5 * SPREAD - bottom_offset, 0),
+		Vector3(0.5 * WIDTH, 0.5 * SPREAD - bottom_offset, 0),
+	])
+	var indices := PackedInt32Array([
+		4, 1, 0, 1, 4, 5,
+		4, 8, 9, 9, 5, 4,
+		8, 10, 11, 11, 9, 8,
+		11, 10, 6, 6, 7, 11,
+		2, 3, 6, 7, 6, 3,
+		0, 1, 2, 3, 2, 1,
+		0, 2, 6, 6, 4, 0,
+		10, 8, 6, 4, 6, 8,
+		7, 3, 1, 1, 5, 7,
+		7, 9, 11, 9, 7, 5,
+	])
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	st.set_smooth_group(-1)
+	for i in vertices.size():
+		st.add_vertex(vertices[i])
+	for idx in indices:
+		st.add_index(idx)
+	st.generate_normals()
+	var mesh := st.commit()
+	var mat := generate_default_material()
+	mat.albedo_color = Color.LIGHT_GRAY if index == InSim.AXOIndex.AXO_BANNER1 else Color.DIM_GRAY
+	mesh.surface_set_material(0, mat)
+	var mesh_instance := MeshInstance3D.new()
+	mesh_instance.mesh = mesh
+	return mesh_instance
+
+
 func get_mesh_barrier() -> MeshInstance3D:
 	const LENGTH := 1.38
 	const BASE_WIDTH := 0.35
@@ -818,28 +856,318 @@ func get_mesh_marker() -> MeshInstance3D:
 	var st := SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
 	st.set_smooth_group(-1)
-	for v in vertices_base:
-		st.add_vertex(v)
-	for idx in indices_base:
-		st.add_index(idx)
+	var base_color := Color.BURLYWOOD.lightened(0.2)
+	st.set_color(base_color)
+	for i in indices_base.size():
+		if i == 18:
+			st.set_color(Color.WHITE)
+		if i == 24:
+			st.set_color(base_color)
+		st.add_vertex(vertices_base[indices_base[i]])
 	st.generate_normals()
 	var mesh := st.commit()
 	var mat := generate_default_material()
-	mat.albedo_color = Color.BURLYWOOD.lightened(0.2)
+	mat.vertex_color_use_as_albedo = true
+	mat.vertex_color_is_srgb = true
+	mat.albedo_color = Color.WHITE
 	mesh.surface_set_material(0, mat)
 
-	#TODO: Add marker shapes (vertex/index arrays for each, including individual numbers?)
-	#var vertices_marker := PackedVector3Array()
-	#var indices_marker := PackedInt32Array()
-	#var arrays_marker := []
-	#_resize = arrays_marker.resize(Mesh.ARRAY_MAX)
-	#arrays_marker[Mesh.ARRAY_VERTEX] = vertices_marker
-	#arrays_marker[Mesh.ARRAY_INDEX] = indices_marker
-	#mesh = ArrayMesh.new()
-	#mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays_marker)
-	#mat = generate_default_material()
-	#mat.albedo_color = Color.BLACK
-	#mesh.surface_set_material(1, mat)
+	var arrow_vertices := PackedVector3Array([
+		Vector3(-0.25, 0, 0),
+		Vector3(0.25, 0, 0),
+		Vector3(0, 0, 0.25),
+		Vector3(-0.1, 0, 0),  # end of arrow line
+		Vector3(0.1, 0, 0),
+	])
+	var arrow_indices := PackedInt32Array([
+		0, 2, 1,
+	])
+	# Arrow line definition, assuming left turn for all variations
+	# Horizontal flip for right turns and fixing indices happens later
+	match index:
+		InSim.AXOIndex.AXO_MARKER_CURVE_L, InSim.AXOIndex.AXO_MARKER_CURVE_R:
+			for v in arrow_vertices.size():
+				arrow_vertices[v] = arrow_vertices[v].rotated(Vector3(0, 1, 0), -PI / 3) \
+						+ Vector3(-0.2, 0, 0.2)
+			arrow_vertices.append_array([
+				Vector3(0, 0, -0.1),
+				Vector3(0.2, 0, 0.05),
+				Vector3(0, 0, -0.45),
+				Vector3(0.2, 0, -0.45),
+			])
+		InSim.AXOIndex.AXO_MARKER_L, InSim.AXOIndex.AXO_MARKER_R:
+			for v in arrow_vertices.size():
+				arrow_vertices[v] = arrow_vertices[v].rotated(Vector3(0, 1, 0), -PI / 2) \
+						+ Vector3(-0.25, 0, 0.2)
+			arrow_vertices.append_array([
+				Vector3(0.2, 0, 0.1),
+				Vector3(0.4, 0, 0.3),
+				Vector3(0.2, 0, -0.4),
+				Vector3(0.4, 0, -0.4),
+			])
+		InSim.AXOIndex.AXO_MARKER_HARD_L, InSim.AXOIndex.AXO_MARKER_HARD_R:
+			for v in arrow_vertices.size():
+				arrow_vertices[v] = arrow_vertices[v].rotated(Vector3(0, 1, 0), -PI * 3 / 4) \
+						+ Vector3(-0.15, 0, 0)
+			arrow_vertices.append_array([
+				Vector3(0.1, 0, 0.05),
+				Vector3(0.3, 0, 0.45),
+				Vector3(0.1, 0, -0.4),
+				Vector3(0.3, 0, -0.4),
+			])
+		InSim.AXOIndex.AXO_MARKER_L_R, InSim.AXOIndex.AXO_MARKER_R_L:
+			for v in arrow_vertices.size():
+				arrow_vertices[v] = arrow_vertices[v] + Vector3(-0.25, 0, 0.2)
+			arrow_vertices.append_array([
+				Vector3(-0.35, 0, -0.1),
+				Vector3(-0.15, 0, 0.1),
+				Vector3(0.1, 0, -0.1),
+				Vector3(0.3, 0, 0.1),
+				Vector3(0.1, 0, -0.4),
+				Vector3(0.3, 0, -0.4),
+			])
+		InSim.AXOIndex.AXO_MARKER_S_L, InSim.AXOIndex.AXO_MARKER_S_R:
+			for v in arrow_vertices.size():
+				arrow_vertices[v] = arrow_vertices[v].rotated(Vector3(0, 1, 0), -PI / 2) \
+						+ Vector3(-0.3, 0, -0.1)
+			arrow_vertices.append_array([
+				Vector3(0.1, 0, -0.2),
+				Vector3(-0.1, 0, 0),
+				Vector3(0.1, 0, 0.2),
+				Vector3(-0.1, 0, 0.4),
+				Vector3(0.3, 0, 0.2),
+				Vector3(0.5, 0, 0.4),
+				Vector3(0.3, 0, -0.4),
+				Vector3(0.5, 0, -0.4),
+			])
+		InSim.AXOIndex.AXO_MARKER_S2_L, InSim.AXOIndex.AXO_MARKER_S2_R:
+			for v in arrow_vertices.size():
+				arrow_vertices[v] = arrow_vertices[v] + Vector3(-0.4, 0, 0.2)
+			arrow_vertices.append_array([
+				Vector3(-0.5, 0, -0.2),
+				Vector3(-0.3, 0, 0),
+				Vector3(0.1, 0, -0.2),
+				Vector3(-0.1, 0, 0),
+				Vector3(0.1, 0, 0.2),
+				Vector3(-0.1, 0, 0.4),
+				Vector3(0.3, 0, 0.2),
+				Vector3(0.5, 0, 0.4),
+				Vector3(0.3, 0, -0.4),
+				Vector3(0.5, 0, -0.4),
+			])
+		InSim.AXOIndex.AXO_MARKER_U_L, InSim.AXOIndex.AXO_MARKER_U_R:
+			for v in arrow_vertices.size():
+				arrow_vertices[v] = arrow_vertices[v].rotated(Vector3(0, 1, 0), PI) \
+						+ Vector3(-0.2, 0, -0.1)
+			arrow_vertices.append_array([
+				Vector3(-0.1, 0, 0.2),
+				Vector3(-0.3, 0, 0.4),
+				Vector3(0.2, 0, 0.2),
+				Vector3(0.4, 0, 0.4),
+				Vector3(0.2, 0, -0.4),
+				Vector3(0.4, 0, -0.4),
+			])
+	var arrow_line_pairs := int(0.5 * (arrow_vertices.size() - 3))  # 3 for arrow head
+	for i in arrow_line_pairs - 1:
+		var idx := 3 + 2 * i
+		arrow_indices.append_array([
+			idx, idx + 1, idx + 3, idx + 3, idx + 2, idx,
+		])
+	if index in [
+		InSim.AXOIndex.AXO_MARKER_CURVE_R,
+		InSim.AXOIndex.AXO_MARKER_R,
+		InSim.AXOIndex.AXO_MARKER_HARD_R,
+		InSim.AXOIndex.AXO_MARKER_R_L,
+		InSim.AXOIndex.AXO_MARKER_S_R,
+		InSim.AXOIndex.AXO_MARKER_S2_R,
+		InSim.AXOIndex.AXO_MARKER_U_R,
+	]:
+		for v in arrow_vertices.size():
+			arrow_vertices[v] = arrow_vertices[v].bounce(Vector3(1, 0, 0))
+		for i in int(arrow_indices.size() / 3.0):
+			var idx := 3 * i
+			var swap := arrow_indices[idx]
+			arrow_indices[idx] = arrow_indices[idx + 2]
+			arrow_indices[idx + 2] = swap
+	var number_width := 0.45  # monospace font character size equivalent
+	var number_thickness := 0.1
+	var number_0_vertices := PackedVector3Array()
+	var zero_segments := 16
+	for i in zero_segments:
+		var angle := 2 * PI * i / zero_segments
+		var a_ext := 0.2
+		var b_ext := 0.35
+		var a_int := a_ext - number_thickness
+		var b_int := b_ext - number_thickness
+		number_0_vertices.append_array([
+			Vector3(a_ext * cos(angle), 0, b_ext * sin(angle)),
+			Vector3(a_int * cos(angle), 0, b_int * sin(angle)),
+		])
+	var number_0_indices := PackedInt32Array()
+	for i in zero_segments:
+		var idx := 2 * i
+		if i < zero_segments - 1:
+			number_0_indices.append_array([
+				idx, idx + 1, idx + 3, idx + 3, idx + 2, idx,
+			])
+		else:
+			number_0_indices.append_array([
+				idx, idx + 1, 1, 1, 0, idx,
+			])
+	var number_1_vertices := PackedVector3Array([
+		Vector3(0.1 - number_thickness, 0, -0.35),
+		Vector3(0.1, 0, -0.35),
+		Vector3(0.1 - number_thickness, 0, 0.25),
+		Vector3(0.1, 0, 0.35),
+		Vector3(0.1 - 2 * number_thickness, 0, 0.25),
+		Vector3(0.1 - 1.5 * number_thickness, 0, 0.35),
+	])
+	var number_1_indices := PackedInt32Array([
+		2, 1, 0, 1, 2, 3,
+		4, 3, 2, 3, 4, 5,
+	])
+	var number_2_vertices := PackedVector3Array([
+		Vector3(0.2, 0, -0.35),
+		Vector3(0.2, 0, -0.35 + number_thickness),
+		Vector3(-0.2, 0, -0.35),
+		Vector3(-0.2 + 2 * number_thickness, 0, -0.35 + number_thickness),
+		Vector3(0.2 - number_thickness, 0, 0).rotated(Vector3(0, 1, 0), deg_to_rad(10)) \
+		+ Vector3(-0.05, 0, 0),
+		Vector3(0.2, 0, 0).rotated(Vector3(0, 1, 0), deg_to_rad(10)) + Vector3(-0.05, 0, 0),
+	])
+	var number_2_turn_segments := 7
+	for i in number_2_turn_segments:
+		var angle := -PI / 6.0 * i
+		number_2_vertices.append_array([
+			Vector3(0.2 - number_thickness, 0, 0).rotated(Vector3(0, 1, 0), angle) \
+					+ Vector3(0, 0, 0.15),
+			Vector3(0.2, 0, 0).rotated(Vector3(0, 1, 0), angle) + Vector3(0, 0, 0.15),
+		])
+	var number_2_indices := PackedInt32Array([
+		2, 1, 0, 1, 2, 3,
+		4, 3, 2, 3, 4, 5,
+	])
+	for i in number_2_turn_segments:
+		var offset := 4 + 2 * i
+		number_2_indices.append_array([
+			offset + 2, offset + 1, offset, offset + 1, offset + 2, offset + 3
+		])
+	var number_5_vertices := PackedVector3Array([
+		Vector3(0.2, 0, 0.35 - number_thickness),
+		Vector3(0.2, 0, 0.35),
+		Vector3(-0.01, 0, 0.35 - number_thickness),
+		Vector3(-0.1, 0, 0.35),
+		Vector3(-0.03, 0, 0.098),
+		Vector3(-0.15, 0, -0.02),
+	])
+	var number_5_turn_segments := 9
+	for i in number_5_turn_segments:
+		var angle := PI * (-0.5 + i / 6.0)
+		number_5_vertices.append_array([
+			Vector3(0.225, 0, 0).rotated(Vector3(0, 1, 0), angle) - Vector3(0, 0, 0.125),
+			Vector3(0.225 - number_thickness, 0, 0).rotated(Vector3(0, 1, 0), angle) \
+					- Vector3(0, 0, 0.125),
+		])
+	var number_5_indices := PackedInt32Array([
+		2, 1, 0, 1, 2, 3,
+		4, 3, 2, 3, 4, 5,
+	])
+	for i in number_5_turn_segments:
+		var offset := 4 + 2 * i
+		number_5_indices.append_array([
+			offset + 2, offset + 1, offset, offset + 1, offset + 2, offset + 3
+		])
+	var number_7_vertices := PackedVector3Array([
+		Vector3(-0.05 - number_thickness, 0, 0) + Vector3(0, 0, -0.35),
+		Vector3(-0.05, 0, -0.35),
+		Vector3(0.25 - 1.5 * number_thickness, 0, 0.35 - number_thickness),
+		Vector3(0.25, 0, 0.35),
+		Vector3(-0.25, 0, 0.35 - number_thickness),
+		Vector3(-0.25, 0, 0.35),
+	])
+	var number_7_indices := PackedInt32Array([
+		2, 1, 0, 1, 2, 3,
+		4, 3, 2, 3, 4, 5,
+	])
+	var marker_vertices := PackedVector3Array()
+	var marker_indices := PackedInt32Array()
+	if index >= InSim.AXOIndex.AXO_MARKER_CURVE_L and index <= InSim.AXOIndex.AXO_MARKER_U_R:
+		marker_vertices.append_array(arrow_vertices)
+		marker_indices.append_array(arrow_indices)
+	else:
+		var add_numbers := func add_numbers(numbers: Array[int]
+		) -> Array:
+			var vertices := PackedVector3Array()
+			var indices := PackedInt32Array()
+			for n in numbers.size():
+				var number := numbers[n]
+				if number not in [0, 1, 2, 5, 7]:
+					continue
+				var new_vertices := (
+					number_0_vertices if number == 0 \
+					else number_1_vertices if number == 1 \
+					else number_2_vertices if number == 2 \
+					else number_5_vertices if number == 5 \
+					else number_7_vertices if number == 7 \
+					else PackedVector3Array()
+				)
+				var new_indices := (
+					number_0_indices if number == 0 \
+					else number_1_indices if number == 1 \
+					else number_2_indices if number == 2 \
+					else number_5_indices if number == 5 \
+					else number_7_indices if number == 7 \
+					else PackedInt32Array()
+				)
+				var index_offset := vertices.size()
+				vertices.append_array(new_vertices.duplicate())
+				indices.append_array(new_indices.duplicate())
+				for v in new_vertices.size():
+					vertices[-1 - v] = vertices[-1 - v] + Vector3(n * number_width, 0, 0)
+				for i in new_indices.size():
+					indices[-1 - i] = indices[-1 - i] + index_offset
+			for v in vertices.size():
+				vertices[v] = vertices[v] - Vector3(0.5 * (numbers.size() - 1) * number_width, 0, 0)
+			return [vertices, indices]
+		var number_array := []
+		match index:
+			InSim.AXOIndex.AXO_DIST25:
+				number_array = add_numbers.call([2, 5] as Array[int])
+			InSim.AXOIndex.AXO_DIST50:
+				number_array = add_numbers.call([5, 0] as Array[int])
+			InSim.AXOIndex.AXO_DIST75:
+				number_array = add_numbers.call([7, 5] as Array[int])
+			InSim.AXOIndex.AXO_DIST100:
+				number_array = add_numbers.call([1, 0, 0] as Array[int])
+			InSim.AXOIndex.AXO_DIST125:
+				number_array = add_numbers.call([1, 2, 5] as Array[int])
+			InSim.AXOIndex.AXO_DIST150:
+				number_array = add_numbers.call([1, 5, 0] as Array[int])
+			InSim.AXOIndex.AXO_DIST200:
+				number_array = add_numbers.call([2, 0, 0] as Array[int])
+			InSim.AXOIndex.AXO_DIST250:
+				number_array = add_numbers.call([2, 5, 0] as Array[int])
+		marker_vertices = number_array[0]
+		marker_indices = number_array[1]
+	var marking_angle := atan(
+		(BASE_OFFSET - TOP_OFFSET + 0.5 * (BASE_THICKNESS - TOP_THICKNESS)) / HEIGHT
+	)
+	var marking_offset := TOP_OFFSET + 0.5 * TOP_THICKNESS + 0.5 * HEIGHT * tan(marking_angle)
+	for v in marker_vertices.size():
+		marker_vertices[v] = marker_vertices[v].rotated(Vector3(0, 0, 1), PI) \
+				.rotated(Vector3(1, 0, 0), marking_angle) \
+				+ Vector3(0, marking_offset + 0.01, 0.5 * HEIGHT)
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	st.set_smooth_group(0)
+	for v in marker_vertices:
+		st.add_vertex(v)
+	for idx in marker_indices:
+		st.add_index(idx)
+	st.generate_normals()
+	mesh = st.commit(mesh)
+	mat = generate_default_material()
+	mat.albedo_color = Color.BLACK
+	mesh.surface_set_material(1, mat)
 	var mesh_instance := MeshInstance3D.new()
 	mesh_instance.mesh = mesh
 	return mesh_instance
@@ -974,6 +1302,558 @@ func get_mesh_post() -> MeshInstance3D:
 			color = Color.WHITE
 	var mat := generate_default_material()
 	mat.albedo_color = color
+	mesh.surface_set_material(0, mat)
+	var mesh_instance := MeshInstance3D.new()
+	mesh_instance.mesh = mesh
+	return mesh_instance
+
+
+func get_mesh_railing() -> MeshInstance3D:
+	const RAIL_SEGMENTS := 6
+	const SPAN := 2.28
+	const RADIUS := 0.04
+	const BEND_RADIUS := 0.15
+	const BEND_RESOLUTION := 3
+	const HEIGHT := 1.1
+	const SUPPORT_LENGTH := 0.84
+	const SUPPORT_HEIGHT := 0.05
+	const MID_RAIL_LOW := 0.05
+	const MID_RAIL_HIGH := 0.88
+	const VERTICAL_MEMBERS := 8
+	const VERTICAL_RESOLUTION := 4
+	const VERTICAL_RADIUS := 0.015
+	var vertices := PackedVector3Array()
+	var indices := PackedInt32Array()
+	var index_offset := 0
+	var smooth_groups: Array[Vector2i] = [Vector2i(0, -1)]
+	var support_vertices := PackedVector3Array([
+		Vector3(-RADIUS, -0.5 * SUPPORT_LENGTH, 0),
+		Vector3(RADIUS, -0.5 * SUPPORT_LENGTH, 0),
+		Vector3(-RADIUS, 0.5 * SUPPORT_LENGTH, 0),
+		Vector3(RADIUS, 0.5 * SUPPORT_LENGTH, 0),
+		Vector3(-RADIUS, 0, SUPPORT_HEIGHT),
+		Vector3(RADIUS, 0, SUPPORT_HEIGHT),
+	])
+	var support_indices := PackedInt32Array([
+		0, 1, 2, 3, 2, 1,
+		0, 4, 1, 1, 4, 5,
+		2, 3, 4, 5, 4, 3,
+		0, 2, 4,
+		5, 3, 1,
+	])
+	for s in 2:
+		vertices.append_array(support_vertices.duplicate())
+		indices.append_array(support_indices.duplicate())
+		for v in support_vertices.size():
+			vertices[-1 - v] = support_vertices[-1 - v] + Vector3(SPAN * (s - 0.5), 0, 0)
+		if s > 0:
+			for i in support_indices.size():
+				indices[-1 - i] = support_indices[-1 - i] + index_offset
+		index_offset += support_vertices.size()
+	var mid_width := RADIUS
+	var mid_offset := 0.0 if (RAIL_SEGMENTS % 4 == 0) else RADIUS * sin(PI / RAIL_SEGMENTS)
+	var mid_vertices := PackedVector3Array([
+		Vector3(-(0.5 * SPAN - mid_offset), -mid_width, 0),
+		Vector3((0.5 * SPAN - mid_offset), -mid_width, 0),
+		Vector3(-(0.5 * SPAN - mid_offset), mid_width, 0),
+		Vector3((0.5 * SPAN - mid_offset), mid_width, 0),
+		Vector3(-(0.5 * SPAN - mid_offset), -mid_width, 0.03),
+		Vector3((0.5 * SPAN - mid_offset), -mid_width, 0.03),
+		Vector3(-(0.5 * SPAN - mid_offset), mid_width, 0.03),
+		Vector3((0.5 * SPAN - mid_offset), mid_width, 0.03),
+	])
+	var mid_indices := PackedInt32Array([
+		0, 1, 2, 3, 2, 1,
+		6, 5, 4, 5, 6, 7,
+		4, 1, 0, 1, 4, 5,
+		2, 3, 6, 7, 6, 3,
+	])
+	for r in 2:
+		var height := MID_RAIL_LOW if r == 0 else (MID_RAIL_HIGH - MID_RAIL_LOW)
+		for v in mid_vertices.size():
+			mid_vertices[v] = mid_vertices[v] + Vector3(0, 0, height)
+		vertices.append_array(mid_vertices.duplicate())
+		indices.append_array(mid_indices.duplicate())
+		for i in mid_indices.size():
+			indices[-1 - i] = mid_indices[-1 - i] + index_offset
+		index_offset += mid_vertices.size()
+	# Vertical members
+	var vertical_vertices := PackedVector3Array()
+	var vertical_indices := PackedInt32Array()
+	for i in 2:
+		for s in VERTICAL_RESOLUTION:
+			var angle := 2 * PI * s / VERTICAL_RESOLUTION
+			var _discard := vertical_vertices.append(Vector3(
+				VERTICAL_RADIUS * cos(angle),
+				VERTICAL_RADIUS * sin(angle),
+				MID_RAIL_LOW if i == 0 else MID_RAIL_HIGH
+			))
+	for s in VERTICAL_RESOLUTION:
+		if s < VERTICAL_RESOLUTION - 1:
+			vertical_indices.append_array([
+				s, s + VERTICAL_RESOLUTION, s + 1,
+				s + 1, s + VERTICAL_RESOLUTION, s + VERTICAL_RESOLUTION + 1,
+			])
+		else:
+			vertical_indices.append_array([
+				s, s + VERTICAL_RESOLUTION, s + 1 - VERTICAL_RESOLUTION,
+				s + 1 - VERTICAL_RESOLUTION, s + VERTICAL_RESOLUTION, s + 1,
+			])
+	smooth_groups.append(Vector2i(indices.size(), 0))
+	for m in VERTICAL_MEMBERS:
+		vertices.append_array(vertical_vertices.duplicate())
+		indices.append_array(vertical_indices.duplicate())
+		for v in vertical_vertices.size():
+			vertices[-1 - v] = vertices[-1 - v] \
+					+ Vector3(SPAN * ((m + 1) as float / (VERTICAL_MEMBERS + 1) - 0.5), 0, 0)
+		for i in vertical_indices.size():
+			indices[-1 - i] = indices[-1 - i] + index_offset
+		index_offset += vertical_vertices.size()
+	# Railing
+	var ring_vertices := PackedVector3Array()
+	var grow_factor := 1 / (1.0 if (RAIL_SEGMENTS % 4 == 0) else cos(PI / RAIL_SEGMENTS))
+	for i in RAIL_SEGMENTS:
+		var angle := 2 * PI * i / RAIL_SEGMENTS
+		var _discard := ring_vertices.append(Vector3(
+			RADIUS * cos(angle),
+			RADIUS * sin(angle) * grow_factor,
+			0
+		))
+	var transform_ring := func transform_ring(
+		angle: float, translation: Vector3
+	) -> PackedVector3Array:
+		var result := ring_vertices.duplicate()
+		for v in result.size():
+			result[v] = result[v].rotated(Vector3(0, 1, 0), angle) + translation
+		return result
+	var rail_vertices := PackedVector3Array()
+	var rail_angle := 0.0
+	rail_vertices.append_array(transform_ring.call(rail_angle,
+			Vector3(-0.5 * SPAN, 0, 0.02)) as PackedVector3Array)
+	rail_vertices.append_array(transform_ring.call(rail_angle,
+			Vector3(-0.5 * SPAN, 0, HEIGHT - BEND_RADIUS)) as PackedVector3Array)
+	for i in BEND_RESOLUTION:
+		rail_angle += PI / 2 / BEND_RESOLUTION
+		rail_vertices.append_array(transform_ring.call(
+			rail_angle,
+			Vector3(
+				-0.5 * SPAN + BEND_RADIUS * (1 - cos(rail_angle)),
+				0,
+				HEIGHT - BEND_RADIUS * (1 - sin(rail_angle))
+			)
+		) as PackedVector3Array)
+	rail_vertices.append_array(transform_ring.call(rail_angle,
+			Vector3(0.5 * SPAN - BEND_RADIUS, 0, HEIGHT)) as PackedVector3Array)
+	for i in BEND_RESOLUTION:
+		rail_angle += PI / 2 / BEND_RESOLUTION
+		rail_vertices.append_array(transform_ring.call(
+			rail_angle,
+			Vector3(
+				0.5 * SPAN - BEND_RADIUS * (1 + cos(rail_angle)),
+				0,
+				HEIGHT - BEND_RADIUS * (1 - sin(rail_angle))
+			)
+		) as PackedVector3Array)
+	rail_vertices.append_array(transform_ring.call(rail_angle,
+			Vector3(0.5 * SPAN, 0, 0.02)) as PackedVector3Array)
+	var rail_indices := PackedInt32Array()
+	for i in 3 + 2 * BEND_RESOLUTION:  # 3 straights + 2 bends
+		for s in RAIL_SEGMENTS:
+			if s < RAIL_SEGMENTS - 1:
+				rail_indices.append_array([
+					s, s + RAIL_SEGMENTS, s + 1,
+					s + 1, s + RAIL_SEGMENTS, s + RAIL_SEGMENTS + 1,
+				])
+			else:
+				rail_indices.append_array([
+					s, s + RAIL_SEGMENTS, s + 1 - RAIL_SEGMENTS,
+					s + 1 - RAIL_SEGMENTS, s + RAIL_SEGMENTS, s + 1,
+				])
+		for r in 3 * 2 * ring_vertices.size():
+			rail_indices[-1 - r] = rail_indices[-1 - r] + index_offset
+		index_offset += ring_vertices.size()
+	vertices.append_array(rail_vertices)
+	indices.append_array(rail_indices)
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var s := 0
+	for i in indices.size():
+		if s < smooth_groups.size() and i == smooth_groups[s].x:
+			st.set_smooth_group(smooth_groups[s].y)
+			s += 1
+		st.add_vertex(vertices[indices[i]])
+	st.generate_normals()
+	var mesh := st.commit()
+	var mat := generate_default_material()
+	mat.albedo_color = Color.WEB_GRAY
+	mesh.surface_set_material(0, mat)
+	var mesh_instance := MeshInstance3D.new()
+	mesh_instance.mesh = mesh
+	return mesh_instance
+
+
+func get_mesh_ramp() -> MeshInstance3D:
+	const LENGTH := 11.26
+	const HEIGHT := 0.87
+	const THICKNESS := 0.16
+	const SUPPORT_OFFSET := 3.885
+	const SUPPORT_LENGTH := 0.155
+	const OFFSET := 3.625
+	var width := 0.52 if index == InSim.AXOIndex.AXO_RAMP1 else 2.8
+	var support_width := width - 0.1
+	var angle := atan(HEIGHT / LENGTH)
+	var bottom_offset := THICKNESS / cos(PI / 2 - angle) * 0.85  # LFS thickness not constant
+	var support_offset := OFFSET + SUPPORT_OFFSET
+	var support_height := (SUPPORT_OFFSET + 0.5 * LENGTH) * sin(angle) \
+			- 0.5 * THICKNESS / sin(PI / 2 - angle)  # simplified, good enough
+	var vertices := PackedVector3Array([
+		# Ramp
+		Vector3(-0.5 * width, OFFSET - 0.5 * LENGTH, 0),
+		Vector3(0.5 * width, OFFSET - 0.5 * LENGTH, 0),
+		Vector3(-0.5 * width, OFFSET - 0.5 * LENGTH + bottom_offset, 0),
+		Vector3(0.5 * width, OFFSET - 0.5 * LENGTH + bottom_offset, 0),
+		Vector3(-0.5 * width, OFFSET + 0.5 * LENGTH, HEIGHT),
+		Vector3(0.5 * width, OFFSET + 0.5 * LENGTH, HEIGHT),
+		Vector3(-0.5 * width, OFFSET + 0.5 * LENGTH, HEIGHT - THICKNESS),
+		Vector3(0.5 * width, OFFSET + 0.5 * LENGTH, HEIGHT - THICKNESS),
+		# Support
+		Vector3(-0.5 * support_width, support_offset - 0.5 * SUPPORT_LENGTH, 0),
+		Vector3(0.5 * support_width, support_offset - 0.5 * SUPPORT_LENGTH, 0),
+		Vector3(-0.5 * support_width, support_offset + 0.5 * SUPPORT_LENGTH, 0),
+		Vector3(0.5 * support_width, support_offset + 0.5 * SUPPORT_LENGTH, 0),
+		Vector3(-0.5 * support_width, support_offset - 0.5 * SUPPORT_LENGTH, support_height),
+		Vector3(0.5 * support_width, support_offset - 0.5 * SUPPORT_LENGTH, support_height),
+		Vector3(-0.5 * support_width, support_offset + 0.5 * SUPPORT_LENGTH, support_height),
+		Vector3(0.5 * support_width, support_offset + 0.5 * SUPPORT_LENGTH, support_height),
+	])
+	var indices := PackedInt32Array([
+		# Ramp
+		0, 1, 2, 3, 2, 1,
+		6, 5, 4, 5, 6, 7,
+		4, 1, 0, 1, 4, 5,
+		2, 3, 6, 7, 6, 3,
+		0, 2, 4, 6, 4, 2,
+		5, 3, 1, 3, 5, 7,
+		# Support
+		8, 9, 10, 11, 10, 9,
+		12, 9, 8, 9, 12, 13,
+		10, 11, 14, 15, 14, 11,
+		8, 10, 12, 14, 12, 10,
+		13, 11, 9, 11, 13, 15,
+	])
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	st.set_smooth_group(-1)
+	for i in vertices.size():
+		st.add_vertex(vertices[i])
+	for i in indices.size():
+		st.add_index(indices[i])
+	st.generate_normals()
+	var mesh := st.commit()
+	var mat := generate_default_material()
+	mat.albedo_color = Color.GRAY
+	mesh.surface_set_material(0, mat)
+	var mesh_instance := MeshInstance3D.new()
+	mesh_instance.mesh = mesh
+	return mesh_instance
+
+
+func get_mesh_sign_speed() -> MeshInstance3D:
+	const WIDTH := 1.05
+	const SPREAD := 1.23
+	const TOP_LENGTH := 0.095
+	const HEIGHT := 1.295
+	const THICKNESS := 0.135
+	var sign_angle := atan(HEIGHT / (0.5 * (SPREAD - TOP_LENGTH)))
+	var bottom_offset := THICKNESS / cos(PI / 2 - sign_angle)
+	var height_bottom := (0.5 * SPREAD - bottom_offset) * tan(sign_angle)
+	var vertices := PackedVector3Array([
+		Vector3(-0.5 * WIDTH, -0.5 * SPREAD, 0),
+		Vector3(0.5 * WIDTH, -0.5 * SPREAD, 0),
+		Vector3(-0.5 * WIDTH, -0.5 * SPREAD + bottom_offset, 0),
+		Vector3(0.5 * WIDTH, -0.5 * SPREAD + bottom_offset, 0),
+		Vector3(-0.5 * WIDTH, -0.5 * TOP_LENGTH, HEIGHT),
+		Vector3(0.5 * WIDTH, -0.5 * TOP_LENGTH, HEIGHT),
+		Vector3(-0.5 * WIDTH, 0, height_bottom),
+		Vector3(0.5 * WIDTH, 0, height_bottom),
+		Vector3(-0.5 * WIDTH, 0.5 * TOP_LENGTH, HEIGHT),
+		Vector3(0.5 * WIDTH, 0.5 * TOP_LENGTH, HEIGHT),
+		Vector3(-0.5 * WIDTH, 0.5 * SPREAD, 0),
+		Vector3(0.5 * WIDTH, 0.5 * SPREAD, 0),
+		Vector3(-0.5 * WIDTH, 0.5 * SPREAD - bottom_offset, 0),
+		Vector3(0.5 * WIDTH, 0.5 * SPREAD - bottom_offset, 0),
+	])
+	var indices := PackedInt32Array([
+		4, 1, 0, 1, 4, 5,
+		8, 5, 4, 5, 8, 9,
+		8, 10, 11, 11, 9, 8,
+		12, 11, 10, 11, 12, 13,
+		13, 12, 6, 6, 7, 13,
+		2, 3, 6, 7, 6, 3,
+		0, 1, 2, 3, 2, 1,
+		0, 2, 6, 6, 4, 0,
+		10, 8, 6, 12, 10, 6,
+		4, 6, 8,
+		7, 3, 1, 1, 5, 7,
+		7, 11, 13, 7, 9, 11,
+		9, 7, 5,
+	])
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	st.set_smooth_group(-1)
+	for i in indices.size():
+		st.add_vertex(vertices[indices[i]])
+	st.generate_normals()
+	var mesh := st.commit()
+	var mat := generate_default_material()
+	mat.albedo_color = Color.GRAY
+	mesh.surface_set_material(0, mat)
+
+	var number_thickness := 0.1
+	var number_0_vertices := PackedVector3Array()
+	var zero_segments := 16
+	for i in zero_segments:
+		var angle := 2 * PI * i / zero_segments
+		var a_ext := 0.2
+		var b_ext := 0.35
+		var a_int := a_ext - number_thickness
+		var b_int := b_ext - number_thickness
+		number_0_vertices.append_array([
+			Vector3(a_ext * cos(angle), 0, b_ext * sin(angle)),
+			Vector3(a_int * cos(angle), 0, b_int * sin(angle)),
+		])
+	var number_0_indices := PackedInt32Array()
+	for i in zero_segments:
+		var idx := 2 * i
+		if i < zero_segments - 1:
+			number_0_indices.append_array([
+				idx, idx + 1, idx + 3, idx + 3, idx + 2, idx,
+			])
+		else:
+			number_0_indices.append_array([
+				idx, idx + 1, 1, 1, 0, idx,
+			])
+	var number_5_vertices := PackedVector3Array([
+		Vector3(0.2, 0, 0.35 - number_thickness),
+		Vector3(0.2, 0, 0.35),
+		Vector3(-0.01, 0, 0.35 - number_thickness),
+		Vector3(-0.1, 0, 0.35),
+		Vector3(-0.03, 0, 0.098),
+		Vector3(-0.15, 0, -0.02),
+	])
+	var number_5_turn_segments := 9
+	for i in number_5_turn_segments:
+		var angle := PI * (-0.5 + i / 6.0)
+		number_5_vertices.append_array([
+			Vector3(0.225, 0, 0).rotated(Vector3(0, 1, 0), angle) - Vector3(0, 0, 0.125),
+			Vector3(0.225 - number_thickness, 0, 0).rotated(Vector3(0, 1, 0), angle) \
+					- Vector3(0, 0, 0.125),
+		])
+	var number_5_indices := PackedInt32Array([
+		2, 1, 0, 1, 2, 3,
+		4, 3, 2, 3, 4, 5,
+	])
+	for i in number_5_turn_segments:
+		var offset := 4 + 2 * i
+		number_5_indices.append_array([
+			offset + 2, offset + 1, offset, offset + 1, offset + 2, offset + 3
+		])
+	var number_8_vertices := PackedVector3Array()
+	var eight_segments := 16
+	for c in 2:
+		for i in eight_segments:
+			var angle := 2 * PI * i / eight_segments
+			var a_ext := 0.2
+			var b_ext := 0.2
+			var a_int := a_ext - number_thickness
+			var b_int := b_ext - number_thickness
+			var offset := (-1 if c == 0 else 1) * (b_ext - 0.5 * number_thickness)
+			number_8_vertices.append_array([
+				Vector3(a_ext * cos(angle), 0, b_ext * sin(angle) + offset),
+				Vector3(a_int * cos(angle), 0, b_int * sin(angle) + offset),
+			])
+	var number_8_indices := PackedInt32Array()
+	for c in 2:
+		for i in eight_segments:
+			var idx := 2 * c * eight_segments + 2 * i
+			if i < eight_segments - 1:
+				number_8_indices.append_array([
+					idx, idx + 1, idx + 3, idx + 3, idx + 2, idx,
+				])
+			else:
+				var first_idx := 0 if c == 0 else 2 * eight_segments
+				number_8_indices.append_array([
+					idx, idx + 1, first_idx + 1, first_idx + 1, first_idx + 0, idx,
+				])
+	var number_width := 0.45  # monospace font character size equivalent
+	var number_vertices := PackedVector3Array()
+	var number_indices := PackedInt32Array()
+	for n in 2:
+		if n == 0:
+			number_vertices.append_array(
+				(number_8_vertices if index == InSim.AXOIndex.AXO_SIGN_SPEED_80 \
+				else number_5_vertices).duplicate()
+			)
+			for v in number_vertices.size():
+				number_vertices[v] = number_vertices[v] + Vector3(-0.5 * number_width, 0, 0)
+			number_indices.append_array(
+				(number_8_indices if index == InSim.AXOIndex.AXO_SIGN_SPEED_80 \
+				else number_5_indices).duplicate()
+			)
+		else:
+			var index_offset := number_vertices.size()
+			number_vertices.append_array(number_0_vertices.duplicate())
+			for v in number_0_vertices.size():
+				number_vertices[-1 - v] = number_vertices[-1 - v] \
+						+ Vector3(0.5 * number_width, 0, 0)
+			number_indices.append_array(number_0_indices.duplicate())
+			for i in number_0_indices.size():
+				number_indices[-1 - i] = number_indices[-1 - i] + index_offset
+	var marking_height := 0.4 * HEIGHT
+	var marking_offset := 0.5 * SPREAD - marking_height * tan(PI / 2 - sign_angle)
+	for v in number_vertices.size():
+		number_vertices[v] = (number_vertices[v] * 2 / 3.0) \
+				.rotated(Vector3(0, 0, 1), PI) \
+				.rotated(Vector3(1, 0, 0), PI / 2 - sign_angle) \
+				+ Vector3(0, marking_offset + 0.01, marking_height)
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	st.set_smooth_group(-1)
+	for i in number_indices.size():
+		st.add_vertex(number_vertices[number_indices[i]])
+	st.generate_normals()
+	mesh = st.commit(mesh)
+	mat = generate_default_material()
+	mat.albedo_color = Color.BLACK
+	mesh.surface_set_material(1, mat)
+	var mesh_instance := MeshInstance3D.new()
+	mesh_instance.mesh = mesh
+	return mesh_instance
+
+
+func get_mesh_speed_hump() -> MeshInstance3D:
+	const END_SEGMENTS := 5
+	const BASE_WIDTH := 0.5
+	const TOP_WIDTH := 0.18
+	const HEIGHT := 0.08
+	const STEP := 0.25
+	var hump_colors: Array[Color] = [Color.GOLDENROD.lightened(0.1), Color.SLATE_GRAY.darkened(0.5)]
+	var length := 9.5 if index == InSim.AXOIndex.AXO_SPEED_HUMP_10M else 5.5
+	var steps := int(0.5 * length / STEP) - 1
+	var vertices := PackedVector3Array()
+	var indices := PackedInt32Array()
+	var colors := PackedColorArray()
+	var smooth_groups: Array[Vector2i] = [Vector2i(0, 0)]
+	var section_vertices := PackedVector3Array([
+		Vector3(-0.5 * BASE_WIDTH, 0, 0),
+		Vector3(-0.5 * TOP_WIDTH, 0, HEIGHT),
+		Vector3(0.5 * TOP_WIDTH, 0, HEIGHT),
+		Vector3(0.5 * BASE_WIDTH, 0, 0),
+	])
+	var SECTION := 4
+	for i in steps + 1:
+		vertices.append_array(section_vertices.duplicate())
+		for v in SECTION:
+			vertices[-1 - v] = vertices[-1 - v] + Vector3(0, i * STEP, 0)
+	for i in steps:
+		smooth_groups.append(Vector2i(indices.size() + 6 * (SECTION - 1), 1))
+		smooth_groups.append(Vector2i(indices.size() + 6 * SECTION, 0))
+		var offset := i * SECTION
+		indices.append_array([
+			offset + 0, offset + SECTION + 0, offset + SECTION + 1,
+			offset + SECTION + 1, offset + 1, offset + 0,
+			offset + 1, offset + SECTION + 1, offset + SECTION + 2,
+			offset + SECTION + 2, offset + 2, offset + 1,
+			offset + 2, offset + SECTION + 2, offset + SECTION + 3,
+			offset + SECTION + 3, offset + 3, offset + 2,
+			offset + 3, offset + SECTION + 3, offset + SECTION + 0,
+			offset + SECTION + 0, offset + 0, offset + 3,
+		])
+		var section_colors := PackedColorArray()
+		var _resize_colors := section_colors.resize(6 * SECTION)
+		section_colors.fill(hump_colors[i % 2])
+		colors.append_array(section_colors)
+	var end_vertices := PackedVector3Array()
+	for i in END_SEGMENTS + 1:
+		var angle := PI * i / END_SEGMENTS
+		end_vertices.append_array([
+			Vector3(0.5 * BASE_WIDTH * cos(angle), 0.5 * BASE_WIDTH * sin(angle), 0),
+			Vector3(0.5 * TOP_WIDTH * cos(angle), 0.5 * TOP_WIDTH * sin(angle), HEIGHT)
+		])
+	var end_indices := PackedInt32Array()
+	for i in END_SEGMENTS:
+		var idx := 2 * i
+		end_indices.append_array([
+			idx, idx + 1, idx + 2,
+			idx + 3, idx + 2, idx + 1,
+		])
+	var vertex_count := end_vertices.size()
+	for i in int(END_SEGMENTS / 2.0):
+		var idx := 2 * i
+		end_indices.append_array([
+			idx + 3, idx + 1, vertex_count - idx - 1,
+			vertex_count - idx - 1, vertex_count - idx - 3, idx + 3,
+		])
+	var index_offset := vertices.size()
+	vertices.append_array(end_vertices.duplicate())
+	for v in end_vertices.size():
+		vertices[-1 - v] = vertices[-1 - v] + Vector3(0, steps * STEP, 0)
+	indices.append_array(end_indices.duplicate())
+	for i in end_indices.size():
+		indices[-1 - i] = indices[-1 - i] + index_offset
+	var new_colors := PackedColorArray()
+	var _resize := new_colors.resize(end_indices.size())
+	new_colors.fill(hump_colors[0])
+	colors.append_array(new_colors)
+	# Duplicate everything for other half
+	vertex_count = vertices.size()
+	index_offset = vertex_count
+	vertices.append_array(vertices.duplicate())
+	for v in vertex_count:
+		vertices[-1 - v] = vertices[-1 - v].rotated(Vector3(0, 0, 1),  PI) + Vector3(0, -STEP, 0)
+	var index_count := indices.size()
+	indices.append_array(indices.duplicate())
+	for i in index_count:
+		indices[-1 - i] = indices[-1 - i] + index_offset
+	colors.append_array(colors.duplicate())
+	var group_count := smooth_groups.size()
+	smooth_groups.append_array(smooth_groups.duplicate())
+	for g in group_count:
+		smooth_groups[-1 - g] = Vector2i(
+			smooth_groups[-1 - g].x + index_count,
+			smooth_groups[-1 - g].y
+		)
+	# Fill missing section
+	smooth_groups.append(Vector2i(indices.size() + 6 * (SECTION - 1), 1))
+	smooth_groups.append(Vector2i(indices.size() + 6 * SECTION, 0))
+	indices.append_array([
+		index_offset + SECTION - 1, 0, 1,
+		1, index_offset + SECTION - 2, index_offset + SECTION - 1,
+		index_offset + SECTION - 2, 1, 2,
+		2, index_offset + SECTION - 3, index_offset + SECTION - 2,
+		index_offset + SECTION - 3, 2, 3,
+		3, index_offset + SECTION - 4, index_offset + SECTION - 3,
+		index_offset + SECTION - 4, 3, 0,
+		0, index_offset + SECTION - 1, index_offset + SECTION - 4,
+	])
+	var last_colors := PackedColorArray()
+	_resize = last_colors.resize(6 * SECTION)
+	last_colors.fill(hump_colors[1])
+	colors.append_array(last_colors)
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	var s := 0
+	for i in indices.size():
+		if s < smooth_groups.size() and i == smooth_groups[s].x:
+			st.set_smooth_group(smooth_groups[s].y)
+			s += 1
+		st.set_color(colors[i])
+		st.add_vertex(vertices[indices[i]])
+	st.generate_normals()
+	var mesh := st.commit()
+	var mat := generate_default_material()
+	mat.vertex_color_use_as_albedo = true
+	mat.vertex_color_is_srgb = true
+	mat.albedo_color = Color.WHITE
 	mesh.surface_set_material(0, mat)
 	var mesh_instance := MeshInstance3D.new()
 	mesh_instance.mesh = mesh
