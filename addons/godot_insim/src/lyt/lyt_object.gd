@@ -68,11 +68,8 @@ static func create_from_buffer(buffer: PackedByteArray) -> LYTObject:
 ## Override to return a [MeshInstance3D] corresponding to the object. Returns an
 ## elongated cube by default.
 func _get_mesh() -> MeshInstance3D:
-	var color := Color.GRAY
+	var color := Color.MAGENTA  # used as default color for unknown objects
 	var dimensions := Vector3(0.5, 0.5, 1)
-	var offset := Vector3.ZERO  # offsets whole mesh
-	var taper_top := Vector2.ONE  # 0 to 1, scales top face
-	var shift_top_y := 0.0  # offset for top face along Y axis
 	match index:
 		InSim.AXOIndex.AXO_CONE_RED, InSim.AXOIndex.AXO_CONE_RED2, InSim.AXOIndex.AXO_CONE_RED3, \
 		InSim.AXOIndex.AXO_CONE_BLUE, InSim.AXOIndex.AXO_CONE_BLUE2, \
@@ -109,9 +106,7 @@ func _get_mesh() -> MeshInstance3D:
 		InSim.AXOIndex.AXO_POST_RED, InSim.AXOIndex.AXO_POST_WHITE:
 			return get_mesh_post()
 		InSim.AXOIndex.AXO_BALE:
-			dimensions = Vector3(1.52, 0.7, 0.63)
-			offset = Vector3(0, -0.35, 0)
-			color = Color.BURLYWOOD
+			return get_mesh_bale()
 		InSim.AXOIndex.AXO_RAILING:
 			return get_mesh_railing()
 		InSim.AXOIndex.AXO_START_LIGHTS:
@@ -123,60 +118,37 @@ func _get_mesh() -> MeshInstance3D:
 		InSim.AXOIndex.AXO_START_POSITION:
 			return get_mesh_start_position()
 		InSim.AXOIndex.AXO_PIT_START_POINT:
-			return get_mesh_arrow(index, Color.WHITE)
+			return get_mesh_arrow(Color.WHITE)
 		InSim.AXOIndex.AXO_PIT_STOP_BOX:
 			return get_mesh_pit_box()
 	var vertices := PackedVector3Array([
-		offset + Vector3(-0.5 * dimensions.x, -0.5 * dimensions.y, 0),
-		offset + Vector3(0.5 * dimensions.x, -0.5 * dimensions.y, 0),
-		offset + Vector3(-0.5 * dimensions.x, 0.5 * dimensions.y, 0),
-		offset + Vector3(0.5 * dimensions.x, 0.5 * dimensions.y, 0),
-		offset + Vector3(
-			-0.5 * dimensions.x * taper_top.x,
-			-0.5 * dimensions.y * taper_top.y + shift_top_y,
-			dimensions.z
-		),
-		offset + Vector3(
-			0.5 * dimensions.x * taper_top.x,
-			-0.5 * dimensions.y * taper_top.y + shift_top_y,
-			dimensions.z
-		),
-		offset + Vector3(
-			-0.5 * dimensions.x * taper_top.x,
-			0.5 * dimensions.y * taper_top.y + shift_top_y,
-			dimensions.z
-		),
-		offset + Vector3(
-			0.5 * dimensions.x * taper_top.x,
-			0.5 * dimensions.y * taper_top.y + shift_top_y,
-			dimensions.z
-		),
+		Vector3(-0.5 * dimensions.x, -0.5 * dimensions.y, 0),
+		Vector3(0.5 * dimensions.x, -0.5 * dimensions.y, 0),
+		Vector3(-0.5 * dimensions.x, 0.5 * dimensions.y, 0),
+		Vector3(0.5 * dimensions.x, 0.5 * dimensions.y, 0),
+		Vector3(-0.5 * dimensions.x, -0.5 * dimensions.y, dimensions.z),
+		Vector3(0.5 * dimensions.x, -0.5 * dimensions.y, dimensions.z),
+		Vector3(-0.5 * dimensions.x, 0.5 * dimensions.y, dimensions.z),
+		Vector3(0.5 * dimensions.x, 0.5 * dimensions.y, dimensions.z),
 	])
 	var indices := PackedInt32Array([
-		0, 1, 2,  # Z- face
-		3, 2, 1,
-		6, 5, 4,  # Z+ face
-		5, 6, 7,
-		4, 1, 0,  # Y- face
-		1, 4, 5,
-		2, 3, 6,  # Y+ face
-		7, 6, 3,
-		0, 2, 4,  # X- face
-		6, 4, 2,
-		5, 3, 1,  # X+ face
-		3, 5, 7,
+		0, 1, 2, 3, 2, 1,  # Z- face
+		6, 5, 4, 5, 6, 7,  # Z+ face
+		4, 1, 0, 1, 4, 5,  # Y- face
+		2, 3, 6, 7, 6, 3,  # Y+ face
+		0, 2, 4, 6, 4, 2,  # X- face
+		5, 3, 1, 3, 5, 7,  # X+ face
 	])
-	var arrays := []
-	var _resize := arrays.resize(Mesh.ARRAY_MAX)
-	arrays[Mesh.ARRAY_VERTEX] = vertices
-	arrays[Mesh.ARRAY_INDEX] = indices
-	var mesh := ArrayMesh.new()
-	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
-	var mesh_instance := MeshInstance3D.new()
-	mesh_instance.mesh = mesh
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	for i in indices.size():
+		st.add_vertex(vertices[indices[i]])
+	var mesh := st.commit()
 	var mat := generate_default_material()
 	mat.albedo_color = color
 	mesh.surface_set_material(0, mat)
+	var mesh_instance := MeshInstance3D.new()
+	mesh_instance.mesh = mesh
 	return mesh_instance
 
 
@@ -345,12 +317,12 @@ func get_mesh_armco() -> MeshInstance3D:
 	return mesh_instance
 
 
-func get_mesh_arrow(axo_index: InSim.AXOIndex, color: Color) -> MeshInstance3D:
+func get_mesh_arrow(color: Color) -> MeshInstance3D:
 	if (
-		axo_index != InSim.AXOIndex.AXO_PIT_START_POINT
+		index != InSim.AXOIndex.AXO_PIT_START_POINT
 		and (
-			axo_index < InSim.AXOIndex.AXO_CHALK_AHEAD
-			or axo_index > InSim.AXOIndex.AXO_CHALK_RIGHT3
+			index < InSim.AXOIndex.AXO_CHALK_AHEAD
+			or index > InSim.AXOIndex.AXO_CHALK_RIGHT3
 		)
 	):
 		return MeshInstance3D.new()
@@ -463,6 +435,43 @@ func get_mesh_arrow(axo_index: InSim.AXOIndex, color: Color) -> MeshInstance3D:
 	var mesh := st.commit()
 	var mat := generate_default_material()
 	mat.albedo_color = color
+	mesh.surface_set_material(0, mat)
+	var mesh_instance := MeshInstance3D.new()
+	mesh_instance.mesh = mesh
+	return mesh_instance
+
+
+func get_mesh_bale() -> MeshInstance3D:
+	const WIDTH := 1.52
+	const LENGTH := 0.67
+	const HEIGHT := 0.63
+	var vertices_base := PackedVector3Array([
+		Vector3(-0.5 * WIDTH, -LENGTH, 0),
+		Vector3(0.5 * WIDTH, -LENGTH, 0),
+		Vector3(-0.5 * WIDTH, 0, 0),
+		Vector3(0.5 * WIDTH, 0, 0),
+		Vector3(-0.5 * WIDTH, -LENGTH, HEIGHT),
+		Vector3(0.5 * WIDTH, -LENGTH, HEIGHT),
+		Vector3(-0.5 * WIDTH, 0, HEIGHT),
+		Vector3(0.5 * WIDTH, 0, HEIGHT),
+	])
+	var indices_base := PackedInt32Array([
+		0, 1, 2, 3, 2, 1,  # Z- face
+		6, 5, 4, 5, 6, 7,  # Z+ face
+		4, 1, 0, 1, 4, 5,  # Y- face
+		2, 3, 6, 7, 6, 3,  # Y+ face
+		0, 2, 4, 6, 4, 2,  # X- face
+		5, 3, 1, 3, 5, 7,  # X+ face
+	])
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	st.set_smooth_group(-1)
+	for i in indices_base.size():
+		st.add_vertex(vertices_base[indices_base[i]])
+	st.generate_normals()
+	var mesh := st.commit()
+	var mat := generate_default_material()
+	mat.albedo_color = Color.BURLYWOOD
 	mesh.surface_set_material(0, mat)
 	var mesh_instance := MeshInstance3D.new()
 	mesh_instance.mesh = mesh
