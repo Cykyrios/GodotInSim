@@ -5,6 +5,8 @@ extends RefCounted
 ##
 ## Describes an SMX object as included in an [SMXFile].
 
+const STRUCT_SIZE := 24
+const POSITION_MULTIPLIER := 65536.0
 
 var centre_x := 0
 var centre_y := 0
@@ -25,4 +27,10 @@ func _to_string() -> String:
 
 
 func fill_centre_vector() -> void:
-	centre = Vector3(centre_x, centre_y, centre_z) / 65536
+	centre = Vector3(centre_x, centre_y, centre_z) / POSITION_MULTIPLIER
+
+
+func fill_xyz() -> void:
+	centre_x = roundi(centre.x * POSITION_MULTIPLIER)
+	centre_y = roundi(centre.y * POSITION_MULTIPLIER)
+	centre_z = roundi(centre.z * POSITION_MULTIPLIER)

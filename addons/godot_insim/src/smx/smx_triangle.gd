@@ -5,6 +5,7 @@ extends RefCounted
 ##
 ## Triangle data included in an [SMXObject].
 
+const STRUCT_SIZE := 8
 var vertex_a := 0
 var vertex_b := 0
 var vertex_c := 0
