@@ -1,0 +1,22 @@
+[gd_scene load_steps=2 format=3 uid="uid://cuusnln4ls54"]
+
+[ext_resource type="Script" uid="uid://blnwa3v20ocj2" path="res://addons/godot_insim/demo/packet_logger/demo_packet_logger.gd" id="1_7h18d"]
+
+[node name="DemoPacketLogger" type="MarginContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_7h18d")
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+layout_mode = 2
+
+[node name="Label" type="RichTextLabel" parent="PanelContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/default_color = Color(0.588235, 0.588235, 0.588235, 1)
+bbcode_enabled = true
+scroll_following = true
+threaded = true

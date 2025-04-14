@@ -1,0 +1,54 @@
+[gd_scene load_steps=5 format=3 uid="uid://dwygbkbdnk3ab"]
+
+[ext_resource type="Script" uid="uid://dwcsknf5bwke7" path="res://addons/godot_insim/demo/layout_viewer/demo_layout_viewer.gd" id="1_3pk8w"]
+
+[sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_2u2qb"]
+energy_multiplier = 2.0
+
+[sub_resource type="Sky" id="Sky_84r5r"]
+sky_material = SubResource("PhysicalSkyMaterial_2u2qb")
+radiance_size = 4
+
+[sub_resource type="Environment" id="Environment_3pk8w"]
+background_mode = 2
+sky = SubResource("Sky_84r5r")
+ambient_light_source = 3
+ambient_light_color = Color(0.25, 0.25, 0.25, 1)
+reflected_light_source = 2
+tonemap_mode = 4
+ssao_enabled = true
+fog_density = 0.005
+adjustment_enabled = true
+adjustment_contrast = 1.1
+adjustment_saturation = 1.25
+
+[node name="DemoLayoutViewer" type="Node3D"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
+script = ExtResource("1_3pk8w")
+track_dir = "/home/cyril/Documents/LFS/LFS_SMX_6H/"
+layout_dir = "/home/cyril/.wine/drive_c/LFS/data/layout/"
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_3pk8w")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.696953, -0.177349, -0.694841, 0.284303, -0.957871, -0.0406836, -0.658353, -0.2259, 0.718011, 0, 0, 0)
+shadow_enabled = true
+shadow_bias = 0.05
+shadow_normal_bias = 0.0
+directional_shadow_blend_splits = true
+directional_shadow_max_distance = 400.0
+directional_shadow_pancake_size = 1.0
+
+[node name="Camera3D" type="Camera3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(0.906308, 0.271654, -0.323744, -0.422618, 0.582563, -0.694272, 0, 0.766044, 0.642788, -8, -16, 20)
+rotation_order = 4
+keep_aspect = 0
+fov = 60.0
+
+[node name="Track" type="Node3D" parent="."]
+unique_name_in_owner = true
+
+[node name="Layout" type="Node3D" parent="."]
+unique_name_in_owner = true
