@@ -36,7 +36,7 @@ func save_pth_to_png(
 	var camera := Camera2D.new()
 	viewport.add_child(camera)
 	camera.zoom = Vector2.ONE * viewport_size / VIEWPORT_SCALE
-	var mesh := pth_file.get_pth_2d_mesh()
+	var mesh := pth_file.get_2d_mesh()
 	pth_file.update_2d_mesh(mesh, line_width * VIEWPORT_SCALE / viewport_size, line_color, road_color, limits_color)
 	if not include_line:
 		mesh.get_child(2).queue_free()

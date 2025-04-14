@@ -45,7 +45,7 @@ static func load_from_file(path: String) -> PTHFile:
 ## from connecting the [PTHNode]s in the file. The polygons represent the "outer limits" and the
 ## "road limits", while the line follows the center nodes.
 ## If [member nodes] is empty, returns empty mesh instances.
-func get_pth_2d_mesh() -> Node2D:
+func get_2d_mesh() -> Node2D:
 	var pth_mesh := Node2D.new()
 	for i in 2:
 		var polygon := Polygon2D.new()
@@ -84,7 +84,7 @@ func get_pth_2d_mesh() -> Node2D:
 ## the [PTHNode]s in the file. The first mesh is a line following the center nodes.
 ## The following triangle-based meshes represent the "road limits" and the "outer limits".
 ## If [member nodes] is empty, returns empty mesh instances.
-func get_pth_3d_mesh() -> Node3D:
+func get_3d_mesh() -> Node3D:
 	var pth_mesh := Node3D.new()
 	for i in 3:
 		var mesh_instance := MeshInstance3D.new()
@@ -130,7 +130,7 @@ func get_pth_3d_mesh() -> Node3D:
 
 
 ## Updates the colors of the polygons and the line's color and width. You must pass
-## [param pth_mesh] as obtained from [method get_pth_2d_mesh].
+## [param pth_mesh] as obtained from [method get_2d_mesh].
 func update_2d_mesh(
 	pth_mesh: Node2D, line_width := 2.0, line_color := Color.RED, road_color := Color.WHITE,
 	limits_color := Color.DIM_GRAY
@@ -141,7 +141,7 @@ func update_2d_mesh(
 		or pth_mesh.get_child(1) is not Polygon2D
 		or pth_mesh.get_child(2) is not Line2D
 	):
-		push_warning("Unexpected input mesh, see PTHFile.get_pth_2d_mesh()")
+		push_warning("Unexpected input mesh, see PTHFile.get_2d_mesh()")
 		return
 	var line := pth_mesh.get_child(2) as Line2D
 	line.width = line_width
@@ -151,7 +151,7 @@ func update_2d_mesh(
 
 
 ## Updates the colors of the 3 meshes making the PTH mesh. You must pass [param pth_mesh]
-## as obtained from [method get_pth_3d_mesh].
+## as obtained from [method get_3d_mesh].
 func update_3d_mesh(
 	pth_mesh: Node3D, line_color := Color.RED, road_color := Color.WHITE,
 	limits_color := Color.DIM_GRAY
@@ -160,7 +160,7 @@ func update_3d_mesh(
 		pth_mesh.get_children().any(func(child: Node) -> bool: return child is not MeshInstance3D)
 		or pth_mesh.get_child_count() != 3
 	):
-		push_warning("Unexpected input mesh, see PTHFile.get_pth_3d_mesh()")
+		push_warning("Unexpected input mesh, see PTHFile.get_3d_mesh()")
 		return pth_mesh
 	var mesh_line := pth_mesh.get_child(0) as MeshInstance3D
 	(mesh_line.mesh.surface_get_material(0) as StandardMaterial3D) \
