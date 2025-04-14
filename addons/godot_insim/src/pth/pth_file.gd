@@ -16,7 +16,7 @@ var nodes: Array[PTHNode] = []
 
 ## Creates and returns a [PTHFile] parsed from [param path]. If the file cannot be read, an empty
 ## [PTHFile] is returned. If the header is invalid, [member nodes] will be empty.
-static func load_from_path(path: String) -> PTHFile:
+static func load_from_file(path: String) -> PTHFile:
 	var file := FileAccess.open(path, FileAccess.READ)
 	var error := FileAccess.get_open_error()
 	if error != OK:
