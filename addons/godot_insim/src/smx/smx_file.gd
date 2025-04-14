@@ -26,6 +26,8 @@ var cp_indices: Array[int] = []
 
 var objects: Array[SMXObject] = []
 
+var triangle_mesh := TriangleMesh.new()
+
 
 ## Creates and returns a [SMXFile] from the file at [param path]. An empty [SMXFile] is returned
 ## if the file cannot be loaded.
@@ -119,8 +121,42 @@ func get_mesh() -> Node3D:
 		arrays[Mesh.ARRAY_VERTEX] = vertices
 		arrays[Mesh.ARRAY_COLOR] = colors
 		mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
-		mesh.surface_set_material(mesh.get_surface_count() - 1, mat)
+		mesh.surface_set_material(0, mat)
 	return track_mesh
+
+
+## Performs a raycast query against the SMX mesh and, if an intersection is found, updates
+## the [param mesh]'s position and orientation to match the ground's altitude and normal direction.
+## The base position of the raycast is determined by the [param object]'s position.[br]
+## [br]
+## [u]Note:[/u] A check for the non-floating status of the [param object] should be performed
+## prior to calling this function; as a reminder, concrete objects are always floating, and
+## other objects should only be checked for ground contact if they do not have the
+## [code]0x80[/code] bit set in their [member LYTObject.flags].
+func place_object_on_ground(mesh: MeshInstance3D, object: LYTObject) -> void:
+	var raycast_result := raycast_from_position(object.gis_position)
+	if not raycast_result.is_empty():
+		mesh.position = raycast_result["position"]
+		var normal := raycast_result["normal"] as Vector3
+		var basis_x := Vector3(1, 0, 0).rotated(Vector3(0, 0, 1), object.gis_heading)
+		var basis_z := normal if normal.dot(Vector3(0, 0, 1)) > 0 else -normal
+		var basis_y := basis_z.cross(basis_x)
+		basis_x = basis_y.cross(basis_z)
+		mesh.basis = Basis(basis_x, basis_y, basis_z)
+
+
+## Casts a ray from [param position] to check for intersection with the SMX mesh. Casts the ray
+## down first (along -Z) from 2 meters above the given [param position] (as per LFS documentation
+## for the LYT format), then up if no intersection is found. Returns a [Dictionary]
+## with the intersection location (if any) and the corresponding face normal.[br]
+## See [method TriangleMesh.intersect_ray] for details.
+func raycast_from_position(position: Vector3) -> Dictionary:
+	if not triangle_mesh:
+		update_triangle_mesh()
+	var result := triangle_mesh.intersect_ray(position + Vector3(0, 0, 2), Vector3(0, 0, -1))
+	if result.is_empty():
+		result = triangle_mesh.intersect_ray(position, Vector3(0, 0, 1))
+	return result
 
 
 ## Saves the [SMXFile] to [param path]. This is mainly intended for modifying or creating new
@@ -175,3 +211,15 @@ func save_to_file(path: String) -> void:
 	var success := file.store_buffer(buffer)
 	if not success:
 		push_error("Failed to write SMX data to file.")
+
+
+## Updates the [TriangleMesh] corresponding to the currently loaded [SMXFile]. This is required
+## for raycast queries such as [method raycast_from_position].
+func update_triangle_mesh() -> void:
+	var mesh := get_mesh()
+	var triangles := PackedVector3Array()
+	for mesh_instance: MeshInstance3D in mesh.get_children():
+		triangles.append_array(mesh_instance.mesh.get_faces())
+	var success := triangle_mesh.create_from_faces(triangles)
+	if not success:
+		push_error("Failed to build BVH for SMX file.")
