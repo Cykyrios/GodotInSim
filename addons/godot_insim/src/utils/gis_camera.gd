@@ -3,20 +3,26 @@ extends RefCounted
 
 ## GISCamera - Utility functions for camera manipulation and conversion
 ##
-## This class provides utility functions to manipulate Godot cameras from LFS via [InSimCCPPacket],
+## This class provides utility functions to manipulate Godot cameras from LFS via [InSimCPPPacket]
 ## and [code]/cp[/code] strings, and to set LFS's camera from a Godot camera.[br]
-## Transformation functions expect an [code]aspect_ratio[/code] parameter which defaults to 16/9.
-## This parameter is required to convert from LFS's horizontal FoV to Godot's vertical FoV
-## [br][br]
+## [br]
+## [u][b]Important note:[/b][/u] LFS uses horizontal FoV in order to make multi-monitor setups
+## easy to work with. Godot, on the other hand, defaults to vertical FoV; you can either switch
+## cameras to [code]Keep Width[/code], and ignore the [code]aspect_ratio[/code] parameter in
+## conversion functions (as long as your application window has the same aspect ratio as LFS),
+## or keep the default [code]Keep Height[/code] and provide the aspect ratio.
+## The expected use in both cases is to have the same aspect ratio on both LFS and Godot.[br]
+## [br]
 ## [u][b]Note:[/b][/u] The functions in this class do not convert from the LFS coordinates
-## (Y forward, Z up) to Godot coordinates (Y up, Z backward); the easiest way to obtain the
-## expected result is to have your entire scene parented to a [Node3D] rotated -90 degrees.
+## (Y forward, Z up) to Godot coordinates (Y up, Z backward); if you want your scene to still
+## have Y up, the easiest way to obtain the expected result is to have your entire scene
+## parented to a [Node3D] rotated -90 degrees.
 
 ## Returns a [code]/cp[/code] string that can be pasted into LFS to set its camera,
 ## based on the passed [param camera]. [param aspect_ratio] is used to correct for horizontal fov
 ## vs vertical fov, and should match both your LFS resolution and your Godot application resolution
 ## in order to get a perfect match.
-static func cp_string_from_camera(camera: Camera3D, aspect_ratio := 16 / 9.0) -> String:
+static func cp_string_from_camera(camera: Camera3D, aspect_ratio := 1.0) -> String:
 	var position := Vector3i((camera.position * InSimCPPPacket.POSITION_MULTIPLIER).round())
 	var angles := camera.basis.get_euler(EULER_ORDER_ZXY)
 	return "/cp %d %d %d %d %d %.1f %.1f" % [
@@ -32,7 +38,7 @@ static func cp_string_from_camera(camera: Camera3D, aspect_ratio := 16 / 9.0) ->
 
 ## Returns an [InSimCPPPacket] based on the passed [param camera]. The packet swtiches to Shift U
 ## free camera by default.
-static func cpp_packet_from_camera(camera: Camera3D, aspect_ratio := 16 / 9.0) -> InSimCPPPacket:
+static func cpp_packet_from_camera(camera: Camera3D, aspect_ratio := 1.0) -> InSimCPPPacket:
 	var angles := camera.basis.rotated(camera.basis.x, -PI / 2).get_euler(EULER_ORDER_ZXY)
 	angles.y = -angles.y
 	return InSimCPPPacket.create_from_gis_values(
@@ -48,9 +54,7 @@ static func cpp_packet_from_camera(camera: Camera3D, aspect_ratio := 16 / 9.0) -
 
 ## Returns a [Camera3D] matching the parameters in the camera [param packet]. This is especially
 ## useful to interpolate your own camera to this one, e.g. using a [Tween].
-static func get_camera_from_cpp_packet(
-	packet: InSimCPPPacket, aspect_ratio := 16 / 9.0
-) -> Camera3D:
+static func get_camera_from_cpp_packet(packet: InSimCPPPacket, aspect_ratio := 1.0) -> Camera3D:
 	var camera := Camera3D.new()
 	camera.rotation_order = EULER_ORDER_ZXY
 	camera.fov = fov_lfs_to_camera(packet.fov, aspect_ratio)
@@ -67,7 +71,7 @@ static func get_camera_from_cpp_packet(
 ## on global coordinates). [param plid_offset] can be obtained from an [InSimMCIPacket] that you
 ## need to request separately.
 static func set_camera_from_cpp_packet(
-	camera: Camera3D, packet: InSimCPPPacket, plid_offset := Vector3.ZERO, aspect_ratio := 16 / 9.0
+	camera: Camera3D, packet: InSimCPPPacket, plid_offset := Vector3.ZERO, aspect_ratio := 1.0
 ) -> void:
 	var new_camera := get_camera_from_cpp_packet(packet, aspect_ratio)
 	camera.fov = new_camera.fov
@@ -83,7 +87,7 @@ static func set_camera_from_cpp_packet(
 ## vertical fov, and should match both your LFS resolution and your Godot application resolution
 ## in order to get a perfect match.
 static func set_camera_from_cp_string(
-	camera: Camera3D, cp_string: String, aspect_ratio := 16 / 9.0
+	camera: Camera3D, cp_string: String, aspect_ratio := 1.0
 ) -> void:
 	var regex := RegEx.create_from_string(
 		r"(?:/cp) (-?\d+) (-?\d+) (-?\d+) (-?\d+) (-?\d+) (-?\d+.?\d+) (-?\d+.?\d+)"
