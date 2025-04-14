@@ -799,7 +799,7 @@ func get_mesh_cone() -> MeshInstance3D:
 		InSim.AXOIndex.AXO_CONE_GREEN2:
 			color = Color.GREEN
 		InSim.AXOIndex.AXO_CONE_ORANGE:
-			color = Color.ORANGE
+			color = Color.DARK_ORANGE
 		InSim.AXOIndex.AXO_CONE_WHITE:
 			color = Color.WHITE
 		InSim.AXOIndex.AXO_CONE_YELLOW:
@@ -1288,9 +1288,9 @@ func get_mesh_post() -> MeshInstance3D:
 	var color := Color.BLACK
 	match index:
 		InSim.AXOIndex.AXO_POST_GREEN:
-			color = Color.GREEN
+			color = Color.WEB_GREEN
 		InSim.AXOIndex.AXO_POST_ORANGE:
-			color = Color.ORANGE
+			color = Color.DARK_ORANGE
 		InSim.AXOIndex.AXO_POST_RED:
 			color = Color.RED
 		InSim.AXOIndex.AXO_POST_WHITE:

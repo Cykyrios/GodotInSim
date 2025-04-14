@@ -17,10 +17,10 @@ enum TyreColor {
 const COLORS: Array[Color] = [
 	Color(0.2, 0.2, 0.2),
 	Color.LIGHT_GRAY,
-	Color.RED,
+	Color(0.7, 0.25, 0.15),
 	Color.ROYAL_BLUE,
 	Color.SEA_GREEN,
-	Color.GOLD,
+	Color.GOLDENROD,
 ]
 
 var color := TyreColor.BLACK

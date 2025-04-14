@@ -32,7 +32,7 @@ static func create(
 func _get_mesh() -> MeshInstance3D:
 	var mesh_instance := get_mesh_checkpoint(half_width)
 	var mat := mesh_instance.mesh.surface_get_material(0) as StandardMaterial3D
-	mat.albedo_color = Color.YELLOW
+	mat.albedo_color = Color.YELLOW.lightened(0.5)
 	return mesh_instance
 
 
