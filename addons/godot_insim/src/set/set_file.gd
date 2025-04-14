@@ -294,7 +294,7 @@ func load_from_file(path: String) -> void:
 	var file := FileAccess.open(path, FileAccess.READ)
 	if not file:
 		var error := FileAccess.get_open_error()
-		print("File open error %d" % error)
+		push_error("File open error %d" % [error])
 		return
 	decode_setup_buffer(file.get_buffer(file.get_length()))
 
@@ -303,10 +303,10 @@ func save_to_file(path: String) -> void:
 	var file := FileAccess.open(path, FileAccess.WRITE)
 	if not file:
 		var error := FileAccess.get_open_error()
-		print("File open error %d" % [error])
+		push_error("File open error %d" % [error])
 		return
 	if not file.store_buffer(encode_setup_buffer()):
-		print("Failed to write setup to file")
+		push_error("Failed to write setup to file")
 
 
 func update_flags() -> void:

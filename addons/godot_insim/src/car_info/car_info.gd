@@ -91,7 +91,7 @@ static func load_car_info(path: String) -> CarInfo:
 	var file := FileAccess.open(path, FileAccess.READ)
 	if not file:
 		var error := FileAccess.get_open_error()
-		print("File open error %d" % error)
+		push_error("File open error %d" % [error])
 		return null
 	var car_info := CarInfo.new()
 	car_info.decode_car_info(file.get_buffer(file.get_length()))
