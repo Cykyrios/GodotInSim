@@ -4,7 +4,13 @@ extends RefCounted
 ## GISCamera - Utility functions for camera manipulation and conversion
 ##
 ## This class provides utility functions to manipulate Godot cameras from LFS via [InSimCCPPacket],
-## and [code]/cp[/code] strings, and to set LFS's camera from a Godot camera.
+## and [code]/cp[/code] strings, and to set LFS's camera from a Godot camera.[br]
+## Transformation functions expect an [code]aspect_ratio[/code] parameter which defaults to 16/9.
+## This parameter is required to convert from LFS's horizontal FoV to Godot's vertical FoV
+## [br][br]
+## [u][b]Note:[/b][/u] The functions in this class do not convert from the LFS coordinates
+## (Y forward, Z up) to Godot coordinates (Y up, Z backward); the easiest way to obtain the
+## expected result is to have your entire scene parented to a [Node3D] rotated -90 degrees.
 
 ## Returns a [code]/cp[/code] string that can be pasted into LFS to set its camera,
 ## based on the passed [param camera]. [param aspect_ratio] is used to correct for horizontal fov
@@ -13,14 +19,13 @@ extends RefCounted
 static func cp_string_from_camera(camera: Camera3D, aspect_ratio := 16 / 9.0) -> String:
 	var position := Vector3i((camera.position * InSimCPPPacket.POSITION_MULTIPLIER).round())
 	var angles := camera.basis.get_euler(EULER_ORDER_ZXY)
-	var fov := 2 * rad_to_deg(atan(tan(deg_to_rad(camera.fov) / 2) * aspect_ratio))
 	return "/cp %d %d %d %d %d %.1f %.1f" % [
 		position.x,
 		position.y,
 		position.z,
-		rad_to_deg(roundi(angles.x * InSimCPPPacket.ANGLE_MULTIPLIER)),
+		roundi((rad_to_deg(angles.z) - 180) * InSimCPPPacket.ANGLE_MULTIPLIER),
+		roundi((90 - rad_to_deg(angles.x)) * InSimCPPPacket.ANGLE_MULTIPLIER),
 		rad_to_deg(angles.y),
-		rad_to_deg(roundi(angles.z * InSimCPPPacket.ANGLE_MULTIPLIER)),
 		fov_camera_to_lfs(camera.fov, aspect_ratio)
 	]
 
@@ -28,7 +33,7 @@ static func cp_string_from_camera(camera: Camera3D, aspect_ratio := 16 / 9.0) ->
 ## Returns an [InSimCPPPacket] based on the passed [param camera]. The packet swtiches to Shift U
 ## free camera by default.
 static func cpp_packet_from_camera(camera: Camera3D, aspect_ratio := 16 / 9.0) -> InSimCPPPacket:
-	var angles := camera.basis.get_euler(EULER_ORDER_ZXY)
+	var angles := camera.basis.rotated(camera.basis.x, -PI / 2).get_euler(EULER_ORDER_ZXY)
 	angles.y = -angles.y
 	return InSimCPPPacket.create_from_gis_values(
 		camera.position,
@@ -47,11 +52,10 @@ static func get_camera_from_cpp_packet(
 	packet: InSimCPPPacket, aspect_ratio := 16 / 9.0
 ) -> Camera3D:
 	var camera := Camera3D.new()
+	camera.rotation_order = EULER_ORDER_ZXY
 	camera.fov = fov_lfs_to_camera(packet.fov, aspect_ratio)
-	var angles := packet.gis_angles
-	angles.y = -angles.y
-	angles.x += PI / 2
-	var basis := Basis.from_euler(angles, EULER_ORDER_ZXY)
+	var basis := Basis.from_euler(packet.gis_angles, EULER_ORDER_ZXY)
+	basis = basis.rotated(basis.x, PI / 2)
 	camera.transform = Transform3D(basis, packet.gis_position)
 	return camera
 
@@ -67,22 +71,18 @@ static func set_camera_from_cpp_packet(
 ) -> void:
 	var new_camera := get_camera_from_cpp_packet(packet, aspect_ratio)
 	camera.fov = new_camera.fov
-	var angles := packet.gis_angles
-	angles.y = -angles.y
-	angles.x += PI / 2
-	var basis := Basis.from_euler(angles, EULER_ORDER_ZXY)
 	var offset := plid_offset if (
 		packet.flags & InSim.State.ISS_SHIFTU_FOLLOW
 		or not packet.flags & InSim.State.ISS_SHIFTU
 	) else Vector3.ZERO
-	camera.transform = Transform3D(basis, packet.gis_position + offset)
+	camera.transform = Transform3D(new_camera.basis, packet.gis_position + offset)
 
 
 ## Updates the given [param camera] to match the passed [param cp_string] (as obtained by typing
 ## [code]/cp[/code] in LFS). [param aspect_ratio] is used to correct for horizontal fov vs
 ## vertical fov, and should match both your LFS resolution and your Godot application resolution
 ## in order to get a perfect match.
-static func set_camera_from_lfs_string(
+static func set_camera_from_cp_string(
 	camera: Camera3D, cp_string: String, aspect_ratio := 16 / 9.0
 ) -> void:
 	var regex := RegEx.create_from_string(
@@ -96,18 +96,16 @@ static func set_camera_from_lfs_string(
 		result.strings[2].to_int(),
 		result.strings[3].to_int()
 	) / InSimCPPPacket.POSITION_MULTIPLIER
-	camera.rotation_order = EULER_ORDER_ZXY
-	camera.rotation = Vector3(
+	var angles := Vector3(
 		deg_to_rad(90 - result.strings[5].to_int() / InSimCPPPacket.ANGLE_MULTIPLIER),
 		deg_to_rad(result.strings[6].to_float()),
 		deg_to_rad(wrapf(
 			180 + result.strings[4].to_int() / InSimCPPPacket.ANGLE_MULTIPLIER, -180, 180
 		))
 	)
+	camera.rotation_order = EULER_ORDER_ZXY
+	camera.basis = Basis.from_euler(angles, EULER_ORDER_ZXY)
 	camera.fov = fov_lfs_to_camera(result.strings[7].to_float(), aspect_ratio)
-	#camera.fov = 2 * rad_to_deg(atan(
-		#tan(deg_to_rad(result.strings[7].to_float()) / 2.0) / aspect_ratio
-	#))
 
 
 ## Converts the given [param fov] to LFS format. In order to get a perfect match,
