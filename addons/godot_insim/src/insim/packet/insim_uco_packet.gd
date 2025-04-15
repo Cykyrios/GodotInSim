@@ -64,7 +64,7 @@ func _get_pretty_text() -> String:
 	var checkpoint_id := 0
 	if uco_action in [InSim.UCOAction.UCO_CP_FWD, InSim.UCOAction.UCO_CP_REV]:
 		if info.index == 252:
-			checkpoint_id = info.flags && 0b11
+			checkpoint_id = info.flags & 0b11
 	var action_string := ("%s circle %d" % ["entered" if uco_action == \
 			InSim.UCOAction.UCO_CIRCLE_ENTER else "exited", info.heading]) if uco_action in \
 			[InSim.UCOAction.UCO_CIRCLE_ENTER, InSim.UCOAction.UCO_CIRCLE_LEAVE] \
