@@ -906,7 +906,7 @@ const RELAY_PORT := 47474
 var lfs_connection: LFSConnection = null
 var nlp_mci_connection: LFSConnectionUDP = null
 var is_relay := false
-var initialization_data: InSimInitializationData = null
+var initialization_data := InSimInitializationData.new()
 
 var insim_connected := false
 var ping_timer: Timer = null
