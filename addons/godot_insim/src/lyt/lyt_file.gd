@@ -128,6 +128,30 @@ static func load_from_file(path: String) -> LYTFile:
 	return layout
 
 
+## Returns an array of [InSimAXMPacket] containing the layout data, to be sent and added to LFS.
+func get_axm_packets(ucid := 0) -> Array[InSimAXMPacket]:
+	var axm_packets: Array[InSimAXMPacket] = []
+	for i in int(objects.size() as float / InSimAXMPacket.MAX_OBJECTS) + 1:
+		var packet_objects: Array[ObjectInfo] = []
+		for o in InSimAXMPacket.MAX_OBJECTS:
+			var object_idx := i * InSimAXMPacket.MAX_OBJECTS + o
+			if object_idx >= objects.size():
+				break
+			var object := objects[object_idx]
+			packet_objects.append(ObjectInfo.create(
+				object.x, object.y, object.z, object.heading, object.flags, object.index
+			))
+		var packet := InSimAXMPacket.create(
+			packet_objects.size(),
+			ucid,
+			InSim.PMOAction.PMO_ADD_OBJECTS,
+			0,
+			packet_objects
+		)
+		axm_packets.append(packet)
+	return axm_packets
+
+
 ## Saves the layout to a file at [param path]. Forces [member flags] to indicate the most recent
 ## format (bits 0, 1 and 2 set).
 func save_to_file(path: String) -> void:
