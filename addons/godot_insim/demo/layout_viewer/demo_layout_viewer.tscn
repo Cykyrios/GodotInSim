@@ -25,8 +25,6 @@ adjustment_saturation = 1.25
 [node name="DemoLayoutViewer" type="Node3D"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
 script = ExtResource("1_3pk8w")
-track_dir = "/home/cyril/Documents/LFS/LFS_SMX_6H/"
-layout_dir = "/home/cyril/.wine/drive_c/LFS/data/layout/"
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_3pk8w")
