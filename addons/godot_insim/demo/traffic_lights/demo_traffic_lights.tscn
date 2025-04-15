@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://dwf8hp0fe3j7y"]
+
+[ext_resource type="Script" uid="uid://ppryv72l1jjq" path="res://addons/godot_insim/demo/traffic_lights/demo_traffic_lights.gd" id="1_g5u1g"]
+
+[node name="DemoLights" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_g5u1g")
