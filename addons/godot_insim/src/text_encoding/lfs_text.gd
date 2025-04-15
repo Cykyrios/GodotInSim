@@ -290,7 +290,8 @@ static func get_mso_start(mso_packet: InSimMSOPacket, insim: InSim) -> int:
 	if mso_packet.text_start == 0:
 		# /me message, always returns 0
 		return 0
-	const FORMATTING_LENGTH := 9  # length of LFS formatting: "^7 ^7: ^8"
+	var colored_mso := insim.initialization_data.flags & InSim.InitFlag.ISF_MSO_COLS as bool
+	var formatting_length := 9 if colored_mso else 3  # length of LFS formatting: "^7 ^7: ^8"
 	var use_plid := true if mso_packet.plid != 0 else false
 	var id := "%s %d" % [
 		"PLID" if use_plid else "UCID",
@@ -299,7 +300,9 @@ static func get_mso_start(mso_packet: InSimMSOPacket, insim: InSim) -> int:
 	id = replace_plid_with_name(id, insim, false) if use_plid \
 			else replace_ucid_with_name(id, insim, false, false)
 	id = id.trim_suffix("^9")
-	return id.length() + FORMATTING_LENGTH
+	if not colored_mso:
+		id = strip_colors(id)
+	return id.length() + formatting_length
 
 
 ## Returns a regular expression matching ANSI escape sequences for foreground color.

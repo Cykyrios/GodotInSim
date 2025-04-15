@@ -299,15 +299,26 @@ func test_get_mso_start(player_name: String, message: String, test_parameters :=
 	player.player_name = player_name
 	player.ucid = UCID
 	insim.players = {PLID: player}
-	for i in 3:  # Send via UCID, then via PLID, then /me via PLID
-		var expected := message if i < 2 else "%s ^8%s" % [player_name, message]
-		var mso := InSimMSOPacket.new()
-		mso.ucid = UCID
-		mso.plid = PLID if i > 0 else 0
-		mso.msg = ("^7%s ^7: ^8%s" if i < 2 else "%s ^8%s") % [player_name, message]
-		mso.text_start = 1 if i < 2 else 0
-		var _test := assert_str(mso.msg.substr(LFSText.get_mso_start(mso, insim))) \
-				.is_equal(expected)
+	for i in 2:
+		if i == 1:
+			insim.initialization_data.flags |= InSim.InitFlag.ISF_MSO_COLS
+		var colored_mso := insim.initialization_data.flags & InSim.InitFlag.ISF_MSO_COLS as bool
+		for test in 3:  # Send via UCID, then via PLID, then /me via PLID
+			var expected := message if test < 2 else "%s %s%s" % [
+				player_name,
+				"^8" if colored_mso else "",
+				message,
+			]
+			var mso := InSimMSOPacket.new()
+			mso.ucid = UCID
+			mso.plid = PLID if test > 0 else 0
+			mso.msg = ("^7%s ^7: ^8%s" if test < 2 else "%s ^8%s") % [player_name, message]
+			if not colored_mso:
+				mso.msg = LFSText.strip_colors(mso.msg)
+				expected = LFSText.strip_colors(expected)
+			mso.text_start = 1 if test < 2 else 0
+			var _test := assert_str(mso.msg.substr(LFSText.get_mso_start(mso, insim))) \
+					.is_equal(expected)
 
 
 #region unicode/LFS
