@@ -1,0 +1,12 @@
+# Spawn points are defined as a list of name:coordinates pairs, one spawn point
+# per line, with the entire list enclosed in curly brackets.
+# A spawn point's name is defined as follows:
+# "spawn name": (x, y, z, heading_degrees)
+# The coordinates use the same format as the layout editor, but heading must be
+# negated (so 45 degrees in the editor is actually -45 here).
+{
+	"pits": (-135.19, 269.38, 4, 90),
+	"karting": (-415, -34, 17, -171.6),
+	"karting pro": (-693, 170, 21.25, -14.1),
+	"workshops": (-500, 820, 15.5, 83),
+}

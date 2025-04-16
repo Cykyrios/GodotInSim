@@ -18,7 +18,9 @@ an `IS_MSO` packet or an `IS_III` packet respectively. `!` is set as the demo's 
 the `IS_MSO` packet is seen as a prefix message and not displayed to other players.
 
 The teleport command can take the following arguments:
-* Named locations: `service`, `chicane` or `ambulance` (those are preset locations at Blackwood);
+
+* Named locations: refer to the corresponding file in `spawn/track.txt` (all open configs read
+spawn points from the same file, e.g. `WE.txt` for WE1X, WE1Y, WE2X, etc.);
 * Coordinates: `teleport (x, y, z)` where `x`, `y` and `z` are in meters, and `z` is optional;
 * Nothing: `teleport` alone will teleport the player to a random location (often out of bounds).
 

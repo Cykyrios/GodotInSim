@@ -1,0 +1,11 @@
+# Spawn points are defined as a list of name:coordinates pairs, one spawn point
+# per line, with the entire list enclosed in curly brackets.
+# A spawn point's name is defined as follows:
+# "spawn name": (x, y, z, heading_degrees)
+# The coordinates use the same format as the layout editor, but heading must be
+# negated (so 45 degrees in the editor is actually -45 here).
+{
+	"service": (-108.69, 208.56, 9.25, 168.8),
+	"chicane": (128.81, 487.81, 14.75, -164.5),
+	"ambulance": (125.06, -749.81, 2.00, -66.1),
+}
