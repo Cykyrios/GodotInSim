@@ -1,0 +1,36 @@
+[gd_scene load_steps=4 format=3 uid="uid://c8gvhn7hsl08b"]
+
+[ext_resource type="Script" uid="uid://h5w6vn5ucru3" path="res://addons/godot_insim/demo/basic_telemetry/demo_basic_telemetry.gd" id="1_oyb36"]
+[ext_resource type="Script" uid="uid://3wy81f5nuuov" path="res://addons/godot_insim/demo/basic_telemetry/line_chart.gd" id="2_o3vgh"]
+[ext_resource type="Script" uid="uid://cy32nyx8vf76y" path="res://addons/godot_insim/demo/basic_telemetry/g_force_chart.gd" id="3_xtlv1"]
+
+[node name="DemoBasicTelemetry" type="MarginContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_oyb36")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Throttle" type="Control" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("2_o3vgh")
+
+[node name="Brake" type="Control" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("2_o3vgh")
+
+[node name="Steering" type="Control" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("2_o3vgh")
+
+[node name="GForces" type="Control" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+script = ExtResource("3_xtlv1")
