@@ -14,6 +14,7 @@ var vel := Vector3.ZERO
 var pos := Vector3i.ZERO
 
 var gis_position := Vector3.ZERO
+var gis_angles := Vector3.ZERO
 
 
 func _to_string() -> String:
@@ -55,3 +56,4 @@ func set_from_buffer(buffer: PackedByteArray) -> void:
 	vel = Vector3(buffer.decode_float(36), buffer.decode_float(40), buffer.decode_float(44))
 	pos = Vector3i(buffer.decode_u32(48), buffer.decode_u32(52), buffer.decode_u32(56))
 	gis_position = pos / POSITION_MULTIPLIER
+	gis_angles = Vector3(pitch, roll, heading)
