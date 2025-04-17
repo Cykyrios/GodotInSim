@@ -15,6 +15,15 @@ var admin := ""
 var spec := ""
 
 
+static func create(reqi: int, sel_host: String, sel_admin := "", sel_spec := "") -> RelaySELPacket:
+	var packet := RelaySELPacket.new()
+	packet.req_i = reqi
+	packet.host_name = sel_host
+	packet.admin = sel_admin
+	packet.spec = sel_spec
+	return packet
+
+
 func _init() -> void:
 	size = PACKET_SIZE
 	type = PACKET_TYPE

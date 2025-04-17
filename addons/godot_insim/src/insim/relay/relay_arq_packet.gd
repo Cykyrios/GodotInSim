@@ -8,6 +8,12 @@ const PACKET_TYPE := InSim.Packet.IRP_ARQ
 var sp0 := 0
 
 
+static func create(reqi: int) -> RelayARQPacket:
+	var packet := RelayARQPacket.new()
+	packet.req_i = reqi
+	return packet
+
+
 func _init() -> void:
 	size = PACKET_SIZE
 	type = PACKET_TYPE

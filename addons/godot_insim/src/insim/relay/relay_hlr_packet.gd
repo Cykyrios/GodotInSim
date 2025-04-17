@@ -7,6 +7,12 @@ const PACKET_TYPE := InSim.Packet.IRP_HLR
 var sp0 := 0
 
 
+static func create(reqi: int) -> RelayHLRPacket:
+	var packet := RelayHLRPacket.new()
+	packet.req_i = reqi
+	return packet
+
+
 func _init() -> void:
 	size = PACKET_SIZE
 	type = PACKET_TYPE
