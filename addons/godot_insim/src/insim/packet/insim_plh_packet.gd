@@ -29,7 +29,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 		or packet_size > PACKET_MAX_SIZE
 		or packet_size % SIZE_MULTIPLIER != 0
 	):
-		push_error("%s packet expected size [%d..%d step %d], got %d." % [InSim.Packet.keys()[type],
+		push_error("%s packet expected size [%d..%d step %d], got %d." % [get_type_string(),
 				PACKET_MIN_SIZE, PACKET_MAX_SIZE, SIZE_MULTIPLIER, packet_size])
 		return
 	super(packet)

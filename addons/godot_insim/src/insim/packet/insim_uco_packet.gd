@@ -30,7 +30,7 @@ func _init() -> void:
 func _decode_packet(packet: PackedByteArray) -> void:
 	var packet_size := packet.size()
 	if packet_size != PACKET_SIZE:
-		push_error("%s packet expected size %d, got %d." % [InSim.Packet.keys()[type], size, packet_size])
+		push_error("%s packet expected size %d, got %d." % [get_type_string(), size, packet_size])
 		return
 	super(packet)
 	plid = read_byte()

@@ -38,7 +38,7 @@ func get_log_packet_to_screen(packet: InSimPacket, sender := "") -> String:
 	var packet_string := "%s %s %s: %s" % [
 		get_timestamp(),
 		get_packet_direction(sender),
-		InSim.Packet.keys()[packet.type],
+		packet.get_type_string(),
 		packet.get_pretty_text()
 	]
 	packet_string = replace_plid_ucid(packet_string, packet)

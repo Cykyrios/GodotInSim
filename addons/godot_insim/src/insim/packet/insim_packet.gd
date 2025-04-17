@@ -32,7 +32,7 @@ func _init() -> void:
 
 
 func _to_string() -> String:
-	return "%s: %s" % [InSim.Packet.keys()[type], buffer]
+	return "%s: %s" % [get_type_string(), buffer]
 
 
 func _decode_packet(packet_buffer: PackedByteArray) -> void:
@@ -202,7 +202,8 @@ static func create_packet_from_buffer(packet_buffer: PackedByteArray) -> InSimPa
 		InSim.Packet.IRP_SEL:
 			packet = RelaySELPacket.new()
 		_:
-			push_error("%s packets are not supported at this time." % [InSim.Packet.keys()[packet_type]])
+			packet.type = packet_type
+			push_error("%s packets are not supported at this time." % [packet.get_type_string()])
 			return packet
 	packet.decode_packet(packet_buffer)
 	return packet
@@ -234,6 +235,15 @@ func write_header() -> void:
 	add_byte(req_i)
 	add_byte(0)
 	data_offset = HEADER_SIZE - 1
+
+
+## Returns the packet's type (from [enum InSim.Packet]) as a [String], or [code]UNKNOWN[/code]
+## if the type cannot be found.
+func get_type_string() -> String:
+	var index := InSim.Packet.values().find(type)
+	if index == -1:
+		return "UNKNOWN"
+	return InSim.Packet.keys()[index]
 
 
 func update_req_i() -> void:
