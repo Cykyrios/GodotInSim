@@ -978,8 +978,7 @@ func handle_timeout() -> void:
 
 
 func initialize(
-	address: String, port: int, init_data: InSimInitializationData,
-	insim_relay := false, use_udp := false
+	address: String, port: int, init_data: InSimInitializationData, use_udp := false
 ) -> void:
 	initialization_data = init_data
 	if (
@@ -998,12 +997,10 @@ func initialize(
 			lfs_connection = LFSConnectionTCP.new()
 		add_child(lfs_connection)
 		connect_lfs_connection_signals()
-	if insim_relay:
-		address = RELAY_ADDRESS
-		port = RELAY_PORT
-		is_relay = true
-	else:
-		is_relay = false
+	is_relay = (
+		address == RELAY_ADDRESS
+		and port == RELAY_PORT
+	)
 	lfs_connection.connect_to_host(address, port, initialization_data.udp_port)
 
 
@@ -1127,7 +1124,9 @@ func send_ping() -> void:
 
 
 func _on_connected_to_host() -> void:
-	if not is_relay:
+	if is_relay:
+		insim_connected = true
+	else:
 		send_packet(InSimISIPacket.create(
 			initialization_data.udp_port,
 			initialization_data.flags,
@@ -1140,7 +1139,7 @@ func _on_connected_to_host() -> void:
 		if initialization_data.udp_port != 0:
 			nlp_mci_connection.connect_to_host(lfs_connection.address, lfs_connection.udp_port, 0, true)
 		reset_timeout_timer()
-		connected.emit()
+	connected.emit()
 
 
 func _on_connection_failed() -> void:
