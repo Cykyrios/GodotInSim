@@ -13,6 +13,10 @@ config_version=5
 config/name="GodotInSim"
 config/features=PackedStringArray("4.5")
 config/icon="uid://e0lf5wuickv6"
+run/main_scene.demo_telemetry="uid://c8gvhn7hsl08b"
+run/main_scene.demo_layout_viewer="uid://dwygbkbdnk3ab"
+run/main_scene.demo_pth_viewer="uid://dtisgqwapb6ru"
+run/main_scene.demo_relay="uid://cuusnln4ls54"
 
 [debug]
 
@@ -22,6 +26,10 @@ gdscript/warnings/unsafe_property_access=1
 gdscript/warnings/unsafe_method_access=1
 gdscript/warnings/unsafe_call_argument=1
 gdscript/warnings/return_value_discarded=1
+
+[display]
+
+window/per_pixel_transparency/allowed.transparency=true
 
 [editor_plugins]
 
@@ -36,3 +44,7 @@ templates/testsuite/GDScript="extends GdUnitTestSuite
 const __source = \"${source_resource_path}\"
 "
 report/godot/push_error=true
+
+[rendering]
+
+viewport/transparent_background.transparency=true
