@@ -4,3 +4,4 @@
 # Submodule and plugin management
 .submodules/
 addons/gdUnit4
+/build/
