@@ -929,6 +929,8 @@ var lfs_state := LFSState.new()
 var connections: Dictionary[int, Connection] = {}
 ## Dictionary of PLID/UCID pairs, updated automatically.
 var players: Dictionary[int, Player] = {}
+## Dictionary of UCID/[InSimButtonDictionary] pairs containing all known [InSimButton] objects.
+var buttons := InSimButtons.new()
 
 
 func _init() -> void:
