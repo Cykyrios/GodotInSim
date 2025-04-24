@@ -489,6 +489,16 @@ enum ButtonClick {
 	ISB_CTRL = 4,  ## ctrl + click
 	ISB_SHIFT = 8,  ## shift + click
 }
+enum ButtonColor {
+	ISB_LIGHT_GRAY,
+	ISB_TITLE,
+	ISB_UNSELECTED,
+	ISB_SELECTED,
+	ISB_OK,
+	ISB_CANCEL,
+	ISB_TEXT,
+	ISB_UNAVAILABLE,
+}
 enum ButtonFunction {
 	BFN_DEL_BTN,  ## 0 - instruction: delete one button or range of buttons (must set ClickID)
 	BFN_CLEAR,  ## 1 - instruction: clear all buttons made by this insim instance
