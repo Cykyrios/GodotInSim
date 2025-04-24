@@ -1136,6 +1136,11 @@ func send_packet(packet: InSimPacket, sender := "InSim") -> void:
 		packet_sent.emit(packet, sender)
 
 
+func send_packets(packets: Array[InSimPacket]) -> void:
+	for packet in packets:
+		send_packet(packet)
+
+
 func send_ping() -> void:
 	timeout_timer.start(TIMEOUT_DELAY)
 	send_packet(InSimTinyPacket.create(GISRequest.REQ_0, Tiny.TINY_PING))
