@@ -970,6 +970,24 @@ func connect_lfs_connection_signals() -> void:
 	_discard = lfs_connection.packet_received.connect(_on_packet_received)
 
 
+func get_connection_username(ucid: int) -> String:
+	if connections.has(ucid):
+		return connections[ucid].username
+	return ""
+
+
+func get_connection_nickname(ucid: int) -> String:
+	if connections.has(ucid):
+		return connections[ucid].nickname
+	return ""
+
+
+func get_player_name(plid: int) -> String:
+	if players.has(plid):
+		return players[plid].player_name
+	return ""
+
+
 func handle_timeout() -> void:
 		timeout.emit()
 		insim_connected = false
