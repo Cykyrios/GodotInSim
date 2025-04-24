@@ -1,4 +1,4 @@
-[gd_scene load_steps=2 format=3 uid="uid://cuusnln4ls54"]
+[gd_scene load_steps=2 format=3 uid="uid://b6qp4lxefq0n1"]
 
 [ext_resource type="Script" uid="uid://hgo37rfwrcc" path="res://addons/godot_insim/demo/relay/demo_relay.gd" id="1_cyxbv"]
 
