@@ -1,0 +1,58 @@
+[gd_scene load_steps=2 format=3 uid="uid://caj0sq1emfnda"]
+
+[ext_resource type="Script" uid="uid://djq60dqxx2i6t" path="res://addons/godot_insim/src/buttons/insim_button_viewer.gd" id="1_5k8af"]
+
+[node name="InSimButtonViewer" type="AspectRatioContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+ratio = 1.7778
+script = ExtResource("1_5k8af")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+layout_mode = 2
+color = Color(0, 0, 0, 1)
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+layout_mode = 2
+stretch = true
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+disable_3d = true
+transparent_bg = true
+handle_input_locally = false
+size = Vector2i(1280, 719)
+size_2d_override = Vector2i(1000, 600)
+render_target_update_mode = 4
+
+[node name="ColorRect" type="ColorRect" parent="SubViewportContainer/SubViewport"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.301961, 0.301961, 0.301961, 1)
+
+[node name="MarginContainer" type="MarginContainer" parent="SubViewportContainer/SubViewport"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SubViewportContainer/SubViewport/MarginContainer"]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="SubViewportContainer/SubViewport/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "test 1"
+
+[node name="Button2" type="Button" parent="SubViewportContainer/SubViewport/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "test 2"
+
+[node name="Button3" type="Button" parent="SubViewportContainer/SubViewport/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "test 3"

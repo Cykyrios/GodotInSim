@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://bg253ex5lwm2b"]
+
+[ext_resource type="Script" uid="uid://envqmf0vj1dm" path="res://addons/godot_insim/demo/buttons/demo_buttons.gd" id="1_abqkp"]
+
+[node name="DemoButtons" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_abqkp")
