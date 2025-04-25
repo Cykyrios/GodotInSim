@@ -99,7 +99,7 @@ func delete_button_by_id(click_id: int, ucids: Array[int]) -> Array[InSimBFNPack
 
 ## Returns an array of [InSimBFNPacket]s requesting the deletion of the given button
 ## [param name] for all [param ucids].
-func delete_button_by_name(name: StringName, ucids: Array[int]) -> Array[InSimBFNPacket]:
+func delete_buttons_by_name(name: StringName, ucids: Array[int]) -> Array[InSimBFNPacket]:
 	var packets: Array[InSimBFNPacket] = []
 	for ucid in ucids:
 		if not has_ucid(ucid):
@@ -116,7 +116,7 @@ func delete_button_by_name(name: StringName, ucids: Array[int]) -> Array[InSimBF
 
 ## Returns an array of [InSimBFNPacket]s requesting the deletion of all buttons that have a
 ## [member InSimButton.name] starting with [param prefix] for all [param ucids].
-func delete_button_by_prefix(prefix: String, ucids: Array[int]) -> Array[InSimBFNPacket]:
+func delete_buttons_by_prefix(prefix: String, ucids: Array[int]) -> Array[InSimBFNPacket]:
 	var packets: Array[InSimBFNPacket] = []
 	for ucid in ucids:
 		if not has_ucid(ucid):

@@ -1199,7 +1199,7 @@ func add_button(
 
 
 ## Deletes an [InSimButton] and sends the corresponding [InSimBFNPacket] for all [param ucids],
-## based on the given button [param click_id]. If [ucids] is empty, this function will try
+## based on the given button [param click_id]. If [param ucids] is empty, this function will try
 ## to delete the button for every UCID in the current connection list, plus the "everyone" value
 ## of [code]255[/code].
 func delete_button_by_id(click_id: int, ucids: Array[int] = []) -> void:
@@ -1210,28 +1210,49 @@ func delete_button_by_id(click_id: int, ucids: Array[int] = []) -> void:
 		send_packet(packet)
 
 
-## Deletes an [InSimButton] and sends the corresponding [InSimBFNPacket] for all [param ucids],
-## based on the given button [param name]. If [ucids] is empty, this function will try
-## to delete the button for every UCID in the current connection list, plus the "everyone" value
+## Deletes all [InSimButton]s matching the given [param name] for all [param ucids],
+## and sends the corresponding [InSimBFNPacket]s. If [param ucids] is empty, this function will try
+## to delete buttons for every UCID in the current connection list, plus the "everyone" value
 ## of [code]255[/code].
-func delete_button_by_name(button_name: StringName, ucids: Array[int] = []) -> void:
+func delete_buttons_by_name(button_name: StringName, ucids: Array[int] = []) -> void:
 	if ucids.is_empty():
 		ucids = connections.keys()
 		ucids.append(255)
-	for packet in buttons.delete_button_by_name(button_name, ucids):
+	for packet in buttons.delete_buttons_by_name(button_name, ucids):
 		send_packet(packet)
 
 
-## Deletes an [InSimButton] and sends the corresponding [InSimBFNPacket] for all [param ucids],
-## based on the given [param prefix] in the button's name. If [ucids] is empty, this function
-## will try to delete the button for every UCID in the current connection list, plus
+## Deletes all [InSimButton]s with a name starting with [param prefix] for all [param ucids],
+## and sends the corresponding [InSimBFNPacket]s. If [param ucids] is empty, this function
+## will try to delete buttons for every UCID in the current connection list, plus
 ## the "everyone" value of [code]255[/code].
-func delete_button_by_prefix(prefix: StringName, ucids: Array[int] = []) -> void:
+func delete_buttons_by_prefix(prefix: StringName, ucids: Array[int] = []) -> void:
 	if ucids.is_empty():
 		ucids = connections.keys()
 		ucids.append(255)
-	for packet in buttons.delete_button_by_prefix(prefix, ucids):
+	for packet in buttons.delete_buttons_by_prefix(prefix, ucids):
 		send_packet(packet)
+
+
+## Deletes all [InSimButton]s with a [member InSimButton.click_id] between [param from_id] and
+## [param to_id], inclusive, for all [param ucids]. If [param ucids] is empty, this function
+## will try to delete buttons for every UCID in the current connection list, plus the
+## "everyone" value of [code]255[/code].
+func delete_button_range(from_id: int, to_id: int, ucids: Array[int] = []) -> void:
+	if ucids.is_empty():
+		ucids = connections.keys()
+		ucids.append(255)
+	var id_low := clampi(from_id if from_id <= to_id else to_id, 0, buttons.MAX_BUTTONS)
+	var id_high := clampi(to_id if to_id >= from_id else from_id, 0, buttons.MAX_BUTTONS)
+	for ucid in ucids:
+		send_packet(InSimBFNPacket.create(
+			InSim.ButtonFunction.BFN_DEL_BTN,
+			ucid,
+			id_low,
+			id_high
+		))
+	for i in id_high - id_low + 1:
+		var _discard := buttons.delete_button_by_id(id_low + i, ucids)
 
 
 ## Returns the [InSimButton] at the given [param id], or [code]null[/code] if it does not exist.
