@@ -11,6 +11,8 @@ extends RefCounted
 ## If set in [member inst], the button will display everywhere - this is typically best avoided.
 const INST_ALWAYS_ON := 0x80
 
+## A custom identifier, which can be used to keep track of, update or delete the button.
+var name := ""
 ## The request ID that sent the [InSimBTNPacket] to create this button.
 var reqi := 0
 ## The list of unique connection IDs to display the button for (0: local, 255: everyone).
@@ -39,8 +41,8 @@ var caption := ""
 
 ## Creates and returns a new [InSimButton].
 static func create(
-	b_ucid: int, b_click_id: int, b_inst: int, b_style: int, b_type_in: int,
-	b_position: Vector2i, b_size: Vector2i, b_text: String, b_caption := ""
+	b_ucid: int, b_click_id: int, b_inst: int, b_style: int, b_position: Vector2i,
+	b_size: Vector2i, b_text: String, b_name := "", b_type_in := 0, b_caption := ""
 ) -> InSimButton:
 	var button := InSimButton.new()
 	button.ucid = b_ucid
@@ -51,6 +53,7 @@ static func create(
 	button.position = b_position
 	button.size = b_size
 	button.text = b_text
+	button.name = b_name
 	button.caption = b_caption
 	return button
 
