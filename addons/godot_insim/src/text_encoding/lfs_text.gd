@@ -574,6 +574,8 @@ static func unicode_to_lfs_bytes(text: String, keep_utf16 := false) -> PackedByt
 				buffer.append_array(_translate_specials(FALLBACK_CHARACTER).to_utf16_buffer())
 	if not keep_utf16:
 		buffer = _remove_inner_zeros(buffer)
+	if buffer.is_empty():
+		buffer = [0]
 	return buffer
 
 
