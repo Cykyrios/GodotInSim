@@ -982,18 +982,24 @@ func connect_lfs_connection_signals() -> void:
 	_discard = lfs_connection.packet_received.connect(_on_packet_received)
 
 
+## Returns the LFS license name corresponding to the given [param ucid], or an empty [String]
+## if not found (invalid [param ucid], player left, or [code]0[/code] (host)).
 func get_connection_username(ucid: int) -> String:
 	if connections.has(ucid):
 		return connections[ucid].username
 	return ""
 
 
+## Returns the player name corresponding to the given [param ucid], or an empty [String]
+## if not found (invalid [param ucid] or player left).
 func get_connection_nickname(ucid: int) -> String:
 	if connections.has(ucid):
 		return connections[ucid].nickname
 	return ""
 
 
+## Returns the player name corresponding to the given [param plid], or an empty [String]
+## if not found (invalid [param plid] or player joined the spectators).
 func get_player_name(plid: int) -> String:
 	if players.has(plid):
 		return players[plid].player_name
@@ -1148,11 +1154,13 @@ func send_packet(packet: InSimPacket, sender := "InSim") -> void:
 		packet_sent.emit(packet, sender)
 
 
+## Sends multiple [param packets] passed in an array, calling [method send_packet] for each packet.
 func send_packets(packets: Array[InSimPacket]) -> void:
 	for packet in packets:
 		send_packet(packet)
 
 
+## Sends a ping request to LFS using an [InSimTinyPacket].
 func send_ping() -> void:
 	timeout_timer.start(TIMEOUT_DELAY)
 	send_packet(InSimTinyPacket.create(GISRequest.REQ_0, Tiny.TINY_PING))
