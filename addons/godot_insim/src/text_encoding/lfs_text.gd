@@ -236,7 +236,7 @@ static func colors_lfs_to_bbcode(text: String) -> String:
 
 
 ## Converts colors in the given [param text] string to the [param to] color type. If [param to]
-## is [ColorType.LFS], [method strip_colors] is called instead.
+## is [constant ColorType.LFS], [method strip_colors] is called instead.
 static func convert_colors(text: String, to: ColorType, from := ColorType.LFS) -> String:
 	if from == ColorType.STRIP:
 		push_warning("LFSText cannot convert colors from no colors!")
@@ -284,8 +284,9 @@ static func get_display_string(text: String, colors := ColorType.BBCODE) -> Stri
 
 
 ## Returns the start position of the actual message, since [member InSimMSOPacket.text_start]
-## in unreliable when multi-byte characters appear in the connection/player name (LFS issue).
-## /me messages return 0, as the name is part of the message for those (same behavior as LFS).
+## is unreliable when code pages and multi-byte characters appear in the connection/player name
+## (LFS issue). [code]/me[/code] messages return [code]0[/code], as the name is part of
+## the message for those (same behavior as LFS).
 static func get_mso_start(mso_packet: InSimMSOPacket, insim: InSim) -> int:
 	if mso_packet.text_start == 0:
 		# /me message, always returns 0

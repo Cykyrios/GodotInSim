@@ -12,9 +12,11 @@ var zero := 0
 
 var ucid := 0  ## connection's unique id (0 = host)
 var plid := 0  ## player's unique id (if zero, use [member ucid])
-var user_type := InSim.MessageUserValue.MSO_SYSTEM  ## set if typed by a user (see [enum InSim.MessageUserValue])
-## @experimental: This property is unreliable if the sender's name contains non-latin characters.
-## first character of the actual text (after player name)
+## set if typed by a user (see [enum InSim.MessageUserValue])
+var user_type := InSim.MessageUserValue.MSO_SYSTEM
+## @experimental: This property is unreliable, use [method LFSText.get_mso_start] instead.
+## first character of the actual text (after player name)[br]
+## Note:  If the sender's name contains non-latin or multi-byte characters, the count will be off.
 var text_start := 0
 var msg := ""  ## 4, 8, 12... 128 characters - last byte is zero
 
