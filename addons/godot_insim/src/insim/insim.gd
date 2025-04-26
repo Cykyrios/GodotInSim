@@ -1172,18 +1172,17 @@ func send_ping() -> void:
 ## in line with [InSimBTNPacket], replacing [member InSimBTNPacket.inst] with the
 ## [param show_everywhere] boolean and using [Vector2i] for position and size.[br]
 ## When sending a button to multiple connections, you can map the button's text to each UCID
-## by passing a [Callable] to [param text_function] instead of the regular [param text];
-## in this case, if [param ucids] is empty, it will fetch the current connection list instead
-## of sending the button to "everyone" (UCID 255).[br]
+## by passing a [Callable] to [param text] instead of a regular string; in this case,
+## if [param ucids] is empty, it will fetch the current connection list instead of sending
+## the button to "everyone" (UCID 255).[br]
 ## If you set [param type_in] to a value greater than [code]0[/code], the
 ## [const InSim.ButtonStyle.ISB_CLICK] is automatically set.
 func add_button(
-	ucids: Array[int], position: Vector2i, size: Vector2i, style: int, text := "",
-	text_function := Callable(), button_name := "", type_in := 0, caption := "",
-	show_everywhere := false
+	ucids: Array[int], position: Vector2i, size: Vector2i, style: int, text: Variant = "",
+	button_name := "", type_in := 0, caption := "", show_everywhere := false
 ) -> void:
 	if ucids.is_empty():
-		if text_function.is_valid():
+		if typeof(text) == TYPE_CALLABLE and (text as Callable).is_valid():
 			ucids = connections.keys()
 			if lfs_state.flags & InSim.State.ISS_MULTI:
 				ucids.erase(0)
@@ -1192,7 +1191,7 @@ func add_button(
 	if type_in > 0:
 		style |= InSim.ButtonStyle.ISB_CLICK
 	for packet in buttons.add_button(
-		ucids, position, size, style, text, text_function, button_name, type_in,
+		ucids, position, size, style, text, button_name, type_in,
 		caption, show_everywhere
 	):
 		send_packet(packet)

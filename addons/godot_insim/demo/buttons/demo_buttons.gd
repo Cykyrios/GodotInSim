@@ -58,7 +58,6 @@ func show_auto_buttons() -> void:
 		Vector2i(2 * button_width, button_height),
 		0,
 		"test",
-		Callable(),
 		"test",
 	)
 	var button := insim.get_button_by_name("test", 255)
@@ -70,7 +69,6 @@ func show_auto_buttons() -> void:
 		Vector2i(buttons_left + 2, buttons_top + 4 * button_height),
 		Vector2i(2 * button_width - 4, button_height),
 		InSim.ButtonStyle.ISB_DARK | InSim.ButtonStyle.ISB_CLICK,
-		"",
 		func(ucid: int) -> String: return insim.get_connection_nickname(ucid),
 		"player_name",
 	)
@@ -80,7 +78,6 @@ func show_auto_buttons() -> void:
 		Vector2i(2 * button_width - 4, button_height),
 		InSim.ButtonStyle.ISB_DARK | InSim.ButtonStyle.ISB_CLICK,
 		"Time",
-		Callable(),
 		"clock",
 	)
 
@@ -100,7 +97,6 @@ func show_auto_buttons() -> void:
 				Vector2i(2 * button_width - 4, button_height),
 				0,
 				"",
-				Callable(),
 				"blink",
 			)
 			button = insim.get_button_by_name("blink", 255)
@@ -108,7 +104,7 @@ func show_auto_buttons() -> void:
 				button.text = "ID=%d, name=%s" % [button.click_id, button.name]
 				insim.send_packet(button.get_btn_packet(true))
 		else:
-			insim.delete_button_by_name("blink")
+			insim.delete_buttons_by_name("blink")
 
 
 func show_manual_buttons() -> void:

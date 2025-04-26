@@ -36,25 +36,22 @@ func _init() -> void:
 ## [Dictionary] for each UCID in [param ucids]. Button creation can fail if there is no clickID
 ## available for the button for each UCID. Successfully created buttons generate a corresponding
 ## [InSimBTNPacket], an array of which is returned.[br]
-## To create buttons with text tailored to each UCID in [param ucids], you should pass a valid
-## [Callable] as [param text_function], which takes an [int] as its single argument, corresponding
-## to the player's UCID, and returns a [String]. See the example below, which sends a button
-## to each connection and displays their name:
+## [param text] usually takes a [String], but you can create buttons with text tailored
+## to each UCID in [param ucids] by passing a valid [Callable] instead, which takes an [int]
+## as its single argument, corresponding to the player's UCID, and returns a [String].
+## See the example below, which sends a button to each connection and displays their name:
 ## [codeblock]
-## insim.send_packets(insim.buttons.add_button(
-##     insim.connections.keys(),
+## insim.add_button(
+##     [],  # empty array, will retrieve all connections
 ##     Vector2i(0, 0),
 ##     Vector2i(30, 5),
 ##     InSim.ButtonStyle.ISB_DARK,
-##     true,
-##     "ignored text",  # Text is ignored if the following Callable is valid
 ##     func(ucid: int) -> String: return insim.get_connection_nickname(ucid),
-## ))
+## )
 ## [/codeblock]
 func add_button(
-	ucids: Array[int], position: Vector2i, size: Vector2i, style: int, text: String,
-	text_function := Callable(), button_name := "", type_in := 0, caption := "",
-	show_everywhere := false
+	ucids: Array[int], position: Vector2i, size: Vector2i, style: int, text: Variant,
+	button_name := "", type_in := 0, caption := "", show_everywhere := false
 ) -> Array[InSimBTNPacket]:
 	var inst := 0 | (InSimButton.INST_ALWAYS_ON if show_everywhere else 0)
 	var packets: Array[InSimBTNPacket] = []
@@ -62,15 +59,21 @@ func add_button(
 	if new_id == -1:
 		push_warning("Cannot create button: no clickID available.")
 		return packets
+	var text_type := typeof(text)
 	for ucid in ucids:
 		if not has_ucid(ucid):
 			buttons[ucid] = InSimButtonDictionary.new()
+		var button_text := "^1INVALID"  # Serves as an error message if no String or valid Callable
+		if text_type in [TYPE_STRING, TYPE_STRING_NAME]:
+			button_text = str(text)
+		elif text_type == TYPE_CALLABLE:
+			var text_function := text as Callable
+			if text_function.is_valid():
+				button_text = text_function.call(ucid)
 		var button := InSimButton.create(
-			ucid, new_id, inst, style, position, size, text, button_name, type_in, caption
+			ucid, new_id, inst, style, position, size, button_text, button_name, type_in, caption
 		)
 		used_ids[new_id] += 1
-		if text_function.is_valid():
-			button.text = text_function.call(ucid)
 		buttons[ucid].buttons[new_id] = button
 		var packet := button.get_btn_packet()
 		packets.append(packet)
