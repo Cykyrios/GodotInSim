@@ -72,6 +72,43 @@ static var code_pages := "".join(CODE_PAGES.keys()).replace("^", "")
 static var specials := "".join(SPECIAL_CHARACTERS.keys()).replace("^", "")
 
 
+## Returns the 4-character (maximum) short name corresponding to the mod's [param full_name].
+## The logic is custom-made and based on observations from LFS behavior: spaces and underscores
+## act as word separators, we take the first letter of each word, and if the name is shorter
+## than 4 characters, we add letters from the first word as available, then second word, etc.
+## If there are not enough letters, separators are kept (the minimum name length for mods is
+## 4 characters, so there will always be 4 characters in the result).
+static func car_get_short_name(full_name: String) -> String:
+	const LENGTH := 4
+	const STRIPPED := "_-"
+	if full_name.length() <= LENGTH:
+		# Official LFS car (3 chars), 4-char mod name, or an invalid name - returned as is.
+		return full_name
+	for separator in [" ", "_"] as Array[String]:
+		if separator == "_" and full_name.contains(" "):
+			continue
+		var short_name := ""
+		var split_name := full_name.split(separator, false)
+		for w in split_name.size():
+			var word := split_name[w].lstrip(STRIPPED)
+			if word.is_empty():
+				continue
+			short_name += word[0]
+			if short_name.length() >= LENGTH:
+				return short_name.left(LENGTH)
+		var added_letters := 0
+		for w in split_name.size():
+			var word := split_name[w].lstrip(STRIPPED)
+			for i in word.length():
+				if i == 0 or word[i] in STRIPPED:
+					continue
+				added_letters += 1
+				short_name = short_name.insert(w + added_letters, word[i])
+				if short_name.length() == LENGTH:
+					return short_name
+	return full_name.left(LENGTH)
+
+
 ## Converts an LFS-encoded car name to a readable text string, in the 3-letter format for
 ## official cars (e.g. FBM), or the 6-character hexadecimal code for mods (e.g. DBF12E).
 static func car_name_from_lfs_bytes(buffer: PackedByteArray) -> String:
