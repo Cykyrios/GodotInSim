@@ -5,6 +5,32 @@ const __source = "res://addons/godot_insim/src/text_encoding/lfs_text.gd"
 
 
 @warning_ignore("unused_parameter")
+func test_car_get_short_name(full_name: String, expected: String, test_parameters := [
+	["LAURENT COIL CUP", "LACC"],
+	["BIG 320", "BIG3"],
+	["A B C D E F", "ABCD"],
+	["A B_ C", "A B_"],
+	["A B C", "A B "],
+	["A B CD", "ABCD"],
+	["A BC D", "ABCD"],
+	["_A BCD", "ABCD"],
+	["_A BC", "_A B"],
+	["_TEST", "TEST"],
+	["MY VERY GOOD MOD", "MVGM"],
+	["MY NICE MOD", "MYNM"],
+	["MY MOD", "MYMO"],
+	["E-CHALLENGER EVO", "ECHE"],
+	["E-C EVO", "ECEV"],
+	["E-C E", "E-C "],
+	["FZ5", "FZ5"],
+]) -> void:
+	if full_name.begins_with("_"):
+		pass
+	var short_name := LFSText.car_get_short_name(full_name)
+	var _test := assert_str(short_name).is_equal(expected)
+
+
+@warning_ignore("unused_parameter")
 func test_car_name_from_lfs_bytes(buffer: PackedByteArray, car_name: String, test_parameters := [
 	[PackedByteArray([85, 70, 49, 0]), "UF1"],
 	[PackedByteArray([88, 82, 84, 0]), "XRT"],
