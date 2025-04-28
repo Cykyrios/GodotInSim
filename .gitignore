@@ -5,3 +5,5 @@
 .submodules/
 addons/gdUnit4
 /build/
+
+/addons/godot_insim/secrets/
