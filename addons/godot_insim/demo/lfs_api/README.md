@@ -17,8 +17,8 @@ Doing this will give you access to the mod vehicles API, which does not require 
 ## How To
 
 Launch the demo scene, which will request the list of currently available mods, print the number
-of mods returned, then request and print details about one particular vehicle - a not-so-random
-ID was chosen here ;). A final request is made for a non-existing mod ID (at least not at the time
-of making this demo), to show the output of a failed request.
+of mods returned, then request and print details about a few vehicles. Among the requests is one
+made for a non-existing mod ID (at least not at the time of making this demo), to show the output
+of a failed request.
 
 ![LFS API mods](./screenshots/lfs_api_mods.jpg)

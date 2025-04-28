@@ -53,25 +53,45 @@ func get_api_request(request: String) -> Dictionary:
 	return response
 
 
+func get_png_from_url(url: String) -> ImageTexture:
+	var image := Image.new()
+	var read_response := func read_response(
+		_result: int, _response_code: int, _headers: PackedStringArray, body: PackedByteArray
+	) -> void:
+		var _error := image.load_png_from_buffer(body)
+	var http_request := HTTPRequest.new()
+	add_child(http_request)
+	var _connect := http_request.request_completed.connect(read_response)
+	var error := http_request.request(url)
+	if error!= OK:
+		return ImageTexture.new()
+	await http_request.request_completed
+	http_request.queue_free()
+	error = image.generate_mipmaps()
+	return ImageTexture.create_from_image(image)
+
+
 ## Returns all information about the mod corresponding to the given [param skin_id],
 ## including detailed engine info, mass, power-to-weight ratio, etc.
-func get_mod_details(skin_id: String) -> Dictionary:
+func get_mod_details(skin_id: String) -> VehicleInfo:
+	var vehicle_info := VehicleInfo.new()
 	var response := await get_api_request("vehiclemod/%s" % [skin_id])
 	if response.is_empty():
-		return {}
+		return vehicle_info
 	var body := response["body"] as Dictionary
 	if not body.has("data"):
 		if body.has("error") and (body["error"] as Dictionary).has("message"):
 			_push_api_error(response["code"] as int, str(body["error"]["message"]))
 		else:
 			_push_api_error(response["code"] as int, "unknown error")
-		return body
+		return vehicle_info
 	var data := body["data"] as Dictionary
-	return data
+	vehicle_info = VehicleInfo.create_from_dictionary(data)
+	return vehicle_info
 
 
 ## Returns the list of currently available vehicle mods.
-func get_mod_list() -> Array[Dictionary]:
+func get_mod_list() -> Array[VehicleInfo]:
 	var response := await get_api_request("vehiclemod")
 	if response.is_empty():
 		return []
@@ -82,8 +102,9 @@ func get_mod_list() -> Array[Dictionary]:
 		else:
 			_push_api_error(response["code"] as int, "unknown error")
 		return []
-	var data: Array[Dictionary] = []
-	data.assign(body["data"] as Array[Dictionary])
+	var data: Array[VehicleInfo] = []
+	for dict: Dictionary in body["data"]:
+		data.append(VehicleInfo.create_from_dictionary(dict))
 	return data
 
 
