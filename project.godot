@@ -21,6 +21,7 @@ run/main_scene.demo_relay="uid://cuusnln4ls54"
 [autoload]
 
 GISViewer="*res://addons/godot_insim/src/utils/gis_viewer.gd"
+LFSAPI="*res://addons/godot_insim/src/lfs_api/lfs_api.gd"
 
 [debug]
 
