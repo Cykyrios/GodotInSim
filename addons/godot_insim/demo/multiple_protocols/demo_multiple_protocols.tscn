@@ -1,0 +1,76 @@
+[gd_scene load_steps=2 format=3 uid="uid://bhvykig2f3rdi"]
+
+[ext_resource type="Script" uid="uid://cwbnhst2n5syw" path="res://addons/godot_insim/demo/multiple_protocols/demo_multiple_protocols.gd" id="1_e4neg"]
+
+[node name="DemoMultipleProtocols" type="MarginContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+script = ExtResource("1_e4neg")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="InSimHBox" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+alignment = 1
+
+[node name="InSimButton" type="Button" parent="VBoxContainer/InSimHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+focus_mode = 0
+toggle_mode = true
+text = "Initialize InSim"
+
+[node name="Spacer" type="Control" parent="VBoxContainer/InSimHBox"]
+custom_minimum_size = Vector2(20, 0)
+layout_mode = 2
+
+[node name="CarLightsButton" type="Button" parent="VBoxContainer/InSimHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+focus_mode = 0
+toggle_mode = true
+text = "Send Random Car Lights"
+
+[node name="CarSwitchesButton" type="Button" parent="VBoxContainer/InSimHBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 4
+focus_mode = 0
+toggle_mode = true
+text = "Send Random Car Switches"
+
+[node name="OutSimOutGaugeVBox" type="HBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 40
+alignment = 1
+
+[node name="OutGaugeLabel" type="Label" parent="VBoxContainer/OutSimOutGaugeVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+
+[node name="OutSimLabel1" type="Label" parent="VBoxContainer/OutSimOutGaugeVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
+
+[node name="OutSimLabel2" type="Label" parent="VBoxContainer/OutSimOutGaugeVBox"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1

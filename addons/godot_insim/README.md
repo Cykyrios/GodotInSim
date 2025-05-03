@@ -129,12 +129,13 @@ such packets, you should prefer filling in the `gis_*` variables, as they use co
 They will be rounded to the packet's encoding precision. When creating a sendable packet, you can
 choose to fill the packet's buffer from `gis_*` values or from standard InSim values.
 
-## Example
+## Demos
 
-A very simple example is provided as a demo in
-[this repository](https://github.com/Cykyrios/GodotInSim-Demo). The following images are from
-this demo.
+Demos showcasing some of `GodotInSim`'s features are available in the
+[demo folder](adons/godot_insim/demo/). The following images are from some of those demos.
 
-![InSim](https://github.com/Cykyrios/GodotInSim-Demo/blob/main/examples/GodotInSim_demo.gif?raw=true)
+![Random Lights](/addons/godot_insim/demo/multiple_protocols/media/random_lights.webm)
 
-![OutGauge and OutSim](https://github.com/Cykyrios/GodotInSim-Demo/blob/main/examples/GodotInSim_demo.png?raw=true)
+![Live Telemetry](/addons/godot_insim/demo/basic_telemetry/screenshots/telemetry_2.jpg)
+
+![InSim Relay](/addons/godot_insim/demo/relay/screenshots/relay.jpg)
