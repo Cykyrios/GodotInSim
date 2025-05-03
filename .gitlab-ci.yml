@@ -36,3 +36,5 @@ run-tests:
     name: "Test Report"
     paths:
       - reports/*
+    reports:
+      junit: reports/**/results.xml
