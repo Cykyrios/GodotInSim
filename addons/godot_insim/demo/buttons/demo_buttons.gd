@@ -15,9 +15,7 @@ func _ready() -> void:
 		29_999,
 		InSimInitializationData.create(
 			"InSim Buttons",
-			"",
 			InSim.InitFlag.ISF_MSO_COLS,
-			""
 		)
 	)
 	await insim.isp_ver_received

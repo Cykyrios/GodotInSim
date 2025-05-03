@@ -19,7 +19,7 @@ var i_name := "Godot InSim"
 
 
 static func create(
-	init_name: String, init_admin: String, init_flags: int, init_prefix: String,
+	init_name: String, init_flags := 0, init_prefix := "", init_admin := "",
 	init_interval := 0, init_udp := 0
 ) -> InSimInitializationData:
 	var init_data := InSimInitializationData.new()

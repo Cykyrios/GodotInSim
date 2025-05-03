@@ -37,9 +37,7 @@ func _ready() -> void:
 	add_child(insim)
 	insim.initialize("127.0.0.1", 29_999, InSimInitializationData.create(
 		"Layout Viewer",
-		"",
 		InSim.InitFlag.ISF_LOCAL | InSim.InitFlag.ISF_AXM_EDIT,
-		""
 	))
 	var _connect := insim.isp_axi_received.connect(_on_axi_packet_received)
 	_connect = insim.isp_axm_received.connect(_on_axm_packet_received)

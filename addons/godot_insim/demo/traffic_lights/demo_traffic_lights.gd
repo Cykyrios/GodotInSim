@@ -37,9 +37,7 @@ func _ready() -> void:
 		29_999,
 		InSimInitializationData.create(
 			"Traffic LIghts",
-			"",
 			0,
-			""
 		)
 	)
 	await get_tree().create_timer(0.5).timeout

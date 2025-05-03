@@ -19,9 +19,7 @@ func _ready() -> void:
 		29_999,
 		InSimInitializationData.create(
 			"Packet Logger",
-			"",
 			InSim.InitFlag.ISF_LOCAL,
-			""
 		)
 	)
 

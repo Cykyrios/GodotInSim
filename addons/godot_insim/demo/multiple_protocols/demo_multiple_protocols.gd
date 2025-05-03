@@ -57,10 +57,8 @@ func _on_insim_button_pressed() -> void:
 			"127.0.0.1",
 			29_999,
 			InSimInitializationData.create(
-				"Random Lights",
-				"",
+				"Multi-protocol",
 				InSim.InitFlag.ISF_LOCAL,
-				"",
 			)
 		)
 		insim_button.text = "Close InSim"

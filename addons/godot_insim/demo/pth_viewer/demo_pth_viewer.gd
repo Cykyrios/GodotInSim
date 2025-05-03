@@ -33,9 +33,7 @@ func _ready() -> void:
 	add_child(insim)
 	insim.initialize("127.0.0.1", 29_999, InSimInitializationData.create(
 		"PTH Viewer",
-		"",
 		InSim.InitFlag.ISF_LOCAL,
-		""
 	))
 	var _connect := insim.isp_cpp_received.connect(_on_cpp_packet_received)
 	_connect = insim.isp_mci_received.connect(_on_mci_packet_received)
