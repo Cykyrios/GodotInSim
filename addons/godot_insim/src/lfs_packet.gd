@@ -117,7 +117,7 @@ func add_byte(data: int) -> void:
 
 ## Adds a single character to the packet's [member buffer].
 func add_char(data: String) -> void:
-	var _buffer := add_string(1, data)
+	var _buffer := add_string(1, data, false)
 
 
 ## Adds a 32-bit float to the packet's [member buffer].
@@ -157,13 +157,16 @@ func add_short(data: int) -> void:
 ## Adds a string to the packet's [member buffer]. The string is converted from UTF8 to LFS
 ## and trimmed to [param length] bytes, including the last zero if [param zero_terminated] is true.
 func add_string(length: int, data: String, zero_terminated := true) -> PackedByteArray:
+	if length <= 0:
+		push_warning("Cannot add a zero-length string")
+		return []
 	var temp_buffer := LFSText.unicode_to_lfs_bytes(data)
 	var _discard := temp_buffer.resize(length)
+	if zero_terminated:
+		temp_buffer[-1] = 0
 	for i in length:
 		buffer.encode_u8(data_offset, temp_buffer[i])
 		data_offset += 1
-	if zero_terminated:
-		temp_buffer[-1] = 0
 	return temp_buffer
 
 

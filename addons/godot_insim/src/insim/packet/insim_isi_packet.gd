@@ -65,7 +65,7 @@ func _fill_buffer() -> void:
 	add_word(flags)
 
 	add_byte(insim_version)
-	var _buffer := add_string(PREFIX_LENGTH, prefix)
+	var _buffer := add_string(PREFIX_LENGTH, prefix, false)
 	add_word(interval)
 
 	_buffer = add_string(ADMIN_LENGTH, admin)
