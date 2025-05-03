@@ -5,7 +5,7 @@ extends LFSPacket
 ##
 ## This class can decode setup files from the game, as well as save new or modified setups.
 ## All values use metric units (Pa for pressures, m for lengths, etc.), and should be converted
-## to the desired display units.[br]
+## to the desired display units.
 
 const STRUCT_SIZE := 132
 
