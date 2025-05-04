@@ -4,6 +4,7 @@ extends InSimPacket
 ## BuTtoN packet - button header - followed by 0 to 240 characters
 
 const TEXT_MAX_LENGTH := 240  # last byte must be zero, actual length is one character shorter
+const CAPTION_MAX_LENGTH := 128
 const PACKET_MIN_SIZE := 12
 const PACKET_MAX_SIZE := PACKET_MIN_SIZE + TEXT_MAX_LENGTH
 const PACKET_TYPE := InSim.Packet.ISP_BTN
@@ -42,10 +43,10 @@ func _fill_buffer() -> void:
 	add_byte(top)
 	add_byte(width)
 	add_byte(height)
-	var caption_length := caption.length()  # NOTE: max caption length is 128
+	var caption_length := caption.length()
 	if caption_length > 0:
 		add_byte(0)
-		var _caption := add_string(caption_length, caption)
+		var _caption := add_string(mini(caption_length, CAPTION_MAX_LENGTH), caption, false)
 		add_byte(0)
 		caption_length += 2
 	var _buffer := add_string_variable_length(text, TEXT_MAX_LENGTH - caption_length,
