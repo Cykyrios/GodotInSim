@@ -1167,18 +1167,18 @@ func send_ping() -> void:
 
 
 #region Buttons
-## Creates an [InSimButton] for all given [param ucids], or every connection if [param ucids]
-## is empty, and sends the corresponding [InSimBTNPacket]s. Button definition is mostly
-## in line with [InSimBTNPacket], replacing [member InSimBTNPacket.inst] with the
-## [param show_everywhere] boolean and using [Vector2i] for position and size.[br]
+## Creates an [InSimButton] for all given [param ucids], or every connection ([code]UCID 255[/code])
+## if [param ucids] is empty, and sends the corresponding [InSimBTNPacket]s. Button definition
+## is mostly in line with [InSimBTNPacket], replacing [member InSimBTNPacket.inst] with the
+## [param show_everywhere] boolean and using [Vector2i] for [param position] and [param size].[br]
 ## When sending a button to multiple connections, you can map the button's text to each UCID
-## by passing a [Callable] to [param text] instead of a regular string; in this case,
-## if [param ucids] is empty, it will fetch the current connection list instead of sending
-## the button to "everyone" (UCID 255).[br]
+## by passing a [Callable] to [param text] instead of a regular string (see example code for
+## [method InSimButtons.add_button]); in this case, if [param ucids] is empty, it will fetch
+## the current connection list instead of sending the button to [code]UCID 255[/code].[br]
 ## If you set [param type_in] to a value greater than [code]0[/code], the
-## [const InSim.ButtonStyle.ISB_CLICK] is automatically set.
+## [constant InSim.ButtonStyle.ISB_CLICK] is automatically set.
 func add_button(
-	ucids: Array[int], position: Vector2i, size: Vector2i, style: int, text: Variant = "",
+	ucids: Array[int], position: Vector2i, size: Vector2i, style: int, text: Variant,
 	button_name := "", type_in := 0, caption := "", show_everywhere := false
 ) -> void:
 	if ucids.is_empty():
@@ -1191,8 +1191,7 @@ func add_button(
 	if type_in > 0:
 		style |= InSim.ButtonStyle.ISB_CLICK
 	for packet in buttons.add_button(
-		ucids, position, size, style, text, button_name, type_in,
-		caption, show_everywhere
+		ucids, position, size, style, text, button_name, type_in, caption, show_everywhere
 	):
 		send_packet(packet)
 

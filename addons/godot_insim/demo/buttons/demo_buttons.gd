@@ -35,6 +35,7 @@ func show_auto_buttons() -> void:
 		Vector2i(buttons_left, buttons_top),
 		Vector2i(2 * button_width, 9 * button_height),
 		InSim.ButtonStyle.ISB_LIGHT,
+		"",
 	)
 	insim.add_button(
 		[],
