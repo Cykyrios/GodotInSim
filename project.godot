@@ -17,6 +17,7 @@ run/main_scene.demo_telemetry="uid://c8gvhn7hsl08b"
 run/main_scene.demo_layout_viewer="uid://dwygbkbdnk3ab"
 run/main_scene.demo_pth_viewer="uid://dtisgqwapb6ru"
 run/main_scene.demo_relay="uid://cuusnln4ls54"
+run/main_scene.demo_teleporter="uid://bl30p4vvt0jm6"
 
 [autoload]
 

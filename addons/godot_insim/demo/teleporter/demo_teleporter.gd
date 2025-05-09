@@ -2,7 +2,8 @@ extends MarginContainer
 
 
 # This is where you define spawn points for each track
-const SPAWN_DIRECTORY := "res://addons/godot_insim/demo/teleporter/spawn"
+const SPAWN_DIR_EDITOR := "res://addons/godot_insim/demo/teleporter/spawn"
+const SPAWN_DIR_STANDALONE := "res://spawn"
 
 var insim: InSim = null
 var current_track := ""
@@ -25,6 +26,15 @@ func _ready() -> void:
 			"!",
 		)
 	)
+
+	if not Engine.is_editor_hint():
+		var standalone_path := ProjectSettings.globalize_path(SPAWN_DIR_STANDALONE)
+		DirAccess.make_dir_absolute(standalone_path)
+		for file in DirAccess.get_files_at(SPAWN_DIR_EDITOR):
+			var _error := DirAccess.copy_absolute(
+				SPAWN_DIR_EDITOR.path_join(file),
+				standalone_path.path_join(file),
+			)
 
 
 func _on_mso_received(packet: InSimMSOPacket) -> void:
@@ -103,7 +113,9 @@ func _on_sta_received(packet: InSimSTAPacket) -> void:
 	var open_config := true if (
 		current_track.ends_with("X") or current_track.ends_with("Y")
 	) else false
-	var spawn_file := SPAWN_DIRECTORY.path_join(
+	var spawn_directory := SPAWN_DIR_EDITOR if Engine.is_editor_hint() \
+			else ProjectSettings.globalize_path(SPAWN_DIR_STANDALONE)
+	var spawn_file := spawn_directory.path_join(
 		"%s.txt" % [current_track.substr(0, 2) if open_config else current_track]
 	)
 	var file := FileAccess.open(spawn_file, FileAccess.READ)
