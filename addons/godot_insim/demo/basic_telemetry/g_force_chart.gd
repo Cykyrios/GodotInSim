@@ -27,9 +27,12 @@ func _process(delta: float) -> void:
 	for i in data.size():
 		data[i].z = data[i].z - delta
 	while (
-		data.size() > 1
-		and data[0].z > data[1].z
-		and absf(data[0].z) > fade_time
+		data.size() > 500  # FIXME: Capping is good, but the following condition is not working.
+		or (
+			data.size() > 1
+			and data[0].z >= data[1].z
+			and absf(data[0].z) > fade_time
+		)
 	):
 		data.pop_front()
 	queue_redraw()
