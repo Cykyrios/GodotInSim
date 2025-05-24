@@ -58,8 +58,7 @@ func _fill_buffer() -> void:
 	add_unsigned(c_time)
 	add_unsigned(t_time)
 	var _buffer := add_string(REPLAY_NAME_MAX_LENGTH, replay_name)
-	data_offset -= 1
-	add_byte(0)  # last byte in replay name must be zero
+	add_byte(0, data_offset - 1)  # last byte in replay name must be zero
 
 
 func _get_data_dictionary() -> Dictionary:

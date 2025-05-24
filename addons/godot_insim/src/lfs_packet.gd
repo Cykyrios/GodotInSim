@@ -89,11 +89,15 @@ func get_pretty_text() -> String:
 
 
 #region buffer I/O
-## Adds the contents of [param data] to the packet's [member buffer].
-func add_buffer(data: PackedByteArray) -> void:
+## Adds the contents of [param data] to the packet's [member buffer] at the current
+## [member data_offset]. If [param at_position] is different from [code]-1[/code],
+## [member data_offset] is set to that value.
+func add_buffer(data: PackedByteArray, at_position := -1) -> void:
 	if data.is_empty():
 		push_error("Cannot add data, buffer is empty")
 		return
+	if at_position != -1:
+		data_offset = at_position
 	var available_space := buffer.size() - data_offset
 	if data.size() > available_space:
 		push_error("Not enough space to add buffer (size %d, available %d)" % [data.size(),
@@ -103,31 +107,39 @@ func add_buffer(data: PackedByteArray) -> void:
 		add_byte(byte)
 
 
-## Adds a byte (uint8) to the packet's [member buffer].
-func add_byte(data: int) -> void:
+## Adds a byte (uint8) to the packet's [member buffer] at the current [member data_offset]. If
+## [param at_position] is different from [code]-1[/code], [member data_offset] is set to that value.
+func add_byte(data: int, at_position := -1) -> void:
 	if data > 0xFF:
 		push_error("Data too large for unsigned byte, max 255, got %d." % [data])
 		return
 	if data < 0:
 		push_error("Data cannot be negative, got %d." % [data])
 		return
+	if at_position != -1:
+		data_offset = at_position
 	buffer.encode_u8(data_offset, data)
 	data_offset += 1
 
 
-## Adds a single character to the packet's [member buffer].
-func add_char(data: String) -> void:
-	var _buffer := add_string(1, data, false)
+## Adds a single character to the packet's [member buffer] at the current [member data_offset]. If
+## [param at_position] is different from [code]-1[/code], [member data_offset] is set to that value.
+func add_char(data: String, at_position := -1) -> void:
+	var _buffer := add_string(1, data, false, at_position)
 
 
-## Adds a 32-bit float to the packet's [member buffer].
-func add_float(data: float) -> void:
+## Adds a 32-bit float to the packet's [member buffer] at the current [member data_offset]. If
+## [param at_position] is different from [code]-1[/code], [member data_offset] is set to that value.
+func add_float(data: float, at_position := -1) -> void:
+	if at_position != -1:
+		data_offset = at_position
 	buffer.encode_float(data_offset, data)
 	data_offset += 4
 
 
-## Adds an int (int32) to the packet's [member buffer].
-func add_int(data: int) -> void:
+## Adds an int (int32) to the packet's [member buffer] at the current [member data_offset]. If
+## [param at_position] is different from [code]-1[/code], [member data_offset] is set to that value.
+func add_int(data: int, at_position := -1) -> void:
 	var min_value := -0x8000_0000
 	var max_value := 0x7FFF_FFFF
 	if data > max_value:
@@ -136,12 +148,15 @@ func add_int(data: int) -> void:
 	if data < min_value:
 		push_error("Data too small for signed integer, min %d, got %d." % [min_value, data])
 		return
+	if at_position != -1:
+		data_offset = at_position
 	buffer.encode_s32(data_offset, data)
 	data_offset += 4
 
 
-## Adds a short (int16) to the packet's [member buffer].
-func add_short(data: int) -> void:
+## Adds a short (int16) to the packet's [member buffer] at the current [member data_offset]. If
+## [param at_position] is different from [code]-1[/code], [member data_offset] is set to that value.
+func add_short(data: int, at_position := -1) -> void:
 	var min_value := -0x8000
 	var max_value := 0x7FFF
 	if data > max_value:
@@ -150,13 +165,19 @@ func add_short(data: int) -> void:
 	if data < min_value:
 		push_error("Data too small for short integer, min %d, got %d." % [min_value, data])
 		return
+	if at_position != -1:
+		data_offset = at_position
 	buffer.encode_s16(data_offset, data)
 	data_offset += 2
 
 
-## Adds a string to the packet's [member buffer]. The string is converted from UTF8 to LFS
-## and trimmed to [param length] bytes, including the last zero if [param zero_terminated] is true.
-func add_string(length: int, data: String, zero_terminated := true) -> PackedByteArray:
+## Adds a string to the packet's [member buffer] at the current [member data_offset]. If
+## [param at_position] is different from [code]-1[/code], [member data_offset] is set to that value.
+## The string is converted from UTF8 to LFS bytes and trimmed to [param length] bytes, including the
+## last zero if [param zero_terminated] is true.
+func add_string(
+	length: int, data: String, zero_terminated := true, at_position := -1
+) -> PackedByteArray:
 	if length <= 0:
 		push_warning("Cannot add a zero-length string")
 		return []
@@ -164,26 +185,34 @@ func add_string(length: int, data: String, zero_terminated := true) -> PackedByt
 	var _discard := temp_buffer.resize(length)
 	if zero_terminated:
 		temp_buffer[-1] = 0
+	if at_position != -1:
+		data_offset = at_position
 	for i in length:
 		buffer.encode_u8(data_offset, temp_buffer[i])
 		data_offset += 1
 	return temp_buffer
 
 
-## Adds a UTF8 string to the packet's [member buffer].
-func add_string_as_utf8(length: int, data: String) -> PackedByteArray:
+## Adds a UTF8 string to the packet's [member buffer] at the current [member data_offset]. If
+## [param at_position] is different from [code]-1[/code], [member data_offset] is set to that value.
+func add_string_as_utf8(length: int, data: String, at_position := -1) -> PackedByteArray:
 	var temp_buffer := data.to_utf8_buffer()
 	var _discard := temp_buffer.resize(length)
+	if at_position != -1:
+		data_offset = at_position
 	for i in length:
 		buffer.encode_u8(data_offset, temp_buffer[i])
 		data_offset += 1
 	return temp_buffer
 
 
-## Adds a string to the packet's [member buffer]. The string is converted from UTF8 to LFS
-## and is kept at the smallest possible length with steps of [param length_step] and a maximum
-## of [param max_length].
-func add_string_variable_length(data: String, max_length: int, length_step: int) -> PackedByteArray:
+## Adds a string to the packet's [member buffer] at the current [member data_offset]. If
+## [param at_position] is different from [code]-1[/code], [member data_offset] is set to that value.
+## The string is converted from UTF8 to LFS bytes and is kept at the smallest possible length with
+## steps of [param length_step] and a maximum of [param max_length].
+func add_string_variable_length(
+	data: String, max_length: int, length_step: int, at_position := -1
+) -> PackedByteArray:
 	var temp_buffer := LFSText.unicode_to_lfs_bytes(data)
 	var length := temp_buffer.size()
 	var remainder := length % length_step
@@ -191,6 +220,8 @@ func add_string_variable_length(data: String, max_length: int, length_step: int)
 	if length > max_length:
 		length = max_length
 	var _discard := temp_buffer.resize(length)
+	if at_position != -1:
+		data_offset = at_position
 	var encode_start := data_offset
 	for i in length:
 		buffer.encode_u8(data_offset, temp_buffer[i])
@@ -199,8 +230,9 @@ func add_string_variable_length(data: String, max_length: int, length_step: int)
 	return buffer.slice(encode_start, data_offset)
 
 
-## Adds an unsigned (uint32) to the packet's [member buffer].
-func add_unsigned(data: int) -> void:
+## Adds an unsigned (uint32) to the packet's [member buffer] at the current [member data_offset]. If
+## [param at_position] is different from [code]-1[/code], [member data_offset] is set to that value.
+func add_unsigned(data: int, at_position := -1) -> void:
 	var min_value := 0
 	var max_value := 0xFFFF_FFFF
 	if data > max_value:
@@ -209,12 +241,15 @@ func add_unsigned(data: int) -> void:
 	if data < min_value:
 		push_error("Data cannot be negative, got %d." % [data])
 		return
+	if at_position != -1:
+		data_offset = at_position
 	buffer.encode_u32(data_offset, data)
 	data_offset += 4
 
 
-## Adds a word (uint16) to the packet's [member buffer].
-func add_word(data: int) -> void:
+## Adds a word (uint16) to the packet's [member buffer] at the current [member data_offset]. If
+## [param at_position] is different from [code]-1[/code], [member data_offset] is set to that value.
+func add_word(data: int, at_position := -1) -> void:
 	var min_value := 0
 	var max_value := 0xFFFF
 	if data > max_value:
@@ -223,84 +258,125 @@ func add_word(data: int) -> void:
 	if data < min_value:
 		push_error("Data cannot be negative, got %d." % [data])
 		return
+	if at_position != -1:
+		data_offset = at_position
 	buffer.encode_u16(data_offset, data)
 	data_offset += 2
 
 
-## Reads [param bytes] bytes from the packet's [member buffer].
-func read_buffer(bytes: int) -> PackedByteArray:
+## Reads [param bytes] bytes from the packet's [member buffer] at the current [member data_offset].
+## If [param at_position] is different from [code]-1[/code], [member data_offset] is set to that
+## value.
+func read_buffer(bytes: int, at_position := -1) -> PackedByteArray:
+	if at_position != -1:
+		data_offset = at_position
 	var result := buffer.slice(data_offset, data_offset + bytes)
 	data_offset += bytes
 	return result
 
 
-## Reads a byte (uint8) from the packet's [member buffer].
-func read_byte() -> int:
+## Reads a byte (uint8) from the packet's [member buffer] at the current [member data_offset]. If
+## [param at_position] is different from [code]-1[/code], [member data_offset] is set to that value.
+func read_byte(at_position := -1) -> int:
+	if at_position != -1:
+		data_offset = at_position
 	var result := buffer.decode_u8(data_offset)
 	data_offset += 1
 	return result
 
 
-## Reads a car name (see [method LFSText.car_name_from_lfs_bytes] from the packet's [member buffer].
-func read_car_name() -> String:
+## Reads a car name (see [method LFSText.car_name_from_lfs_bytes] from the packet's [member buffer]
+## at the current [member data_offset]. If [param at_position] is different from [code]-1[/code],
+## [member data_offset] is set to that value.
+func read_car_name(at_position := -1) -> String:
 	const CAR_NAME_LENGTH := 4
+	if at_position != -1:
+		data_offset = at_position
 	var car_name_buffer := buffer.slice(data_offset, data_offset + CAR_NAME_LENGTH)
 	data_offset += CAR_NAME_LENGTH
 	return LFSText.car_name_from_lfs_bytes(car_name_buffer)
 
 
-## Reads a single character from the packet's [member buffer].
-func read_char() -> String:
+## Reads a single character from the packet's [member buffer] at the current [member data_offset].
+## If [param at_position] is different from [code]-1[/code], [member data_offset] is set to that
+## value.
+func read_char(at_position := -1) -> String:
+	if at_position != -1:
+		data_offset = at_position
 	return read_string(1, false)
 
 
-## Reads a 32-bit float from the packet's [member buffer].
-func read_float() -> float:
+## Reads a 32-bit float from the packet's [member buffer] at the current [member data_offset]. If
+## [param at_position] is different from [code]-1[/code], [member data_offset] is set to that value.
+func read_float(at_position := -1) -> float:
+	if at_position != -1:
+		data_offset = at_position
 	var result := buffer.decode_float(data_offset)
 	data_offset += 4
 	return result
 
 
-## Reads an int (int32) from the packet's [member buffer].
-func read_int() -> int:
+## Reads an int (int32) from the packet's [member buffer] at the current [member data_offset]. If
+## [param at_position] is different from [code]-1[/code], [member data_offset] is set to that value.
+func read_int(at_position := -1) -> int:
+	if at_position != -1:
+		data_offset = at_position
 	var result := buffer.decode_s32(data_offset)
 	data_offset += 4
 	return result
 
 
-## Reads a short (int16) from the packet's [member buffer].
-func read_short() -> int:
+## Reads a short (int16) from the packet's [member buffer] at the current [member data_offset]. If
+## [param at_position] is different from [code]-1[/code], [member data_offset] is set to that value.
+func read_short(at_position := -1) -> int:
+	if at_position != -1:
+		data_offset = at_position
 	var result := buffer.decode_s16(data_offset)
 	data_offset += 2
 	return result
 
 
 ## Reads [param length] bytes forming an LFS string from the packet's [member buffer],
-## and converts it to UTF8. See [method LFSText.lfs_bytes_to_unicode] for details.
-func read_string(length: int, zero_terminated := true) -> String:
+## and converts it to UTF8. See [method LFSText.lfs_bytes_to_unicode] for details. Reading occurs
+## at the current [member data_offset]. If [param at_position] is different from [code]-1[/code],
+## [member data_offset] is set to that value.
+func read_string(length: int, zero_terminated := true, at_position := -1) -> String:
+	if at_position != -1:
+		data_offset = at_position
 	var temp_buffer := buffer.slice(data_offset, data_offset + length)
 	var result := LFSText.lfs_bytes_to_unicode(temp_buffer, zero_terminated)
 	data_offset += length
 	return result
 
 
-## Reads a UTF8 string of [param length] characters from the packet's [member buffer].
-func read_string_as_utf8(length: int) -> String:
+## Reads a UTF8 string of [param length] characters from the packet's [member buffer] at the current
+## [member data_offset]. If [param at_position] is different from [code]-1[/code],
+## [member data_offset] is set to that value.
+func read_string_as_utf8(length: int, at_position := -1) -> String:
+	if at_position != -1:
+		data_offset = at_position
 	var temp_buffer := buffer.slice(data_offset, data_offset + length)
 	var result := temp_buffer.get_string_from_utf8()
 	data_offset += length
 	return result
 
 
-## Reads an unsigned (uint32) from the packet's [member buffer].
-func read_unsigned() -> int:
+## Reads an unsigned (uint32) from the packet's [member buffer] at the current [member data_offset].
+## If [param at_position] is different from [code]-1[/code], [member data_offset] is set to that
+## value.
+func read_unsigned(at_position := -1) -> int:
+	if at_position != -1:
+		data_offset = at_position
 	var result := buffer.decode_u32(data_offset)
 	data_offset += 4
 	return result
 
 
-## Reads a word (uint16) from the packet's [member buffer].
-func read_word() -> int:
+## Reads a word (uint16) from the packet's [member buffer] at the current [member data_offset]. If
+## [param at_position] is different from [code]-1[/code], [member data_offset] is set to that value.
+func read_word(at_position := -1) -> int:
+	if at_position != -1:
+		data_offset = at_position
 	var result := buffer.decode_u16(data_offset)
 	data_offset += 2
 	return result
