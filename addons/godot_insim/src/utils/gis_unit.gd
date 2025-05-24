@@ -43,7 +43,7 @@ const SPEEDS: Array[float] = [
 	3.6,
 	2.236_936_292,
 ]
-const TIMES: Array[float] = [
+const DURATIONS: Array[float] = [
 	1.0,
 	1000.0,
 	1 / 60.0,
@@ -80,4 +80,4 @@ static func convert_speed(value: float, from: Speed, to: Speed) -> float:
 
 
 static func convert_duration(value: float, from: Duration, to: Duration) -> float:
-	return value / TIMES[from] * TIMES[to]
+	return value / DURATIONS[from] * DURATIONS[to]
