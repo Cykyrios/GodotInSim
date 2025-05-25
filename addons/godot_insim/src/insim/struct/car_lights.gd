@@ -4,16 +4,16 @@ extends RefCounted
 ##
 ## This struct can be used to help set lights from the [enum InSim.LocalCarLights] enum.
 
-const _SIGNALS_BIT_SHIFT := 16
-const _SIGNALS_BIT_MASK := 0x3_0000
-const _LIGHTS_BIT_SHIFT := 18
-const _LIGHTS_BIT_MASK := 0xc_0000
-const _FOG_REAR_BIT_SHIFT := 20
-const _FOG_REAR_BIT_MASK := 0x10_0000
-const _FOG_FRONT_BIT_SHIFT := 21
-const _FOG_FRONT_BIT_MASK := 0x20_0000
-const _EXTRA_BIT_SHIFT := 22
-const _EXTRA_BIT_MASK := 0x40_0000
+const SIGNALS_BIT_SHIFT := 16  ## Signals bit shift
+const SIGNALS_BIT_MASK := 0x3_0000  ## Signals bit mask
+const LIGHTS_BIT_SHIFT := 18  ## Headlights bit shift
+const LIGHTS_BIT_MASK := 0xc_0000  ## Headlights bit mask
+const FOG_REAR_BIT_SHIFT := 20  ## Rear fog light bit shift
+const FOG_REAR_BIT_MASK := 0x10_0000  ## Rear fog light bit mask
+const FOG_FRONT_BIT_SHIFT := 21  ## Front fog light bit shift
+const FOG_FRONT_BIT_MASK := 0x20_0000  ## Front fog light bit mask
+const EXTRA_BIT_SHIFT := 22  ## Extra light bit shift
+const EXTRA_BIT_MASK := 0x40_0000  ## Extra light bit mask
 
 ## See [enum InSim.LocalCarLights].
 const MASK_ALL := (
@@ -110,9 +110,9 @@ func get_value() -> int:
 	lcl |= InSim.LocalCarLights.LCL_SET_FOG_REAR if set_fog_rear else 0
 	lcl |= InSim.LocalCarLights.LCL_SET_FOG_FRONT if set_fog_front else 0
 	lcl |= InSim.LocalCarLights.LCL_SET_EXTRA if set_extra else 0
-	lcl = (lcl & ~_SIGNALS_BIT_MASK) | signals << _SIGNALS_BIT_SHIFT
-	lcl = (lcl & ~_LIGHTS_BIT_MASK) | lights << _LIGHTS_BIT_SHIFT
-	lcl = (lcl & ~_FOG_REAR_BIT_MASK) | fog_rear << _FOG_REAR_BIT_SHIFT
-	lcl = (lcl & ~_FOG_FRONT_BIT_MASK) | fog_front << _FOG_FRONT_BIT_SHIFT
-	lcl = (lcl & ~_EXTRA_BIT_MASK) | extra << _EXTRA_BIT_SHIFT
+	lcl = (lcl & ~SIGNALS_BIT_MASK) | signals << SIGNALS_BIT_SHIFT
+	lcl = (lcl & ~LIGHTS_BIT_MASK) | lights << LIGHTS_BIT_SHIFT
+	lcl = (lcl & ~FOG_REAR_BIT_MASK) | fog_rear << FOG_REAR_BIT_SHIFT
+	lcl = (lcl & ~FOG_FRONT_BIT_MASK) | fog_front << FOG_FRONT_BIT_SHIFT
+	lcl = (lcl & ~EXTRA_BIT_MASK) | extra << EXTRA_BIT_SHIFT
 	return lcl

@@ -4,16 +4,24 @@ extends RefCounted
 ##
 ## This struct can be used to help set switches from the [enum InSim.LocalCarSwitches] enum.
 
-const _SIGNALS_BIT_SHIFT := 8
-const _SIGNALS_BIT_MASK := 0x0300
-const _FLASH_BIT_SHIFT := 10
-const _FLASH_BIT_MASK := 0x0400
-const _HEADLIGHTS_BIT_SHIFT := 11
-const _HEADLIGHTS_BIT_MASK := 0x0800
-const _HORN_BIT_SHIFT := 16
-const _HORN_BIT_MASK := 0x07_0000
-const _SIREN_BIT_SHIFT := 20
-const _SIREN_BIT_MASK := 0x30_0000
+## @deprecated: Signals should be set using [CarLights].
+## Signals bit shift
+const SIGNALS_BIT_SHIFT := 8
+## @deprecated: Signals should be set using [CarLights].
+## Signals bit mask
+const SIGNALS_BIT_MASK := 0x0300
+const FLASH_BIT_SHIFT := 10  ## Flash bit shift
+const FLASH_BIT_MASK := 0x0400  ## Flash bit mask
+## @deprecated: Headlights should be set using [CarLights].
+## Headlights bit shift
+const HEADLIGHTS_BIT_SHIFT := 11
+## @deprecated: Headlights should be set using [CarLights].
+## Headlights bit mask
+const HEADLIGHTS_BIT_MASK := 0x0800
+const HORN_BIT_SHIFT := 16  ## Horn bit shift
+const HORN_BIT_MASK := 0x07_0000  ## Horn bit mask
+const SIREN_BIT_SHIFT := 20  ## Siren bit shift
+const SIREN_BIT_MASK := 0x30_0000  ## Siren bit mask
 
 ## See [enum InSim.LocalCarSwitches].
 const MASK_ALL := (
@@ -122,9 +130,9 @@ func get_value() -> int:
 	lcs |= InSim.LocalCarSwitches.LCS_SET_HEADLIGHTS if set_headlights else 0
 	lcs |= InSim.LocalCarSwitches.LCS_SET_HORN if set_horn else 0
 	lcs |= InSim.LocalCarSwitches.LCS_SET_SIREN if set_siren else 0
-	lcs = (lcs & ~_SIGNALS_BIT_MASK) | signals << _SIGNALS_BIT_SHIFT
-	lcs = (lcs & ~_FLASH_BIT_MASK) | flash << _FLASH_BIT_SHIFT
-	lcs = (lcs & ~_HEADLIGHTS_BIT_MASK) | headlights << _HEADLIGHTS_BIT_SHIFT
-	lcs = (lcs & ~_HORN_BIT_MASK) | horn << _HORN_BIT_SHIFT
-	lcs = (lcs & ~_SIREN_BIT_MASK) | siren << _SIREN_BIT_SHIFT
+	lcs = (lcs & ~SIGNALS_BIT_MASK) | signals << SIGNALS_BIT_SHIFT
+	lcs = (lcs & ~FLASH_BIT_MASK) | flash << FLASH_BIT_SHIFT
+	lcs = (lcs & ~HEADLIGHTS_BIT_MASK) | headlights << HEADLIGHTS_BIT_SHIFT
+	lcs = (lcs & ~HORN_BIT_MASK) | horn << HORN_BIT_SHIFT
+	lcs = (lcs & ~SIREN_BIT_MASK) | siren << SIREN_BIT_SHIFT
 	return lcs
