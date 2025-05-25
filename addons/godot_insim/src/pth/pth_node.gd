@@ -1,6 +1,5 @@
 class_name PTHNode
 extends RefCounted
-
 ## PTH Node
 ##
 ## This class contains data about each path node contained in a [PTHFile].
@@ -83,3 +82,25 @@ func decode_buffer(buffer: PackedByteArray) -> void:
 	var basis_x := basis_y.cross(Vector3(0, 0, 1)).normalized()
 	var basis_z := basis_x.cross(basis_y).normalized()
 	xform.basis = Basis(basis_x, basis_y, basis_z).orthonormalized()
+
+
+## Encodes this [PTHNode]'s data and returns the corresponding [PackedByteArray] buffer. If
+## [param update_direction_from_transform] is [code]true[/code], [member xform]'s basis is
+## orthonormalized and its y vector is used as the node direction instead of [member direction].
+func encode_buffer(update_direction_from_transform := false) -> PackedByteArray:
+	var packet := LFSPacket.new()
+	var converted_center := center * POSITION_MULTIPLIER
+	packet.add_int(roundi(converted_center.x))
+	packet.add_int(roundi(converted_center.y))
+	packet.add_int(roundi(converted_center.z))
+	if update_direction_from_transform:
+		xform.basis = xform.basis.orthonormalized()
+		direction = xform.basis.y
+	packet.add_float(direction.x)
+	packet.add_float(direction.y)
+	packet.add_float(direction.z)
+	packet.add_float(limit_left)
+	packet.add_float(limit_right)
+	packet.add_float(drive_left)
+	packet.add_float(drive_right)
+	return packet.buffer

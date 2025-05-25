@@ -134,6 +134,24 @@ func get_3d_mesh() -> Node3D:
 	return pth_mesh
 
 
+## Save the [PTHFile] as a file to the given [param path].
+func save_to_file(path: String) -> void:
+	var file := FileAccess.open(path, FileAccess.WRITE)
+	var error := FileAccess.get_open_error()
+	if error != OK:
+		push_error("Error code %d occurred while creating file at %s" % [error, path])
+		return
+	var _discard := add_string(6, "LFSPTH", false)
+	add_byte(0)
+	add_byte(0)
+	num_nodes = nodes.size()
+	add_int(num_nodes)
+	add_int(finish_line)
+	for i in num_nodes:
+		add_buffer(nodes[i].encode_buffer())
+	var _success := file.store_buffer(buffer)
+
+
 ## Updates the colors of the polygons and the line's color and width. You must pass
 ## [param pth_mesh] as obtained from [method get_2d_mesh].
 func update_2d_mesh(
