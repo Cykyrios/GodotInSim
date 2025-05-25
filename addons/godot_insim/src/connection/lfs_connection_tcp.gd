@@ -1,13 +1,15 @@
 class_name LFSConnectionTCP
 extends LFSConnection
+## TCP connection for LFS
+##
+## Implements the TCP protocol for LFS I/O.
+
+var stream := StreamPeerTCP.new()  ## TCP peer handling I/O
+var is_insim_relay := false  ## Whether this connection represents an InSim relay.
 
 
-var stream := StreamPeerTCP.new()
-var is_insim_relay := false
-
-
-func connect_to_host(_address: String, _port: int, _udp_port := 0) -> void:
-	super(_address, _port, _udp_port)
+func _connect_to_host(c_address: String, c_port: int, c_udp_port := 0) -> void:
+	super(c_address, c_port, c_udp_port)
 	if address == InSim.RELAY_ADDRESS and port == InSim.RELAY_PORT:
 		is_insim_relay = true
 	var error := stream.connect_to_host(address, port)
@@ -29,11 +31,11 @@ func connect_to_host(_address: String, _port: int, _udp_port := 0) -> void:
 		connection_failed.emit()
 
 
-func disconnect_from_host() -> void:
+func _disconnect_from_host() -> void:
 	stream.disconnect_from_host()
 
 
-func get_incoming_packets() -> void:
+func _get_incoming_packets() -> void:
 	if not stream:
 		return
 	var packet_buffer := PackedByteArray()
@@ -58,7 +60,7 @@ func get_incoming_packets() -> void:
 		_discard = stream.poll()
 
 
-func send_packet(packet: PackedByteArray) -> bool:
+func _send_packet(packet: PackedByteArray) -> bool:
 	if is_insim_relay:
 		packet[0] = packet[0] * InSimPacket.SIZE_MULTIPLIER
 	var error := stream.put_data(packet)

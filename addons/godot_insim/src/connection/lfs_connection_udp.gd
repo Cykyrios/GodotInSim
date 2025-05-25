@@ -1,12 +1,14 @@
 class_name LFSConnectionUDP
 extends LFSConnection
+## UDP connection for LFS
+##
+## Implements the UDP protocol for LFS I/O.
+
+var socket := PacketPeerUDP.new()  ## UDP socket handling I/O
 
 
-var socket := PacketPeerUDP.new()
-
-
-func connect_to_host(_address: String, _port: int, _udp_port := 0, is_out := false) -> void:
-	super(_address, _port, _udp_port)
+func _connect_to_host(c_address: String, c_port: int, c_udp_port := 0, is_out := false) -> void:
+	super(c_address, c_port, c_udp_port)
 	var error := -1
 	# I honestly have no idea why I have to do this, but socket.connect_to_host() doesn't work for
 	# OutGauge/OutSim, packets aren't received. OTOH, socket.bind() returns 2 for InSim...
@@ -21,11 +23,11 @@ func connect_to_host(_address: String, _port: int, _udp_port := 0, is_out := fal
 		connection_failed.emit()
 
 
-func disconnect_from_host() -> void:
+func _disconnect_from_host() -> void:
 	socket.close()
 
 
-func get_incoming_packets() -> void:
+func _get_incoming_packets() -> void:
 	var packet_buffer := PackedByteArray()
 	while socket.get_available_packet_count() > 0:
 		packet_buffer = socket.get_packet()
@@ -36,7 +38,7 @@ func get_incoming_packets() -> void:
 		packet_received.emit(packet_buffer)
 
 
-func send_packet(packet: PackedByteArray) -> bool:
+func _send_packet(packet: PackedByteArray) -> bool:
 	if not socket.is_socket_connected():
 		await connected
 	var error := socket.put_packet(packet)

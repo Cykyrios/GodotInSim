@@ -26,7 +26,7 @@ enum OutSimOpts {
 
 var outsim_options := 0  ## The current value for InSim options
 
-var lfs_connection := LFSConnectionUDP.new()
+var _lfs_connection := LFSConnectionUDP.new()
 
 
 ## Creates and returns an [OutSimPacket] from the given [param packet_buffer]. This method is
@@ -38,21 +38,21 @@ static func create_packet_from_buffer(options: int, packet_buffer: PackedByteArr
 
 
 func _ready() -> void:
-	add_child(lfs_connection)
-	var _discard := lfs_connection.packet_received.connect(_on_packet_received)
+	add_child(_lfs_connection)
+	var _discard := _lfs_connection.packet_received.connect(_on_packet_received)
 
 
 ## Closes the [OutSim] connection, disabling packet reading.[br]
 ## [b]Note:[/b] As OutSim data is transmitted over UDP, there is no connection per se; this simply
 ## means the [OutSim] instance will stop listening to packets.
 func close() -> void:
-	lfs_connection.disconnect_from_host()
+	_lfs_connection._disconnect_from_host()
 
 
 ## Enables packet listening over UDP with the given [param address] and [param port].
 func initialize(options: int, address := "127.0.0.1", port := 29_997) -> void:
 	outsim_options = options
-	lfs_connection.connect_to_host(address, port, 0, true)
+	_lfs_connection._connect_to_host(address, port, 0, true)
 
 
 func _on_packet_received(packet_buffer: PackedByteArray) -> void:
