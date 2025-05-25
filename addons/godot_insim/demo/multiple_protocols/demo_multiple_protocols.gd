@@ -52,7 +52,6 @@ func _on_insim_button_pressed() -> void:
 		insim.close()
 		insim_button.text = "Initialize InSim"
 	else:
-		var initialization_data := InSimInitializationData.new()
 		insim.initialize(
 			"127.0.0.1",
 			29_999,
@@ -128,7 +127,11 @@ func update_outgauge(outgauge_packet: OutGaugePacket) -> void:
 	outgauge_label.text += "\n%s: %s" % ["Time", outgauge_packet.time]
 	outgauge_label.text += "\n%s: %s" % ["Car Name", outgauge_packet.car_name]
 	outgauge_label.text += "\n%s: %s" % ["Flags", outgauge_packet.get_flags_array()]
-	outgauge_label.text += "\n%s: %s" % ["Gear", outgauge_packet.gear]
+	var gear := outgauge_packet.gear - 1
+	outgauge_label.text += "\n%s: %s" % [
+			"Gear",
+			"R" if gear < 0 else "N" if gear == 0 else str(gear),
+		]
 	outgauge_label.text += "\n%s: %s" % ["Player ID", outgauge_packet.plid]
 	outgauge_label.text += "\n%s: %.2f" % ["Speed", outgauge_packet.speed]
 	outgauge_label.text += "\n%s: %.2f" % ["RPM", outgauge_packet.rpm]
@@ -162,8 +165,11 @@ func update_outsim(outsim_packet: OutSimPacket) -> void:
 	if os_options & OutSim.OutSimOpts.OSO_MAIN:
 		var outsim_main := pack.os_main
 		outsim_label_1.text += "\n%s: %.2v" % ["AngVel", outsim_main.ang_vel]
-		outsim_label_1.text += "\n%s: %.2f, %s: %.2f, %s: %.2f" % \
-				["Heading", outsim_main.heading, "Pitch", outsim_main.pitch, "Roll", outsim_main.roll]
+		outsim_label_1.text += "\n%s: %.2f, %s: %.2f, %s: %.2f" % [
+			"Heading", outsim_main.heading,
+			"Pitch", outsim_main.pitch,
+			"Roll", outsim_main.roll,
+		]
 		outsim_label_1.text += "\n%s: %.2v" % ["Accel", outsim_main.accel]
 		outsim_label_1.text += "\n%s: %.2v" % ["Vel", outsim_main.vel]
 		outsim_label_1.text += "\n%s: %s" % ["Pos", outsim_main.pos]
@@ -175,7 +181,10 @@ func update_outsim(outsim_packet: OutSimPacket) -> void:
 				"Handbrake", outsim_inputs.handbrake]
 	if os_options & OutSim.OutSimOpts.OSO_DRIVE:
 		var gear := pack.gear - 1
-		outsim_label_1.text += "\n%s: %s" % ["Gear", "R" if gear < 0 else "N" if gear == 0 else gear]
+		outsim_label_1.text += "\n%s: %s" % [
+			"Gear",
+			"R" if gear < 0 else "N" if gear == 0 else str(gear),
+		]
 		outsim_label_1.text += "\n%s: %.2f" % ["EngineAngVel", pack.engine_ang_vel]
 		outsim_label_1.text += "\n%s: %.2f" % ["MaxTorqueAtVel", pack.max_torque_at_vel]
 	if os_options & OutSim.OutSimOpts.OSO_DISTANCE:
