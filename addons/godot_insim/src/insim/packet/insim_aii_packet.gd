@@ -1,28 +1,30 @@
 class_name InSimAIIPacket
 extends InSimPacket
-
 ## AI Info packet
+##
+## This packet is received after sending a [constant InSim.Small.SMALL_AII] packet or an
+## [InSimAICPacket] with the repeated AI info enabled.
 
-const PACKET_SIZE := 96
-const PACKET_TYPE := InSim.Packet.ISP_AII
+const PACKET_SIZE := 96  ## Packet size
+const PACKET_TYPE := InSim.Packet.ISP_AII  ## The packet's type, see [enum InSim.Packet].
 
-var plid := 0
+var plid := 0  ## PLID of the AI car
 
-var outsim_data := OutSimMain.new()
+var outsim_data := OutSimMain.new()  ## AI car data, using [OutSimMain] format
 
 var flags := 0  ## Value to set
 var gear := 0  ## Reverse:0, Neutral:1, First:2...
-var sp2 := 0
-var sp3 := 0
+var sp2 := 0  ## Spare
+var sp3 := 0  ## Spare
 
-var rpm := 0.0
-var spf0 := 0.0
-var spf1 := 0.0
+var rpm := 0.0  ## Engine RPM
+var spf0 := 0.0  ## Spare
+var spf1 := 0.0  ## Spare
 
 var show_lights := 0  ## Dash lights currently switched on (see [OutGaugePacket.DLFlags])
-var spu1 := 0
-var spu2 := 0
-var spu3 := 0
+var spu1 := 0  ## Spare
+var spu2 := 0  ## Spare
+var spu3 := 0  ## Spare
 
 
 func _init() -> void:

@@ -1,24 +1,26 @@
 class_name InSimMSOPacket
 extends InSimPacket
-
 ## MSg Out packet - system messages and user messages - variable size
+##
+## This packet is received any time a message is displayed in game.
 
-const PACKET_MIN_SIZE := 12
-const PACKET_MAX_SIZE := 136
-const PACKET_TYPE := InSim.Packet.ISP_MSO
-const MSG_MAX_LENGTH := 128
+const PACKET_MIN_SIZE := 12  ## Minimum packet size
+const PACKET_MAX_SIZE := 136  ## Maximum packet size
+const PACKET_TYPE := InSim.Packet.ISP_MSO  ## The packet's type, see [enum InSim.Packet].
+const MSG_MAX_LENGTH := 128  ## Maximum message length
 
-var zero := 0
+var zero := 0  ## Zero byte
 
-var ucid := 0  ## connection's unique id (0 = host)
-var plid := 0  ## player's unique id (if zero, use [member ucid])
-## set if typed by a user (see [enum InSim.MessageUserValue])
+var ucid := 0  ## Connection's unique id (0 = host)
+var plid := 0  ## Player's unique id (if zero, use [member ucid])
+## Message type, see [enum InSim.MessageUserValue]
 var user_type := InSim.MessageUserValue.MSO_SYSTEM
 ## @experimental: This property is unreliable, use [method LFSText.get_mso_start] instead.
-## first character of the actual text (after player name)[br]
-## Note:  If the sender's name contains non-latin or multi-byte characters, the count will be off.
+## First character of the actual text (after player name)[br]
+## [b]Note:[/b] If the sender's name contains non-latin or multi-byte characters, the count
+## will be off.
 var text_start := 0
-var msg := ""  ## 4, 8, 12... 128 characters - last byte is zero
+var msg := ""  ## Message contents (4, 8, 12... 128 characters - last byte is zero)
 
 
 func _init() -> void:

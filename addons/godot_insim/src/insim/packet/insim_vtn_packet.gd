@@ -1,16 +1,18 @@
 class_name InSimVTNPacket
 extends InSimPacket
-
 ## VoTe Notify packet
+##
+## This packet is received when a vote in completed or cancelled.
 
-const PACKET_SIZE := 8
-const PACKET_TYPE := InSim.Packet.ISP_VTN
-var zero := 0
+const PACKET_SIZE := 8  ## Packet size
+const PACKET_TYPE := InSim.Packet.ISP_VTN  ## The packet's type, see [enum InSim.Packet].
 
-var ucid := 0  ## connection's unique id
-var action := 0  ## see [enum InSim.Vote]
-var spare2 := 0
-var spare3 := 0
+var zero := 0  ## Zero byte
+
+var ucid := 0  ## Connection's unique id
+var action := 0  ## Vote action, see [enum InSim.Vote].
+var spare2 := 0  ## Spare
+var spare3 := 0  ## Spare
 
 
 func _init() -> void:

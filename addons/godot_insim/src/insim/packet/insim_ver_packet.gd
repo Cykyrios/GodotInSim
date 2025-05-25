@@ -1,19 +1,22 @@
 class_name InSimVERPacket
 extends InSimPacket
-
 ## VERsion packet
+##
+## This packet is received upon request via [InSim.Tiny.TINY_VER], or as a reply to an
+## [InSimISIPacket] with a non-zero request ID.
 
-const VERSION_LENGTH := 8
-const PRODUCT_LENGTH := 6
+const VERSION_LENGTH := 8  ## Version text length
+const PRODUCT_LENGTH := 6  ## Product text length
 
-const PACKET_SIZE := 20
-const PACKET_TYPE := InSim.Packet.ISP_VER
-var zero := 0
+const PACKET_SIZE := 20  ## Packet size
+const PACKET_TYPE := InSim.Packet.ISP_VER  ## The packet's type, see [enum InSim.Packet].
+
+var zero := 0  ## Zero byte
 
 var version := ""  ## LFS version, e.g. 0.3G
 var product := ""  ## Product: DEMO / S1 / S2 / S3
 var insim_ver := 0  ## InSim version
-var spare := 0
+var spare := 0  ## Spare
 
 
 func _init() -> void:

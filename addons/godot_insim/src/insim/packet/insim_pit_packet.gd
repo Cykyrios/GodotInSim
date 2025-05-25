@@ -1,26 +1,28 @@
 class_name InSimPITPacket
 extends InSimPacket
-
 ## PIT stop packet
+##
+## This packet is received when a player makes a pit stop.
 
-const MAX_TYRES := 4
+const _MAX_TYRES := 4
 
-const PACKET_SIZE := 24
-const PACKET_TYPE := InSim.Packet.ISP_PIT
-var plid := 0  ## player's unique id
+const PACKET_SIZE := 24  ## Packet size
+const PACKET_TYPE := InSim.Packet.ISP_PIT  ## The packet's type, see [enum InSim.Packet].
 
-var laps_done := 0  ## laps completed
-var flags := 0  ## player flags
+var plid := 0  ## Player's unique id
+
+var laps_done := 0  ## Number of laps completed
+var flags := 0  ## Player flags
 
 var fuel_add := 0  ## /showfuel yes: fuel added percent / no: 255
 var penalty := InSim.Penalty.PENALTY_NONE  ## current penalty (see [enum InSim.Penalty])
-var num_stops := 0  ## number of pit stops
-var sp3 := 0
+var num_stops := 0  ## Number of pit stops
+var sp3 := 0  ## Spare
 
-var tyres: Array[InSim.Tyre] = []  ## tyres changed
+var tyres: Array[InSim.Tyre] = []  ## Tyres changed
 
-var work := 0  ## pit work (see [enum InSim.PitWork])
-var spare := 0
+var work := 0  ## Pit work (see [enum InSim.PitWork])
+var spare := 0  ## Spare
 
 
 func _init() -> void:
@@ -43,7 +45,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	num_stops = read_byte()
 	sp3 = read_byte()
 	tyres.clear()
-	for i in MAX_TYRES:
+	for i in _MAX_TYRES:
 		tyres.append(read_byte())
 	work = read_unsigned()
 	spare = read_unsigned()

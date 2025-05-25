@@ -1,16 +1,30 @@
 class_name InSimOCOPacket
 extends InSimPacket
-
 ## Object COntrol packet - currently used for switching start lights
+##
+## This packet is sent to control lights.
 
-const PACKET_SIZE := 8
-const PACKET_TYPE := InSim.Packet.ISP_OCO
-var zero := 0
+const PACKET_SIZE := 8  ## Packet size
+const PACKET_TYPE := InSim.Packet.ISP_OCO  ## The packet's type, see [enum InSim.Packet].
+var zero := 0  ## Zero byte
 
-var action := InSim.OCOAction.OCO_NUM  ## see [enum InSim.OCOAction]
-var index := 0  ## see InSim documentation
-var identifier := 0  ## identify particular start lights objects (0 to 63 or 255 = all)
-var data := 0  ## see InSim documentation
+var action := InSim.OCOAction.OCO_NUM  ## OCO Action, see [enum InSim.OCOAction].
+var index := 0  ## Object index, see InSim documentation.
+## Light identifier, identifies particular start lights objects (0 to 63 or 255 = all).
+var identifier := 0
+var data := 0  ## Control data, see InSim documentation.
+
+
+## Creates and returns a new [InSimOCOPacket] from the given parameters.
+static func create(
+	oco_action: InSim.OCOAction, oco_index: int, oco_id: int, oco_data: int
+) -> InSimOCOPacket:
+	var packet := InSimOCOPacket.new()
+	packet.action = oco_action
+	packet.index = oco_index
+	packet.identifier = oco_id
+	packet.data = oco_data
+	return packet
 
 
 func _init() -> void:
@@ -44,14 +58,3 @@ func _get_pretty_text() -> String:
 	var details_string := " (index=%d, identifier=%d, data=%d)" % [index, identifier, data]
 	return "%s%s" % [InSim.OCOAction.keys()[action], details_string if action in details_actions \
 			else ""]
-
-
-static func create(
-	oco_action: InSim.OCOAction, oco_index: int, oco_id: int, oco_data: int
-) -> InSimOCOPacket:
-	var packet := InSimOCOPacket.new()
-	packet.action = oco_action
-	packet.index = oco_index
-	packet.identifier = oco_id
-	packet.data = oco_data
-	return packet

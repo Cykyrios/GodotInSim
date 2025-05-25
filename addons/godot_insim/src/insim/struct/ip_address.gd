@@ -1,12 +1,14 @@
 class_name IPAddress
 extends InSimStruct
+## IP address
+##
+## This class represents an IP address for use in [InSimIPBPacket].
 
+const STRUCT_SIZE := 4  ## The size of this struct's data
 
-const STRUCT_SIZE := 4
-
-var address_string := "0.0.0.0"
-var address_array: PackedByteArray = [0, 0, 0, 0]
-var address_int := 0
+var address_string := "0.0.0.0"  ## String representation of the IP address.
+var address_array: PackedByteArray = [0, 0, 0, 0]  ## Array rerepsentation of the IP address.
+var address_int := 0  ## Integer representation of the IP address.
 
 
 func _to_string() -> String:
@@ -26,6 +28,7 @@ func _set_from_buffer(buffer: PackedByteArray) -> void:
 	fill_from_array(buffer)
 
 
+## Sets the IP address from the given [param ip_array].
 func fill_from_array(ip_array: PackedByteArray = [0, 0, 0, 0]) -> void:
 	if ip_array.size() != 4:
 		fill_from_array()
@@ -41,6 +44,7 @@ func fill_from_array(ip_array: PackedByteArray = [0, 0, 0, 0]) -> void:
 			address_array[2], address_array[3]]
 
 
+## Sets the IP address from the given [param ip_int].
 func fill_from_int(ip_int := 0) -> void:
 	if ip_int < 0 or ip_int > 0xffff_ffff:
 		fill_from_int()
@@ -53,6 +57,7 @@ func fill_from_int(ip_int := 0) -> void:
 			address_array[2], address_array[3]]
 
 
+## Sets the IP address from the given [param ip_string].
 func fill_from_string(ip_string := "0.0.0.0") -> void:
 	var regex := RegEx.create_from_string(r"(-?\d+).(-?\d+).(-?\d+).(-?\d+)")
 	var result := regex.search(ip_string)

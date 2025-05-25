@@ -1,10 +1,11 @@
 class_name InSimAXOPacket
 extends InSimPacket
-
 ## AutoX Object packet
+##
+## This packet is received when an autocross object is hit.
 
-const PACKET_SIZE := 4
-const PACKET_TYPE := InSim.Packet.ISP_AXO
+const PACKET_SIZE := 4  ## Packet size
+const PACKET_TYPE := InSim.Packet.ISP_AXO  ## The packet's type, see [enum InSim.Packet].
 var plid := 0  ## player's unique id
 
 

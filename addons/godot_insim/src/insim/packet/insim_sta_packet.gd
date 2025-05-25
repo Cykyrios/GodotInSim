@@ -1,17 +1,19 @@
 class_name InSimSTAPacket
 extends InSimPacket
-
 ## STAte packet
+##
+## This packet is received when the game's state changes.
 
-const TRACK_NAME_LENGTH := 6
+const _TRACK_NAME_LENGTH := 6  ## Track name length
 
-const PACKET_SIZE := 28
-const PACKET_TYPE := InSim.Packet.ISP_STA
-var zero := 0
+const PACKET_SIZE := 28  ## Packet size
+const PACKET_TYPE := InSim.Packet.ISP_STA  ## The packet's type, see [enum InSim.Packet].
 
-var replay_speed := 0.0  ## 4-byte float - 1.0 is normal speed
+var zero := 0  ## Zero byte
 
-var flags := 0  ## state flags (see [enum InSim.State])
+var replay_speed := 0.0  ## Replay speed - 1.0 is normal speed
+
+var flags := 0  ## State flags (see [enum InSim.State])
 var ingame_cam := InSim.View.VIEW_MAX  ## Which type of camera is selected (see [enum InSim.View])
 var view_plid := 0  ## Unique ID of viewed player (0 = none)
 
@@ -20,17 +22,17 @@ var num_connections := 0  ## Number of connections including host
 var num_finished := 0  ## Number finished or qualified
 var race_in_progress := 0  ## 0 = no race / 1 = race / 2 = qualifying
 
-var qual_mins := 0  ## qualifying duration
-## race laps, with the following meanings depending on range:[br]
+var qual_mins := 0  ## Qualifying duration
+## Race laps, with the following meanings depending on range:[br]
 ## 0: practice[br]
 ## 1-99: number of laps... laps = rl[br]
 ## 100-190: 100 to 1000 laps... laps = (rl - 100) * 10 + 100[br]
 ## 191-238: 1 to 48 hours... hours = rl - 190
-var race_laps := 0  ## see "RaceLaps" near the top of this document
-var sp2 := 0
+var race_laps := 0
+var sp2 := 0  ## Spare
 var server_status := 0  ## 0 = unknown / 1 = success / > 1 = fail
 
-var track := ""  ## short name for track e.g. FE2R
+var track := ""  ## Short name for track e.g. FE2R
 var weather := 0  ## 0,1,2...
 var wind := 0  ## 0 = off / 1 = weak / 2 = strong
 
@@ -64,7 +66,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	sp2 = read_byte()
 	server_status = read_byte()
 
-	track = read_string(TRACK_NAME_LENGTH)
+	track = read_string(_TRACK_NAME_LENGTH)
 	weather = read_byte()
 	wind = read_byte()
 

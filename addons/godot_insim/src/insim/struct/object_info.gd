@@ -1,12 +1,17 @@
 class_name ObjectInfo
 extends InSimStruct
+## Object info
+##
+## This class contains data about layout objects.
 
-
+## Conversion factor between standard units and LFS-encoded values.
 const XY_MULTIPLIER := 16.0
+## Conversion factor between standard units and LFS-encoded values.
 const Z_MULTIPLIER := 4.0
+## Conversion factor between standard units and LFS-encoded values.
 const ANGLE_MULTIPLIER := 256 / 360.0
 
-const STRUCT_SIZE := 8
+const STRUCT_SIZE := 8  ## The size of this struct's data.
 
 var x := 0  ## position (1 metre = 16)
 var y := 0  ## position (1 metre = 16)
@@ -16,8 +21,8 @@ var flags := 0  ## various (see LFS LYT format description)
 var index := 0  ## object index
 var heading := 0  ## (degrees + 180) * 256 / 360
 
-var gis_position := Vector3.ZERO
-var gis_heading := 0.0
+var gis_position := Vector3.ZERO  ## Position vector in meters
+var gis_heading := 0.0  ## Heading in radians
 
 
 func _to_string() -> String:
@@ -45,7 +50,6 @@ func _set_from_buffer(buffer: PackedByteArray) -> void:
 	flags = buffer.decode_u8(5)
 	index = buffer.decode_u8(6)
 	heading = buffer.decode_u8(7)
-	update_gis_values()
 
 
 func _set_values_from_gis() -> void:

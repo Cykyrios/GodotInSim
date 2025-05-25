@@ -1,18 +1,19 @@
 class_name InSimBTTPacket
 extends InSimPacket
-
 ## BuTton Type packet - sent back when user types into a text entry button
+##
+## This packet is received when a player types text in an InSim button's typing area.
 
-const PACKET_SIZE := 104
-const PACKET_TYPE := InSim.Packet.ISP_BTT
-const TEXT_MAX_LENGTH := 96
+const PACKET_SIZE := 104  ## Packet size
+const PACKET_TYPE := InSim.Packet.ISP_BTT  ## The packet's type, see [enum InSim.Packet].
+const TEXT_MAX_LENGTH := 96  ## Maximum text length
 
 var ucid := 0  ## connection that typed into the button (zero if local)
 
 var click_id := 0  ## button identifier originally sent in IS_BTN ([class InSimBTNPacket])
 var inst := 0  ## used internally by InSim
 var type_in := 0  ## from original button specification
-var sp3 := 0
+var sp3 := 0  ## Spare
 
 var text := ""  ## typed text, zero to [member type_in] specified in IS_BTN ([class InSimBTNPacket])
 

@@ -1,11 +1,12 @@
 class_name InSimPLPPacket
 extends InSimPacket
-
 ## PLayer Pits packet (go to settings - stays in player list)
+##
+## This packet is received when a player goes to the garage screen from the race.
 
-const PACKET_SIZE := 4
-const PACKET_TYPE := InSim.Packet.ISP_PLP
-var plid := 0  ## player's unique id
+const PACKET_SIZE := 4  ## Packet size
+const PACKET_TYPE := InSim.Packet.ISP_PLP  ## The packet's type, see [enum InSim.Packet].
+var plid := 0  ## Player's unique id
 
 
 func _init() -> void:

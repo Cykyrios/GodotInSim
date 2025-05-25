@@ -1,24 +1,26 @@
 class_name InSimUCOPacket
 extends InSimPacket
-
 ## User Control Object packet
+##
+## This packet is received when a player crosses a checkpoint or enters/leaves a circle.
 
+## Conversion factor between standard units and LFS-encoded values.
 const TIME_MULTIPLIER := 100.0
 
-const PACKET_SIZE := 28
-const PACKET_TYPE := InSim.Packet.ISP_UCO
-var plid := 0  ## player's unique id
+const PACKET_SIZE := 28  ## Packet size
+const PACKET_TYPE := InSim.Packet.ISP_UCO  ## The packet's type, see [enum InSim.Packet].
+var plid := 0  ## Player's unique id
 
-var sp0 := 0
-var uco_action := InSim.UCOAction.UCO_CIRCLE_ENTER  ## see [enum InSim.UCOAction]
-var sp2 := 0
-var sp3 := 0
+var sp0 := 0  ## Spare
+var uco_action := InSim.UCOAction.UCO_CIRCLE_ENTER  ## UCO Action, see [enum InSim.UCOAction].
+var sp2 := 0  ## Spare
+var sp3 := 0  ## Spare
 
-var time := 0  ## hundredths of a second since start (as in [constant InSim.SMALL_RTP])
-var object := CarContObj.new()
-var info := ObjectInfo.new()  ## info about the checkpoint or circle
+var time := 0  ## Hundredths of a second since start (as in [constant InSim.SMALL_RTP])
+var object := CarContObj.new()  ## Info about the car
+var info := ObjectInfo.new()  ## Info about the checkpoint or circle
 
-var gis_time := 0.0
+var gis_time := 0.0  ## Time in seconds
 
 
 func _init() -> void:

@@ -1,25 +1,29 @@
 class_name Player
 extends RefCounted
+## InSim driving player
+##
+## Utility object representing a player or AI currently driving, associated to a PLID.
 
 
-var ucid := 0
-var player_type := 0
-var flags := 0
-var player_name := ""
-var plate := ""
-var car_name := ""
-var skin_name := ""
-var tyres: Array[InSim.Tyre] = []
-var h_mass := 0
-var h_tres := 0
-var model := 0
-var passengers := 0
-var rw_adjust := 0
-var fw_adjust := 0
-var setup_flags := 0
-var config := 0
+var ucid := 0  ## UCID associated to this player
+var player_type := 0  ## Player type (female, AI and remote flags)
+var flags := 0  ## Player flags, see [enum InSim.PlayerFlag].
+var player_name := ""  ## Player name
+var plate := ""  ## Player's plate
+var car_name := ""  ## Player's car skin ID
+var skin_name := ""  ## Player skin
+var tyres: Array[InSim.Tyre] = []  ## Player's tyre compounds
+var h_mass := 0  ## Added mass
+var h_tres := 0  ## Intake restriction
+var model := 0  ## Player model
+var passengers := 0  ## Passengers
+var rw_adjust := 0  ## Rear tyre width adjustment
+var fw_adjust := 0  ## Front tyre width adjustment
+var setup_flags := 0  ## Setup flags, see [enum InSim.SetupFlag].
+var config := 0  ## Vehicle configuration
 
 
+## Creates and returns a new [Player] object from the given [param packet].
 static func create_from_npl_packet(packet: InSimNPLPacket) -> Player:
 	var new_player := Player.new()
 	new_player.ucid = packet.ucid
@@ -41,6 +45,7 @@ static func create_from_npl_packet(packet: InSimNPLPacket) -> Player:
 	return new_player
 
 
+## Returns a dictionary show the changed flags between [pram new_flags] and [member flags].
 func get_flags_changes(new_flags: int) -> Dictionary[String, String]:
 	var changes: Dictionary[String, String] = {}
 	for i in InSim.PlayerFlag.size():

@@ -1,11 +1,13 @@
 class_name RelayARPPacket
 extends InSimRelayPacket
+## Relay admin reply
+##
+## This packet is received as a reply to an admin request from a [RelayARQPacket].
 
+const PACKET_SIZE := 4  ## Packet size
+const PACKET_TYPE := InSim.Packet.IRP_ARP  ## The packet's type, see [enum InSim.Packet].
 
-const PACKET_SIZE := 4
-const PACKET_TYPE := InSim.Packet.IRP_ARP
-
-var admin := 0
+var admin := 0  ## Admin status
 
 
 func _init() -> void:

@@ -1,18 +1,20 @@
 class_name InSimPSFPacket
 extends InSimPacket
-
 ## Pit Stop Finished packet
+##
+## This packet is received when a player leaves their pit box after a pit stop.
 
+## Conversion factor between standard units and LFS-encoded values.
 const TIME_MULTIPLIER := 1000.0
 
-const PACKET_SIZE := 12
-const PACKET_TYPE := InSim.Packet.ISP_PSF
-var plid := 0  ## player's unique id
+const PACKET_SIZE := 12  ## Packet size
+const PACKET_TYPE := InSim.Packet.ISP_PSF  ## The packet's type, see [enum InSim.Packet].
+var plid := 0  ## Player's unique id
 
-var stop_time := 0  ## stop time (ms)
-var spare := 0
+var stop_time := 0  ## Stop time (ms)
+var spare := 0  ## Spare
 
-var gis_stop_time := 0.0
+var gis_stop_time := 0.0  ## Stop time in seconds
 
 
 func _init() -> void:

@@ -1,16 +1,17 @@
 class_name InSimTOCPacket
 extends InSimPacket
-
 ## Take Over Car packet
+##
+## This packet is received when a new [Connection] takes over a car.
 
-const PACKET_SIZE := 8
-const PACKET_TYPE := InSim.Packet.ISP_TOC
-var plid := 0  ## player's unique id
+const PACKET_SIZE := 8  ## Packet size
+const PACKET_TYPE := InSim.Packet.ISP_TOC  ## The packet's type, see [enum InSim.Packet].
+var plid := 0  ## Player's unique id
 
-var old_ucid := 0  ## old connection's unique id
-var new_ucid := 0  ## new connection's unique id
-var sp2 := 0
-var sp3 := 0
+var old_ucid := 0  ## Old connection's unique id
+var new_ucid := 0  ## New connection's unique id
+var sp2 := 0  ## Spare
+var sp3 := 0  ## Spare
 
 
 func _init() -> void:

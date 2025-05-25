@@ -1,11 +1,12 @@
 class_name AIInputVal
 extends InSimStruct
-
+## AI input value
+##
 ## InSim struct for AI control input
 
-const TIME_MULTIPLIER := 100.0
+const TIME_MULTIPLIER := 100.0  ## Conversion factor between SI unit and LFS-encoded value
 
-const STRUCT_SIZE := 4
+const STRUCT_SIZE := 4  ## The size of this struct's data
 
 ## Select input value to set
 ## Inputs marked 'hold' must be set back to zero after some time.
@@ -22,6 +23,29 @@ var time := 0  ## Time to hold (optional, hundredths of a second)
 var value := 0  ## Value to set
 
 var gis_time := 0.0  ## Time to hold in seconds
+
+
+## Creates and returns a new [AIInputVal] from the given parameters.
+static func create(aic_input: InSim.AIControl, aic_time: int, aic_value: int) -> AIInputVal:
+	var ai_input_val := AIInputVal.new()
+	ai_input_val.input = aic_input
+	ai_input_val.time = aic_time
+	ai_input_val.value = aic_value
+	ai_input_val.update_gis_values()
+	return ai_input_val
+
+
+## Creates and returns a new [AIInputVal] from the given parameters, using standard units
+## where applicable.
+static func create_from_gis_values(
+	aic_input: InSim.AIControl, aic_time: float, aic_value: int
+) -> AIInputVal:
+	var ai_input_val := AIInputVal.new()
+	ai_input_val.input = aic_input
+	ai_input_val.gis_time = aic_time
+	ai_input_val.value = aic_value
+	ai_input_val.set_values_from_gis()
+	return ai_input_val
 
 
 func _to_string() -> String:
@@ -43,7 +67,6 @@ func _set_from_buffer(buffer: PackedByteArray) -> void:
 	input = buffer.decode_u8(0) as InSim.AIControl
 	time = buffer.decode_u8(1)
 	value = buffer.decode_u16(2)
-	update_gis_values()
 
 
 func _set_values_from_gis() -> void:
@@ -52,23 +75,3 @@ func _set_values_from_gis() -> void:
 
 func _update_gis_values() -> void:
 	gis_time = time / TIME_MULTIPLIER
-
-
-static func create(aic_input: InSim.AIControl, aic_time: int, aic_value: int) -> AIInputVal:
-	var ai_input_val := AIInputVal.new()
-	ai_input_val.input = aic_input
-	ai_input_val.time = aic_time
-	ai_input_val.value = aic_value
-	ai_input_val.update_gis_values()
-	return ai_input_val
-
-
-static func create_from_gis_values(
-	aic_input: InSim.AIControl, aic_time: float, aic_value: int
-) -> AIInputVal:
-	var ai_input_val := AIInputVal.new()
-	ai_input_val.input = aic_input
-	ai_input_val.gis_time = aic_time
-	ai_input_val.value = aic_value
-	ai_input_val.set_values_from_gis()
-	return ai_input_val

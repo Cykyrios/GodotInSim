@@ -1,6 +1,5 @@
 class_name InSimButton
 extends RefCounted
-
 ## InSim Button
 ##
 ## An object representing an InSim button, mostly mirroring [InSimBTNPacket]. Allows querying

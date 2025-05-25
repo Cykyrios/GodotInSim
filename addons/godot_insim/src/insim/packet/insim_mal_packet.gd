@@ -1,22 +1,36 @@
 class_name InSimMALPacket
 extends InSimPacket
-
 ## Mods ALlowed packet - variable size
+##
+## This packet is sent to set allowed mods or received in response to a [InSim.Tiny.TINY_MAL]
+## request.
 
-const MAL_MAX_MODS := 120
-const MAL_DATA_SIZE := 4
+const MAL_MAX_MODS := 120  ## Maximum number of allowed mods
+const MAL_DATA_SIZE := 4  ## Allowed mod data size
 
-const PACKET_MIN_SIZE := 8
-const PACKET_MAX_SIZE := PACKET_MIN_SIZE + MAL_MAX_MODS * MAL_DATA_SIZE
-const PACKET_TYPE := InSim.Packet.ISP_MAL
+const PACKET_MIN_SIZE := 8  ## Minimum packet size
+const PACKET_MAX_SIZE := PACKET_MIN_SIZE + MAL_MAX_MODS * MAL_DATA_SIZE  ## Maximum packet size
+const PACKET_TYPE := InSim.Packet.ISP_MAL  ## The packet's type, see [enum InSim.Packet].
 var num_mods := 0  ## number of mods in this packet
 
 var ucid := 0  ## unique id of the connection that updated the list
 var flags := 0  ## zero (for now)
-var sp2 := 0
-var sp3 := 0
+var sp2 := 0  ## Spare
+var sp3 := 0  ## Spare
 
 var skin_id: Array[int] = []  ## skin id of each mod in compressed format, 0 to [constant MAL_MAX_MODS]
+
+
+## Creates and returns a new [InSimMALPacket] from the given parameters.
+static func create(
+	mal_num: int, mal_ucid: int, mal_flags: int, mal_skin: Array[int]
+) -> InSimMALPacket:
+	var packet := InSimMALPacket.new()
+	packet.num_mods = mal_num
+	packet.ucid = mal_ucid
+	packet.flags = mal_flags
+	packet.skin_id = mal_skin.duplicate()
+	return packet
 
 
 func _init() -> void:
@@ -81,14 +95,3 @@ func _get_pretty_text() -> String:
 		id_bytes.encode_u32(0, id)
 		mods += ("" if i == 0 else ", ") + LFSText.car_name_from_lfs_bytes(id_bytes)
 	return "Allowed mods: %s" % ["ALL/NONE" if num_mods == 0 else mods]
-
-
-static func create(
-	mal_num: int, mal_ucid: int, mal_flags: int, mal_skin: Array[int]
-) -> InSimMALPacket:
-	var packet := InSimMALPacket.new()
-	packet.num_mods = mal_num
-	packet.ucid = mal_ucid
-	packet.flags = mal_flags
-	packet.skin_id = mal_skin.duplicate()
-	return packet

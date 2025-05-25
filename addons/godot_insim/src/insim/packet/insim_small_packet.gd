@@ -1,6 +1,5 @@
 class_name InSimSmallPacket
 extends InSimPacket
-
 ## General purpose packet - IS_SMALL
 ##
 ## To avoid defining several packet structures that are exactly the same, and to avoid
@@ -9,11 +8,13 @@ extends InSimPacket
 ## [br]
 ## See [enum InSim.Small] for the list of SMALL_ packets.
 
+## List of receivable Small packets
 const RECEIVABLES := [
 	InSim.Small.SMALL_VTA,
 	InSim.Small.SMALL_RTP,
 	InSim.Small.SMALL_ALC,
 ]
+## List of sendable Small packets
 const SENDABLES := [
 	InSim.Small.SMALL_SSP,
 	InSim.Small.SMALL_SSG,
@@ -26,10 +27,23 @@ const SENDABLES := [
 	InSim.Small.SMALL_AII,
 ]
 
-const PACKET_SIZE := 8
-const PACKET_TYPE := InSim.Packet.ISP_SMALL
-var sub_type := InSim.Small.SMALL_NONE
-var value := 0
+const PACKET_SIZE := 8  ## Packet size
+const PACKET_TYPE := InSim.Packet.ISP_SMALL  ## The packet's type, see [enum InSim.Packet].
+var sub_type := InSim.Small.SMALL_NONE  ## Packet subtype
+var value := 0  ## Packet value
+
+
+## Creates and returns a new [InSimSmallPacket] with the given parameters.
+static func create(req := 0, subt := InSim.Small.SMALL_NONE, uval := 0) -> InSimSmallPacket:
+	var packet := InSimSmallPacket.new()
+	packet.req_i = req
+	packet.sub_type = subt
+	packet.value = uval
+	if packet.sub_type in RECEIVABLES:
+		packet.receivable = true
+	if packet.sub_type in SENDABLES:
+		packet.sendable = true
+	return packet
 
 
 func _init() -> void:
@@ -90,15 +104,3 @@ func _get_pretty_text() -> String:
 			small_description = "get local AI info"
 	return "(ReqI %d) %s (Value %d) - %s" % [req_i, InSim.Small.keys()[sub_type],
 			value, small_description]
-
-
-static func create(req := 0, subt := InSim.Small.SMALL_NONE, uval := 0) -> InSimSmallPacket:
-	var packet := InSimSmallPacket.new()
-	packet.req_i = req
-	packet.sub_type = subt
-	packet.value = uval
-	if packet.sub_type in RECEIVABLES:
-		packet.receivable = true
-	if packet.sub_type in SENDABLES:
-		packet.sendable = true
-	return packet

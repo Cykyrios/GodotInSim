@@ -1,28 +1,69 @@
 class_name InSimRIPPacket
 extends InSimPacket
-
 ## Replay Information Packet
+##
+## This packet is sent to load or set the position in a replay, and is received as a reply to
+## a sent packet.
 
+## Conversion factor between standard units and LFS-encoded values.
 const TIME_MULTIPLIER := 100.0
 
+## Maximum replay name length
 const REPLAY_NAME_MAX_LENGTH := 64  # last byte must be zero, so actual value is decreased by one
 
-const PACKET_SIZE := 80
-const PACKET_TYPE := InSim.Packet.ISP_RIP
-var error := 0  ## 0 or 1 = OK / other values are listed in [enum InSim.Replay]
+const PACKET_SIZE := 80  ## Packet size
+const PACKET_TYPE := InSim.Packet.ISP_RIP  ## The packet's type, see [enum InSim.Packet].
+var error := 0  ## Error code - 0 or 1 = OK / other values are listed in [enum InSim.Replay].
 
 var mpr := 0  ## 0 = SPR / 1 = MPR
-var paused := 0  ## request: pause on arrival / reply: paused state
-var options := 0  ## various options - see [enum InSim.ReplayOption]
-var sp3 := 0
+var paused := 0  ## Request: pause on arrival / reply: paused state
+var options := 0  ## Various options - see [enum InSim.ReplayOption]
+var sp3 := 0  ## Spare
 
 var c_time := 0  ## (hundredths) request: destination / reply: position
 var t_time := 0  ## (hundredths) request: zero / reply: replay length
 
-var replay_name := ""  ## zero or replay name - last byte must be zero
+var replay_name := ""  ## Zero or replay name - last byte must be zero
 
-var gis_c_time := 0.0
-var gis_t_time := 0.0
+var gis_c_time := 0.0  ## Destination/position time in seconds
+var gis_t_time := 0.0  ## Replay length (0 for requests)
+
+
+## Creates and returns a new [InSimRIPPacket] from the given parameters.
+static func create(
+	reqi: int, rip_name: String, rip_mpr: int, rip_c_time: int, rip_options: int,
+	rip_paused := 0, rip_t_time := 0, rip_error := 0
+) -> InSimRIPPacket:
+	var packet := InSimRIPPacket.new()
+	packet.req_i = reqi
+	packet.error = rip_error
+	packet.mpr = rip_mpr
+	packet.paused = rip_paused
+	packet.options = rip_options
+	packet.c_time = rip_c_time
+	packet.t_time = rip_t_time
+	packet.replay_name = rip_name
+	packet.update_gis_values()
+	return packet
+
+
+## Creates and returns a new [InSimRIPPacket] from the given parameters, using standard units
+## where applicable.
+static func create_from_gis_values(
+	reqi: int, rip_name: String, rip_mpr: int, rip_c_time: float, rip_options: int,
+	rip_paused := 0, rip_t_time := 0.0, rip_error := 0
+) -> InSimRIPPacket:
+	var packet := InSimRIPPacket.new()
+	packet.req_i = reqi
+	packet.error = rip_error
+	packet.mpr = rip_mpr
+	packet.paused = rip_paused
+	packet.options = rip_options
+	packet.gis_c_time = rip_c_time
+	packet.gis_t_time = rip_t_time
+	packet.replay_name = rip_name
+	packet.set_values_from_gis()
+	return packet
 
 
 func _init() -> void:
@@ -89,37 +130,3 @@ func _set_values_from_gis() -> void:
 func _update_gis_values() -> void:
 	gis_c_time = c_time / TIME_MULTIPLIER
 	gis_t_time = t_time / TIME_MULTIPLIER
-
-
-static func create(
-	reqi: int, rip_name: String, rip_mpr: int, rip_c_time: int, rip_options: int,
-	rip_paused := 0, rip_t_time := 0, rip_error := 0
-) -> InSimRIPPacket:
-	var packet := InSimRIPPacket.new()
-	packet.req_i = reqi
-	packet.error = rip_error
-	packet.mpr = rip_mpr
-	packet.paused = rip_paused
-	packet.options = rip_options
-	packet.c_time = rip_c_time
-	packet.t_time = rip_t_time
-	packet.replay_name = rip_name
-	packet.update_gis_values()
-	return packet
-
-
-static func create_from_gis_values(
-	reqi: int, rip_name: String, rip_mpr: int, rip_c_time: float, rip_options: int,
-	rip_paused := 0, rip_t_time := 0.0, rip_error := 0
-) -> InSimRIPPacket:
-	var packet := InSimRIPPacket.new()
-	packet.req_i = reqi
-	packet.error = rip_error
-	packet.mpr = rip_mpr
-	packet.paused = rip_paused
-	packet.options = rip_options
-	packet.gis_c_time = rip_c_time
-	packet.gis_t_time = rip_t_time
-	packet.replay_name = rip_name
-	packet.set_values_from_gis()
-	return packet

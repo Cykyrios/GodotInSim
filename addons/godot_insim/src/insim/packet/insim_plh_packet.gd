@@ -1,18 +1,27 @@
 class_name InSimPLHPacket
 extends InSimPacket
-
 ## PLayer Handicaps packet - variable size
+##
+## This packet is sent to set player handicaps, and received when a player handicap is changed.
 
-const PLH_MAX_PLAYERS := 40
-const PLH_DATA_SIZE := 4
+const PLH_MAX_PLAYERS := 40  ## Max players per packet
+const PLH_DATA_SIZE := 4  ## Handicap data size
 
-const PACKET_BASE_SIZE := 4
-const PACKET_MIN_SIZE := PACKET_BASE_SIZE
-const PACKET_MAX_SIZE := PACKET_BASE_SIZE + PLH_DATA_SIZE * PLH_MAX_PLAYERS
-const PACKET_TYPE := InSim.Packet.ISP_PLH
-var nump := 0  ## number of players in this packet
+const PACKET_BASE_SIZE := 4  ## Base packet size
+const PACKET_MIN_SIZE := PACKET_BASE_SIZE  ## Minimum packet size
+const PACKET_MAX_SIZE := PACKET_BASE_SIZE + PLH_DATA_SIZE * PLH_MAX_PLAYERS  ## Maximum packet size
+const PACKET_TYPE := InSim.Packet.ISP_PLH  ## The packet's type, see [enum InSim.Packet].
+var nump := 0  ## Number of players in this packet
 
-var hcaps: Array[PlayerHandicap] = []  ## 0 to [constant PLH_MAX_PLAYERS] ([member nump])
+var hcaps: Array[PlayerHandicap] = []  ## Handicaps, 0 to [constant PLH_MAX_PLAYERS] ([member nump])
+
+
+## Creates and returns a new [InSimPLHPacket] from the given parameters.
+static func create(plh_nump: int, plh_hcaps: Array[PlayerHandicap]) -> InSimPLHPacket:
+	var packet := InSimPLHPacket.new()
+	packet.nump = plh_nump
+	packet.hcaps = plh_hcaps.duplicate()
+	return packet
 
 
 func _init() -> void:
@@ -73,13 +82,7 @@ func _get_pretty_text() -> String:
 	return "Players handicaps: %s" % [handicaps]
 
 
-static func create(plh_nump: int, plh_hcaps: Array[PlayerHandicap]) -> InSimPLHPacket:
-	var packet := InSimPLHPacket.new()
-	packet.nump = plh_nump
-	packet.hcaps = plh_hcaps.duplicate()
-	return packet
-
-
+# FIXME: Never actually used
 func remove_unused_data() -> void:
 	size = PACKET_BASE_SIZE + PLH_DATA_SIZE * hcaps.size()
 	resize_buffer(size)

@@ -1,23 +1,32 @@
 class_name InSimIPBPacket
 extends InSimPacket
-
 ## IP Bans - variable size
+##
+## This packet is sent to set IP bans or received in response to a [InSim.Tiny.TINY_IPB] request.
 
-const IPB_MAX_BANS := 120
-const IPB_DATA_SIZE := 4
+const IPB_MAX_BANS := 120  ## Maximum IP ban count
+const IPB_DATA_SIZE := 4  ## IP ban data size
 
-const PACKET_BASE_SIZE := 8
-const PACKET_MIN_SIZE := PACKET_BASE_SIZE
-const PACKET_MAX_SIZE := PACKET_BASE_SIZE + IPB_DATA_SIZE * IPB_MAX_BANS
-const PACKET_TYPE := InSim.Packet.ISP_IPB
+const PACKET_BASE_SIZE := 8  ## Packet base size
+const PACKET_MIN_SIZE := PACKET_BASE_SIZE  ## Minimum packet size
+const PACKET_MAX_SIZE := PACKET_BASE_SIZE + IPB_DATA_SIZE * IPB_MAX_BANS  ## Maximum packet size
+const PACKET_TYPE := InSim.Packet.ISP_IPB  ## The packet's type, see [enum InSim.Packet].
 var numb := 0  ## number of bans in this packet
 
-var sp0 := 0
-var sp1 := 0
-var sp2 := 0
-var sp3 := 0
+var sp0 := 0  ## Spare
+var sp1 := 0  ## Spare
+var sp2 := 0  ## Spare
+var sp3 := 0  ## Spare
 
 var ban_ips: Array[IPAddress] = []  ## IP addresses, 0 to [constant IPB_MAX_BANS] ([member numb])
+
+
+## Creates and returns a new [InSimIPBPacket] from the given parameters.
+static func create(ipb_numb: int, ipb_array: Array[IPAddress]) -> InSimIPBPacket:
+	var packet := InSimIPBPacket.new()
+	packet.numb = ipb_numb
+	packet.ban_ips = ipb_array.duplicate()
+	return packet
 
 
 func _init() -> void:
@@ -90,13 +99,7 @@ func _get_pretty_text() -> String:
 	return "IP bans: %s" % ["NONE" if numb == 0 else ips]
 
 
-static func create(ipb_numb: int, ipb_array: Array[IPAddress]) -> InSimIPBPacket:
-	var packet := InSimIPBPacket.new()
-	packet.numb = ipb_numb
-	packet.ban_ips = ipb_array.duplicate()
-	return packet
-
-
-func remove_unused_data() -> void:
+# FIXME: Never actually used
+func _remove_unused_data() -> void:
 	size = PACKET_BASE_SIZE + IPB_DATA_SIZE * ban_ips.size()
 	resize_buffer(size)

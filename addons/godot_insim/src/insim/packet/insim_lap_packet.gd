@@ -1,13 +1,16 @@
 class_name InSimLAPPacket
 extends InSimPacket
-
 ## LAP time packet
+##
+## This packet is received when a player or AI completes a lap.
 
+## Conversion factor between standard units and LFS-encoded values.
 const TIME_MULTIPLIER := 1000.0
+## Conversion factor between standard units and LFS-encoded values.
 const FUEL_MULTIPLIER := 2.0
 
-const PACKET_SIZE := 20
-const PACKET_TYPE := InSim.Packet.ISP_LAP
+const PACKET_SIZE := 20  ## Packet size
+const PACKET_TYPE := InSim.Packet.ISP_LAP  ## The packet's type, see [enum InSim.Packet].
 var plid := 0  ## player's unique id
 
 var lap_time := 0  ## lap time (ms)
@@ -16,14 +19,14 @@ var elapsed_time := 0  ## total time (ms)
 var laps_done := 0  ## laps completed
 var flags := 0  ## player flags
 
-var sp0 := 0
+var sp0 := 0  ## Spare
 var penalty := InSim.Penalty.PENALTY_NONE  ## current penalty value (see [enum InSim.Penalty])
 var num_stops := 0  ## number of pit stops
 var fuel200 := 0  ## /showfuel yes: double fuel percent / no: 255
 
-var gis_lap_time := 0.0
-var gis_elapsed_time := 0.0
-var gis_fuel := 0.0
+var gis_lap_time := 0.0  ## Lap time in seconds
+var gis_elapsed_time := 0.0  ## Total race time in seconds
+var gis_fuel := 0.0  ## Remaining fuel as a percentage, or [code]-1[/code] if fuel is hidden.
 
 
 func _init() -> void:

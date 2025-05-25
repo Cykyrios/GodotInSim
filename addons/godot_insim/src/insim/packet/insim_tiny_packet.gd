@@ -1,6 +1,5 @@
 class_name InSimTinyPacket
 extends InSimPacket
-
 ## General purpose packet - IS_TINY
 ##
 ## To avoid defining several packet structures that are exactly the same, and to avoid
@@ -9,6 +8,7 @@ extends InSimPacket
 ## [br]
 ## See [enum InSim.Tiny] for the list of TINY_ packets.
 
+## List of receivable Tiny packets
 const RECEIVABLES := [
 	InSim.Tiny.TINY_NONE,
 	InSim.Tiny.TINY_REPLY,
@@ -18,6 +18,7 @@ const RECEIVABLES := [
 	InSim.Tiny.TINY_CLR,
 	InSim.Tiny.TINY_AXC,
 ]
+## List of sendable Tiny packets
 const SENDABLES := [
 	InSim.Tiny.TINY_NONE,
 	InSim.Tiny.TINY_VER,
@@ -46,9 +47,21 @@ const SENDABLES := [
 	InSim.Tiny.TINY_IPB,
 ]
 
-const PACKET_SIZE := 4
-const PACKET_TYPE := InSim.Packet.ISP_TINY
-var sub_type := InSim.Tiny.TINY_NONE
+const PACKET_SIZE := 4  ## Packet size
+const PACKET_TYPE := InSim.Packet.ISP_TINY  ## The packet's type, see [enum InSim.Packet].
+var sub_type := InSim.Tiny.TINY_NONE  ## Packet subtype
+
+
+## Creates and returns a new [InSimTinyPacket] with the given parameters.
+static func create(req := 0, subt := InSim.Tiny.TINY_NONE) -> InSimTinyPacket:
+	var packet := InSimTinyPacket.new()
+	packet.req_i = req
+	packet.sub_type = subt
+	if packet.sub_type in RECEIVABLES:
+		packet.receivable = true
+	if packet.sub_type in SENDABLES:
+		packet.sendable = true
+	return packet
 
 
 func _init() -> void:
@@ -141,14 +154,3 @@ func _get_pretty_text() -> String:
 		InSim.Tiny.TINY_IPB:
 			tiny_description = "request IP ban list"
 	return "(ReqI %d) %s - %s" % [req_i, InSim.Tiny.keys()[sub_type], tiny_description]
-
-
-static func create(req := 0, subt := InSim.Tiny.TINY_NONE) -> InSimTinyPacket:
-	var packet := InSimTinyPacket.new()
-	packet.req_i = req
-	packet.sub_type = subt
-	if packet.sub_type in RECEIVABLES:
-		packet.receivable = true
-	if packet.sub_type in SENDABLES:
-		packet.sendable = true
-	return packet

@@ -1,15 +1,18 @@
 class_name InSimNLPPacket
 extends InSimPacket
-
 ## Node and Lap Packet - variable size
+##
+## This packet is received upon request from a [InSim.Tiny.TINY_NLP] or at regular intervals
+## if set during InSim initialization or via [InSim.Small.SMALL_NLI].
 
-const MAX_CARS := 40
-const PACKET_MIN_SIZE := 4 + NodeLap.STRUCT_SIZE + 2
-const PACKET_MAX_SIZE := 4 + MAX_CARS * NodeLap.STRUCT_SIZE
-const PACKET_TYPE := InSim.Packet.ISP_NLP
+const _MAX_CARS := 40  ## Maximum number of cars
 
-var num_players := 0  ## number of players in race
-var info: Array[NodeLap] = []  ## node and lap of each player, 1 to [constant MAX_CARS]
+const PACKET_MIN_SIZE := 4 + NodeLap.STRUCT_SIZE + 2  ## Minimum packet size
+const PACKET_MAX_SIZE := 4 + _MAX_CARS * NodeLap.STRUCT_SIZE  ## Maximum packet size
+const PACKET_TYPE := InSim.Packet.ISP_NLP  ## The packet's type, see [enum InSim.Packet].
+
+var num_players := 0  ## Number of players in race
+var info: Array[NodeLap] = []  ## Node and lap of each player, 1 to [constant MAX_CARS]
 
 
 func _init() -> void:

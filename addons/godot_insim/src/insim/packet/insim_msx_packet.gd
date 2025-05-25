@@ -1,15 +1,24 @@
 class_name InSimMSXPacket
 extends InSimPacket
-
 ## MSg eXtended packet - like [InSimMSTPacket] but longer (not for commands)
+##
+## This packet is sent to type longer messages than [InSimMSTPacket], but doesn't work for commands.
 
-const PACKET_SIZE := 100
-const PACKET_TYPE := InSim.Packet.ISP_MSX
+const PACKET_SIZE := 100  ## Packet size
+const PACKET_TYPE := InSim.Packet.ISP_MSX  ## The packet's type, see [enum InSim.Packet].
+## Maximum message length
 const MSG_MAX_LENGTH := 96  # last byte must be zero, actual length is one character shorter
 
-var zero := 0
+var zero := 0  ## Zero byte
 
-var msg := ""  ## last byte must be zero
+var msg := ""  ## Message contents; last byte must be zero.
+
+
+## Creates and returns a new [InSimMSXPacket] with the given [param message].
+static func create(message: String) -> InSimMSXPacket:
+	var packet := InSimMSXPacket.new()
+	packet.msg = message
+	return packet
 
 
 func _init() -> void:
@@ -34,9 +43,3 @@ func _get_data_dictionary() -> Dictionary:
 
 func _get_pretty_text() -> String:
 	return msg
-
-
-static func create(message: String) -> InSimMSXPacket:
-	var packet := InSimMSXPacket.new()
-	packet.msg = message
-	return packet

@@ -1,18 +1,27 @@
 class_name InSimPLCPacket
 extends InSimPacket
-
 ## PLayer Cars packet
+##
+## This packet is sent to set the cars allowed for a given player.
 
-const PACKET_SIZE := 12
-const PACKET_TYPE := InSim.Packet.ISP_PLC
-var zero := 0
+const PACKET_SIZE := 12  ## Packet size
+const PACKET_TYPE := InSim.Packet.ISP_PLC  ## The packet's type, see [enum InSim.Packet].
+var zero := 0  ## Zero byte
 
-var ucid := 0  ## connection's unique id (0 = host / 255 = all)
-var sp1 := 0
-var sp2 := 0
-var sp3 := 0
+var ucid := 0  ## Connection's unique id (0 = host / 255 = all)
+var sp1 := 0  ## Spare
+var sp2 := 0  ## Spare
+var sp3 := 0  ## Spare
 
-var cars := 0  ## allowed cars - see [enum InSim.Car]
+var cars := 0  ## Allowed cars - see [enum InSim.Car].
+
+
+## Creates and returns a new [InSimPLCPacket] from the given parameters.
+static func create(plc_ucid: int, plc_cars: int) -> InSimPLCPacket:
+	var packet := InSimPLCPacket.new()
+	packet.ucid = plc_ucid
+	packet.cars = plc_cars
+	return packet
 
 
 func _init() -> void:
@@ -56,10 +65,3 @@ func _get_pretty_text() -> String:
 			car_list += "%s%s" % ["" if i == 0 else ", ", car_array[i]]
 	return "Allowed cars for %s: %s" % ["everyone" if ucid == 255 else "host" if ucid == 0 \
 			else "UCID %d" % [ucid], car_list]
-
-
-static func create(plc_ucid: int, plc_cars: int) -> InSimPLCPacket:
-	var packet := InSimPLCPacket.new()
-	packet.ucid = plc_ucid
-	packet.cars = plc_cars
-	return packet

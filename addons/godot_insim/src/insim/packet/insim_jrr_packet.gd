@@ -1,18 +1,33 @@
 class_name InSimJRRPacket
 extends InSimPacket
-
 ## Join Request Reply packet - send one of these back to LFS in response to a join request
+##
+## This packet can be sent in response to a join request ([InSimNPLPacket] with
+## [member InSimNPLPacket.num_players] equal to [code]0[/code]), or at any time to teleport
+## a player.
 
-const PACKET_SIZE := 16
-const PACKET_TYPE := InSim.Packet.ISP_JRR
+const PACKET_SIZE := 16  ## Packet size
+const PACKET_TYPE := InSim.Packet.ISP_JRR  ## The packet's type, see [enum InSim.Packet].
 var plid := 0  ## ZERO when this is a reply to a join request - SET to move a car
 
 var ucid := 0  ## set when this is a reply to a join request - ignored when moving a car
 var action := 0  ## 1 - allow / 0 - reject (should send message to user)
-var sp2 := 0
-var sp3 := 0
+var sp2 := 0  ## Spare
+var sp3 := 0  ## Spare
 
 var start_pos := ObjectInfo.new()  ## 0: use default start point / Flags = 0x80: set start point
+
+
+## Creates and returns a new [InSimJRRPacket] from the given parameters.
+static func create(
+	jrr_plid: int, jrr_ucid: int, jrr_action: InSim.JRRAction, jrr_pos := ObjectInfo.new()
+) -> InSimJRRPacket:
+	var packet := InSimJRRPacket.new()
+	packet.plid = jrr_plid
+	packet.ucid = jrr_ucid
+	packet.action = jrr_action
+	packet.start_pos = jrr_pos
+	return packet
 
 
 func _init() -> void:
@@ -54,14 +69,3 @@ func _get_pretty_text() -> String:
 		"repaired" if action == InSim.JRRAction.JRR_RESET else "no repair",
 		("%.1v" % [start_pos.gis_position]) if (start_pos.flags & 0x80) else "in place"
 	])
-
-
-static func create(
-	jrr_plid: int, jrr_ucid: int, jrr_action: InSim.JRRAction, jrr_pos := ObjectInfo.new()
-) -> InSimJRRPacket:
-	var packet := InSimJRRPacket.new()
-	packet.plid = jrr_plid
-	packet.ucid = jrr_ucid
-	packet.action = jrr_action
-	packet.start_pos = jrr_pos
-	return packet

@@ -1,13 +1,16 @@
 class_name InSimAXIPacket
 extends InSimPacket
-
 ## AutoX Info packet
+##
+## This packet is received when loading a layout or requesting it with a [InSim.Tiny.TINY_AXI]
+## packet.
 
-const LAYOUT_MAX_LENGTH := 32
+const LAYOUT_MAX_LENGTH := 32  ## Layout name maximum length
 
-const PACKET_SIZE := 40
-const PACKET_TYPE := InSim.Packet.ISP_AXI
-var zero := 0
+const PACKET_SIZE := 40  ## Packet size
+const PACKET_TYPE := InSim.Packet.ISP_AXI  ## The packet's type, see [enum InSim.Packet].
+
+var zero := 0  ## Zero byte
 
 var ax_start := 0  ## autocross start position
 var num_checkpoints := 0  ## number of checkpoints

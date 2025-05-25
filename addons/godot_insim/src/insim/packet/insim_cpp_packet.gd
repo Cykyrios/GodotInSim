@@ -1,15 +1,19 @@
 class_name InSimCPPPacket
 extends InSimPacket
-
 ## Cam Pos Pack packet - full camera packet (in car OR Shift+U mode)
+##
+## This packet is sent or received to update or read camera settings.
 
+## Conversion factor between standard units and LFS-encoded values.
 const POSITION_MULTIPLIER := 65536.0
+## Conversion factor between standard units and LFS-encoded values.
 const ANGLE_MULTIPLIER := 32768 / 180.0
+## Conversion factor between standard units and LFS-encoded values.
 const TIME_MULTIPLIER := 1000.0
 
-const PACKET_SIZE := 32
-const PACKET_TYPE := InSim.Packet.ISP_CPP
-var zero := 0
+const PACKET_SIZE := 32  ## Packet size
+const PACKET_TYPE := InSim.Packet.ISP_CPP  ## The packet's type, see [enum InSim.Packet].
+var zero := 0  ## Zero byte
 
 var pos := Vector3i.ZERO  ## position vector
 
@@ -25,9 +29,46 @@ var fov := 70.0  ## 4-byte float: FOV in degrees
 var time := 0  ## time in ms to get there (0 means instant)
 var flags := 0  ## state flags (see [enum InSim.State])
 
-var gis_position := Vector3.ZERO
-var gis_angles := Vector3.ZERO
-var gis_time := 0.0
+var gis_position := Vector3.ZERO  ## Position in meters
+var gis_angles := Vector3.ZERO  ## Angles in radians
+var gis_time := 0.0  ## Time in seconds
+
+
+## Creates and returns a new [InSimCPPPacket] from the given parameters.
+static func create(
+	cpp_pos: Vector3i, cpp_rot: Vector3i, cpp_plid: int, cpp_cam: int, cpp_fov: float,
+	cpp_time := 0, cpp_flags := 0
+) -> InSimCPPPacket:
+	var packet := InSimCPPPacket.new()
+	packet.pos = cpp_pos
+	packet.heading = cpp_rot.z
+	packet.pitch = cpp_rot.x
+	packet.roll = cpp_rot.y
+	packet.view_plid = cpp_plid
+	packet.ingame_cam = cpp_cam
+	packet.fov = cpp_fov
+	packet.time = cpp_time
+	packet.flags = cpp_flags
+	packet.update_gis_values()
+	return packet
+
+
+## Creates and returns a new [InSimCPPPacket] from the given parameters, using standard units
+## where applicable.
+static func create_from_gis_values(
+	cpp_pos: Vector3, cpp_rot: Vector3, cpp_plid: int, cpp_cam: int, cpp_fov: float,
+	cpp_time := 0.0, cpp_flags := 0
+) -> InSimCPPPacket:
+	var packet := InSimCPPPacket.new()
+	packet.gis_position = cpp_pos
+	packet.gis_angles = cpp_rot
+	packet.view_plid = cpp_plid
+	packet.ingame_cam = cpp_cam
+	packet.fov = cpp_fov
+	packet.gis_time = cpp_time
+	packet.flags = cpp_flags
+	packet.set_values_from_gis()
+	return packet
 
 
 func _init() -> void:
@@ -112,39 +153,6 @@ func _set_values_from_gis() -> void:
 	time = roundi(gis_time * TIME_MULTIPLIER)
 
 
-static func create(
-	cpp_pos: Vector3i, cpp_rot: Vector3i, cpp_plid: int, cpp_cam: int, cpp_fov: float,
-	cpp_time := 0, cpp_flags := 0
-) -> InSimCPPPacket:
-	var packet := InSimCPPPacket.new()
-	packet.pos = cpp_pos
-	packet.heading = cpp_rot.z
-	packet.pitch = cpp_rot.x
-	packet.roll = cpp_rot.y
-	packet.view_plid = cpp_plid
-	packet.ingame_cam = cpp_cam
-	packet.fov = cpp_fov
-	packet.time = cpp_time
-	packet.flags = cpp_flags
-	packet.update_gis_values()
-	return packet
-
-
-static func create_from_gis_values(
-	cpp_pos: Vector3, cpp_rot: Vector3, cpp_plid: int, cpp_cam: int, cpp_fov: float,
-	cpp_time := 0.0, cpp_flags := 0
-) -> InSimCPPPacket:
-	var packet := InSimCPPPacket.new()
-	packet.gis_position = cpp_pos
-	packet.gis_angles = cpp_rot
-	packet.view_plid = cpp_plid
-	packet.ingame_cam = cpp_cam
-	packet.fov = cpp_fov
-	packet.gis_time = cpp_time
-	packet.flags = cpp_flags
-	packet.set_values_from_gis()
-	return packet
-
-
+## Returns the [code]/cp[/code] string corresponding to the current camera settings.
 func get_lfs_cam_command() -> String:
 	return "/cp %d %d %d %d %d %.1f %.1f" % [pos.x, pos.y, pos.z, heading, pitch, roll, fov]

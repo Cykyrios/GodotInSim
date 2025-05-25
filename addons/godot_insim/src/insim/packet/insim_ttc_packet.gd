@@ -1,27 +1,46 @@
 class_name InSimTTCPacket
 extends InSimPacket
-
 ## General purpose packet - IS_TTC (Target To Connection)
 ##
-## Similar to IS_SMALL but contains 4 bytes instead of a integer.[br]
+## Similar to IS_SMALL but contains 4 bytes instead of an integer.[br]
 ## [br]
 ## See [enum InSim.TTC] for the list of TTC_ packets.
 
+## List of receivable TTC packets
 const RECEIVABLES := []
+## List of sendable TTC packets
 const SENDABLES := [
 	InSim.TTC.TTC_SEL,
 	InSim.TTC.TTC_SEL_START,
 	InSim.TTC.TTC_SEL_STOP,
 ]
 
-const PACKET_SIZE := 8
-const PACKET_TYPE := InSim.Packet.ISP_TTC
-var sub_type := InSim.TTC.TTC_NONE
+const PACKET_SIZE := 8  ## Packet size
+const PACKET_TYPE := InSim.Packet.ISP_TTC  ## The packet's type, see [enum InSim.Packet].
+var sub_type := InSim.TTC.TTC_NONE  ## Packet subtype
 
-var ucid := 0
-var b1 := 0
-var b2 := 0
-var b3 := 0
+var ucid := 0  ## Unique connection ID
+var b1 := 0  ## First byte value
+var b2 := 0  ## Second byte value
+var b3 := 0  ## Third byte value
+
+
+## Creates and return a new [InSimTTCPacket] from the given parameters.
+static func create(
+	req := 0, subt := InSim.TTC.TTC_NONE, ttc_ucid := 0, ttc_b1 := 0, ttc_b2 := 0, ttc_b3 := 0
+) -> InSimTTCPacket:
+	var packet := InSimTTCPacket.new()
+	packet.req_i = req
+	packet.sub_type = subt
+	packet.ucid = ttc_ucid
+	packet.b1 = ttc_b1
+	packet.b2 = ttc_b2
+	packet.b3 = ttc_b3
+	if packet.sub_type in RECEIVABLES:
+		packet.receivable = true
+	if packet.sub_type in SENDABLES:
+		packet.sendable = true
+	return packet
 
 
 func _init() -> void:
@@ -75,20 +94,3 @@ func _get_pretty_text() -> String:
 			ttc_description = "disable info for every selection change"
 	return "(ReqI %d) %s (UCID %d B1=%d B2=%d B3=%d) - %s" % [req_i, InSim.TTC.keys()[sub_type],
 			ucid, b1, b2, b3, ttc_description]
-
-
-static func create(
-	req := 0, subt := InSim.TTC.TTC_NONE, ttc_ucid := 0, ttc_b1 := 0, ttc_b2 := 0, ttc_b3 := 0
-) -> InSimTTCPacket:
-	var packet := InSimTTCPacket.new()
-	packet.req_i = req
-	packet.sub_type = subt
-	packet.ucid = ttc_ucid
-	packet.b1 = ttc_b1
-	packet.b2 = ttc_b2
-	packet.b3 = ttc_b3
-	if packet.sub_type in RECEIVABLES:
-		packet.receivable = true
-	if packet.sub_type in SENDABLES:
-		packet.sendable = true
-	return packet

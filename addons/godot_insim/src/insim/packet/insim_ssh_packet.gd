@@ -1,20 +1,33 @@
 class_name InSimSSHPacket
 extends InSimPacket
-
 ## ScreenSHot packet
+##
+## This packet is sent to take a screenshot, and received as a reply.
 
-const SCREENSHOT_NAME_MAX_LENGTH := 32  # last byte must be zero, so actual value is decreased by one
+## Screenshot name maximum length
+const SCREENSHOT_NAME_MAX_LENGTH := 32  # last byte must be zero, actual value is decreased by one
 
-const PACKET_SIZE := 40
-const PACKET_TYPE := InSim.Packet.ISP_SSH
+const PACKET_SIZE := 40  ## Packet size
+const PACKET_TYPE := InSim.Packet.ISP_SSH  ## The packet's type, see [enum InSim.Packet].
 var error := InSim.Screenshot.SSH_OK  ## 0 = OK / other values are listed in [enum InSim.Screenshot]
 
-var sp0 := 0
-var sp1 := 0
-var sp2 := 0
-var sp3 := 0
+var sp0 := 0  ## Spare
+var sp1 := 0  ## Spare
+var sp2 := 0  ## Spare
+var sp3 := 0  ## Spare
 
-var screenshot_name := ""  ## name of screenshot file - last byte must be zero
+var screenshot_name := ""  ## Name of screenshot file - last byte must be zero
+
+
+## Creates and returns a new [InSimSSHPacket] from the given parameters.
+static func create(
+	reqi: int, ssh_name: String, ssh_error := InSim.Screenshot.SSH_OK
+) -> InSimSSHPacket:
+	var packet := InSimSSHPacket.new()
+	packet.req_i = reqi
+	packet.error = ssh_error
+	packet.screenshot_name = ssh_name
+	return packet
 
 
 func _init() -> void:
@@ -62,13 +75,3 @@ func _get_data_dictionary() -> Dictionary:
 
 func _get_pretty_text() -> String:
 	return "Screenshot: %s - %s" % [InSim.Screenshot.keys()[error], screenshot_name]
-
-
-static func create(
-	reqi: int, ssh_name: String, ssh_error := InSim.Screenshot.SSH_OK
-) -> InSimSSHPacket:
-	var packet := InSimSSHPacket.new()
-	packet.req_i = reqi
-	packet.error = ssh_error
-	packet.screenshot_name = ssh_name
-	return packet

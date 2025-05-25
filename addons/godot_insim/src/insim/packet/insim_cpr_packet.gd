@@ -1,13 +1,14 @@
 class_name InSimCPRPacket
 extends InSimPacket
-
 ## Conn Player Rename packet
+##
+## This packet is received when a player changes their name or plate.
 
-const PLAYER_NAME_MAX_LENGTH := 24
-const PLATE_MAX_LENGTH := 8
+const PLAYER_NAME_MAX_LENGTH := 24  ## Maximum player name length
+const PLATE_MAX_LENGTH := 8  ## Maximum plate text length
 
-const PACKET_SIZE := 36
-const PACKET_TYPE := InSim.Packet.ISP_CPR
+const PACKET_SIZE := 36  ## Packet size
+const PACKET_TYPE := InSim.Packet.ISP_CPR  ## The packet's type, see [enum InSim.Packet].
 var ucid := 0  ## unique id of the connection
 
 var player_name := ""  ## new name

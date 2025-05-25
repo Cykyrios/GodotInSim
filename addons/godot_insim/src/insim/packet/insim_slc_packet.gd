@@ -1,13 +1,15 @@
 class_name InSimSLCPacket
 extends InSimPacket
-
 ## SeLected Car packet - sent when a connection selects a car (empty if no car)
+##
+## This packet is received when a player selects a vehicle.
 
-const PACKET_SIZE := 8
-const PACKET_TYPE := InSim.Packet.ISP_SLC
-var ucid := 0  ## connection's unique id (0 = host)
+const PACKET_SIZE := 8  ## Packet size
+const PACKET_TYPE := InSim.Packet.ISP_SLC  ## The packet's type, see [enum InSim.Packet].
 
-var car_name := ""  ## car name
+var ucid := 0  ## Connection's unique id (0 = host)
+
+var car_name := ""  ## Car name (skin ID)
 
 
 func _init() -> void:

@@ -1,26 +1,30 @@
 class_name InSimSPXPacket
 extends InSimPacket
-
 ## SPlit X time packet
+##
+## This packet is received when a player or AI crosses a sector split line.
 
+## Conversion factor between standard units and LFS-encoded values.
 const TIME_MULTIPLIER := 1000.0
+## Conversion factor between standard units and LFS-encoded values.
 const FUEL_MULTIPLIER := 2.0
 
-const PACKET_SIZE := 16
-const PACKET_TYPE := InSim.Packet.ISP_SPX
-var plid := 0  ## player's unique id
+const PACKET_SIZE := 16  ## Packet size
+const PACKET_TYPE := InSim.Packet.ISP_SPX  ## The packet's type, see [enum InSim.Packet].
 
-var split_time := 0  ## split time (ms)
-var elapsed_time := 0  ## total time (ms)
+var plid := 0  ## Player's unique id
 
-var split := 0  ## split number 1, 2, 3
-var penalty := InSim.Penalty.PENALTY_NONE  ## current penalty value (see [enum InSim.Penalty])
-var num_stops := 0  ## number of pit stops
+var split_time := 0  ## Split time (ms)
+var elapsed_time := 0  ## Total time (ms)
+
+var split := 0  ## Split number 1, 2, 3
+var penalty := InSim.Penalty.PENALTY_NONE  ## Current penalty value (see [enum InSim.Penalty])
+var num_stops := 0  ## Number of pit stops
 var fuel200 := 0  ## /showfuel yes: double fuel percent / no: 255
 
-var gis_split_time := 0.0
-var gis_elapsed_time := 0.0
-var gis_fuel := 0.0
+var gis_split_time := 0.0  ## Split time in seconds
+var gis_elapsed_time := 0.0  ## Total time in seconds
+var gis_fuel := 0.0  ## Fuel as a percentage, or -1 if fuel is hidden.
 
 
 func _init() -> void:

@@ -1,16 +1,17 @@
 class_name InSimFLGPacket
 extends InSimPacket
-
 ## FLaG packet - yellow or blue flag changed
+##
+## This packet is received when a player causes a yellow/blue flag, or that flag is removed.
 
-const PACKET_SIZE := 8
-const PACKET_TYPE := InSim.Packet.ISP_FLG
+const PACKET_SIZE := 8  ## Packet size
+const PACKET_TYPE := InSim.Packet.ISP_FLG  ## The packet's type, see [enum InSim.Packet].
 var plid := 0  ## player's unique id
 
 var off_on := 0  ## 0 = off / 1 = on
 var flag := 0  ## 1 = given blue / 2 = causing yellow
 var car_behind := 0  ## unique id of obstructed player
-var sp3 := 0
+var sp3 := 0  ## Spare
 
 
 func _init() -> void:

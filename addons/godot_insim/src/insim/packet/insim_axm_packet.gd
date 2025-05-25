@@ -1,23 +1,40 @@
 class_name InSimAXMPacket
 extends InSimPacket
-
 ## AutoX Multiple objects packet
+##
+## This packet is sent or received from various interactions with the layout editor.
 
-const MIN_OBJECTS := 0
-const MAX_OBJECTS := 60
-const PACKET_BASE_SIZE := 8
+const MIN_OBJECTS := 0  ## Minimum number of objects per packet
+const MAX_OBJECTS := 60  ## Maximum number of objects per packet
+const PACKET_BASE_SIZE := 8  ## Base packet size
+## Minimum packet size
 const PACKET_MIN_SIZE := PACKET_BASE_SIZE + MIN_OBJECTS * ObjectInfo.STRUCT_SIZE
+## Maximum packet size
 const PACKET_MAX_SIZE := PACKET_BASE_SIZE + MAX_OBJECTS * ObjectInfo.STRUCT_SIZE
-const PACKET_TYPE := InSim.Packet.ISP_AXM
+const PACKET_TYPE := InSim.Packet.ISP_AXM  ## The packet's type, see [enum InSim.Packet].
 
-var num_objects := 0
+var num_objects := 0  ## Number of objects in this packet
 
 var ucid := 0  ## unique id of the connection that sent the packet
 var pmo_action := InSim.PMOAction.PMO_NUM  ## see [enum InSim.PMOAction]
 var pmo_flags := 0  ## see [enum InSim.PMOFlags]
-var sp3 := 0
+var sp3 := 0  ## Spare
 
-var info: Array[ObjectInfo] = []
+var info: Array[ObjectInfo] = []  ## Object info for all objects in this packet
+
+
+## Creates and returns a new [InSimAXMPacket] from the given parameters.
+static func create(
+	axm_num_objects: int, axm_ucid: int, axm_action: InSim.PMOAction, axm_flags := 0,
+	axm_info: Array[ObjectInfo] = []
+) -> InSimAXMPacket:
+	var packet := InSimAXMPacket.new()
+	packet.num_objects = axm_num_objects
+	packet.ucid = axm_ucid
+	packet.pmo_action = axm_action
+	packet.pmo_flags = axm_flags
+	packet.info = axm_info.duplicate()
+	return packet
 
 
 func _init() -> void:
@@ -88,19 +105,7 @@ func _get_pretty_text() -> String:
 			"" if pmo_flags == 0 else " (%s)" % [flags]]
 
 
-static func create(
-	axm_num_objects: int, axm_ucid: int, axm_action: InSim.PMOAction, axm_flags := 0,
-	axm_info: Array[ObjectInfo] = []
-) -> InSimAXMPacket:
-	var packet := InSimAXMPacket.new()
-	packet.num_objects = axm_num_objects
-	packet.ucid = axm_ucid
-	packet.pmo_action = axm_action
-	packet.pmo_flags = axm_flags
-	packet.info = axm_info.duplicate()
-	return packet
-
-
+# FIXME: Never actually used
 func trim_packet_size() -> void:
 	size = PACKET_BASE_SIZE + num_objects * ObjectInfo.STRUCT_SIZE
 	resize_buffer(size)

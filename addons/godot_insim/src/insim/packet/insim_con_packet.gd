@@ -1,21 +1,26 @@
 class_name InSimCONPacket
 extends InSimPacket
-
 ## CONtact packet - between two cars ([member car_a] and [member car_b] are sorted by PLID)
+##
+## This packet is received when two cars collide.
 
-const CLOSING_SPEED_MASK := 0x0fff
+const _CLOSING_SPEED_MASK := 0x0fff
+
+## Conversion factor between standard units and LFS-encoded values.
 const CLOSING_SPEED_MULTIPLIER := 10.0
+## Conversion factor between standard units and LFS-encoded values.
 const TIME_MULTIPLIER := 100.0
 
-const PACKET_SIZE := 40
-const PACKET_TYPE := InSim.Packet.ISP_CON
-var zero := 0
+const PACKET_SIZE := 40  ## Packet size
+const PACKET_TYPE := InSim.Packet.ISP_CON  ## The packet's type, see [enum InSim.Packet].
+
+var zero := 0  ## Zero byte
 
 var sp_close := 0  ## high 4 bits: reserved / low 12 bits: closing speed (10 = 1 m/s)
 var time := 0  ## looping time stamp (hundredths - time since reset - like [constant InSim.TINY_GTH]
 
-var car_a := CarContact.new()
-var car_b := CarContact.new()
+var car_a := CarContact.new()  ## Car contact data for the first car.
+var car_b := CarContact.new()  ## Car contact data for the second car.
 
 var gis_closing_speed := 0.0  ## Closing speed in m/s
 var gis_time := 0.0  ## Time in s
@@ -60,5 +65,5 @@ func _get_pretty_text() -> String:
 
 
 func _update_gis_values() -> void:
-	gis_closing_speed = (sp_close & CLOSING_SPEED_MASK) / CLOSING_SPEED_MULTIPLIER
+	gis_closing_speed = (sp_close & _CLOSING_SPEED_MASK) / CLOSING_SPEED_MULTIPLIER
 	gis_time = time / TIME_MULTIPLIER

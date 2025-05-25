@@ -1,12 +1,16 @@
 class_name RelayHLRPacket
 extends InSimRelayPacket
+## Relay host list request
+##
+## This packet is sent to request the list of current hosts connected to the relay.
+
+const PACKET_SIZE := 4  ## Packet size
+const PACKET_TYPE := InSim.Packet.IRP_HLR  ## The packet's type, see [enum InSim.Packet].
+
+var sp0 := 0  ## Spare
 
 
-const PACKET_SIZE := 4
-const PACKET_TYPE := InSim.Packet.IRP_HLR
-var sp0 := 0
-
-
+## Creates and returns a new [RelayHLRPacket] with the given [param reqi].
 static func create(reqi: int) -> RelayHLRPacket:
 	var packet := RelayHLRPacket.new()
 	packet.req_i = reqi

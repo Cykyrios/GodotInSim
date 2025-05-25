@@ -1,14 +1,16 @@
 class_name RelayHOSPacket
 extends InSimRelayPacket
+## Relay host list packet
+##
+## This packet is received after a host list request with [InSimHLRPacket].
 
+const PACKET_BASE_SIZE := 4  ## Packet base size
+const PACKET_TYPE := InSim.Packet.IRP_HOS  ## The packet's type, see [enum InSim.Packet].
+const MIN_HOST_INFO := 1  ## Minimum host info number per packet
+const MAX_HOST_INFO := 6  ## Maximum host info number per packet
 
-const PACKET_BASE_SIZE := 4
-const PACKET_TYPE := InSim.Packet.IRP_HOS
-const MIN_HOST_INFO := 1
-const MAX_HOST_INFO := 6
-
-var num_hosts := 0
-var host_info: Array[HostInfo] = []
+var num_hosts := 0  ## Number of host info in this packet
+var host_info: Array[HostInfo] = []  ## Array of host info
 
 
 func _init() -> void:

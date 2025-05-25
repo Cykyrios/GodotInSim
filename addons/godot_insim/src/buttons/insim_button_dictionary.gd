@@ -1,7 +1,8 @@
 class_name InSimButtonDictionary
 extends RefCounted
-
-## A [Dictionary] of [InSimButton] objects
+## InSimButton dictionary
+##
+## A [Dictionary] of [InSimButton] objects.
 
 ## A [Dictionary] of [InSimButton] objects, with keys corresponding to the buttons' click IDs.
 var buttons: Dictionary[int, InSimButton] = {}

@@ -1,20 +1,23 @@
 class_name RelaySELPacket
 extends InSimRelayPacket
+## Relay host selection packet
+##
+## This packet is sent to connect to the specified host.
+
+const PACKET_SIZE := 68  ## Packet size
+const PACKET_TYPE := InSim.Packet.IRP_SEL  ## The packet's type, see [enum InSim.Packet].
+const HOST_NAME_LENGTH := 32  ## Maximum host name length
+const ADMIN_LENGTH := 16  ## Maximum admin password length
+const SPEC_LENGTH := 16  ## Maximum spectator password length
+
+var zero := 0  ## Zero byte
+
+var host_name := ""  ## Host name
+var admin := ""  ## Admin password
+var spec := ""  ## Spectator password
 
 
-const PACKET_SIZE := 68
-const PACKET_TYPE := InSim.Packet.IRP_SEL
-const HOST_NAME_LENGTH := 32
-const ADMIN_LENGTH := 16
-const SPEC_LENGTH := 16
-
-var zero := 0
-
-var host_name := ""
-var admin := ""
-var spec := ""
-
-
+## Creates and returns a new [RelaySELPacket] from the given parameters.
 static func create(reqi: int, sel_host: String, sel_admin := "", sel_spec := "") -> RelaySELPacket:
 	var packet := RelaySELPacket.new()
 	packet.req_i = reqi

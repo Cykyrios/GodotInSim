@@ -1,8 +1,10 @@
 class_name NodeLap
 extends InSimStruct
+## Nodelap data
+##
+## This class contains data used in [InSimNLPPacket].
 
-
-const STRUCT_SIZE := 6
+const STRUCT_SIZE := 6  ## The size of this struct's data
 
 var node := 0  ## current path node
 var lap := 0  ## current lap

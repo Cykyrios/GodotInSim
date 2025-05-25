@@ -1,16 +1,29 @@
 class_name InSimBFNPacket
 extends InSimPacket
-
 ## Button FunctioN packet
+##
+## This packet is sent or received to manipulate InSim buttons.
 
-const PACKET_SIZE := 8
-const PACKET_TYPE := InSim.Packet.ISP_BFN
+const PACKET_SIZE := 8  ## Packet size
+const PACKET_TYPE := InSim.Packet.ISP_BFN  ## The packet's type, see [enum InSim.Packet].
 var subtype := InSim.ButtonFunction.BFN_USER_CLEAR  ## subtype, see [enum InSim.ButtonFunction]
 
 var ucid := 0  ## connection to send to or received from (0 = local / 255 = all)
 var click_id := 0  ## if SubT is BFN_DEL_BTN: ID of single button to delete or first button in range
 var click_max := 0  ## if SubT is BFN_DEL_BTN: ID of last button in range (if greater than ClickID)
 var inst := 0  ## used internally by InSim
+
+
+## Creates and returns a new [InSimBFNPacket] from the given parameters.
+static func create(
+	bfn_subtype: InSim.ButtonFunction, bfn_ucid: int, bfn_click_id: int, bfn_click_max: int
+) -> InSimBFNPacket:
+	var packet := InSimBFNPacket.new()
+	packet.subtype = bfn_subtype
+	packet.ucid = bfn_ucid
+	packet.click_id = bfn_click_id
+	packet.click_max = bfn_click_max
+	return packet
 
 
 func _init() -> void:
@@ -59,14 +72,3 @@ func _get_pretty_text() -> String:
 			else "buttons cleared by user" if subtype == InSim.ButtonFunction.BFN_USER_CLEAR \
 			else "Shift+B or Shift+I"
 	return "UCID %d: %s" % [ucid, bfn_type]
-
-
-static func create(
-	bfn_subtype: InSim.ButtonFunction, bfn_ucid: int, bfn_click_id: int, bfn_click_max: int
-) -> InSimBFNPacket:
-	var packet := InSimBFNPacket.new()
-	packet.subtype = bfn_subtype
-	packet.ucid = bfn_ucid
-	packet.click_id = bfn_click_id
-	packet.click_max = bfn_click_max
-	return packet

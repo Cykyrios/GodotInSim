@@ -1,20 +1,26 @@
 class_name CompCar
 extends InSimStruct
+## IS_MCI car data
+##
+## This class contains data used in the [InSimMCIPacket].
 
-
+## Conversion factor between standard units and LFS-encoded values.
 const POSITION_MULTIPLIER := 65536.0
+## Conversion factor between standard units and LFS-encoded values.
 const SPEED_MULTIPLIER := 327.68
+## Conversion factor between standard units and LFS-encoded values.
 const ANGLE_MULTIPLIER := 65536 / 360.0
+## Conversion factor between standard units and LFS-encoded values.
 const ANGVEL_MULTIPLIER := 16384 / 360.0
 
-const STRUCT_SIZE := 28
+const STRUCT_SIZE := 28  ## The size of this struct's data
 
 var node := 0  ## current path node
 var lap := 0  ## current lap
 var plid := 0  ## player's unique id
 var position := 0  ## current race position: 0 = unknown, 1 = leader, etc...
 var info := 0  ## flags and other info - see below
-var sp3 := 0
+var sp3 := 0  ## spare
 var x := 0  ## X map (65536 = 1 metre)
 var y := 0  ## Y map (65536 = 1 metre)
 var z := 0  ## Z alt (65536 = 1 metre)
@@ -23,11 +29,11 @@ var direction := 0  ## car's motion if Speed > 0: 0 = world y direction, 32768 =
 var heading := 0  ## direction of forward axis: 0 = world y direction, 32768 = 180 deg
 var ang_vel := 0  ## signed, rate of change of heading: (16384 = 360 deg/s)
 
-var gis_position := Vector3.ZERO
-var gis_speed := 0.0
-var gis_direction := 0.0
-var gis_heading := 0.0
-var gis_angular_velocity := 0.0
+var gis_position := Vector3.ZERO  ## Position in meters
+var gis_speed := 0.0  ## Speed in m/s
+var gis_direction := 0.0  ## Direction in radians
+var gis_heading := 0.0  ## Heading in radians
+var gis_angular_velocity := 0.0  ## Angular velocity in rad/s
 
 
 func _to_string() -> String:
@@ -71,7 +77,6 @@ func _set_from_buffer(buffer: PackedByteArray) -> void:
 	direction = buffer.decode_u16(22)
 	heading = buffer.decode_u16(24)
 	ang_vel = buffer.decode_s16(26)
-	update_gis_values()
 
 
 func _set_values_from_gis() -> void:

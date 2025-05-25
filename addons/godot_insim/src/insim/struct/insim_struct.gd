@@ -1,15 +1,18 @@
 class_name InSimStruct
 extends RefCounted
+## InSim struct base class
+##
+## Base class for structs to be used with InSim packets.
 
-## Base class for structs to be used with InSim packets
 
-
-## Override to define struct behavior.
+## Override to define struct behavior. [method get_buffer] calls [method _set_values_from_gis]
+## before calling this method, if relevant.
 func _get_buffer() -> PackedByteArray:
 	return PackedByteArray()
 
 
-## Override to define struct behavior. This should also call [method update_gis_values] if relevant.
+## Override to define struct behavior. [method set_from_buffer] calls [method update_gis_values],
+## it is there for unnecessary to add a call to it.
 @warning_ignore("unused_parameter")
 func _set_from_buffer(buffer: PackedByteArray) -> void:
 	pass
@@ -33,17 +36,20 @@ func get_buffer(use_gis_values := false) -> PackedByteArray:
 	return _get_buffer()
 
 
-## Updates the struct's variables from the provided [param buffer].
+## Updates the struct's variables from the provided [param buffer]. Also calls
+## [method update_gis_values], for structs that use [code]gis_*[/code] values.
 func set_from_buffer(buffer: PackedByteArray) -> void:
 	_set_from_buffer(buffer)
+	update_gis_values()
 
 
-## Updates variables from [code]gis_*[/code] variables. This behavior must be defined in
-## [method _set_values_from_gis].
+## Updates LFS-encoded variables from [code]gis_*[/code] variables. This behavior must be
+## defined in [method _set_values_from_gis].
 func set_values_from_gis() -> void:
 	_set_values_from_gis()
 
 
-## Updates [code]gis_* variables[/code]; this behavior is defined in [method _update_gis_values].
+## Updates [code]gis_*[/code] variables from LFS-encoded variables. This behavior must be
+## defined in [method _update_gis_values].
 func update_gis_values() -> void:
 	_update_gis_values()

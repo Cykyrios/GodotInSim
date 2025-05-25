@@ -1,16 +1,18 @@
 class_name HostInfo
 extends InSimStruct
+## Host Info struct
+##
+## This class contains host data for use with InSim Relay.
 
+const STRUCT_SIZE := 40  ## The size of this struct's data
 
-const STRUCT_SIZE := 40
+const HOST_NAME_LENGTH := 32  ## The maximum host name length
+const TRACK_NAME_LENGTH := 6  ## The maximum length of a track's name
 
-const HOST_NAME_LENGTH := 32
-const TRACK_NAME_LENGTH := 6
-
-var host_name := ""
-var track := ""
-var flags := 0
-var num_conns := 0
+var host_name := ""  ## Host name
+var track := ""  ## Track name
+var flags := 0  ## Flags
+var num_conns := 0  ## Number of connections
 
 
 func _to_string() -> String:

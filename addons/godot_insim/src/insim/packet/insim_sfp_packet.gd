@@ -1,22 +1,29 @@
 class_name InSimSFPPacket
 extends InSimPacket
-
 ## State Flags Pack
 ##
-## These states can be set with this packet:[br]
-## [constant InSim.ISS_SHIFTU_NO_OPT] - SHIFT+U buttons hidden[br]
-## [constant InSim.ISS_SHOW_2D] - showing 2d display[br]
-## [constant InSim.ISS_MPSPEEDUP] - multiplayer speedup option[br]
-## [constant InSim.ISS_SOUND_MUTE] - sound is switched off[br]
-## Other states must be set by using keypresses or messages.
+## This packet is sent to update some [InSim.State] flags.[br]
+## [b]Note:[/b]Only the following state can be set with this packet:
+## [constant InSim.ISS_SHIFTU_NO_OPT], [constant InSim.ISS_SHOW_2D] - showing 2d display,
+## [constant InSim.ISS_MPSPEEDUP], [constant InSim.ISS_SOUND_MUTE]; other states must be set
+## by using keypresses or messages.
 
-const PACKET_SIZE := 8
-const PACKET_TYPE := InSim.Packet.ISP_SFP
-var zero := 0
+const PACKET_SIZE := 8  ## Packet size
+const PACKET_TYPE := InSim.Packet.ISP_SFP  ## The packet's type, see [enum InSim.Packet].
 
-var flag := InSim.State.ISS_SHIFTU_NO_OPT  ## the state to set
+var zero := 0  ## Zero byte
+
+var flag := InSim.State.ISS_SHIFTU_NO_OPT  ## The state flag to set
 var off_on := 0  ## 0 = off / 1 = on
-var sp3 := 0
+var sp3 := 0  ## Spare
+
+
+## Creates and returns a new [InSimSFPPacket] from the given parameters.
+static func create(sfp_flag: InSim.State, sfp_on: bool) -> InSimSFPPacket:
+	var packet := InSimSFPPacket.new()
+	packet.flag = sfp_flag
+	packet.off_on = 1 if sfp_on else 0
+	return packet
 
 
 func _init() -> void:
@@ -44,10 +51,3 @@ func _get_data_dictionary() -> Dictionary:
 
 func _get_pretty_text() -> String:
 	return "Set flag %s to %s" % [InSim.State.keys()[flag], "OFF" if off_on == 0 else "ON"]
-
-
-static func create(sfp_flag: InSim.State, sfp_on: bool) -> InSimSFPPacket:
-	var packet := InSimSFPPacket.new()
-	packet.flag = sfp_flag
-	packet.off_on = 1 if sfp_on else 0
-	return packet

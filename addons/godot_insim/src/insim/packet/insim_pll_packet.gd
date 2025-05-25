@@ -1,11 +1,12 @@
 class_name InSimPLLPacket
 extends InSimPacket
-
 ## PLayer Leave race packet (spectate - removed from player list)
+##
+## This packet is received when a player leaves the race.
 
-const PACKET_SIZE := 4
-const PACKET_TYPE := InSim.Packet.ISP_PLL
-var plid := 0  ## player's unique id
+const PACKET_SIZE := 4  ## Packet size
+const PACKET_TYPE := InSim.Packet.ISP_PLL  ## The packet's type, see [enum InSim.Packet].
+var plid := 0  ## Player's unique id
 
 
 func _init() -> void:

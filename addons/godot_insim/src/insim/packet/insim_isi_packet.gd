@@ -1,8 +1,9 @@
 class_name InSimISIPacket
 extends InSimPacket
-
 ## InSim Init - packet to initialise the InSim system
 ##
+## This packet is sent to initialize the InSim connection.[br]
+## InSim doc excerpt:[br]
 ## NOTE 1) UDPPort field when you connect using UDP:[br]
 ## - zero: LFS sends all packets to the port of the incoming packet[br]
 ## - non-zero: LFS sends all packets to the specified UDPPort[br]
@@ -31,14 +32,14 @@ extends InSimPacket
 ## Messages typed with this prefix will be sent to your InSim program
 ## on the host (in IS_MSO) and not displayed on anyone's screen.
 
-const PREFIX_LENGTH := 1
-const ADMIN_LENGTH := 16
-const NAME_LENGTH := 16
+const PREFIX_LENGTH := 1  ## Maximum size of the [member prefix].
+const ADMIN_LENGTH := 16  ## Maximum size of the [member admin] password.
+const NAME_LENGTH := 16  ## Maximum size of the application [member i_name].
 
-const PACKET_SIZE := 44
-const PACKET_TYPE := InSim.Packet.ISP_ISI
+const PACKET_SIZE := 44  ## Packet size
+const PACKET_TYPE := InSim.Packet.ISP_ISI  ## The packet's type, see [enum InSim.Packet].
 const REQ_I := 1  ## If non-zero LFS will send an IS_VER packet
-var zero := 0
+var zero := 0  ## Zero byte
 
 var udp_port := 0  ## Port for UDP replies from LFS (0 to 65535)
 var flags := 0  ## Bit flags for options (see [enum InSim.InitFlag])
@@ -49,6 +50,22 @@ var interval := 0  ## Time in ms between NLP or MCI (0 = none)
 
 var admin := ""  ## Admin password (if set in LFS)
 var i_name := "Godot InSim"  ## A short name for your program
+
+
+## Creates and returns a new [InSimISIPacket] from the given parameters.
+static func create(
+	isi_udp: int, isi_flags: int, isi_prefix: String, isi_interval: int,
+	isi_admin: String, isi_name: String
+) -> InSimISIPacket:
+	var packet := InSimISIPacket.new()
+	packet.udp_port = isi_udp
+	packet.flags = isi_flags
+	packet.insim_version = InSim.VERSION  ## The INSIM_VERSION used by your program
+	packet.prefix = isi_prefix
+	packet.interval = isi_interval
+	packet.admin = isi_admin
+	packet.i_name = isi_name
+	return packet
 
 
 func _init() -> void:
@@ -88,18 +105,3 @@ func _get_data_dictionary() -> Dictionary:
 func _get_pretty_text() -> String:
 	return "Starting %s, InSim version %d, prefix=\"%s\", flags=%d, interval=%d, UDP=%d" % \
 			[i_name, insim_version, prefix, flags, interval, udp_port]
-
-
-static func create(
-	isi_udp: int, isi_flags: int, isi_prefix: String, isi_interval: int,
-	isi_admin: String, isi_name: String
-) -> InSimISIPacket:
-	var packet := InSimISIPacket.new()
-	packet.udp_port = isi_udp
-	packet.flags = isi_flags
-	packet.insim_version = InSim.VERSION  ## The INSIM_VERSION used by your program
-	packet.prefix = isi_prefix
-	packet.interval = isi_interval
-	packet.admin = isi_admin
-	packet.i_name = isi_name
-	return packet

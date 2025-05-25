@@ -1,19 +1,20 @@
 class_name InSimNCIPacket
 extends InSimPacket
-
 ## New Conn Info packet - sent on host only if an admin password has been set
+##
+## This packet is received by the host when a player connects to the server.
 
-const PACKET_SIZE := 16
-const PACKET_TYPE := InSim.Packet.ISP_NCI
-var ucid := 0  ## connection's unique id (0 = host)
+const PACKET_SIZE := 16  ## Packet size
+const PACKET_TYPE := InSim.Packet.ISP_NCI  ## The packet's type, see [enum InSim.Packet].
+var ucid := 0  ## Connection's unique id (0 = host)
 
-var language := InSim.Language.LFS_ENGLISH  ## see [enum InSim.Language]
-var license := 0  ## 0:demo / 1:S1 ...
-var sp2 := 0
-var sp3 := 0
+var language := InSim.Language.LFS_ENGLISH  ## Language (see [enum InSim.Language])
+var license := 0  ## Player license (0:demo / 1:S1 ...)
+var sp2 := 0  ## Spare
+var sp3 := 0  ## Spare
 
 var user_id := 0  ## LFS UserID
-var ip_address := IPAddress.new()
+var ip_address := IPAddress.new()  ## Player's IP address
 
 
 func _init() -> void:

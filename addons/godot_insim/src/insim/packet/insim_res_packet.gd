@@ -1,40 +1,42 @@
 class_name InSimRESPacket
 extends InSimPacket
-
 ## RESult packet (qualify or confirmed finish)
+##
+## This packet is received when a player's result is confirmed.
 
+## Conversion factor between standard units and LFS-encoded values.
 const TIME_MULTIPLIER := 1000.0
 
-const USERNAME_MAX_LENGTH := 24
-const PLAYER_NAME_MAX_LENGTH := 24
-const PLATE_MAX_LENGTH := 8
+const USERNAME_MAX_LENGTH := 24  ## Maximum username length
+const PLAYER_NAME_MAX_LENGTH := 24  ## Maximum player name length
+const PLATE_MAX_LENGTH := 8  ## Maximum plate length
 
-const PACKET_SIZE := 84
-const PACKET_TYPE := InSim.Packet.ISP_RES
-var plid := 0  ## player's unique id (0 = player left before result was sent)
+const PACKET_SIZE := 84  ## Packet size
+const PACKET_TYPE := InSim.Packet.ISP_RES  ## The packet's type, see [enum InSim.Packet].
+var plid := 0  ## Player's unique id (0 = player left before result was sent)
 
-var username := ""  ## username
-var player_name := ""  ## nickame
-var plate := ""  ## number plate - NO ZERO AT END!
-var car_name := ""  ## skin prefix
+var username := ""  ## Username
+var player_name := ""  ## Nickame
+var plate := ""  ## Number plate - NO ZERO AT END!
+var car_name := ""  ## Skin prefix
 
-var total_time := 0  ## (ms) race or autocross: total time / qualify: session time
-var best_lap := 0  ## (ms) best lap
+var total_time := 0  ## (ms) Race or autocross: total time / qualify: session time
+var best_lap := 0  ## (ms) Best lap
 
-var sp_a := 0
-var num_stops := 0  ## number of pit stops
-var confirm := 0  ## confirmation flags: disqualified etc - see [enum InSim.Confirmation]
-var sp_b := 0
+var sp_a := 0  ## Spare
+var num_stops := 0  ## Number of pit stops
+var confirm := 0  ## Confirmation flags: disqualified etc - see [enum InSim.Confirmation]
+var sp_b := 0  ## Spare
 
-var laps_done := 0  ## laps completed
-var flags := 0  ## player flags: help settings etc - see [enum InSim.PlayerFlag]
+var laps_done := 0  ## Number of laps completed
+var flags := 0  ## Player flags: help settings etc - see [enum InSim.PlayerFlag]
 
-var result_num := 0  ## finish or qualify pos (0 = win / 255 = not added to table)
-var num_results := 0  ## total number of results (qualify doesn't always add a new one)
-var penalty_seconds := 0  ## penalty time in seconds (already included in race time)
+var result_num := 0  ## Finish or qualify pos (0 = win / 255 = not added to table)
+var num_results := 0  ## Total number of results (qualify doesn't always add a new one)
+var penalty_seconds := 0  ## Penalty time in seconds (already included in race time)
 
-var gis_total_time := 0.0
-var gis_best_lap := 0.0
+var gis_total_time := 0.0  ## Total time in seconds
+var gis_best_lap := 0.0  ## Best lap time in seconds
 
 
 func _init() -> void:

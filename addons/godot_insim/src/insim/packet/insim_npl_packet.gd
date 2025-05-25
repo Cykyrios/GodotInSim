@@ -1,42 +1,44 @@
 class_name InSimNPLPacket
 extends InSimPacket
-
 ## New PLayer joining race packet (if [member plid] already exists, then leaving pits)
+##
+## This packet is received when a player joins the grid/race, tries to join (if the host handles
+## join requests), or leaves the pits.
 
-const MAX_TYRES := 4
+const _MAX_TYRES := 4
 
-const PLAYER_NAME_MAX_LENGTH := 24
-const PLATE_MAX_LENGTH := 8
-const SKIN_NAME_MAX_LENGTH := 16
+const PLAYER_NAME_MAX_LENGTH := 24  ## Player name max length
+const PLATE_MAX_LENGTH := 8  ## Plate max length
+const SKIN_NAME_MAX_LENGTH := 16  ## Skin name max length
 
-const PACKET_SIZE := 76
-const PACKET_TYPE := InSim.Packet.ISP_NPL
-var plid := 0  ## player's newly assigned unique id
+const PACKET_SIZE := 76  ## Packet size
+const PACKET_TYPE := InSim.Packet.ISP_NPL  ## The packet's type, see [enum InSim.Packet].
+var plid := 0  ## Player's newly assigned unique id
 
-var ucid := 0  ## connection's unique id
-var player_type := 0  ## bit 0: female / bit 1: AI / bit 2: remote
-var flags := 0  ## player flags (see [enum InSim.PlayerFlag])
+var ucid := 0  ## Connection's unique id
+var player_type := 0  ## Player type; bit 0: female / bit 1: AI / bit 2: remote.
+var flags := 0  ## Player flags (see [enum InSim.PlayerFlag])
 
-var player_name := ""  ## nickname
-var plate := ""  ## number plate - NO ZERO AT END!
+var player_name := ""  ## Nickname
+var plate := ""  ## Number plate - NO ZERO AT END!
 
-var car_name := ""  ## car name
-var skin_name := ""  ## skin name - [constant SKIN_NAME_MAX_LENGTH]
-var tyres: Array[InSim.Tyre] = []  ## tyre compounds
+var car_name := ""  ## Car name (skin ID)
+var skin_name := ""  ## Skin name
+var tyres: Array[InSim.Tyre] = []  ## Tyre compounds
 
-var h_mass := 0  ## added mass (kg)
-var h_tres := 0  ## intake restriction
-var model := 0  ## driver model
-var passengers := 0  ## passengers byte
+var h_mass := 0  ## Added mass (kg)
+var h_tres := 0  ## Intake restriction
+var model := 0  ## Driver model
+var passengers := 0  ## Passengers byte
 
-var rw_adjust := 0  ## low 4 bits: tyre width reduction (rear)
-var fw_adjust := 0  ## low 4 bits: tyre width reduction (front)
-var sp2 := 0
-var sp3 := 0
+var rw_adjust := 0  ## Low 4 bits: tyre width reduction (rear)
+var fw_adjust := 0  ## Low 4 bits: tyre width reduction (front)
+var sp2 := 0  ## Spare
+var sp3 := 0  ## Spare
 
-var setup_flags := 0  ## setup flags (see [enum InSim.Setup])
-var num_players := 0  ## number in race - ZERO if this is a join request
-var config := 0  ## configuration (0 = DEFAULT, 1 = OPEN ROOF for UF1/LX4/LX6, ALTERNATE for GTR, etc)
+var setup_flags := 0  ## Setup flags (see [enum InSim.Setup])
+var num_players := 0  ## Number in race - ZERO if this is a join request
+var config := 0  ## Configuration (0 = DEFAULT, 1 = OPEN ROOF for UF1, ALTERNATE for GTR, etc)
 var fuel := 0  ## /showfuel yes: fuel percent / no: 255
 
 
@@ -61,7 +63,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	car_name = read_car_name()
 	skin_name = read_string(SKIN_NAME_MAX_LENGTH)
 	tyres.clear()
-	for i in MAX_TYRES:
+	for i in _MAX_TYRES:
 		tyres.append(read_byte())
 	h_mass = read_byte()
 	h_tres = read_byte()

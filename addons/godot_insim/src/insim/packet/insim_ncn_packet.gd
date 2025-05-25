@@ -1,22 +1,23 @@
 class_name InSimNCNPacket
 extends InSimPacket
-
 ## New ConN packet
+##
+## This packet is received when a player connects to the server.
 
-const USER_NAME_MAX_LENGTH := 24
-const PLAYER_NAME_MAX_LENGTH := 24
+const USER_NAME_MAX_LENGTH := 24  ## Maximum username length
+const PLAYER_NAME_MAX_LENGTH := 24  ## Maximum player name length
 
-const PACKET_SIZE := 56
-const PACKET_TYPE := InSim.Packet.ISP_NCN
-var ucid := 0  ## connection's unique id (0 = host)
+const PACKET_SIZE := 56  ## Packet size
+const PACKET_TYPE := InSim.Packet.ISP_NCN  ## The packet's type, see [enum InSim.Packet].
+var ucid := 0  ## Connection's unique id (0 = host)
 
-var user_name := ""  ## username
-var player_name := ""  ## nickname
+var user_name := ""  ## Username
+var player_name := ""  ## Nickname
 
-var admin := 0  ## 1 if admin
-var total := 0  ## number of connections including host
-var flags := 0  ## bit 2: remote
-var sp3 := 0
+var admin := 0  ## Admin status; 1 if admin.
+var total := 0  ## Number of connections including host
+var flags := 0  ## Flags; bit 2: remote.
+var sp3 := 0  ## Spare
 
 
 func _init() -> void:

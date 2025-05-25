@@ -1,14 +1,15 @@
 class_name PlayerHandicap
 extends InSimStruct
+## Player handicap
+##
+## This class contains data about a player's handicap
 
-## Player handicaps
+const MASS_MULTIPLIER := 1.0  ## Conversion factor between standard units and LFS-encoded values.
 
-const MASS_MULTIPLIER := 1.0
+const STRUCT_SIZE := 4  ## The size of this struct's data
 
-const STRUCT_SIZE := 4
-
-const H_MASS_MAX := 200
-const H_TRES_MAX := 50
+const H_MASS_MAX := 200  ## Maximum added mass
+const H_TRES_MAX := 50  ## Maximum intake restriction
 
 var plid := 0  ## player's unique id
 ## bit 0: set [member h_mass] / bit 1: set [member h_tres] (e.g. flags = 3 to set both)
@@ -21,7 +22,34 @@ var h_tres := 0:  ## 0 to 50 - intake restriction
 	set(new_tres):
 		h_tres = clampi(new_tres, 0, H_TRES_MAX)
 
-var gis_mass := 0.0
+var gis_mass := 0.0  ## Added mass in kg
+
+
+## Creates and returns a new [PlayerHandicap] from the given parameters.
+static func create(
+	plh_plid: int, plh_flags: int, added_mass: int, intake_restriction: int
+) -> PlayerHandicap:
+	var handicap := PlayerHandicap.new()
+	handicap.plid = plh_plid
+	handicap.flags = plh_flags
+	handicap.h_mass = added_mass
+	handicap.h_tres = intake_restriction
+	handicap.update_gis_values()
+	return handicap
+
+
+## Creates and returns a new [PlayerHandicap] from the given parameters, using standard units
+## where applicable.
+static func create_from_gis_values(
+	plh_plid: int, plh_flags: int, added_mass: float, intake_restriction: int
+) -> PlayerHandicap:
+	var handicap := PlayerHandicap.new()
+	handicap.plid = plh_plid
+	handicap.flags = plh_flags
+	handicap.gis_mass = added_mass
+	handicap.h_tres = intake_restriction
+	handicap.set_values_from_gis()
+	return handicap
 
 
 func _to_string() -> String:
@@ -45,7 +73,6 @@ func _set_from_buffer(buffer: PackedByteArray) -> void:
 	flags = buffer.decode_u8(1)
 	h_mass = buffer.decode_u8(2)
 	h_tres = buffer.decode_u8(3)
-	update_gis_values()
 
 
 func _set_values_from_gis() -> void:
@@ -54,27 +81,3 @@ func _set_values_from_gis() -> void:
 
 func _update_gis_values() -> void:
 	gis_mass = h_mass / MASS_MULTIPLIER
-
-
-static func create(
-	plh_plid: int, plh_flags: int, added_mass: int, intake_restriction: int
-) -> PlayerHandicap:
-	var handicap := PlayerHandicap.new()
-	handicap.plid = plh_plid
-	handicap.flags = plh_flags
-	handicap.h_mass = added_mass
-	handicap.h_tres = intake_restriction
-	handicap.update_gis_values()
-	return handicap
-
-
-static func create_from_gis_values(
-	plh_plid: int, plh_flags: int, added_mass: float, intake_restriction: int
-) -> PlayerHandicap:
-	var handicap := PlayerHandicap.new()
-	handicap.plid = plh_plid
-	handicap.flags = plh_flags
-	handicap.gis_mass = added_mass
-	handicap.h_tres = intake_restriction
-	handicap.set_values_from_gis()
-	return handicap

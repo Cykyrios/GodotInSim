@@ -1,10 +1,11 @@
 class_name InSimCRSPacket
 extends InSimPacket
-
 ## Car ReSet packet
+##
+## This packet is received when a player resets their vehicle.
 
-const PACKET_SIZE := 4
-const PACKET_TYPE := InSim.Packet.ISP_CRS
+const PACKET_SIZE := 4  ## Packet size
+const PACKET_TYPE := InSim.Packet.ISP_CRS  ## The packet's type, see [enum InSim.Packet].
 var plid := 0  ## player's unique id
 
 

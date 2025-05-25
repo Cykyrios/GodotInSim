@@ -1,16 +1,25 @@
 class_name InSimAICPacket
 extends InSimPacket
-
 ## AI Control packet
+##
+## This packet is sent to control an AI car.
 
-const MAX_INPUTS := 20
-const PACKET_MIN_SIZE := 4
-const PACKET_MAX_SIZE := 4 + MAX_INPUTS * AIInputVal.STRUCT_SIZE
-const PACKET_TYPE := InSim.Packet.ISP_AIC
+const MAX_INPUTS := 20  ## Maximum number of inputs in the packet
+const PACKET_MIN_SIZE := 4  ## Minimum packet size
+const PACKET_MAX_SIZE := 4 + MAX_INPUTS * AIInputVal.STRUCT_SIZE  ## Maximum packet size
+const PACKET_TYPE := InSim.Packet.ISP_AIC  ## The packet's type, see [enum InSim.Packet].
 
 var plid := 0  ## Unique ID of AI player to control
 
-var inputs: Array[AIInputVal] = []
+var inputs: Array[AIInputVal] = []  ## Array of AI inputs
+
+
+## Creates and returns a new [InSimAICPacket] from the given parameters.
+static func create(car_plid: int, car_inputs: Array[AIInputVal] = []) -> InSimAICPacket:
+	var packet := InSimAICPacket.new()
+	packet.plid = car_plid
+	packet.inputs = car_inputs.duplicate()
+	return packet
 
 
 func _init() -> void:
@@ -45,10 +54,3 @@ func _get_pretty_text() -> String:
 		input_array.append("%s (%d, %d ms)" % [InSim.AIControl.keys().find(input.input),
 				input.value, input.time * 10])
 	return "PLID %d input: %s" % [plid, input_array]
-
-
-static func create(car_plid: int, car_inputs: Array[AIInputVal] = []) -> InSimAICPacket:
-	var packet := InSimAICPacket.new()
-	packet.plid = car_plid
-	packet.inputs = car_inputs.duplicate()
-	return packet

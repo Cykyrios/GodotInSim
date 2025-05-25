@@ -1,13 +1,15 @@
 class_name InSimBTNPacket
 extends InSimPacket
-
 ## BuTtoN packet - button header - followed by 0 to 240 characters
+##
+## This packet is sent to create or modify an InSim button.
 
+## Maximum text length
 const TEXT_MAX_LENGTH := 240  # last byte must be zero, actual length is one character shorter
-const CAPTION_MAX_LENGTH := 128
-const PACKET_MIN_SIZE := 12
-const PACKET_MAX_SIZE := PACKET_MIN_SIZE + TEXT_MAX_LENGTH
-const PACKET_TYPE := InSim.Packet.ISP_BTN
+const CAPTION_MAX_LENGTH := 128  ## Maximum caption length
+const PACKET_MIN_SIZE := 12  ## Minimum packet size
+const PACKET_MAX_SIZE := PACKET_MIN_SIZE + TEXT_MAX_LENGTH  ## Maximum packet size
+const PACKET_TYPE := InSim.Packet.ISP_BTN  ## The packet's type, see [enum InSim.Packet].
 
 var ucid := 0  ## connection to display the button (0 = local / 255 = all)
 
@@ -23,6 +25,27 @@ var height := 0  ## height : 0 - 200
 
 var text := ""  ## 0 to 240 characters of text, including [member caption]
 var caption := ""  ## displayed when hovering the button, length included in [member text]
+
+
+## Creates and returns a new [InSimBTNPacket] from the given parameters.
+static func create(
+	btn_ucid: int, btn_click_id: int, btn_inst: int, btn_style: int,
+	btn_type := 0, btn_left := 0, btn_top := 0, btn_width := 0, btn_height := 0,
+	btn_text := "", btn_caption := ""
+) -> InSimBTNPacket:
+	var packet := InSimBTNPacket.new()
+	packet.ucid = btn_ucid
+	packet.click_id = btn_click_id
+	packet.inst = btn_inst
+	packet.button_style = btn_style
+	packet.type_in = btn_type
+	packet.left = btn_left
+	packet.top = btn_top
+	packet.width = btn_width
+	packet.height = btn_height
+	packet.text = btn_text
+	packet.caption = btn_caption
+	return packet
 
 
 func _init(req := 1) -> void:
@@ -51,7 +74,7 @@ func _fill_buffer() -> void:
 		caption_length += 2
 	var _buffer := add_string_variable_length(text, TEXT_MAX_LENGTH - caption_length,
 			SIZE_MULTIPLIER)
-	trim_packet_size()
+	_trim_packet_size()
 
 
 func _get_data_dictionary() -> Dictionary:
@@ -80,27 +103,7 @@ func _get_pretty_text() -> String:
 			left, top, width, height, text]
 
 
-static func create(
-	btn_ucid: int, btn_click_id: int, btn_inst: int, btn_style: int,
-	btn_type := 0, btn_left := 0, btn_top := 0, btn_width := 0, btn_height := 0,
-	btn_text := "", btn_caption := ""
-) -> InSimBTNPacket:
-	var packet := InSimBTNPacket.new()
-	packet.ucid = btn_ucid
-	packet.click_id = btn_click_id
-	packet.inst = btn_inst
-	packet.button_style = btn_style
-	packet.type_in = btn_type
-	packet.left = btn_left
-	packet.top = btn_top
-	packet.width = btn_width
-	packet.height = btn_height
-	packet.text = btn_text
-	packet.caption = btn_caption
-	return packet
-
-
-func trim_packet_size() -> void:
+func _trim_packet_size() -> void:
 	for i in TEXT_MAX_LENGTH:
 		if buffer[PACKET_MAX_SIZE - i - 1] != 0:
 			size = PACKET_MAX_SIZE - i + 1  # + 1 to keep final zero

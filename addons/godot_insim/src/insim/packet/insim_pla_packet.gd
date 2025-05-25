@@ -1,16 +1,17 @@
 class_name InSimPLAPacket
 extends InSimPacket
-
 ## Pit LAne packet
+##
+## This packet is received when a player enters or leaves the pitlane.
 
-const PACKET_SIZE := 8
-const PACKET_TYPE := InSim.Packet.ISP_PLA
-var plid := 0  ## player's unique id
+const PACKET_SIZE := 8  ## Packet size
+const PACKET_TYPE := InSim.Packet.ISP_PLA  ## The packet's type, see [enum InSim.Packet].
+var plid := 0  ## Player's unique id
 
-var fact := InSim.PitLane.PITLANE_EXIT  ## pit lane fact (see [enum InSim.PitLane])
-var sp1 := 0
-var sp2 := 0
-var sp3 := 0
+var fact := InSim.PitLane.PITLANE_EXIT  ## Pitlane fact (see [enum InSim.PitLane])
+var sp1 := 0  ## Spare
+var sp2 := 0  ## Spare
+var sp3 := 0  ## Spare
 
 
 func _init() -> void:

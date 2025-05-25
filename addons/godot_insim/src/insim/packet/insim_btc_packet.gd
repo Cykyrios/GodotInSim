@@ -1,16 +1,17 @@
 class_name InSimBTCPacket
 extends InSimPacket
-
 ## BuTton Click packet - sent back when user clicks a button
+##
+## This packet is received when a player clicks an InSim button.
 
-const PACKET_SIZE := 8
-const PACKET_TYPE := InSim.Packet.ISP_BTC
+const PACKET_SIZE := 8  ## Packet size
+const PACKET_TYPE := InSim.Packet.ISP_BTC  ## The packet's type, see [enum InSim.Packet].
 var ucid := 0  ## connection that clicked the button (zero if local)
 
 var click_id := 0  ## button identifier originally sent in IS_BTN
 var inst := 0  ## used internally by InSim
 var click_flags := 0  ## button click flags - see [enum Insim.ButtonClick]
-var sp3 := 0
+var sp3 := 0  ## Spare
 
 
 func _init() -> void:

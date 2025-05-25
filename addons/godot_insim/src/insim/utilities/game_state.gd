@@ -1,23 +1,27 @@
 class_name LFSState
 extends RefCounted
+## LFS game state
+##
+## Utility object representing the current state of the game, using [InSimSTAPacket].
+
+var replay_speed := 1.0  ## Replay speed
+var flags := 0  ## Game state flags, see [enum InSim.State].
+var ingame_cam := InSim.View.VIEW_MAX  ## Current camera
+var view_plid := 0  ## Currently viewed player's PLID
+var num_players := 0  ## Number of driving players
+var num_connections := 0  ## Number of connected players
+var num_finished := 0  ## Number of players who have finished the race.
+var race_in_progress := 0  ## Whether the race is in progress.
+var qual_minutes := 0  ## Qualifying time in minutes
+var race_laps := 0  ## Race laps (LFS-encoded value)
+var server_status := 0  ## Server status
+var track := ""  ## Current track (TTNR code)
+var weather := 0  ## Current weather
+var wind := 0  ## Current wind level
 
 
-var replay_speed := 1.0
-var flags := 0
-var ingame_cam := InSim.View.VIEW_MAX
-var view_plid := 0
-var num_players := 0
-var num_connections := 0
-var num_finished := 0
-var race_in_progress := 0
-var qual_minutes := 0
-var race_laps := 0
-var server_status := 0
-var track := ""
-var weather := 0
-var wind := 0
-
-
+## Returns a dictionary of changed flags and their values, comparing [param new_flags] and
+## [member flags].
 func get_flags_changes(new_flags: int) -> Dictionary[String, String]:
 	var changes: Dictionary[String, String] = {}
 	for i in InSim.State.size():
@@ -28,6 +32,8 @@ func get_flags_changes(new_flags: int) -> Dictionary[String, String]:
 	return changes
 
 
+## Returns a dictionary of changes in the state's properties, comparing the given
+## [param state_packet] and the current state.
 func get_state_changes(state_packet: InSimSTAPacket) -> Dictionary[String, Variant]:
 	var changes: Dictionary[String, Variant] = {}
 	if state_packet.replay_speed != replay_speed:
@@ -61,6 +67,7 @@ func get_state_changes(state_packet: InSimSTAPacket) -> Dictionary[String, Varia
 	return changes
 
 
+## Sets the current state's properties from the given [param packet].
 func set_from_sta_packet(packet: InSimSTAPacket) -> void:
 	replay_speed = packet.replay_speed
 	flags = packet.flags

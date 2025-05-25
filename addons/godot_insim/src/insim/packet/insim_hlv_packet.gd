@@ -1,21 +1,23 @@
 class_name InSimHLVPacket
 extends InSimPacket
-
 ## Hot Lap Validity packet - off track / hit wall / speeding in pits / out of bounds
+##
+## This packet is received when a player violates the hotlap validity rules.
 
+## Conversion factor between standard units and LFS-encoded values.
 const TIME_MULTIPLIER := 100.0
 
-const PACKET_SIZE := 16
-const PACKET_TYPE := InSim.Packet.ISP_HLV
+const PACKET_SIZE := 16  ## Packet size
+const PACKET_TYPE := InSim.Packet.ISP_HLV  ## The packet's type, see [enum InSim.Packet].
 var plid := 0  ## player's unique id
 
 var hlvc := 0  ## 0: ground / 1: wall / 4: speeding / 5: out of bounds
-var sp1 := 0
+var sp1 := 0  ## Sapre
 var time := 0  ## looping time stamp (hundredths - time since reset - like [constant InSim.TINY_GTH])
 
-var object := CarContObj.new()
+var object := CarContObj.new()  ## Details about the car that violated HLV rules.
 
-var gis_time := 0.0
+var gis_time := 0.0  ## Time in seconds
 
 
 func _init() -> void:

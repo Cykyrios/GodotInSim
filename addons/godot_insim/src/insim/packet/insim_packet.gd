@@ -1,6 +1,5 @@
 class_name InSimPacket
 extends LFSPacket
-
 ## Base InSim packet
 ##
 ## This class is generally not intended to be used directly, except when expecting packets
@@ -8,57 +7,25 @@ extends LFSPacket
 ## classes is recommended.[br]
 ## Some parameters listed below are inherited from [LFSPacket].[br]
 ## [br]
-## All InSim packets use a four byte header[br]
-## [br]
+## Insim doc excerpt: All InSim packets use a four byte header[br]
 ## [param Size]: total packet size - a multiple of 4[br]
 ## [param Type]: packet identifier from the ISP_ enum (see below)[br]
 ## [param ReqI]: non zero if the packet is a packet request or a reply to a request[br]
 ## [param Data]: the first data byte[br]
-## [br]
 ## Spare bytes and Zero bytes must be filled with ZERO.
 
-const SIZE_MULTIPLIER := 4
-const HEADER_SIZE := 4
+const SIZE_MULTIPLIER := 4  ## Packet size multiplier
+const HEADER_SIZE := 4  ## Header size
 
-var receivable := false
-var sendable := false
+var receivable := false  ## Whether the packet is receivable
+var sendable := false  ## Whether the packet is sendable
 
-var type := InSim.Packet.ISP_NONE
-var req_i := 0
-
-
-func _init() -> void:
-	size = HEADER_SIZE
+var type := InSim.Packet.ISP_NONE  ## The packet's type, see [enum InSim.Packet].
+var req_i := 0  ## The packet's request ID, used to identify who sent a packet.
 
 
-func _to_string() -> String:
-	return "%s: %s" % [get_type_string(), buffer]
-
-
-func _decode_packet(packet_buffer: PackedByteArray) -> void:
-	super(packet_buffer)
-	decode_header(packet_buffer)
-
-
-func _fill_buffer() -> void:
-	write_header()
-
-
-## Override to define packet behavior. This should return all non-header data from the packet.
-func _get_data_dictionary() -> Dictionary:
-	return {}
-
-
-func _get_dictionary() -> Dictionary:
-	var dict := {
-		"Size": size,
-		"Type": type,
-		"ReqI": req_i,
-	}
-	dict.merge(_get_data_dictionary())
-	return dict
-
-
+## Creates and returns a new [InSimPacket] from the given [param packet_buffer]. The appropriate
+## packet subclass is returned.
 static func create_packet_from_buffer(packet_buffer: PackedByteArray) -> InSimPacket:
 	var packet_type := InSimPacket.decode_packet_type(packet_buffer)
 	var packet := InSimPacket.new()
@@ -209,6 +176,8 @@ static func create_packet_from_buffer(packet_buffer: PackedByteArray) -> InSimPa
 	return packet
 
 
+## Returns the packet type corresponding to the given [param packet_buffer] data, or
+## [constant InSim.Packet.ISP_NONE] is the type cannot be determined.
 static func decode_packet_type(packet_buffer: PackedByteArray) -> InSim.Packet:
 	var packet_type := InSim.Packet.ISP_NONE
 	if packet_buffer.size() < HEADER_SIZE:
@@ -217,6 +186,43 @@ static func decode_packet_type(packet_buffer: PackedByteArray) -> InSim.Packet:
 	return packet_type
 
 
+func _init() -> void:
+	size = HEADER_SIZE
+
+
+func _to_string() -> String:
+	return "%s: %s" % [get_type_string(), buffer]
+
+
+## Virtual method overridden by packets. Packets should call [code]super[/code] before doing
+## any decoding.
+func _decode_packet(packet_buffer: PackedByteArray) -> void:
+	super(packet_buffer)
+	decode_header(packet_buffer)
+
+
+## Virtual method overridden by packets. Packets should call [code]super[/code] before filling
+## data, as this calls [method write_header].
+func _fill_buffer() -> void:
+	write_header()
+
+
+## Override to define packet behavior. This should return all non-header data from the packet.
+func _get_data_dictionary() -> Dictionary:
+	return {}
+
+
+func _get_dictionary() -> Dictionary:
+	var dict := {
+		"Size": size,
+		"Type": type,
+		"ReqI": req_i,
+	}
+	dict.merge(_get_data_dictionary())
+	return dict
+
+
+## Decodes the header of the given [param packet_buffer].
 func decode_header(packet_buffer: PackedByteArray) -> void:
 	if packet_buffer.size() < HEADER_SIZE:
 		push_error("Buffer is smaller than InSim packet header.")
@@ -225,16 +231,6 @@ func decode_header(packet_buffer: PackedByteArray) -> void:
 	size = read_byte() * SIZE_MULTIPLIER
 	type = read_byte() as InSim.Packet
 	req_i = read_byte()
-
-
-func write_header() -> void:
-	resize_buffer(size)
-	data_offset = 0
-	add_byte(int(size / float(SIZE_MULTIPLIER)))
-	add_byte(type)
-	add_byte(req_i)
-	add_byte(0)
-	data_offset = HEADER_SIZE - 1
 
 
 ## Returns the packet's type (from [enum InSim.Packet]) as a [String], or [code]UNKNOWN[/code]
@@ -246,15 +242,28 @@ func get_type_string() -> String:
 	return InSim.Packet.keys()[index]
 
 
-func update_req_i() -> void:
-	buffer.encode_u8(2, req_i)
-
-
+## Resizes the packet's [member buffer].
 func resize_buffer(new_size: int) -> void:
 	size = new_size
 	_adjust_packet_size()
 	var _discard := buffer.resize(size)
 	buffer.encode_u8(0, int(size / float(SIZE_MULTIPLIER)))
+
+
+## Encodes the packet's [member req_i] in the [member buffer].
+func update_req_i() -> void:
+	buffer.encode_u8(2, req_i)
+
+
+## Writes the packet's header.
+func write_header() -> void:
+	resize_buffer(size)
+	data_offset = 0
+	add_byte(int(size / float(SIZE_MULTIPLIER)))
+	add_byte(type)
+	add_byte(req_i)
+	add_byte(0)
+	data_offset = HEADER_SIZE - 1
 
 
 # All packets have a size equal to a multiple of 4

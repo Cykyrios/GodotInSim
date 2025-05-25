@@ -1,14 +1,15 @@
 class_name InSimPFLPacket
 extends InSimPacket
-
 ## Player FLags packet (help flags changed)
+##
+## This packet is received when a player's flags change.
 
-const PACKET_SIZE := 8
-const PACKET_TYPE := InSim.Packet.ISP_PFL
-var plid := 0  ## player's unique id
+const PACKET_SIZE := 8  ## Packet size
+const PACKET_TYPE := InSim.Packet.ISP_PFL  ## The packet's type, see [enum InSim.Packet].
+var plid := 0  ## Player's unique id
 
-var flags := 0  ## player flags (see [enum InSim.PlayerFlag])
-var spare := 0
+var flags := 0  ## New player flags (see [enum InSim.PlayerFlag])
+var spare := 0  ## Spare
 
 
 func _init() -> void:

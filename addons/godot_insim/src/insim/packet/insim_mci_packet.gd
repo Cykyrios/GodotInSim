@@ -1,15 +1,17 @@
 class_name InSimMCIPacket
 extends InSimPacket
-
 ## Multi Car Info packet - if more than [constant MAX_CARS] in race then more than one is sent
+##
+## This packet is received upon request from a [InSim.Tiny.TINY_MCI] or at regular intervals
+## if set during InSim initialization or via [InSim.Small.SMALL_NLI].
 
-const MAX_CARS := 16
-const PACKET_MIN_SIZE := 4 + CompCar.STRUCT_SIZE
-const PACKET_MAX_SIZE := 4 + MAX_CARS * CompCar.STRUCT_SIZE
-const PACKET_TYPE := InSim.Packet.ISP_MCI
+const MAX_CARS := 16  ## Maximum number of car per packet
+const PACKET_MIN_SIZE := 4 + CompCar.STRUCT_SIZE  ## Minimum packet size
+const PACKET_MAX_SIZE := 4 + MAX_CARS * CompCar.STRUCT_SIZE  ## Maximum packet size
+const PACKET_TYPE := InSim.Packet.ISP_MCI  ## The packet's type, see [enum InSim.Packet].
 
-var num_cars := 0  ## number of valid CompCar structs in this packet
-var info: Array[CompCar] = []  ## car info for each player, 1 to [constant MAX_CARS]
+var num_cars := 0  ## Number of valid CompCar structs in this packet
+var info: Array[CompCar] = []  ## Car info for each player, 1 to [constant MAX_CARS]
 
 
 func _init() -> void:

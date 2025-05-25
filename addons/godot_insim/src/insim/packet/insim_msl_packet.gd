@@ -1,15 +1,24 @@
 class_name InSimMSLPacket
 extends InSimPacket
-
 ## MSg Local packet - message to appear on local computer only
+##
+## This packet is sent to display a message only on the local client.
 
-const PACKET_SIZE := 132
-const PACKET_TYPE := InSim.Packet.ISP_MSL
+const PACKET_SIZE := 132  ## Packet size
+const PACKET_TYPE := InSim.Packet.ISP_MSL  ## The packet's type, see [enum InSim.Packet].
 const MSG_MAX_LENGTH := 128  # last byte must be zero, actual length is one character shorter
 
-var sound := InSim.MessageSound.SND_SILENT  ## sound effect (see [enum InSim.MessageSound])
+var sound := InSim.MessageSound.SND_SILENT  ## Sound effect (see [enum InSim.MessageSound])
 
-var msg := ""  ## last byte must be zero
+var msg := ""  ## Message contents; last byte must be zero.
+
+
+## Creates and returns a new [InSimMSLPacket] from the given parameters.
+static func create(message: String, msg_sound := InSim.MessageSound.SND_SILENT) -> InSimMSLPacket:
+	var packet := InSimMSLPacket.new()
+	packet.msg = message
+	packet.sound = msg_sound
+	return packet
 
 
 func _init() -> void:
@@ -36,10 +45,3 @@ func _get_data_dictionary() -> Dictionary:
 
 func _get_pretty_text() -> String:
 	return "(%s) %s" % [InSim.MessageSound.keys()[sound], msg]
-
-
-static func create(message: String, msg_sound := InSim.MessageSound.SND_SILENT) -> InSimMSLPacket:
-	var packet := InSimMSLPacket.new()
-	packet.msg = message
-	packet.sound = msg_sound
-	return packet

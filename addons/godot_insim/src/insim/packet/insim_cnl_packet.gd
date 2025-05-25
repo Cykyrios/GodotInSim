@@ -1,16 +1,17 @@
 class_name InSimCNLPacket
 extends InSimPacket
-
 ## ConN Leave packet
+##
+## This packet is received when a player disconnects from the server.
 
-const PACKET_SIZE := 8
-const PACKET_TYPE := InSim.Packet.ISP_CNL
+const PACKET_SIZE := 8  ## Packet size
+const PACKET_TYPE := InSim.Packet.ISP_CNL  ## The packet's type, see [enum InSim.Packet].
 var ucid := 0  ## unique id of the connection which left
 
 var reason := InSim.LeaveReason.LEAVR_NUM  ## leave reason (see [enum InSim.LeaveReason])
 var total := 0  ## number of connections including host
-var sp2 := 0
-var sp3 := 0
+var sp2 := 0  ## Spare
+var sp3 := 0  ## Spare
 
 
 func _init() -> void:

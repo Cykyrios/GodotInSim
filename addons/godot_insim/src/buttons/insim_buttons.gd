@@ -1,6 +1,9 @@
 class_name InSimButtons
 extends RefCounted
-
+## InSimButton manager
+##
+## This class keeps track of existing [InSimButton]s and allows adding/deleting buttons.
+## An instance is included in the [InSim] object.
 
 ## The maximum number of buttons across all InSim apps.
 const MAX_BUTTONS := 240

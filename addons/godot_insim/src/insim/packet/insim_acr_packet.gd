@@ -1,19 +1,20 @@
 class_name InSimACRPacket
 extends InSimPacket
-
 ## Admin Command Report packet
+##
+## This packet is received when a user types an admin command.
 
-const PACKET_MIN_SIZE := 12
-const PACKET_MAX_SIZE := 72
-const PACKET_TYPE := InSim.Packet.ISP_ACR
-const MSG_MAX_LENGTH := 64
+const PACKET_MIN_SIZE := 12  ## Minimum packet size
+const PACKET_MAX_SIZE := 72  ## Maximum packet size
+const PACKET_TYPE := InSim.Packet.ISP_ACR  ## The packet's type, see [enum InSim.Packet].
+const MSG_MAX_LENGTH := 64  ## Maximum message length
 
-var zero := 0
+var zero := 0  ## Zero byte
 
 var ucid := 0  ## connection's unique id (0 = host)
 var admin := 0  ## set if user is an admin
 var result := 0  ## 1 - processed / 2 - rejected / 3 - unknown command
-var sp3 := 0
+var sp3 := 0  ## Spare
 
 var text := ""  ## 4, 8, 12... 64 characters - last byte is zero
 

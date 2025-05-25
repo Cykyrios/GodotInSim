@@ -1,18 +1,27 @@
 class_name InSimHCPPacket
 extends InSimPacket
-
 ## HandiCaPs packet
+##
+## This packet is sent to set a player's handicaps.
 
-const MAX_CARS := 32
+const MAX_CARS := 32  ## Maximum number of player handicaps per packet.
 
-const PACKET_SIZE := 68
-const PACKET_TYPE := InSim.Packet.ISP_HCP
-var zero := 0
+const PACKET_SIZE := 68  ## Packet size
+const PACKET_TYPE := InSim.Packet.ISP_HCP  ## The packet's type, see [enum InSim.Packet].
+
+var zero := 0  ## Zero byte
 
 ## h_mass and h_tres for each car: XF GTI = 0 / XR GT = 1 etc[br]
 ## Subtract 1 from the [enum InSim.Car] enum if using it for array index,
 ## e.g. [code]InSim.Car.CAR_FBM - 1[/code].
 var car_hcp: Array[CarHandicap] = []
+
+
+## Creates and returns a new [InSimHCPPacket] from the given [param hcp_array].
+static func create(hcp_array: Array[CarHandicap]) -> InSimHCPPacket:
+	var packet := InSimHCPPacket.new()
+	packet.car_hcp = hcp_array.duplicate()
+	return packet
 
 
 func _init() -> void:
@@ -49,9 +58,3 @@ func _get_pretty_text() -> String:
 		handicaps.append("%s (%d/%d)" % [(car as String).split("_")[-1],
 				roundi(hcp.gis_mass), hcp.h_tres])
 	return "Car handicaps (mass kg/intake %%): %s" % [handicaps]
-
-
-static func create(hcp_array: Array[CarHandicap]) -> InSimHCPPacket:
-	var packet := InSimHCPPacket.new()
-	packet.car_hcp = hcp_array.duplicate()
-	return packet

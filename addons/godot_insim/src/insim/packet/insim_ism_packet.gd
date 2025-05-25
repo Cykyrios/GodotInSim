@@ -1,19 +1,20 @@
 class_name InSimISMPacket
 extends InSimPacket
-
 ## InSim Multi packet
+##
+## This packet is received when starting or joining a multiplayer host (replays also trigger this).
 
-const HOST_NAME_LENGTH := 32
+const HOST_NAME_LENGTH := 32  ## Host name max length
 
-const PACKET_SIZE := 40
-const PACKET_TYPE := InSim.Packet.ISP_ISM
+const PACKET_SIZE := 40  ## Packet size
+const PACKET_TYPE := InSim.Packet.ISP_ISM  ## The packet's type, see [enum InSim.Packet].
 
-var zero := 0
+var zero := 0  ## Zero byte
 
 var host := 0  ## 0 = guest / 1 = host
-var sp1 := 0
-var sp2 := 0
-var sp3 := 0
+var sp1 := 0  ## Spare
+var sp2 := 0  ## Spare
+var sp3 := 0  ## Spare
 
 var h_name := ""  ## the name of the host joined or started
 
