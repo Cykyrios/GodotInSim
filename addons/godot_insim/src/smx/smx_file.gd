@@ -1,31 +1,49 @@
 class_name SMXFile
 extends LFSPacket
-
 ## SMX file parser
 ##
-## This class can read SMX files in order to recreate the corresponding 3D models.
+## This class can read SMX files in order to recreate the corresponding 3D models, and can also
+## save SMX data to files.
 
+## The SMX header size.
 const HEADER_SIZE := 64
+## The SMX footer size (containing checkpoint data).
 const FOOTER_SIZE := 4
 
+## First part of the header, should always be equal to [code]LFSSMX[/code].
 var lfssmx := ""
+## Used to determine file validity.
 var game_version := 0
+## Used to determine file validity.
 var game_revision := 0
+## Used to determine file validity.
 var smx_version := 0
+## Always 3.
 var dimensions := 0
+## High/low resolution.
 var resolution := 0
+## Always 1.
 var vertex_colors := 0
+## The track environment's name.
 var track := ""
+## Ground color red component.
 var ground_color_red := 0
+## Ground color green component.
 var ground_color_green := 0
+## Ground color blue component.
 var ground_color_blue := 0
+## The number of objects included in the file.
 var num_objects := 0
 
+## The number of checkpoint objects.
 var num_cp := 0
+## The indices of each checkpoint.
 var cp_indices: Array[int] = []
 
+## The objects included in the file.
 var objects: Array[SMXObject] = []
 
+## The triangle mesh built from the data in this file.
 var triangle_mesh := TriangleMesh.new()
 
 

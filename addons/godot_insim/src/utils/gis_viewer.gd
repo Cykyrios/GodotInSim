@@ -1,16 +1,17 @@
 extends Node
-
-## GIS Viewer
+## GIS Viewer - I/O display utility functions
 ##
 ## An autoload providing utility functions related to 2D and 3D display of [InSim] and LFS entities.
-## For instance, you can generate top-down images of a track configuration's [PTHFile].
+## For instance, you can generate top-down images of a track configuration's [PTHFile].[br]
+## [b]Note:[/b] The GodotInSim plugin automatically enables this autoload, which means the plugin
+## itself must be enabled to be able to use the provided functions.
 
-## Saves a top-down image of the PTH mesh as returned by [method get_pth_mesh] to a transparent
-## PNG file. The final image is a square [param size] pixels wide, representing a 4096x4096 meter
-## area; the default [param size] of 2048 therefore corresponds to 2 meters per pixel.[br]
-## The optional items [param include_line], [param include_road] and [param include_limits] allow
-## customizing the resulting image.[br]
-## [u]Note:[/u] The image size must be in the range 64-16384.
+
+## Saves a top-down image of the PTH mesh as returned by [method PTHFile.get_2d_mesh] to a
+## transparent PNG file. The final image is a [param size] pixels wide square, representing a
+## 4096x4096 meter area; the default [param size] of 2048 corresponds to 2 meters per pixel.[br]
+## The optional parameters allow customizing the resulting image's appearance.[br]
+## [b]Note:[/b] The image size must be in the range 64-16384.
 func save_pth_to_png(
 	pth_file: PTHFile, image_path: String, size := 2048, include_line := true,
 	include_road := true, include_limits := true, line_width := 1.0, line_color := Color.RED,

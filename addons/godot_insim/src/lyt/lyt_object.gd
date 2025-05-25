@@ -1,28 +1,30 @@
 class_name LYTObject
 extends RefCounted
-
 ## LYT object
 ##
-## This class describes a layout object, as included in a layout (LYT) file.
+## This class describes a layout object, as included in a layout [LYTFile].
 
-const STRUCT_SIZE := 8
+const STRUCT_SIZE := 8  ## The data struct size for objects
 
+## Conversion factor between SI units and LFS-encoded values.
 const XY_MULTIPLIER := 16.0
+## Conversion factor between SI units and LFS-encoded values.
 const Z_MULTIPLIER := 4.0
+## Conversion factor between SI units and LFS-encoded values.
 const HEADING_MULTIPLIER := 256 / 360.0
 
-const MARKING_ALTITUDE := 0.01
-const CONTROL_ALTITUDE := 0.2
+const MARKING_ALTITUDE := 0.01  ## Default altitude for markings (lines), to reduce z-figthing.
+const CONTROL_ALTITUDE := 0.2  ## Default altitude for non-physical objects (follows LFS value).
 
-var x := 0
-var y := 0
-var z := 0
-var flags := 0
-var index := InSim.AXOIndex.AXO_NULL
-var heading := 0
+var x := 0  ## The x component of the object's position vector, in LFS-encoded format.
+var y := 0  ## The y component of the object's position vector, in LFS-encoded format.
+var z := 0  ## The z component of the object's position vector, in LFS-encoded format.
+var flags := 0  ## Object flags
+var index := InSim.AXOIndex.AXO_NULL  ## The object index, part of [enum InSim.AXOIndex].
+var heading := 0  ## The object's heading, in LFS-encoded format.
 
-var gis_position := Vector3.ZERO
-var gis_heading := 0.0
+var gis_position := Vector3.ZERO  ## The object's position, in meters.
+var gis_heading := 0.0  ## The object's heading, in radians.
 
 
 ## Creates and returns a [LYTObject] based on the given parameters.
@@ -40,6 +42,17 @@ static func create(
 	return object
 
 
+## Returns a [LYTObject] from the provided [param buffer]. Returns a blank object if [param buffer]
+## is the wrong size.
+static func create_from_buffer(buffer: PackedByteArray) -> LYTObject:
+	if buffer.size() != STRUCT_SIZE:
+		push_warning("Buffer size does not match LYTObject struct size.")
+		return LYTObject.new()
+	var object := LYTObject.new()
+	object.set_from_buffer(buffer)
+	return object
+
+
 ## Creates and returns a [LYTObject] based on the given parameters, using [code]gis_*[/code]
 ## values where possible.
 static func create_from_gis(
@@ -51,17 +64,6 @@ static func create_from_gis(
 	object.flags = obj_flags
 	object.index = obj_index as InSim.AXOIndex
 	object.set_from_gis_values()
-	return object
-
-
-## Returns a [LYTObject] from the provided [param buffer]. Returns a blank object if [param buffer]
-## is the wrong size.
-static func create_from_buffer(buffer: PackedByteArray) -> LYTObject:
-	if buffer.size() != STRUCT_SIZE:
-		push_warning("Buffer size does not match LYTObject struct size.")
-		return LYTObject.new()
-	var object := LYTObject.new()
-	object.set_from_buffer(buffer)
 	return object
 
 
@@ -160,7 +162,7 @@ func _update_flags() -> void:
 
 ## Override this function to define the behavior corresponding to the [LYTObject].
 ## Object flags have different meanings depending on the object type.[br]
-## [u]Note:[/u] Updating [code]gis_*[/code] variables from LFS-style flags is not necessary
+## [b]Note:[/b] Updating [code]gis_*[/code] variables from LFS-style flags is not necessary
 ## as those get updated via the original variables' setter functions.
 func _update_flags_from_gis() -> void:
 	pass
@@ -191,6 +193,7 @@ func get_mesh() -> MeshInstance3D:
 	return _get_mesh()
 
 
+## Creates and returns a mesh for Armco barriers.
 func get_mesh_armco() -> MeshInstance3D:
 	const SPAN := 3.2
 	const TIP_RADIUS := 0.15
@@ -317,6 +320,7 @@ func get_mesh_armco() -> MeshInstance3D:
 	return mesh_instance
 
 
+## Creates and returns a mesh for arrows.
 func get_mesh_arrow(color: Color) -> MeshInstance3D:
 	if (
 		index != InSim.AXOIndex.AXO_PIT_START_POINT
@@ -441,6 +445,7 @@ func get_mesh_arrow(color: Color) -> MeshInstance3D:
 	return mesh_instance
 
 
+## Creates and returns a mesh for bales.
 func get_mesh_bale() -> MeshInstance3D:
 	const WIDTH := 1.52
 	const LENGTH := 0.67
@@ -478,6 +483,7 @@ func get_mesh_bale() -> MeshInstance3D:
 	return mesh_instance
 
 
+## Creates and returns a mesh for banners.
 func get_mesh_banner() -> MeshInstance3D:
 	const WIDTH := 5.95
 	const SPREAD := 0.85
@@ -529,6 +535,7 @@ func get_mesh_banner() -> MeshInstance3D:
 	return mesh_instance
 
 
+## Creates and returns a mesh for red/white/long barriers.
 func get_mesh_barrier() -> MeshInstance3D:
 	const LENGTH := 1.38
 	const BASE_WIDTH := 0.35
@@ -610,6 +617,7 @@ func get_mesh_barrier() -> MeshInstance3D:
 	return mesh_instance
 
 
+## Creates and returns a mesh for checkpoint control objects.
 func get_mesh_checkpoint(half_width: int) -> MeshInstance3D:
 	var vertices := PackedVector3Array()
 	for i in 2:
@@ -645,6 +653,7 @@ func get_mesh_checkpoint(half_width: int) -> MeshInstance3D:
 	return mesh_instance
 
 
+## Creates and returns a mesh for circle control objects.
 func get_mesh_circle(radius: int) -> MeshInstance3D:
 	const SEGMENTS := 32
 	var vertices := PackedVector3Array()
@@ -689,6 +698,7 @@ func get_mesh_circle(radius: int) -> MeshInstance3D:
 	return mesh_instance
 
 
+## Creates and returns a mesh for cones.
 func get_mesh_cone() -> MeshInstance3D:
 	const SEGMENTS := 8
 	const CHAMFER := 0.02
@@ -831,6 +841,7 @@ func get_mesh_cone() -> MeshInstance3D:
 	return mesh_instance
 
 
+## Creates and returns a mesh for markers (turn and distance signs).
 func get_mesh_marker() -> MeshInstance3D:
 	const WIDTH := 1.42
 	const BASE_THICKNESS := 0.39
@@ -1177,6 +1188,7 @@ func get_mesh_marker() -> MeshInstance3D:
 	return mesh_instance
 
 
+## Creates and returns a mesh for pit boxes.
 func get_mesh_pit_box() -> MeshInstance3D:
 	var vertices := PackedVector3Array()
 	for i in 2:
@@ -1223,6 +1235,7 @@ func get_mesh_pit_box() -> MeshInstance3D:
 	return mesh_instance
 
 
+## Creates and returns a mesh for posts.
 func get_mesh_post() -> MeshInstance3D:
 	const SEGMENTS := 8
 	const THICKNESS := 0.06
@@ -1312,6 +1325,7 @@ func get_mesh_post() -> MeshInstance3D:
 	return mesh_instance
 
 
+## Creates and returns a mesh for railings.
 func get_mesh_railing() -> MeshInstance3D:
 	const RAIL_SEGMENTS := 6
 	const SPAN := 2.28
@@ -1496,6 +1510,7 @@ func get_mesh_railing() -> MeshInstance3D:
 	return mesh_instance
 
 
+## Creates and returns a mesh for ramps.
 func get_mesh_ramp() -> MeshInstance3D:
 	const LENGTH := 11.26
 	const HEIGHT := 0.87
@@ -1562,6 +1577,7 @@ func get_mesh_ramp() -> MeshInstance3D:
 	return mesh_instance
 
 
+## Creates and returns a mesh for direction signs.
 func get_mesh_sign_direction() -> MeshInstance3D:
 	const SPREAD := 0.65
 	const WIDTH := 0.8
@@ -1726,6 +1742,7 @@ func get_mesh_sign_direction() -> MeshInstance3D:
 	return mesh_instance
 
 
+## Creates and returns a mesh for speed signs.
 func get_mesh_sign_speed() -> MeshInstance3D:
 	const WIDTH := 1.05
 	const SPREAD := 1.23
@@ -1898,6 +1915,7 @@ func get_mesh_sign_speed() -> MeshInstance3D:
 	return mesh_instance
 
 
+## Creates and returns a mesh for speed humps.
 func get_mesh_speed_hump() -> MeshInstance3D:
 	const END_SEGMENTS := 5
 	const BASE_WIDTH := 0.5
@@ -2028,6 +2046,7 @@ func get_mesh_speed_hump() -> MeshInstance3D:
 	return mesh_instance
 
 
+## Creates and returns a mesh for start lights.
 func get_mesh_start_light() -> MeshInstance3D:
 	const BASE_WIDTH := 0.4
 	const BASE_LENGTH := 0.6
@@ -2195,6 +2214,7 @@ func get_mesh_start_light() -> MeshInstance3D:
 	return mesh_instance
 
 
+## Creates and returns a mesh for start positions.
 func get_mesh_start_position() -> MeshInstance3D:
 	var vertices := PackedVector3Array()
 	for i in 2:

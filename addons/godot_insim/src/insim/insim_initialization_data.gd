@@ -1,23 +1,28 @@
 class_name InSimInitializationData
 extends RefCounted
+## Initialization data for InSim
+##
+## This class holds standard [InSim] initialization data to be sent through an [InSimISIPacket].
 
+var udp_port := 0  ## UDP port for responses.
+var flags := 0  ## Insim flags from [enum InSim.InitFlag].
 
-var udp_port := 0
-var flags := 0
-
+## Single-character prefix used for prefix messages (see [constant MessageUserValue.MSO_PREFIX]).
 var prefix := "":
 	set(text):
 		prefix = text.left(InSimISIPacket.PREFIX_LENGTH)
+## Interval in milliseconds between NLP/MCI packet updates, disabled if [code]0[/code].
 var interval := 0:
 	set(value):
 		interval = value
 		if interval < 0:
 			interval = 0
 
-var admin := ""
-var i_name := "Godot InSim"
+var admin := ""  ## Admin password
+var i_name := "Godot InSim"  ## 15-character name of the InSim app
 
 
+## Creates and returns a new [InSimInitializationData] object from the given parameters.
 static func create(
 	init_name: String, init_flags := 0, init_prefix := "", init_admin := "",
 	init_interval := 0, init_udp := 0

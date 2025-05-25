@@ -1,16 +1,21 @@
 class_name PTHFile
 extends LFSPacket
-
 ## PTH File
 ##
 ## This class can read PTH files and extract the [PTHNode]s contained in it. It also provides
 ## utility functions such as 3D mesh creation based on the [member nodes].
 
+## Header, always equal to LFSPTH.
 var lfspth := ""
+## File format version.
 var version := 0
+## File format revision.
 var revision := 0
+## Number of nodes in this path.
 var num_nodes := 0
+## The node corresponding (approximately) to the finish line.
 var finish_line := 0
+## The list of nodes in the path.
 var nodes: Array[PTHNode] = []
 
 

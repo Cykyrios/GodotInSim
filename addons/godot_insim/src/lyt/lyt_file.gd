@@ -1,21 +1,20 @@
 class_name LYTFile
 extends LFSPacket
-
 ## LYT file parser
 ##
 ## This class can read and write LFS layouts.
 
-const HEADER_SIZE := 12
-const CURRENT_VERSION := 0
-const CURRENT_REVISION := 252
+const HEADER_SIZE := 12  ## LYT header data size
+const CURRENT_VERSION := 0  ## File format version
+const CURRENT_REVISION := 252  ## File format revision
 
-var header := ""
-var version := 0
-var revision := 0
-var num_objects := 0
-var laps := 0
-var flags := 0
-var objects: Array[LYTObject] = []
+var header := ""  ## Header, always equalto LFSLYT
+var version := 0  ## File format version
+var revision := 0  ## File format revision
+var num_objects := 0  ## Number of objects in the layout
+var laps := 0  ## Number of laps
+var flags := 0  ## Layout flags, always equal to 7 for recent files.
+var objects: Array[LYTObject] = []  ## An array containing the objects in the layout.
 
 
 ## Converts the given [param object_info] object from [ObjectInfo] to [LYTObject]

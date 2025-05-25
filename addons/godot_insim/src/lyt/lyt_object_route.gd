@@ -1,17 +1,18 @@
 class_name LYTObjectRoute
 extends LYTObject
-
-## LYT control object
+## LYT route checker object
 ##
 ## Specific layout object representing a route checker object.
 
 
-var route_index := 0
+var route_index := 0  ## The object's route index
+## The object's radius
 var radius := 0:
 	set(value):
 		radius = clampi(value, 1, 31)
 
 
+## Creates and returns a route checker object from the given parameters.
 static func create(
 	obj_x: int, obj_y: int, obj_z: int, obj_heading: int, obj_flags: int, obj_index: int
 ) -> LYTObjectRoute:

@@ -1,10 +1,10 @@
 class_name LYTObjectConcrete
 extends LYTObject
-
-## LYT control object
+## LYT concrete object
 ##
 ## Specific layout object representing a concrete object.
 
+## Concrete object colors
 enum ConcreteColor {
 	GREY,
 	RED,
@@ -12,54 +12,63 @@ enum ConcreteColor {
 	YELLOW,
 }
 
+## Concrete object colors
 const COLORS: Array[Color] = [
 	Color.GRAY,
 	Color.DARK_RED,
 	Color.DARK_BLUE,
 	Color.DARK_GOLDENROD,
 ]
-const THICKNESS := 0.25
-const WALL_HEIGHT := 0.75
+const THICKNESS := 0.25  ## Thickness of concrete objects
+const WALL_HEIGHT := 0.75  ## Height of concrete slab wall objects
 
+## Customizable width of concrete objects
 var width := 0:
 	set(value):
 		width = value
 		gis_width = pow(2, value + 1)
+## Customizable length of concrete objects
 var length := 0:
 	set(value):
 		length = value
 		gis_length = pow(2, value + 1)
+## Customizable X dimensions of concrete objects
 var size_x := 0:
 	set(value):
 		size_x = value
 		gis_size_x = 0.25 * (value + 1)
+## Customizable Y dimension of concrete objects
 var size_y := 0:
 	set(value):
 		size_y = value
 		gis_size_y = 0.25 * (value + 1)
+## Customizable height of concrete objects
 var height := 0:
 	set(value):
 		height = value
 		gis_height = 0.25 * (value + 1)
+## Customizable pitch of concrete objects
 var pitch := 0:
 	set(value):
 		pitch = value
 		gis_pitch = deg_to_rad(6 * value)
-var color := ConcreteColor.GREY
+var color := ConcreteColor.GREY  ## Color of the concrete object
+## Customizable angle of concrete wedges
 var angle := 0:
 	set(value):
 		angle = value
 		gis_angle = deg_to_rad(5.625 * (value + 1))
 
-var gis_width := 0.0
-var gis_length := 0.0
-var gis_size_x := 0.0
-var gis_size_y := 0.0
-var gis_height := 0.0
-var gis_pitch := 0.0
-var gis_angle := 0.0
+var gis_width := 0.0  ## Customizable width in standard units
+var gis_length := 0.0  ## Customizable length in standard units
+var gis_size_x := 0.0  ## Customizable X dimension in standard units
+var gis_size_y := 0.0  ## Customizable Y dimensions in standard units
+var gis_height := 0.0  ## Customizable height in standard units
+var gis_pitch := 0.0  ## Customizable pitch in standard units
+var gis_angle := 0.0  ## Customizable angle in standard units
 
 
+## Creates and returns a concrete object from the given parameters.
 static func create(
 	obj_x: int, obj_y: int, obj_z: int, obj_heading: int, obj_flags: int, obj_index: int
 ) -> LYTObjectConcrete:

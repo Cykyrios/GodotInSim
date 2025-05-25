@@ -1,10 +1,10 @@
 class_name LYTObjectControl
 extends LYTObject
-
 ## LYT control object
 ##
 ## Specific layout object representing autocross start position, checkpoints and the finish line.
 
+## Control object types
 enum Type {
 	FINISH,
 	CHECKPOINT_1,
@@ -12,6 +12,7 @@ enum Type {
 	CHECKPOINT_3,
 }
 
+## Control object colors, directly linked to their type.
 const COLORS: Array[Color] = [
 	Color.RED,
 	Color.BLUE,
@@ -19,13 +20,15 @@ const COLORS: Array[Color] = [
 	Color.CYAN,
 ]
 
-var type := Type.FINISH
+var type := Type.FINISH  ## Control object type
+## Control object half-width
 var half_width := 0:
 	set(value):
 		# 0 is allowed here as it represents an autocross start position
 		half_width = clampi(value, 0, 31)
 
 
+## Creates and returns a control object from the given parameters.
 static func create(
 	obj_x: int, obj_y: int, obj_z: int, obj_heading: int, obj_flags: int, obj_index: int
 ) -> LYTObjectControl:
@@ -85,5 +88,6 @@ func _update_flags() -> void:
 	flags = (flags & ~(0b0001_1111 << 2)) | (half_width << 2)
 
 
+## Returns [code]true[/code] if the control object is of type finish line and has no width.
 func is_start_position() -> bool:
-	return type == 0 and half_width == 0
+	return type == Type.FINISH and half_width == 0

@@ -1,13 +1,13 @@
 class_name LYTObjectStart
 extends LYTObject
-
-## LYT control object
+## LYT start position object
 ##
-## Specific layout object representing a starting position.
+## Specific layout object representing a starting position (grid box).
 
 var number := 0  ## start position index (0 for 1st, 1 for 2nd, etc.)
 
 
+## Creates and returns a starting position object from the given parameters.
 static func create(
 	obj_x: int, obj_y: int, obj_z: int, obj_heading: int, obj_flags: int, obj_index: int
 ) -> LYTObjectStart:

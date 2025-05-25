@@ -1,18 +1,18 @@
 class_name AeroInfo
 extends RefCounted
-
 ## Aero Info
 ##
 ## This class describes an aero object (rear wing, front wing, undertray or main body), as part
 ## of the [CarInfo] object.
 
-const STRUCT_SIZE := 20
+const STRUCT_SIZE := 20  ## The size of the contained data
 
-var position := Vector3.ZERO
-var lift := 0.0
-var drag := 0.0
+var position := Vector3.ZERO  ## The position of the aero center
+var lift := 0.0  ## Lift coefficient
+var drag := 0.0  ## Drag coefficient
 
 
+## Creates and returns a new [AeroInfo] object from the given [param buffer].
 static func create_from_buffer(buffer: PackedByteArray) -> AeroInfo:
 	var aero := AeroInfo.new()
 	if buffer.size() != STRUCT_SIZE:

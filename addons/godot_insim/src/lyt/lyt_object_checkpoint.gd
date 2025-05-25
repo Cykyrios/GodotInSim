@@ -1,10 +1,10 @@
 class_name LYTObjectCheckpoint
 extends LYTObject
-
-## LYT control object
+## LYT checkpoint object
 ##
 ## Specific layout object representing an InSim checkpoint.
 
+## Enum representing the checkpoint's type.
 enum Type {
 	FINISH,
 	CHECKPOINT_1,
@@ -12,12 +12,14 @@ enum Type {
 	CHECKPOINT_3,
 }
 
-var type := Type.FINISH
+var type := Type.FINISH  ## The object's type
+## Half of the checkpoint's total width.
 var half_width := 0:
 	set(value):
 		half_width = clampi(value, 1, 31)
 
 
+## Creates and returns a new [LYTObjectCheckpoint] from the given parameters.
 static func create(
 	obj_x: int, obj_y: int, obj_z: int, obj_heading: int, obj_flags: int, obj_index: int
 ) -> LYTObjectCheckpoint:

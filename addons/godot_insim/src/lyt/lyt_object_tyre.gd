@@ -1,10 +1,10 @@
 class_name LYTObjectTyre
 extends LYTObject
-
-## LYT control object
+## LYT tyre object
 ##
 ## Specific layout object representing a tyre or tyre stack.
 
+## Tyre colors
 enum TyreColor {
 	BLACK,
 	WHITE,
@@ -14,6 +14,7 @@ enum TyreColor {
 	YELLOW,
 }
 
+## Tyre colors
 const COLORS: Array[Color] = [
 	Color(0.2, 0.2, 0.2),
 	Color.LIGHT_GRAY,
@@ -23,9 +24,10 @@ const COLORS: Array[Color] = [
 	Color.GOLDENROD,
 ]
 
-var color := TyreColor.BLACK
+var color := TyreColor.BLACK  ## Tyre color
 
 
+## Creates and returns a tyre object from the given parameters.
 static func create(
 	obj_x: int, obj_y: int, obj_z: int, obj_heading: int, obj_flags: int, obj_index: int
 ) -> LYTObjectTyre:
@@ -36,7 +38,7 @@ static func create(
 	return tyre_object
 
 
-func get_mesh() -> MeshInstance3D:
+func _get_mesh() -> MeshInstance3D:
 	const LOOPS := 4  # number of circles defining a tyre's shape
 	const SEGMENTS := 12
 	const CHAMFER := 0.07  # diameter ratio

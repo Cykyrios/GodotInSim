@@ -1,12 +1,21 @@
 extends Node
+## LFS REST API wrapper
+##
+## This class provides access to the LFS REST API, allowing to fetch the available mods list, as
+## well as details about specific mods. In order to make requests, you need to register your app
+## on the LFS API page, and save your client ID and client secret to the [member credentials_file].
 
-
+## The access token request URL
 var access_token_url := "https://id.lfs.net/oauth2/access_token"
+## The path to the file containing your user ID and user secret. You should probably move this
+## out of the project hierarchy, or at the very least add it to your [code].gitignore[/code] file.
 var credentials_file := "res://addons/godot_insim/secrets/lfs_api.txt"
+## The path to the file containing your (cached) access token.
 var token_path := "user://lfs_api/token.txt"
+## The REST API's URL.
 var api_url := "https://api.lfs.net/"
 
-var token := ""
+var token := ""  ## The access token
 
 
 ## Generic API request, returns a [Dictionary] with the complete HTTP response.
@@ -53,6 +62,8 @@ func get_api_request(request: String) -> Dictionary:
 	return response
 
 
+## Returns a PNG image from the given [param url]; this is intended to be used to fetch a mod's
+## cover picture.
 func get_png_from_url(url: String) -> ImageTexture:
 	var image := Image.new()
 	var read_response := func read_response(

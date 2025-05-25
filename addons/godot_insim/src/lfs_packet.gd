@@ -1,6 +1,5 @@
 class_name LFSPacket
 extends RefCounted
-
 ## Base packet for communication with LFS
 ##
 ## All packets inherit from this base class, which includes common parameters and methods to
@@ -8,9 +7,21 @@ extends RefCounted
 ## This class is generally not intended to be used directly, instead prefer using [InSimPacket],
 ## [OutSimPacket] or [OutGaugePacket] as needed for your application.
 
+## The packet's raw data buffer.
 var buffer := PackedByteArray()
+## The [member buffer]'s size.
 var size := 0
+## Current writing/reading position, for use with [code]add_*[/code] and [code]read_*[/code]
+## methods. Increments automatically after calls to those methods.
 var data_offset := 0
+
+
+## Creates a packet from the provided [param packet_buffer].
+static func create_packet_from_buffer(packet_buffer: PackedByteArray) -> LFSPacket:
+	var packet := LFSPacket.new()
+	packet.buffer = packet_buffer
+	packet.decode_packet(packet_buffer)
+	return packet
 
 
 func _init() -> void:
@@ -21,12 +32,12 @@ func _to_string() -> String:
 	return "%s" % [buffer]
 
 
-## Override to define behavior for new packets
+## Override to define behavior for new packets.
 func _decode_packet(packet_buffer: PackedByteArray) -> void:
 	buffer = packet_buffer
 
 
-## Override to define behavior for new packets
+## Override to define behavior for new packets.
 func _fill_buffer() -> void:
 	pass
 
@@ -41,38 +52,32 @@ func _get_pretty_text() -> String:
 	return str(get_dictionary())
 
 
-## Override to update values with non-standard units from gis (GodotInSim) prefixed values, e.g.[br]
+## Override to update values with non-standard units from gis (GodotInSim) prefixed values, e.g.
 ## [code]position = gis_position * 65536[/code].
 func _set_values_from_gis() -> void:
 	pass
 
 
-## Override to update gis (GodotInSim) variables from variables with non-standard units, e.g.[br]
+## Override to update gis (GodotInSim) variables from variables with non-standard units, e.g.
 ## [code]gis_position = position / 65536.0[/code].
 func _update_gis_values() -> void:
 	pass
 
 
-## Creates a packet from the provided [param packet_buffer].
-static func create_packet_from_buffer(packet_buffer: PackedByteArray) -> LFSPacket:
-	var packet := LFSPacket.new()
-	packet.buffer = packet_buffer
-	packet.decode_packet(packet_buffer)
-	return packet
-
-
 ## Decodes the provided [param packet_buffer]. Define behavior by overriding
-## [method _decode_packet].
+## [method _decode_packet]. After decoding, calls [method update_gis_values].
 func decode_packet(packet_buffer: PackedByteArray) -> void:
 	_decode_packet(packet_buffer)
 	update_gis_values()
 
 
-## Returns the raw byte data for this packet. If [param use_gis_values] is [code]true[/code],
-## all [code]gis_*[/code] variables are used instead of their LFS-style couterparts.
+## Fills the raw byte buffer for this packet, define behavior by overriding [method _fill_buffer].
+## If [param use_gis_values] is [code]true[/code], all [code]gis_*[/code] variables are used instead
+## of their LFS-style counterparts; in this case, [method set_values_from_gis] is called before
+## filling the buffer.
 func fill_buffer(use_gis_values := false) -> void:
 	if use_gis_values:
-		_set_values_from_gis()
+		set_values_from_gis()
 	_fill_buffer()
 
 

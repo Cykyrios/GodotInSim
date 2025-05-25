@@ -1,6 +1,5 @@
 class_name GISCamera
 extends RefCounted
-
 ## GISCamera - Utility functions for camera manipulation and conversion
 ##
 ## This class provides utility functions to manipulate Godot cameras from LFS via [InSimCPPPacket]

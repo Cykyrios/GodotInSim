@@ -1,5 +1,8 @@
 class_name GISTime
 extends RefCounted
+## GISTime - Utility functions for time conversion
+##
+## This class provides utility functions to manipulate and convert time values and strings.
 
 
 ## Returns a time value in seconds from a time string in format "hh:mm:ss.dd". Validation is not

@@ -1,9 +1,12 @@
 class_name OutGaugePacket
 extends LFSPacket
-
 ## OutGauge packet
+##
+## This class represents a packet received from [OutGauge]. It also includes helper functions
+## returning arrays of available and currently enabled [enum DLFlags] lights, which you can then
+## check with that enum instead of using bitmasks.
 
-
+## OutGauge flags
 enum OGFlags {
 	OG_SHIFT = 1,  ## key
 	OG_CTRL = 2,  ## key
@@ -11,6 +14,7 @@ enum OGFlags {
 	OG_KM = 16384,  ## if not set - user prefers MILES
 	OG_BAR = 32768,  ## if not set - user prefers PSI
 }
+## Dash Light flags, see [method get_lights_array] for more details.
 enum DLFlags {
 	DL_SHIFT,  ## bit 0 - shift light
 	DL_FULLBEAM,  ## bit 1 - full beam
@@ -41,13 +45,13 @@ enum DLFlags {
 
 const DLF_ENGINE_SEVERE := 0x1000_0000  ## set if engine damage is severe
 
-const DISPLAY_1_SIZE := 16
-const DISPLAY_2_SIZE := 16
+const DISPLAY_1_SIZE := 16  ## Maximum text length for display 1
+const DISPLAY_2_SIZE := 16  ## Maximum text length for display 2
 
-const SIZE_WITHOUT_ID := 92
-const SIZE_WITH_ID := SIZE_WITHOUT_ID + 4
+const SIZE_WITHOUT_ID := 92  ## Total packet size without ID
+const SIZE_WITH_ID := SIZE_WITHOUT_ID + 4  ## Total packet size with ID
 
-const TIME_MULTIPLIER := 1000.0
+const TIME_MULTIPLIER := 1000.0  ## Conversion factor between SI units and LFS-encoded values
 
 var time := 0  ## time in milliseconds (to check order)
 var car_name := ""  ## Car name
@@ -70,12 +74,30 @@ var display1 := ""  ## Usually Fuel
 var display2 := ""  ## Usually Settings
 var id := 0  ## optional - only if OutGauge ID is specified
 
-var gis_time := 0.0
+var gis_time := 0.0  ## SI unit: s
 
 
 func _init(packet := PackedByteArray()) -> void:
 	if not packet.is_empty():
 		decode_packet(packet)
+
+
+## Returns an array of 0 and 1 values depending on flags set.
+func get_flags_array() -> Array[int]:
+	var flags_array: Array[int] = []
+	var _discard := flags_array.resize(OGFlags.size())
+	for i in flags_array.size():
+		flags_array[i] = 1 if flags & OGFlags.values()[i] > 0 else 0
+	return flags_array
+
+
+## Returns an array of 0 and 1 values depending on dash lights available/currently turned on.
+func get_lights_array(lights: int) -> Array[int]:
+	var lights_array: Array[int] = []
+	var _discard := lights_array.resize(DLFlags.size() - 1)
+	for i in lights_array.size():
+		lights_array[i] = (lights >> i) & 1
+	return lights_array
 
 
 func _decode_packet(packet: PackedByteArray) -> void:
@@ -107,21 +129,3 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	display2 = read_string(DISPLAY_2_SIZE)
 	if packet_size == SIZE_WITH_ID:
 		id = read_int()
-
-
-## Returns an array of 0 and 1 values depending on flags set.
-func get_flags_array() -> Array[int]:
-	var flags_array: Array[int] = []
-	var _discard := flags_array.resize(OGFlags.size())
-	for i in flags_array.size():
-		flags_array[i] = 1 if flags & OGFlags.values()[i] > 0 else 0
-	return flags_array
-
-
-## Returns an array of 0 and 1 values depending on dash lights available/currently turned on.
-func get_lights_array(lights: int) -> Array[int]:
-	var lights_array: Array[int] = []
-	var _discard := lights_array.resize(DLFlags.size() - 1)
-	for i in lights_array.size():
-		lights_array[i] = (lights >> i) & 1
-	return lights_array

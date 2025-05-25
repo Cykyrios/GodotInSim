@@ -1,17 +1,21 @@
 class_name SETFile
 extends LFSPacket
-
 ## LFS Setup file
 ##
 ## This class can decode setup files from the game, as well as save new or modified setups.
 ## All values use metric units (Pa for pressures, m for lengths, etc.), and should be converted
 ## to the desired display units.
 
+## The size of a setup's data.
 const STRUCT_SIZE := 132
 
+## File header, always equal to [code]SRSETT[/code].
 var header := "SRSETT"
+## Used to validate setup files.
 var internal_version := 252
+## Used to validate setup files.
 var format_version := 2
+## Setup flags, replaced with boolean values.
 var flags := 0:
 	set(value):
 		flags = value
@@ -19,78 +23,144 @@ var flags := 0:
 		abs_enabled = flags & InSim.Setup.SETF_ABS_ENABLE
 		tc_enabled = flags & InSim.Setup.SETF_TC_ENABLE
 
+## The vehicle configuration (e.g. DEFAULT or OPEN ROOF for the UF1) - integer value.
 var configuration := 0
+## Voluntary added mass.
 var added_mass := 0
+## Added mass position.
 var added_mass_position := 50
+## Voluntary intake restriction.
 var intake_restriction := 0
 
+## Maximum per-wheel brake torque.
 var brake_max := 0
+## Brake balance.
 var brake_balance := 50
+## Maximum per-wheel handbrake torque.
 var handbrake := 0
+## Engine brake reduction.
 var engine_brake_reduction := 0
+## ABS on/off.
 var abs_enabled := false
+## TC on/off.
 var tc_enabled := false
+## TC allowed slip.
 var tc_slip := 5.0
+## TC minimuim speed.
 var tc_speed := 50
 
+## Rear suspension ride height reduction.
 var suspension_rear_height := 0.1
+## Rear suspension stiffness.
 var suspension_rear_stiffness := 30.0
+## Rear suspension bump damping.
 var suspension_rear_bump_damping := 5.0
+## Rear suspension rebound damping.
 var suspension_rear_rebound_damping := 5.0
+## Rear suspension anti-roll stiffness.
 var suspension_rear_arb := 0.0
+## Front suspension ride height reduction.
 var suspension_front_height := 0.1
+## Front suspension stiffness.
 var suspension_front_stiffness := 30.0
+## Front suspension bump damping.
 var suspension_front_bump_damping := 5.0
+## Front suspension rebound damping.
 var suspension_front_rebound_damping := 5.0
+## Front suspension anti-roll stiffness.
 var suspension_front_arb := 0.0
 
+## Maximum steering lock.
 var steer_lock := 36
+## Parallel steer.
 var steer_parallel := 50
+## Front caster.
 var caster_front := 0.0
+## Rear caster (always zero?).
 var caster_rear := 0.0
+## Front toe in.
 var toe_front := 0.0
+## Rear toe in.
 var toe_rear := 0.0
 
+## Front differential type.
 var front_diff_type := 0
+## Front differential viscous torque.
 var front_diff_viscous := 0
+## Front differential lock (power).
 var front_diff_lock_power := 10
+## Front differential lock (coast).
 var front_diff_lock_coast := 10
+## Front differential preload.
 var front_diff_preload := 0
+## Rear differential type.
 var rear_diff_type := 0
+## Rear differential viscous torque.
 var rear_diff_viscous := 0
+## Rear differential lock (power).
 var rear_diff_lock_power := 10
+## Rear differential lock (coast).
 var rear_diff_lock_coast := 10
+## Rear differential preload.
 var rear_diff_preload := 0
+## Torque split.
 var torque_split := 50
+## Center differential type.
 var center_diff_type := 0
+## Center differential viscous torque.
 var center_diff_viscous := 0
+## Final drive.
 var final_drive := 2.5
+## First gear ratio.
 var gear_1 := 6.0
+## Second gear ratio.
 var gear_2 := 4.2
+## Third gear ratio.
 var gear_3 := 3.0
+## Fourth gear ratio.
 var gear_4 := 2.2
+## Fifth gear ratio.
 var gear_5 := 1.6
+## Sixth gear ratio.
 var gear_6 := 1.2
+## Seventh gear ratio.
 var gear_7 := 1.0
 
+## Tyre manufacturer.
 var tyre_manufacturer := 0
+## Symmetric wheels.
 var symmetric_wheels := true
+## Front tyre size (for GTR class alternate configuration).
 var front_tyre_size := 0
+## Front tyre compound.
 var front_tyre_compound := InSim.Tyre.TYRE_R1
+## Front left tyre pressure.
 var front_tyre_pressure_left := 200
+## Front right tyre pressure.
 var front_tyre_pressure_right := 200
+## Front left tyre camber.
 var front_tyre_camber_left := 0.0
+## Front right tyre camber.
 var front_tyre_camber_right := 0.0
+## Rear tyre size (for GTR class alternate configuration).
 var rear_tyre_size := 0
+## Rear tyre compound.
 var rear_tyre_compound := InSim.Tyre.TYRE_R1
+## Rear left tyre pressure.
 var rear_tyre_pressure_left := 200
+## Rear right tyre pressure.
 var rear_tyre_pressure_right := 200
+## Rear left tyre camber.
 var rear_tyre_camber_left := 0.0
+## Rear right tyre camber.
 var rear_tyre_camber_right := 0.0
 
+## Front wing angle.
 var front_wing_angle := 0
+## Rear wing angle.
 var rear_wing_angle := 0
 
+## Passengers (2 bits per passenger, converted to booleans).
 var passengers := 0:
 	set(value):
 		passengers = value
@@ -98,38 +168,56 @@ var passengers := 0:
 		passenger_rear_left = passengers & 0b0000_1100
 		passenger_rear_middle = passengers & 0b0011_0000
 		passenger_rear_right = passengers & 0b1100_0000
+## Front passenger.
 var passenger_front := 0
+## Rear left passenger.
 var passenger_rear_left := 0
+## Rear middle passenger.
 var passenger_rear_middle := 0
+## Rear right passenger.
 var passenger_rear_right := 0
 
 
+## Creates and returns a new [SETFile] from the file at [param path].
+static func create_from_file(path: String) -> SETFile:
+	var setup := SETFile.new()
+	setup.load_from_file(path)
+	return setup
+
+
 #region conversions
+## Converts an LFS-encoded camber value to the corresponding angle in degrees.
 static func camber_from_LFS_value(value: int) -> float:
 	return snappedf(-4.5 + 0.1 * value, 0.1)
 
 
+## Converts camber from an angle in degrees to the corresponding LFS-encoded value.
 static func camber_to_LFS_value(value: float) -> int:
 	return roundi(10 * value + 45)
 
 
+## Converts an LFS-encoded gear ratio to its actual value.
 static func gear_ratio_from_LFS_value(value: int) -> float:
 	return snappedf(value * 7.0 / 65_534 + 0.5, 0.001)
 
 
+## Converts a gear ratio to its LFS-encoded value.
 static func gear_ratio_to_LFS_value(value: float) -> int:
 	return roundi((value - 0.5) * 65_534 / 7.0)
 
 
+## Converts an LFS-encoded toe value to the corresponding angle in degrees.
 static func toe_from_LFS_value(value: int) -> float:
 	return snappedf(-0.9 + 0.1 * value, 0.1)
 
 
+## Converts toe from an angle in degrees to the corresponding LFS-encoded value.
 static func toe_to_LFS_value(value: float) -> int:
 	return roundi(10 * value + 9)
 #endregion
 
 
+## Decodes a setup from the given [param data_buffer] and fills the [SETFile]'s properties.
 func decode_setup_buffer(data_buffer: PackedByteArray) -> void:
 	buffer = data_buffer.duplicate()
 	header = read_string(6, false)
@@ -208,6 +296,7 @@ func decode_setup_buffer(data_buffer: PackedByteArray) -> void:
 	front_tyre_pressure_right = read_word()
 
 
+## Encodes the current setup and returns the corresponding [PackedByteArray] buffer.
 func encode_setup_buffer() -> PackedByteArray:
 	buffer.clear()
 	resize_buffer(STRUCT_SIZE)
@@ -217,7 +306,7 @@ func encode_setup_buffer() -> PackedByteArray:
 	add_byte(internal_version)
 	add_byte(format_version)
 	add_buffer([0, 0, 0])
-	update_flags()
+	_update_flags()
 	add_byte(flags)
 	add_buffer([0])
 	add_byte(added_mass_position)
@@ -290,6 +379,7 @@ func encode_setup_buffer() -> PackedByteArray:
 	return buffer.duplicate()
 
 
+## Decodes the setup file at [param path].
 func load_from_file(path: String) -> void:
 	var file := FileAccess.open(path, FileAccess.READ)
 	if not file:
@@ -299,6 +389,7 @@ func load_from_file(path: String) -> void:
 	decode_setup_buffer(file.get_buffer(file.get_length()))
 
 
+## Saves the current setup to the given [param path].
 func save_to_file(path: String) -> void:
 	var file := FileAccess.open(path, FileAccess.WRITE)
 	if not file:
@@ -309,7 +400,7 @@ func save_to_file(path: String) -> void:
 		push_error("Failed to write setup to file")
 
 
-func update_flags() -> void:
+func _update_flags() -> void:
 	flags = (
 		int(symmetric_wheels) * InSim.Setup.SETF_SYMM_WHEELS
 		+ int(abs_enabled) * InSim.Setup.SETF_ABS_ENABLE

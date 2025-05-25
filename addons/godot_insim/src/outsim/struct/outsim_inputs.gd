@@ -1,14 +1,17 @@
 class_name OutSimInputs
 extends RefCounted
+## OutSim inputs data
+##
+## This class contains data related to the player input.
 
+const STRUCT_SIZE := 20  ## Size of this data struct
 
-const STRUCT_SIZE := 20
-
-var throttle := 0.0
-var brake := 0.0
+var throttle := 0.0  ## Throttle input from 0 to 1
+var brake := 0.0  ## Brake input from 0 to 1
+## Steering input in radians - this is the steering angle at the wheels, not at the steering wheel.
 var input_steer := 0.0
-var clutch := 0.0
-var handbrake := 0.0
+var clutch := 0.0  ## Clutch input from 0 to 1
+var handbrake := 0.0  ## Handbrake input from 0 to 1
 
 
 func _to_string() -> String:
@@ -16,6 +19,7 @@ func _to_string() -> String:
 			[throttle, brake, input_steer, clutch, handbrake]
 
 
+## Sets the properties from the given [param buffer].
 func set_from_buffer(buffer: PackedByteArray) -> void:
 	var buffer_size := buffer.size()
 	if buffer_size != STRUCT_SIZE:

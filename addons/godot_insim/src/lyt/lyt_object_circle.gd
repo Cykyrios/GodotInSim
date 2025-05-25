@@ -1,16 +1,17 @@
 class_name LYTObjectCircle
 extends LYTObject
-
-## LYT control object
+## LYT circle object
 ##
 ## Specific layout object representing an InSim circle object.
 
-var circle_index := 0
+var circle_index := 0  ## The circle's index
+## The circle's radius
 var radius := 0:
 	set(value):
 		radius = clampi(value, 1, 31)
 
 
+## Creates and returns a new [LYTObjectCircle] from the given parameters.
 static func create(
 	obj_x: int, obj_y: int, obj_z: int, obj_heading: int, obj_flags: int, obj_index: int
 ) -> LYTObjectCircle:

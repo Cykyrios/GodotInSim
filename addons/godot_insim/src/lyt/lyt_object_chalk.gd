@@ -1,10 +1,10 @@
 class_name LYTObjectChalk
 extends LYTObject
-
-## LYT control object
+## LYT chalk object
 ##
 ## Specific layout object representing a chalk line.
 
+## Enum representing chalk colors.
 enum ChalkColor {
 	WHITE,
 	RED,
@@ -12,6 +12,7 @@ enum ChalkColor {
 	YELLOW,
 }
 
+## The list of chalk colors.
 const COLORS: Array[Color] = [
 	Color.WHITE,
 	Color.RED,
@@ -19,9 +20,10 @@ const COLORS: Array[Color] = [
 	Color.YELLOW,
 ]
 
-var color := ChalkColor.WHITE
+var color := ChalkColor.WHITE  ## This object's chalk color.
 
 
+## Creates and returns a new [LYTObjectChalk] from the given parameters.
 static func create(
 	obj_x: int, obj_y: int, obj_z: int, obj_heading: int, obj_flags: int, obj_index: int
 ) -> LYTObjectChalk:

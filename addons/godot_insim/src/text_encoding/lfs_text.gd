@@ -1,7 +1,6 @@
 class_name LFSText
 extends RefCounted
-
-## Text encoding utility class
+## Text encoding utility functions
 ##
 ## This class handles text encoding and color conversion from UTF8 to LFS and vice versa.
 ## Most functions are for internal use only and are called automatically in [InSimPacket] functions.
@@ -9,6 +8,8 @@ extends RefCounted
 ## everything is converted, but characters are encoded in UTF16 instead of proper LFS format
 ## (which removes intermediate zeros).
 
+## The list of color codes used by LFS; also includes the reset code, which resets the cod page
+## in addition to the color.
 enum ColorCode {
 	BLACK,  ## 0
 	RED,  ## 1
@@ -21,6 +22,7 @@ enum ColorCode {
 	RESET,  ## 8 - also resets code page
 	DEFAULT,  ## 9 - default color (context-dependent in LFS, gray here)
 }
+## The color format to use or replace in text strings.
 enum ColorType {
 	LFS,  ## Use LFS colors (^0 to ^9)
 	BBCODE,  ## Use bbcode tags
@@ -28,6 +30,7 @@ enum ColorType {
 	STRIP,  ## Remove colors
 }
 
+## The list of code pages and their corresponding names.
 const CODE_PAGES: Dictionary[String, String] = {
 	"^L": "CP1252",
 	"^G": "CP1253",
@@ -41,6 +44,7 @@ const CODE_PAGES: Dictionary[String, String] = {
 	"^K": "euc-kr",
 	"^8": "CP1252",
 }
+## The list of escaped characters in LFS strings.
 const SPECIAL_CHARACTERS: Dictionary[String, String] = {
 	"^a": "*",
 	"^c": ":",
@@ -54,6 +58,7 @@ const SPECIAL_CHARACTERS: Dictionary[String, String] = {
 	"^v": "|",
 	"^^": "^^",  # parses carets but keeps them, dedoubling occurs separately
 }
+## The list of colors in LFS text strings.
 const COLORS: Array[Color] = [
 	Color(0, 0, 0),  ## 0
 	Color(1, 0, 0),  ## 1
@@ -66,9 +71,14 @@ const COLORS: Array[Color] = [
 	Color(0.58, 0.58, 0.58),  ## 8 - also resets code page
 	Color(0.58, 0.58, 0.58),  ## 9 - default color (context-dependent in LFS, gray here)
 ]
+## The character used to replace broken characters: �
 const FALLBACK_CHARACTER := "\ufffd"
 
+## The list of code page keys, concatenated from [constant CODE_PAGES] and with the leading
+## circumflex characters removed.
 static var code_pages := "".join(CODE_PAGES.keys()).replace("^", "")
+## The list of special characters, concatenated from [constant SPECIAL_CHARACTERS] keys with the
+## leading circumflex characters removed.
 static var specials := "".join(SPECIAL_CHARACTERS.keys()).replace("^", "")
 
 
@@ -207,6 +217,7 @@ static func colors_ansi_to_bbcode(text: String) -> String:
 	if color_is_active:
 		output += "[/color]"
 	return output
+
 
 ## Converts BBCode color tags to ANSI escape sequences.
 static func colors_bbcode_to_ansi(text: String) -> String:

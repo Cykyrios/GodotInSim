@@ -1,47 +1,59 @@
 class_name OutSimPack
 extends RefCounted
+## OutSim packed data struct
+##
+## This struct-like class contains [OutSim] data and is typically contained in an [OutSimPacket].
+## LFS can send either a simplified OutSimPack object or a more advanced and customizable
+## OutSimPack2, depending on the [member outsim_options]; the [OutSimPack] in this implementation
+## corresponds to an LFS OutSimPack2, but also supports data from LFS OutSimPack.
 
-
+## Helper enum for wheel array indices. Vehicles always have at least 2 wheels, but depending on
+## their configuration, may have a single front wheel and/or rear wheel.
 enum WheelIndex {
-	REAR_LEFT,
-	REAR_RIGHT,
-	FRONT_LEFT,
-	FRONT_RIGHT,
+	REAR_LEFT,  ## The vehicle's rear left wheel.
+	REAR_RIGHT,  ## The vehicle's rear right wheel, if it exists.
+	FRONT_LEFT,  ## The vehicle's front left wheel.
+	FRONT_RIGHT,  ## The vehicle's front left wheel, if it exists.
 }
 
-const TIME_MULTIPLIER := 1000.0
+const TIME_MULTIPLIER := 1000.0  ## Conversion factor between SI units and LFS-encoded values.
 
-const OUTSIM_PACK1_SIZE := 64
-const OUTSIM_PACK1_ID_SIZE := 4
+const OUTSIM_PACK1_SIZE := 64  ## Size of the LFS OutSimPack's data.
+const OUTSIM_PACK1_ID_SIZE := 4  ## Size of the optional ID.
 
-const WHEEL_COUNT := 4
+const WHEEL_COUNT := 4  ## Number of wheels, always equal to 4, even for vehicles that have less.
 
-var outsim_options := 0
+var outsim_options := 0  ## OutSim options passed from the [OutSim] instance.
 
-var header := ""
+var header := ""  ## If sent, will contain [code]LFST[/code].
+var id := 0  ## The configured ID in [code]cfg.txt[/code].
+var time := 0  ## OutSim timestamp
 
-var id := 0
+var os_main := OutSimMain.new()  ## OutSim main data struct
+var os_inputs := OutSimInputs.new()  ## OutSim inputs data struct
 
-var time := 0
-
-var os_main := OutSimMain.new()
-var os_inputs := OutSimInputs.new()
-
-var gear := 0
-var sp1 := 0
-var sp2 := 0
-var sp3 := 0
+var gear := 0  ## Current gear
+var sp1 := 0  ## Spare byte 1
+var sp2 := 0  ## Spare byte 2
+var sp3 := 0  ## Spare byte 3
+## Engine speed in radians/s; use [method GISUnit.convert_angular_speed] to get the RPM value.
 var engine_ang_vel := 0.0
+## Maximum torque at the current engine speed, in N.m.
 var max_torque_at_vel := 0.0
 
+## Distance travelled since the start of the current lap, in meters.
 var current_lap_distance := 0.0
+## Indexed distance along the track's PTH path definition, in meters; only available on official
+## layouts, custom layouts will return [code]0[/code].
 var indexed_distance := 0.0
 
-var os_wheels: Array[OutSimWheel] = []
+var os_wheels: Array[OutSimWheel] = []  ## An array containing each wheel's data.
 
+## The torque currently applied at the steering rack (there is no power steering in LFS).
 var steer_torque := 0.0
-var spare := 0.0
+var spare := 0.0  ## Spare float
 
+## The time, in seconds, corresponding to the [member time] timestamp.
 var gis_time := 0.0
 
 
@@ -59,6 +71,7 @@ func _to_string() -> String:
 			[os_wheels, steer_torque, spare]
 
 
+## Sets the properties from the given [param buffer], taking [member outsim_options] into account.
 func set_from_buffer(buffer: PackedByteArray) -> void:
 	var data_offset := 0
 	if outsim_options == 0:

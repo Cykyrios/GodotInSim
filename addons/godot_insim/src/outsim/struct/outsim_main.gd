@@ -1,19 +1,23 @@
 class_name OutSimMain
 extends RefCounted
+## Main OutSim data
+##
+## This class contains the main OutSim data, which is more or less equivalent to the base LFS
+## OutSimPack.
 
+const STRUCT_SIZE := 60  ## The size of the contained data.
+const POSITION_MULTIPLIER := 65536.0  ## Conversion factor between SI units and LFS-encoded values.
 
-const STRUCT_SIZE := 60
-const POSITION_MULTIPLIER := 65536.0
+var ang_vel := Vector3.ZERO  ## Angular velocity in m/s
+var heading := 0.0  ## Heading in radians
+var pitch := 0.0  ## Pitch in radians
+var roll := 0.0  ## Roll in radians
+var accel := Vector3.ZERO  ## Acceleration in m/s^2
+var vel := Vector3.ZERO  ## Velocity in m/s
+var pos := Vector3i.ZERO  ## Position in LFS-encoded values
 
-var ang_vel := Vector3.ZERO
-var heading := 0.0
-var pitch := 0.0
-var roll := 0.0
-var accel := Vector3.ZERO
-var vel := Vector3.ZERO
-var pos := Vector3i.ZERO
-
-var gis_position := Vector3.ZERO
+var gis_position := Vector3.ZERO  ## Position in meters
+## Vector containing [member pitch], [member roll], and [member heading].
 var gis_angles := Vector3.ZERO
 
 
@@ -22,6 +26,7 @@ func _to_string() -> String:
 			[ang_vel, heading, pitch, roll, accel, vel, pos]
 
 
+## Returns the buffer corresponding to the current data.
 func get_buffer() -> PackedByteArray:
 	var buffer := PackedByteArray()
 	var _discard := buffer.resize(STRUCT_SIZE)
@@ -43,6 +48,7 @@ func get_buffer() -> PackedByteArray:
 	return buffer
 
 
+## Sets the properties' values from the given [param buffer].
 func set_from_buffer(buffer: PackedByteArray) -> void:
 	var buffer_size := buffer.size()
 	if buffer_size != STRUCT_SIZE:

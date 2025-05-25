@@ -5,19 +5,34 @@ extends RefCounted
 ##
 ## This class contains data about each path node contained in a [PTHFile].
 
+## Conversion factor between SI units and LFS-encoded values.
 const POSITION_MULTIPLIER := 65536.0
-
+## Data size for a [PTHNode].
 const STRUCT_SIZE := 40
 
+## Node center x component.
 var center_x := 0
+## Node center y component.
 var center_y := 0
+## Node center z component.
 var center_z := 0
+## Node direction x component.
 var dir_x := 0.0
+## Node direction y component.
 var dir_y := 0.0
+## Node direction z component.
 var dir_z := 0.0
+## Left overall limit.
 var limit_left := 0.0
+## Right overall limit.
 var limit_right := 0.0
+## Left driving area limit.[br]
+## [b]Note:[/b] Official PTH files may not follow actual track limits, some corners exclude part of
+## the track limits area, while others go well beyond the white lines.
 var drive_left := 0.0
+## Right driving area limit.[br]
+## [b]Note:[/b] Official PTH files may not follow actual track limits, some corners exclude part of
+## the track limits area, while others go well beyond the white lines.
 var drive_right := 0.0
 
 ## The node's reference point, typically found on the racing line.
@@ -37,12 +52,14 @@ func _to_string() -> String:
 	]
 
 
+## Creates and returns a new [PTHNode] from the given [param buffer].
 static func create_from_buffer(buffer: PackedByteArray) -> PTHNode:
 	var node := PTHNode.new()
 	node.decode_buffer(buffer)
 	return node
 
 
+## Decodes the given [param buffer] and fills the [PTHNode]'s properties.
 func decode_buffer(buffer: PackedByteArray) -> void:
 	if buffer.size() != STRUCT_SIZE:
 		push_error("Wrong size for PTHNode: got %d, expected %d" % [buffer.size(), STRUCT_SIZE])
