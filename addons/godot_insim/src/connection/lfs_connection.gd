@@ -1,11 +1,12 @@
-abstract class_name LFSConnection
+class_name LFSConnection
 extends Node
 ## Base class for connection and data I/O with LFS
 ##
 ## InSim initialization automatically creates either a TCP connection or a UDP connection,
 ## depending on parameters passed.[br]
-## [b]Note:[/b] This class is not intended to be used directly, an instance is included in all
-## protocol objects ([InSim], [OutGauge], [OutSim]).
+## [b]Note:[/b] This class is abstract and cannot be used directly, [LFSConnectionTCP] or
+## [LFSConnectionUDP] must be used instead; those two are not meant to be used directly either,
+## an [LFSConnection] object is included in all protocol objects ([InSim], [OutGauge], [OutSim]).
 
 @warning_ignore_start("unused_signal")
 signal connection_failed
