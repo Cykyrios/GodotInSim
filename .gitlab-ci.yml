@@ -1,4 +1,4 @@
-image: registry.gitlab.com/cykyrios/godot-builder:4.5-dev-desktop
+image: registry.gitlab.com/cykyrios/godot-builder:4.5-dev-editor-only
 
 workflow:
   rules:
@@ -48,6 +48,7 @@ export-demos:
   variables:
     package_registry_url: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic"
   stage: deploy
+  image: registry.gitlab.com/cykyrios/godot-builder:4.5-dev-desktop
   before_script:
     - apt-get update && apt-get install -y curl zip
   script:
