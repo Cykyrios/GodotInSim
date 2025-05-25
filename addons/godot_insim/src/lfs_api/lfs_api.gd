@@ -6,14 +6,15 @@ extends Node
 ## on the LFS API page, and save your client ID and client secret to the [member credentials_file].
 
 ## The access token request URL
-var access_token_url := "https://id.lfs.net/oauth2/access_token"
+const ACCESS_TOKEN_URL := "https://id.lfs.net/oauth2/access_token"
+## The path to the file containing your (cached) access token.
+const TOKEN_PATH := "user://lfs_api/token.txt"
+## The REST API's URL.
+const API_URL := "https://api.lfs.net/"
+
 ## The path to the file containing your user ID and user secret. You should probably move this
 ## out of the project hierarchy, or at the very least add it to your [code].gitignore[/code] file.
 var credentials_file := "res://addons/godot_insim/secrets/lfs_api.txt"
-## The path to the file containing your (cached) access token.
-var token_path := "user://lfs_api/token.txt"
-## The REST API's URL.
-var api_url := "https://api.lfs.net/"
 
 var token := ""  ## The access token
 
@@ -45,12 +46,15 @@ func get_api_request(request: String) -> Dictionary:
 		if token == "abort":
 			return {}
 	var request_token := "Authorization: Bearer %s" % [token]
-	var error := http_request.request(api_url + request, [request_token], HTTPClient.METHOD_GET)
+	var error := http_request.request(API_URL + request, [request_token], HTTPClient.METHOD_GET)
 	if error:
 		push_error("Failed to perform HTTP request: code %d" % [error])
 	else:
 		await http_request.request_completed
 	http_request.queue_free()
+	if not response.has("body"):
+		push_error("HTTP response has no body, aborting.")
+		return {}
 	var response_body := response["body"] as Dictionary
 	if response["code"] == 401 and response_body.has("error"):
 		var error_message := str((response_body["error"] as Dictionary)["message"])
@@ -159,7 +163,7 @@ func _get_access_token() -> String:
 	add_child(http_request)
 	var _connect := http_request.request_completed.connect(read_token_response)
 	var error := http_request.request(
-		access_token_url,
+		ACCESS_TOKEN_URL,
 		["Content-Type: application/x-www-form-urlencoded"],
 		HTTPClient.METHOD_POST,
 		request_data
@@ -174,15 +178,15 @@ func _get_access_token() -> String:
 
 
 func _get_token_from_cache() -> String:
-	var file := FileAccess.open(token_path, FileAccess.READ)
+	var file := FileAccess.open(TOKEN_PATH, FileAccess.READ)
 	if not file:
 		return ""
 	return file.get_line()
 
 
 func _set_token_cache() -> void:
-	var _dir := DirAccess.make_dir_recursive_absolute(token_path.get_base_dir())
-	var file := FileAccess.open(token_path, FileAccess.WRITE)
+	var _dir := DirAccess.make_dir_recursive_absolute(TOKEN_PATH.get_base_dir())
+	var file := FileAccess.open(TOKEN_PATH, FileAccess.WRITE)
 	if not file:
 		print(FileAccess.get_open_error())
 		return
