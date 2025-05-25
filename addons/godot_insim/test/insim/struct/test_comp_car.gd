@@ -40,11 +40,11 @@ func test_buffer_to_struct(
 	_test = assert_float(struct.gis_speed) \
 			.is_equal_approx(struct.speed / CompCar.SPEED_MULTIPLIER, epsilon)
 	_test = assert_float(struct.gis_direction) \
-			.is_equal_approx(deg_to_rad(struct.direction / CompCar.ANGLE_MULTIPLIER), epsilon)
+			.is_equal_approx(struct.direction / CompCar.ANGLE_MULTIPLIER, epsilon)
 	_test = assert_float(struct.gis_heading) \
-			.is_equal_approx(deg_to_rad(struct.heading / CompCar.ANGLE_MULTIPLIER), epsilon)
+			.is_equal_approx(struct.heading / CompCar.ANGLE_MULTIPLIER, epsilon)
 	_test = assert_float(struct.gis_angular_velocity) \
-			.is_equal_approx(deg_to_rad(struct.ang_vel / CompCar.ANGVEL_MULTIPLIER), epsilon)
+			.is_equal_approx(struct.ang_vel / CompCar.ANGVEL_MULTIPLIER, epsilon)
 
 
 @warning_ignore("unused_parameter")
@@ -86,7 +86,7 @@ func test_gis_struct_to_buffer(
 	struct.gis_position = Vector3(x, y, z) \
 			/ CompCar.POSITION_MULTIPLIER
 	struct.gis_speed = speed / CompCar.SPEED_MULTIPLIER
-	struct.gis_direction = deg_to_rad(direction / CompCar.ANGLE_MULTIPLIER)
-	struct.gis_heading = deg_to_rad(heading / CompCar.ANGLE_MULTIPLIER)
-	struct.gis_angular_velocity = deg_to_rad(ang_vel / CompCar.ANGVEL_MULTIPLIER)
+	struct.gis_direction = direction / CompCar.ANGLE_MULTIPLIER
+	struct.gis_heading = heading / CompCar.ANGLE_MULTIPLIER
+	struct.gis_angular_velocity = ang_vel / CompCar.ANGVEL_MULTIPLIER
 	var _test := assert_array(struct.get_buffer(true)).is_equal(buffer)

@@ -9,9 +9,9 @@ const POSITION_MULTIPLIER := 65536.0
 ## Conversion factor between standard units and LFS-encoded values.
 const SPEED_MULTIPLIER := 327.68
 ## Conversion factor between standard units and LFS-encoded values.
-const ANGLE_MULTIPLIER := 65536 / 360.0
+const ANGLE_MULTIPLIER := 32768 / PI
 ## Conversion factor between standard units and LFS-encoded values.
-const ANGVEL_MULTIPLIER := 16384 / 360.0
+const ANGVEL_MULTIPLIER := 16384 / (2 * PI)
 
 const STRUCT_SIZE := 28  ## The size of this struct's data
 
@@ -84,14 +84,14 @@ func _set_values_from_gis() -> void:
 	y = roundi(gis_position.y * POSITION_MULTIPLIER)
 	z = roundi(gis_position.z * POSITION_MULTIPLIER)
 	speed = roundi(gis_speed * SPEED_MULTIPLIER)
-	direction = roundi(rad_to_deg(gis_direction) * ANGLE_MULTIPLIER)
-	heading = roundi(rad_to_deg(gis_heading) * ANGLE_MULTIPLIER)
-	ang_vel = roundi(rad_to_deg(gis_angular_velocity) * ANGVEL_MULTIPLIER)
+	direction = roundi(gis_direction * ANGLE_MULTIPLIER)
+	heading = roundi(gis_heading * ANGLE_MULTIPLIER)
+	ang_vel = roundi(gis_angular_velocity * ANGVEL_MULTIPLIER)
 
 
 func _update_gis_values() -> void:
 	gis_position = Vector3(x, y, z) / POSITION_MULTIPLIER
 	gis_speed = speed / SPEED_MULTIPLIER
-	gis_direction = deg_to_rad(direction / ANGLE_MULTIPLIER)
-	gis_heading = deg_to_rad(heading / ANGLE_MULTIPLIER)
-	gis_angular_velocity = deg_to_rad(ang_vel / ANGVEL_MULTIPLIER)
+	gis_direction = direction / ANGLE_MULTIPLIER
+	gis_heading = heading / ANGLE_MULTIPLIER
+	gis_angular_velocity = ang_vel / ANGVEL_MULTIPLIER
