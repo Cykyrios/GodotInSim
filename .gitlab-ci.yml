@@ -1,4 +1,4 @@
-image: registry.gitlab.com/cykyrios/godot-builder:4.5-dev
+image: registry.gitlab.com/cykyrios/godot-builder:4.5-dev-desktop
 
 workflow:
   rules:
