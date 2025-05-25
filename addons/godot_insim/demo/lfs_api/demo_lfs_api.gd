@@ -1,11 +1,14 @@
 extends MarginContainer
 
 
+@export var credentials_file := "res://addons/godot_insim/secrets/lfs_api.txt"
+
 @onready var label: Label = %Label
 @onready var rich_text_label: RichTextLabel = %RichTextLabel
 
 
 func _ready() -> void:
+	LFSAPI.credentials_file = credentials_file
 	rich_text_label.add_text("Requesting mod list...\n")
 	var mod_list := await LFSAPI.get_mod_list()
 	var mod_count := mod_list.size()
