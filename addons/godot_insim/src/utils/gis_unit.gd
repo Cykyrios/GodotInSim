@@ -16,6 +16,11 @@ enum Angle {
 	RADIAN,  ## Radians
 	DEGREE,  ## Degrees
 }
+## Angular speed units
+enum AngularSpeed {
+	RADIAN_PER_SECOND,  ## Radians per second
+	RPM,  ## RPM, revolutions per minute
+}
 ## Force units
 enum Force {
 	NEWTON,  ## SI unit: N
@@ -63,6 +68,11 @@ const ANGLES: Array[float] = [
 	1.0,
 	180 / PI,
 ]
+## The list of angle conversion values, based on [enum Angle].
+const ANGULAR_SPEEDS: Array[float] = [
+	1.0,
+	60 / (2 * PI),
+]
 ## The list of force conversion values, based on [enum Force].
 const FORCES: Array[float] = [
 	1.0,
@@ -109,6 +119,11 @@ static func convert_acceleration(value: float, from: Acceleration, to: Accelerat
 ## Converts an angle [param value] between units [param from] and [param to].
 static func convert_angle(value: float, from: Angle, to: Angle) -> float:
 	return value / ANGLES[from] * ANGLES[to]
+
+
+## Converts an angular speed [param value] between units [param from] and [param to].
+static func convert_angular_speed(value: float, from: AngularSpeed, to: AngularSpeed) -> float:
+	return value / ANGULAR_SPEEDS[from] * ANGULAR_SPEEDS[to]
 
 
 ## Converts a force [param value] between units [param from] and [param to].

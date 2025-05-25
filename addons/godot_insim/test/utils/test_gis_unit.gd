@@ -33,6 +33,18 @@ func test_convert_angle(
 
 
 @warning_ignore("unused_parameter")
+func test_convert_angular_speed(
+	value: float, unit_in: GISUnit.AngularSpeed, unit_out: GISUnit.AngularSpeed,
+	expected: float, test_parameters := [
+		[100.0, GISUnit.AngularSpeed.RADIAN_PER_SECOND, GISUnit.AngularSpeed.RPM, 954.929_658_6],
+		[1000.0, GISUnit.AngularSpeed.RPM, GISUnit.AngularSpeed.RADIAN_PER_SECOND, 104.719_755],
+	]
+) -> void:
+	var _test := assert_float(GISUnit.convert_angular_speed(value, unit_in, unit_out)) \
+			.is_equal_approx(expected, epsilon)
+
+
+@warning_ignore("unused_parameter")
 func test_convert_force(
 	value: float, unit_in: GISUnit.Force, unit_out: GISUnit.Force,
 	expected: float, test_parameters := [
