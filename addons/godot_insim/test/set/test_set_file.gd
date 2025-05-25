@@ -7,7 +7,7 @@ var epsilon := 1e-5
 
 
 @warning_ignore("unused_parameter")
-func test_camber_from_LFS_value(input: int, expected: float, test_params := [
+func test_camber_from_LFS_value(input: int, expected: float, test_parameters := [
 	[0, -4.5],
 	[45, 0.0],
 	[90, 4.5],
@@ -17,7 +17,7 @@ func test_camber_from_LFS_value(input: int, expected: float, test_params := [
 
 
 @warning_ignore("unused_parameter")
-func test_camber_to_LFS_value(input: float, expected: int, test_params := [
+func test_camber_to_LFS_value(input: float, expected: int, test_parameters := [
 	[-4.5, 0],
 	[0.0, 45],
 	[4.5, 90],
@@ -26,7 +26,7 @@ func test_camber_to_LFS_value(input: float, expected: int, test_params := [
 
 
 @warning_ignore("unused_parameter")
-func test_gear_ratio_from_LFS_value(input: int, expected: float, test_params := [
+func test_gear_ratio_from_LFS_value(input: int, expected: float, test_parameters := [
 	[0, 0.5],
 	[65534, 7.5],
 ]) -> void:
@@ -35,7 +35,7 @@ func test_gear_ratio_from_LFS_value(input: int, expected: float, test_params := 
 
 
 @warning_ignore("unused_parameter")
-func test_gear_ratio_to_LFS_value(input: float, expected: int, test_params := [
+func test_gear_ratio_to_LFS_value(input: float, expected: int, test_parameters := [
 	[0.5, 0],
 	[7.5, 65534],
 ]) -> void:
@@ -43,7 +43,7 @@ func test_gear_ratio_to_LFS_value(input: float, expected: int, test_params := [
 
 
 @warning_ignore("unused_parameter")
-func test_toe_from_LFS_value(input: int, expected: float, test_params := [
+func test_toe_from_LFS_value(input: int, expected: float, test_parameters := [
 	[0, -0.9],
 	[9, 0.0],
 	[18, 0.9],
@@ -53,7 +53,7 @@ func test_toe_from_LFS_value(input: int, expected: float, test_params := [
 
 
 @warning_ignore("unused_parameter")
-func test_toe_to_LFS_value(input: float, expected: int, test_params := [
+func test_toe_to_LFS_value(input: float, expected: int, test_parameters := [
 	[-0.9, 0],
 	[0.0, 9],
 	[0.9, 18],
