@@ -21,7 +21,7 @@ var rpm := 0.0  ## Engine RPM
 var spf0 := 0.0  ## Spare
 var spf1 := 0.0  ## Spare
 
-var show_lights := 0  ## Dash lights currently switched on (see [OutGaugePacket.DLFlags])
+var show_lights := 0  ## Dash lights currently switched on (see [enum OutGaugePacket.DLFlags])
 var spu1 := 0  ## Spare
 var spu2 := 0  ## Spare
 var spu3 := 0  ## Spare

@@ -2,8 +2,8 @@ class_name InSimMCIPacket
 extends InSimPacket
 ## Multi Car Info packet - if more than [constant MAX_CARS] in race then more than one is sent
 ##
-## This packet is received upon request from a [InSim.Tiny.TINY_MCI] or at regular intervals
-## if set during InSim initialization or via [InSim.Small.SMALL_NLI].
+## This packet is received upon request from a [constant InSim.Tiny.TINY_MCI] or at regular
+## intervals if set during InSim initialization or via [constant InSim.Small.SMALL_NLI].
 
 const MAX_CARS := 16  ## Maximum number of car per packet
 const PACKET_MIN_SIZE := 4 + CompCar.STRUCT_SIZE  ## Minimum packet size

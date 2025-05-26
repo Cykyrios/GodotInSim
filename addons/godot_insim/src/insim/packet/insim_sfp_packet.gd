@@ -2,7 +2,7 @@ class_name InSimSFPPacket
 extends InSimPacket
 ## State Flags Pack
 ##
-## This packet is sent to update some [InSim.State] flags.[br]
+## This packet is sent to update some [enum InSim.State] flags.[br]
 ## [b]Note:[/b]Only the following state can be set with this packet:
 ## [constant InSim.ISS_SHIFTU_NO_OPT], [constant InSim.ISS_SHOW_2D] - showing 2d display,
 ## [constant InSim.ISS_MPSPEEDUP], [constant InSim.ISS_SOUND_MUTE]; other states must be set

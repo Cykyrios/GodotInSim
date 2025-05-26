@@ -10,8 +10,8 @@ const STRUCT_SIZE := 4  ## The size of this struct's data
 
 ## Select input value to set
 ## Inputs marked 'hold' must be set back to zero after some time.
-## This can be done either by use of the [param time] field or by sending a
-## later packet with [param value] = 0.
+## This can be done either by use of the [member time] field or by sending a
+## later packet with [member value] = 0.
 ## E.g. Set time to 10 when issuing a CS_CHUP - hold shift up lever for 0.1 sec.
 ## E.g. Set time to 50 when issuing a CS_HORN - sound horn for 0.5 sec.
 ## Inputs marked 'toggle' accept the following values:

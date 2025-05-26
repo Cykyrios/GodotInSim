@@ -2,7 +2,7 @@ class_name RelayHOSPacket
 extends InSimRelayPacket
 ## Relay host list packet
 ##
-## This packet is received after a host list request with [InSimHLRPacket].
+## This packet is received after a host list request with [RelayHLRPacket].
 
 const PACKET_BASE_SIZE := 4  ## Packet base size
 const PACKET_TYPE := InSim.Packet.IRP_HOS  ## The packet's type, see [enum InSim.Packet].

@@ -322,7 +322,7 @@ static func get_color_code(color: ColorCode) -> String:
 
 ## Returns the display string version of [param text], with color codes converted to the target
 ## [param colors] (from LFS colors) and double carets escaped. For instance:
-## [codeblock]
+## [codeblock skip-lint]
 ## LFSText.get_display_string("^^1test ^1red^^")
 ## # returns "^1test [color=#ff0000]red^[/color]"
 ## [/codeblock]
@@ -365,8 +365,8 @@ static func get_regex_color_bbcode() -> RegEx:
 
 
 ## Returns a regular expression matching LFS color codes ([code]^0[/code] through [code]^9[/code]).
-## [br][u][b]Note:[/b][/u] The expression also matches [code]^^[/code] to prevent false positives
-## such as [code]^^1[code], so results should be filtered accordingly.
+## [br][b]Note:[/b] The expression also matches [code]^^[/code] to prevent false positives
+## such as [code]^^1[/code], so results should be filtered accordingly.
 static func get_regex_color_lfs() -> RegEx:
 	return RegEx.create_from_string(r"\^(\^|\d)")
 

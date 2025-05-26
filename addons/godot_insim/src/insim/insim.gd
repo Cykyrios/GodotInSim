@@ -28,9 +28,9 @@ signal timeout
 
 ## Emitted when a packet is received from LFS.
 signal packet_received(packet: InSimPacket)
-## Emitted when a packet is sent successfully. [code]sender[/code] can be used
+## Emitted when a packet is sent successfully. [param sender] can be used
 ## to identify the source of the packet (InSim itself, or the user application),
-## and defaults to [code]InSim[/code] in [method send_packet].
+## and defaults to [code]"InSim"[/code] in [method send_packet].
 signal packet_sent(packet: InSimPacket, sender: String)
 signal irp_arp_received(packet: RelayARPPacket)
 signal irp_err_received(packet: RelayERRPacket)
@@ -1208,7 +1208,7 @@ func delete_button_by_id(click_id: int, ucids: Array[int] = []) -> void:
 		send_packet(packet)
 
 
-## Deletes all [InSimButton]s matching the given [param name] for all [param ucids],
+## Deletes all [InSimButton]s matching the given [param button_name] for all [param ucids],
 ## and sends the corresponding [InSimBFNPacket]s. If [param ucids] is empty, this function will try
 ## to delete buttons for every UCID in the current connection list, plus the "everyone" value
 ## of [code]255[/code].

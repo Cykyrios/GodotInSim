@@ -10,7 +10,7 @@ var ucid := 0  ## connection that clicked the button (zero if local)
 
 var click_id := 0  ## button identifier originally sent in IS_BTN
 var inst := 0  ## used internally by InSim
-var click_flags := 0  ## button click flags - see [enum Insim.ButtonClick]
+var click_flags := 0  ## button click flags - see [enum InSim.ButtonClick]
 var sp3 := 0  ## Spare
 
 

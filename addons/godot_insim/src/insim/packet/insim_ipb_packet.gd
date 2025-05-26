@@ -2,7 +2,8 @@ class_name InSimIPBPacket
 extends InSimPacket
 ## IP Bans - variable size
 ##
-## This packet is sent to set IP bans or received in response to a [InSim.Tiny.TINY_IPB] request.
+## This packet is sent to set IP bans or received in response to a [constant InSim.Tiny.TINY_IPB]
+## request.
 
 const IPB_MAX_BANS := 120  ## Maximum IP ban count
 const IPB_DATA_SIZE := 4  ## IP ban data size

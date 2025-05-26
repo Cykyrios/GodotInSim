@@ -10,12 +10,12 @@ const TEXT_MAX_LENGTH := 96  ## Maximum text length
 
 var ucid := 0  ## connection that typed into the button (zero if local)
 
-var click_id := 0  ## button identifier originally sent in IS_BTN ([class InSimBTNPacket])
+var click_id := 0  ## button identifier originally sent in IS_BTN ([InSimBTNPacket])
 var inst := 0  ## used internally by InSim
 var type_in := 0  ## from original button specification
 var sp3 := 0  ## Spare
 
-var text := ""  ## typed text, zero to [member type_in] specified in IS_BTN ([class InSimBTNPacket])
+var text := ""  ## typed text, zero to [member type_in] specified in IS_BTN ([InSimBTNPacket])
 
 
 func _init() -> void:

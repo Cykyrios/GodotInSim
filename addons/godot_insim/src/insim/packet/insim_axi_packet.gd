@@ -2,8 +2,8 @@ class_name InSimAXIPacket
 extends InSimPacket
 ## AutoX Info packet
 ##
-## This packet is received when loading a layout or requesting it with a [InSim.Tiny.TINY_AXI]
-## packet.
+## This packet is received when loading a layout or requesting it with a
+## [constant InSim.Tiny.TINY_AXI] packet.
 
 const LAYOUT_MAX_LENGTH := 32  ## Layout name maximum length
 

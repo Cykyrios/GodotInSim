@@ -2,8 +2,8 @@ class_name InSimREOPacket
 extends InSimPacket
 ## REOrder packet - this packet can be sent in either direction
 ##
-## This packet is received when the race starts or upon request via [InSim.Tiny.TINY_REO], and can
-## be sent to modify the grid just before a race start.
+## This packet is received when the race starts or upon request via [constant InSim.Tiny.TINY_REO],
+## and can be sent to modify the grid just before a race start.
 
 const _MAX_PLAYERS := 40
 

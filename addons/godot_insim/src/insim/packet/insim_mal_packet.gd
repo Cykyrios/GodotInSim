@@ -2,8 +2,8 @@ class_name InSimMALPacket
 extends InSimPacket
 ## Mods ALlowed packet - variable size
 ##
-## This packet is sent to set allowed mods or received in response to a [InSim.Tiny.TINY_MAL]
-## request.
+## This packet is sent to set allowed mods or received in response to a
+## [constant InSim.Tiny.TINY_MAL] request.
 
 const MAL_MAX_MODS := 120  ## Maximum number of allowed mods
 const MAL_DATA_SIZE := 4  ## Allowed mod data size

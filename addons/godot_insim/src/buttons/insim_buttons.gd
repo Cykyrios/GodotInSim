@@ -17,7 +17,7 @@ var id_range := Vector2i(0, MAX_BUTTONS - 1):
 			clampi(value.y, value.x, MAX_BUTTONS - 1)
 		)
 ## List of button click IDs, and the number of users of those IDs. The list has a fixed size
-## of [const MAX_BUTTONS], and each added button increases an ID's count by one, including
+## of [constant MAX_BUTTONS], and each added button increases an ID's count by one, including
 ## UCID 255; conversely, deleting a button decreases the count by one, except when deleting
 ## a button for UCID 255, which resets the count to zero.
 var used_ids: Array[int] = []
@@ -169,8 +169,9 @@ func get_button_by_prefix(prefix: StringName, ucid: int) -> Array[InSimButton]:
 
 
 ## Returns a free [code]click_id[/code] value to create a new button, or [code]-1[/code]
-## if no ID is available in the [member id_range] for the specified [param ucid].
-## UCID 255 is always checked as everyone can see those buttons.
+## if no ID is available in the [member id_range].[br]
+## [b]Note:[/b] At this time, all UCIDs share the same button click IDs; individual mappings
+## will be added later.
 func get_free_id() -> int:
 	for i in id_range.y - id_range.x + 1:
 		var test_id := id_range.x + i

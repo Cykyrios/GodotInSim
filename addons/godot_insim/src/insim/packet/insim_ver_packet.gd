@@ -2,7 +2,7 @@ class_name InSimVERPacket
 extends InSimPacket
 ## VERsion packet
 ##
-## This packet is received upon request via [InSim.Tiny.TINY_VER], or as a reply to an
+## This packet is received upon request via [constant InSim.Tiny.TINY_VER], or as a reply to an
 ## [InSimISIPacket] with a non-zero request ID.
 
 const VERSION_LENGTH := 8  ## Version text length

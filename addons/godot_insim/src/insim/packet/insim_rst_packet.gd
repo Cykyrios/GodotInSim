@@ -2,7 +2,8 @@ class_name InSimRSTPacket
 extends InSimPacket
 ## Race STart packet
 ##
-## This packet is received when the session starts, or upon request via [InSim.Tiny.TINY_RST].
+## This packet is received when the session starts, or upon request via
+## [constant InSim.Tiny.TINY_RST].
 
 const TRACK_NAME_LENGTH := 6  ## Track name length
 

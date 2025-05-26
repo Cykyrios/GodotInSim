@@ -45,7 +45,7 @@ static func create_from_npl_packet(packet: InSimNPLPacket) -> Player:
 	return new_player
 
 
-## Returns a dictionary show the changed flags between [pram new_flags] and [member flags].
+## Returns a dictionary show the changed flags between [param new_flags] and [member flags].
 func get_flags_changes(new_flags: int) -> Dictionary[String, String]:
 	var changes: Dictionary[String, String] = {}
 	for i in InSim.PlayerFlag.size():

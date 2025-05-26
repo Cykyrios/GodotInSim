@@ -8,10 +8,10 @@ extends LFSPacket
 ## Some parameters listed below are inherited from [LFSPacket].[br]
 ## [br]
 ## Insim doc excerpt: All InSim packets use a four byte header[br]
-## [param Size]: total packet size - a multiple of 4[br]
-## [param Type]: packet identifier from the ISP_ enum (see below)[br]
-## [param ReqI]: non zero if the packet is a packet request or a reply to a request[br]
-## [param Data]: the first data byte[br]
+## Size: total packet size - a multiple of 4[br]
+## Type: packet identifier from the ISP_ enum (see below)[br]
+## ReqI: non zero if the packet is a packet request or a reply to a request[br]
+## Data: the first data byte[br]
 ## Spare bytes and Zero bytes must be filled with ZERO.
 
 const SIZE_MULTIPLIER := 4  ## Packet size multiplier

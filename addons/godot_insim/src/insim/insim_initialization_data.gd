@@ -7,7 +7,8 @@ extends RefCounted
 var udp_port := 0  ## UDP port for responses.
 var flags := 0  ## Insim flags from [enum InSim.InitFlag].
 
-## Single-character prefix used for prefix messages (see [constant MessageUserValue.MSO_PREFIX]).
+## Single-character prefix used for prefix messages (see
+## [constant InSim.MessageUserValue.MSO_PREFIX]).
 var prefix := "":
 	set(text):
 		prefix = text.left(InSimISIPacket.PREFIX_LENGTH)
