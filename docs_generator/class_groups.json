@@ -1,0 +1,99 @@
+{
+  "InSim": [
+    "InSim",
+    "InSimInitializationData",
+    {
+      "InSim Structs": [
+        "InSimStruct"
+      ]
+    },
+    {
+      "Utilities": [
+        "Connection",
+        "Player",
+        "GameState"
+      ]
+    }
+  ],
+  "OutGauge": [
+    "OutGauge",
+    "OutGaugePacket"
+    ],
+  "OutSim": [
+    "OutSim",
+    "OutSimPacket",
+    "OutSimMain",
+    "OutSimInputs",
+    "OutSimPack",
+    "OutSimWheel"
+  ],
+  "Packets": [
+    {
+      "InSim Packets": [
+        "InSimPacket"
+      ]
+    },
+    {
+    "Relay Packets": [
+      "InSimRelayPacket"
+      ]
+    },
+    {
+      "Other Packetes": [
+        "LFSPacket"
+      ]
+    }
+  ],
+  "InSim Buttons": [
+    "InSimButton",
+    "InSimButtons",
+    "InSimButtonDictionary"
+  ],
+  "Text Encoding": [
+    "LFSText",
+    "LFSCodePages"
+  ],
+  "Utilities": [
+    "GISCamera",
+    "GISTime",
+    "GISUnit",
+    "GISViewer"
+  ],
+  "File Formats": [
+    {
+      "CAR.BIN": [
+        "CarInfo",
+        "AeroInfo",
+        "WheelInfo"
+      ]
+    },
+    {
+      "LYT": [
+        "LYTFile",
+        "LYTObject"
+      ]
+    },
+    {
+      "PTH": [
+        "PTHFile",
+        "PTHNode"
+      ]
+    },
+    {
+      "SET": [
+        "SETFile"
+      ]
+    },
+    {
+      "SMX": [
+        "SMXFile",
+        "SMXObject",
+        "SMXPoint",
+        "SMXTriangle"
+      ]
+    }
+  ],
+  "Connection Protocols": [
+    "LFSConnection"
+  ]
+}

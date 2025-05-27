@@ -3,7 +3,9 @@
 
 # Submodule and plugin management
 .submodules/
+addons/gdscript_xml_converter
 addons/gdUnit4
+
 /build/
 
 /addons/godot_insim/secrets/

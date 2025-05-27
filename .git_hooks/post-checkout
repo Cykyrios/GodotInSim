@@ -8,7 +8,7 @@ mkdir -p addons
 
 # GdUnit
 rm -rf ./addons/gdUnit4
-ln -s -r -P .submodules/gdUnit4/addons/gdUnit4 ./addons/
+ln -s -r .submodules/gdUnit4/addons/gdUnit4 ./addons/
 # Remove GdUnit4 tests
 TARGET_DIR="addons/gdUnit4/test"
 if [ -d "$TARGET_DIR" ]; then
@@ -16,10 +16,14 @@ if [ -d "$TARGET_DIR" ]; then
 	rm -rf "$TARGET_DIR"
 fi
 
+# GDScript XML Converter
+rm -rf ./addons/gdscript_xml_converter
+ln -s -r .submodules/gdscript_xml_converter/addons/gdscript_xml_converter ./addons/
+
 # Uncomment this to setup the GodotInSim addon directory symlink
 ## GodotInSim
 #rm -rf ./addons/godot_insim
-#ln -s -r -P .submodules/godot_insim/addons/godot_insim ./addons/
+#ln -s -r .submodules/godot_insim/addons/godot_insim ./addons/
 ## Remove GodotInSim tests
 #TARGET_DIR="addons/godot_insim/test"
 #if [ -d "$TARGET_DIR" ]; then
