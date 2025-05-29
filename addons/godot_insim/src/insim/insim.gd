@@ -12,7 +12,7 @@ extends Node
 ## [br]
 ## TCP or UDP packets can be sent in both directions, LFS reporting various
 ## things about its state, and the external program requesting info and
-## controlling LFS with special packets, text commands or keypresses.[br][br]
+## controlling LFS with special packets, text commands or keypresses.[br]
 ## [br]
 ## INITIALISING InSim[br]
 ## ==================[br]
@@ -22,82 +22,118 @@ extends Node
 ## This will make LFS listen for packets on that TCP and UDP port.
 
 
+## Emitted when InSim has successfully connected, after receiving an [InSimVERPacket] response
+## from [method initialize]. When using a Relay connection, this signal is emitted as soon as
+## the TCP connection is established.
 signal connected
+## Emitted when InSim disconnects, which happens when calling [method close] or after a
+## [signal timeout].
 signal disconnected
+## After a given delay of [constant PING_INTERVAL] with no packet received, a ping is sent to LFS;
+## if no response is received within [constant TIMEOUT_DELAY], this signal is emitted.
 signal timeout
 
-## Emitted when a packet is received from LFS.
+## Emitted when a packet is received from LFS. Specific signals are also emitted
+## for each packet type.[br]
+## [b]Note:[/b] When requesting UDP updates for [InSimNLPPacket] or [InSimMCIPacket],
+## [signal udp_packet_received] is emitted instead of this one.
 signal packet_received(packet: InSimPacket)
 ## Emitted when a packet is sent successfully. [param sender] can be used
 ## to identify the source of the packet (InSim itself, or the user application),
 ## and defaults to [code]"InSim"[/code] in [method send_packet].
 signal packet_sent(packet: InSimPacket, sender: String)
-signal irp_arp_received(packet: RelayARPPacket)
-signal irp_err_received(packet: RelayERRPacket)
-signal irp_hos_received(packet: RelayHOSPacket)
-signal isp_acr_received(packet: InSimACRPacket)
-signal isp_aic_received(packet: InSimAICPacket)
-signal isp_aii_received(packet: InSimAIIPacket)
-signal isp_axi_received(packet: InSimAXIPacket)
-signal isp_axm_received(packet: InSimAXMPacket)
-signal isp_axo_received(packet: InSimAXOPacket)
-signal isp_bfn_received(packet: InSimBFNPacket)
-signal isp_btc_received(packet: InSimBTCPacket)
-signal isp_btt_received(packet: InSimBTTPacket)
-signal isp_cch_received(packet: InSimCCHPacket)
-signal isp_cim_received(packet: InSimCIMPacket)
-signal isp_cnl_received(packet: InSimCNLPacket)
-signal isp_con_received(packet: InSimCONPacket)
-signal isp_cpp_received(packet: InSimCPPPacket)
-signal isp_cpr_received(packet: InSimCPRPacket)
-signal isp_crs_received(packet: InSimCRSPacket)
-signal isp_csc_received(packet: InSimCSCPacket)
-signal isp_fin_received(packet: InSimFINPacket)
-signal isp_flg_received(packet: InSimFLGPacket)
-signal isp_hlv_received(packet: InSimHLVPacket)
-signal isp_iii_received(packet: InSimIIIPacket)
-signal isp_ipb_received(packet: InSimIPBPacket)
-signal isp_ism_received(packet: InSimISMPacket)
-signal isp_lap_received(packet: InSimLAPPacket)
-signal isp_mal_received(packet: InSimMALPacket)
-signal isp_mci_received(packet: InSimMCIPacket)
-signal isp_mso_received(packet: InSimMSOPacket)
-signal isp_nci_received(packet: InSimNCIPacket)
-signal isp_ncn_received(packet: InSimNCNPacket)
-signal isp_nlp_received(packet: InSimNLPPacket)
-signal isp_npl_received(packet: InSimNPLPacket)
-signal isp_obh_received(packet: InSimOBHPacket)
-signal isp_pen_received(packet: InSimPENPacket)
-signal isp_pit_received(packet: InSimPITPacket)
-signal isp_pfl_received(packet: InSimPFLPacket)
-signal isp_pla_received(packet: InSimPLAPacket)
-signal isp_plh_received(packet: InSimPLHPacket)
-signal isp_pll_received(packet: InSimPLLPacket)
-signal isp_plp_received(packet: InSimPLPPacket)
-signal isp_psf_received(packet: InSimPSFPacket)
-signal isp_reo_received(packet: InSimREOPacket)
-signal isp_res_received(packet: InSimRESPacket)
-signal isp_rip_received(packet: InSimRIPPacket)
-signal isp_rst_received(packet: InSimRSTPacket)
-signal isp_slc_received(packet: InSimSLCPacket)
+signal irp_arp_received(packet: RelayARPPacket)  ## Emitted when a [RelayARPPacket] is received.
+signal irp_err_received(packet: RelayERRPacket)  ## Emitted when a [RelayERRPacket] is received.
+signal irp_hos_received(packet: RelayHOSPacket)  ## Emitted when a [RelayHOSPacket] is received.
+signal isp_acr_received(packet: InSimACRPacket)  ## Emitted when an [InSimACRPacket] is received.
+signal isp_aic_received(packet: InSimAICPacket)  ## Emitted when an [InSimAICPacket] is received.
+signal isp_aii_received(packet: InSimAIIPacket)  ## Emitted when an [InSimAIIPacket] is received.
+signal isp_axi_received(packet: InSimAXIPacket)  ## Emitted when an [InSimAXIPacket] is received.
+signal isp_axm_received(packet: InSimAXMPacket)  ## Emitted when an [InSimAXMPacket] is received.
+signal isp_axo_received(packet: InSimAXOPacket)  ## Emitted when an [InSimAXOPacket] is received.
+signal isp_bfn_received(packet: InSimBFNPacket)  ## Emitted when an [InSimBFNPacket] is received.
+signal isp_btc_received(packet: InSimBTCPacket)  ## Emitted when an [InSimBTCPacket] is received.
+signal isp_btt_received(packet: InSimBTTPacket)  ## Emitted when an [InSimBTTPacket] is received.
+signal isp_cch_received(packet: InSimCCHPacket)  ## Emitted when an [InSimCCHPacket] is received.
+signal isp_cim_received(packet: InSimCIMPacket)  ## Emitted when an [InSimCIMPacket] is received.
+signal isp_cnl_received(packet: InSimCNLPacket)  ## Emitted when an [InSimCNLPacket] is received.
+signal isp_con_received(packet: InSimCONPacket)  ## Emitted when an [InSimCONPacket] is received.
+signal isp_cpp_received(packet: InSimCPPPacket)  ## Emitted when an [InSimCPPPacket] is received.
+signal isp_cpr_received(packet: InSimCPRPacket)  ## Emitted when an [InSimCPRPacket] is received.
+signal isp_crs_received(packet: InSimCRSPacket)  ## Emitted when an [InSimCRSPacket] is received.
+signal isp_csc_received(packet: InSimCSCPacket)  ## Emitted when an [InSimCSCPacket] is received.
+signal isp_fin_received(packet: InSimFINPacket)  ## Emitted when an [InSimFINPacket] is received.
+signal isp_flg_received(packet: InSimFLGPacket)  ## Emitted when an [InSimFLGPacket] is received.
+signal isp_hlv_received(packet: InSimHLVPacket)  ## Emitted when an [InSimHLVPacket] is received.
+signal isp_iii_received(packet: InSimIIIPacket)  ## Emitted when an [InSimIIIPacket] is received.
+signal isp_ipb_received(packet: InSimIPBPacket)  ## Emitted when an [InSimIPBPacket] is received.
+signal isp_ism_received(packet: InSimISMPacket)  ## Emitted when an [InSimISMPacket] is received.
+signal isp_lap_received(packet: InSimLAPPacket)  ## Emitted when an [InSimLAPPacket] is received.
+signal isp_mal_received(packet: InSimMALPacket)  ## Emitted when an [InSimMALPacket] is received.
+signal isp_mci_received(packet: InSimMCIPacket)  ## Emitted when an [InSimMCIPacket] is received.
+signal isp_mso_received(packet: InSimMSOPacket)  ## Emitted when an [InSimMSOPacket] is received.
+signal isp_nci_received(packet: InSimNCIPacket)  ## Emitted when an [InSimNCIPacket] is received.
+signal isp_ncn_received(packet: InSimNCNPacket)  ## Emitted when an [InSimNCNPacket] is received.
+signal isp_nlp_received(packet: InSimNLPPacket)  ## Emitted when an [InSimNLPPacket] is received.
+signal isp_npl_received(packet: InSimNPLPacket)  ## Emitted when an [InSimNPLPacket] is received.
+signal isp_obh_received(packet: InSimOBHPacket)  ## Emitted when an [InSimOBHPacket] is received.
+signal isp_pen_received(packet: InSimPENPacket)  ## Emitted when an [InSimPENPacket] is received.
+signal isp_pit_received(packet: InSimPITPacket)  ## Emitted when an [InSimPITPacket] is received.
+signal isp_pfl_received(packet: InSimPFLPacket)  ## Emitted when an [InSimPFLPacket] is received.
+signal isp_pla_received(packet: InSimPLAPacket)  ## Emitted when an [InSimPLAPacket] is received.
+signal isp_plh_received(packet: InSimPLHPacket)  ## Emitted when an [InSimPLHPacket] is received.
+signal isp_pll_received(packet: InSimPLLPacket)  ## Emitted when an [InSimPLLPacket] is received.
+signal isp_plp_received(packet: InSimPLPPacket)  ## Emitted when an [InSimPLPPacket] is received.
+signal isp_psf_received(packet: InSimPSFPacket)  ## Emitted when an [InSimPSFPacket] is received.
+signal isp_reo_received(packet: InSimREOPacket)  ## Emitted when an [InSimREOPacket] is received.
+signal isp_res_received(packet: InSimRESPacket)  ## Emitted when an [InSimRESPacket] is received.
+signal isp_rip_received(packet: InSimRIPPacket)  ## Emitted when an [InSimRIPPacket] is received.
+signal isp_rst_received(packet: InSimRSTPacket)  ## Emitted when an [InSimRSTPacket] is received.
+signal isp_slc_received(packet: InSimSLCPacket)  ## Emitted when an [InSimSLCPacket] is received.
+## Emitted when an [InSimSmallPacket] is received.
 signal isp_small_received(packet: InSimSmallPacket)
-signal isp_spx_received(packet: InSimSPXPacket)
-signal isp_ssh_received(packet: InSimSSHPacket)
-signal isp_sta_received(packet: InSimSTAPacket)
-signal isp_tiny_received(packet: InSimTinyPacket)
-signal isp_toc_received(packet: InSimTOCPacket)
-signal isp_uco_received(packet: InSimUCOPacket)
-signal isp_ver_received(packet: InSimVERPacket)
-signal isp_vtn_received(packet: InSimVTNPacket)
+signal isp_spx_received(packet: InSimSPXPacket)  ## Emitted when an [InSimSPXPacket] is received.
+signal isp_ssh_received(packet: InSimSSHPacket)  ## Emitted when an [InSimSSHPacket] is received.
+signal isp_sta_received(packet: InSimSTAPacket)  ## Emitted when an [InSimSTAPacket] is received.
+signal isp_tiny_received(packet: InSimTinyPacket)  ## Emitted when an [InSimTinyPacket] is received.
+signal isp_toc_received(packet: InSimTOCPacket)  ## Emitted when an [InSimTOCPacket] is received.
+signal isp_uco_received(packet: InSimUCOPacket)  ## Emitted when an [InSimUCOPacket] is received.
+signal isp_ver_received(packet: InSimVERPacket)  ## Emitted when an [InSimVERPacket] is received.
+signal isp_vtn_received(packet: InSimVTNPacket)  ## Emitted when an [InSimVTNPacket] is received.
+## Emitted when an [InSimSmallPacket] is received with a [member InSimSmallPacket.sub_type] equal
+## to [constant InSim.Small.SMALL_ALC].
 signal small_alc_received(packet: InSimSmallPacket)
+## Emitted when an [InSimSmallPacket] is received with a [member InSimSmallPacket.sub_type] equal
+## to [constant InSim.Small.SMALL_RTP].
 signal small_rtp_received(packet: InSimSmallPacket)
+## Emitted when an [InSimSmallPacket] is received with a [member InSimSmallPacket.sub_type] equal
+## to [constant InSim.Small.SMALL_VTA].
 signal small_vta_received(packet: InSimSmallPacket)
+## Emitted when an [InSimTinyPacket] is received with a [member InSimTinyPacket.sub_type] equal
+## to [constant InSim.Tiny.TINY_AXC].
 signal tiny_axc_received(packet: InSimTinyPacket)
+## Emitted when an [InSimTinyPacket] is received with a [member InSimTinyPacket.sub_type] equal
+## to [constant InSim.Tiny.TINY_CLR].
 signal tiny_clr_received(packet: InSimTinyPacket)
+## Emitted when an [InSimTinyPacket] is received with a [member InSimTinyPacket.sub_type] equal
+## to [constant InSim.Tiny.TINY_MPE].
 signal tiny_mpe_received(packet: InSimTinyPacket)
+## Emitted when an [InSimTinyPacket] is received with a [member InSimTinyPacket.sub_type] equal
+## to [constant InSim.Tiny.TINY_REN].
 signal tiny_ren_received(packet: InSimTinyPacket)
+## Emitted when an [InSimTinyPacket] is received with a [member InSimTinyPacket.sub_type] equal
+## to [constant InSim.Tiny.TINY_REPLY].
 signal tiny_reply_received(packet: InSimTinyPacket)
+## Emitted when an [InSimTinyPacket] is received with a [member InSimTinyPacket.sub_type] equal
+## to [constant InSim.Tiny.TINY_VTC].
 signal tiny_vtc_received(packet: InSimTinyPacket)
+## Emitted when a packet is received by the [member nlp_mci_connection], which only happens
+## if you request UDP updates via [InSimISIPacket].
+signal udp_packet_received(packet: InSimPacket)
+## Emitted when an [InSimNLPPacket] is received by the [member nlp_mci_connection].
+signal udp_nlp_received(packet: InSimNLPPacket)
+## Emitted when an [InSimMCIPacket] is received by the [member nlp_mci_connection].
+signal udp_mci_received(packet: InSimMCIPacket)
 
 enum Packet {
 	ISP_NONE,  ## 0: not used
@@ -506,15 +542,15 @@ enum ButtonFunction {
 	BFN_REQUEST,  ## 3 - user request: SHIFT+B or SHIFT+I - request for buttons
 }
 enum ButtonPosition {
-	X_MIN = 0,
-	X_MAX = 110,
-	Y_MIN = 0,
-	Y_MAX = 170,
+	X_MIN = 0,  ## Minimum recommended X coordinate
+	X_MAX = 110,  ## Maximum recommended X coordinate
+	Y_MIN = 0,  ## Minimum recommended Y coordinate
+	Y_MAX = 170,  ## Maximum recommended Y coordinate
 }
 enum ButtonStyle {
-	ISB_C1 = 1,
-	ISB_C2 = 2,
-	ISB_C4 = 4,
+	ISB_C1 = 1,  ## Text color, 3-bit value, see [enum ButtonColor].
+	ISB_C2 = 2,  ## Text color, 3-bit value, see [enum ButtonColor].
+	ISB_C4 = 4,  ## Text color, 3-bit value, see [enum ButtonColor].
 	ISB_CLICK = 8,
 	ISB_LIGHT = 16,
 	ISB_DARK = 32,
@@ -546,11 +582,11 @@ enum Car {
 	CAR_ALL = 0xffffffff
 }
 enum CompCarInfo {
-	CCI_BLUE = 1,
-	CCI_YELLOW = 2,
-	CCI_LAG = 32,
-	CCI_FIRST = 64,
-	CCI_LAST = 128,
+	CCI_BLUE = 1,  ## This car is being lapped.
+	CCI_YELLOW = 2,  ## This car is causing a yellow flag.
+	CCI_LAG = 32,  ## This player is lagging.
+	CCI_FIRST = 64,  ## This is the first [CompCar] in this set of [InSimMCIPacket]s.
+	CCI_LAST = 128,  ## This is the last [CompCar] in this set of [InSimMCIPacket]s.
 }
 enum Confirmation {
 	CONF_MENTIONED = 1,
@@ -619,12 +655,12 @@ enum InterfaceGarage {
 	GRG_AERO,
 	GRG_PASS,
 	GRG_NUM,
-	GRG_RATING = 255
+	GRG_RATING = 255  ## Not documented in InSim.txt
 }
 enum InterfaceShiftU {
-	FVM_PLAIN,
-	FVM_BUTTONS,
-	FVM_EDIT,
+	FVM_PLAIN,  ## no buttons displayed
+	FVM_BUTTONS,  ## buttons displayed (not editing)
+	FVM_EDIT,  ## edit mode
 	FVM_NUM
 }
 enum JRRAction {
@@ -635,47 +671,47 @@ enum JRRAction {
 	JRR_RESET,
 	JRR_RESET_NO_REPAIR,
 	JRR_6,
-	JRR_7
+	JRR_7,
 }
 enum Language {
-	LFS_ENGLISH,  ## 0
-	LFS_DEUTSCH,  ## 1
-	LFS_PORTUGUESE,  ## 2
-	LFS_FRENCH,  ## 3
-	LFS_SUOMI,  ## 4
-	LFS_NORSK,  ## 5
-	LFS_NEDERLANDS,  ## 6
-	LFS_CATALAN,  ## 7
-	LFS_TURKISH,  ## 8
-	LFS_CASTELLANO,  ## 9
-	LFS_ITALIANO,  ## 10
-	LFS_DANSK,  ## 11
-	LFS_CZECH,  ## 12
-	LFS_RUSSIAN,  ## 13
-	LFS_ESTONIAN,  ## 14
-	LFS_SERBIAN,  ## 15
-	LFS_GREEK,  ## 16
-	LFS_POLSKI,  ## 17
-	LFS_CROATIAN,  ## 18
-	LFS_HUNGARIAN,  ## 19
-	LFS_BRAZILIAN,  ## 20
-	LFS_SWEDISH,  ## 21
-	LFS_SLOVAK,  ## 22
-	LFS_GALEGO,  ## 23
-	LFS_SLOVENSKI,  ## 24
-	LFS_BELARUSSIAN,  ## 25
-	LFS_LATVIAN,  ## 26
-	LFS_LITHUANIAN,  ## 27
-	LFS_TRADITIONAL_CHINESE,  ## 28
-	LFS_SIMPLIFIED_CHINESE,  ## 29
-	LFS_JAPANESE,  ## 30
-	LFS_KOREAN,  ## 31
-	LFS_BULGARIAN,  ## 32
-	LFS_LATINO,  ## 33
-	LFS_UKRAINIAN,  ## 34
-	LFS_INDONESIAN,  ## 35
-	LFS_ROMANIAN,  ## 36
-	LFS_NUM_LANG  ## 37
+	LFS_ENGLISH,
+	LFS_DEUTSCH,
+	LFS_PORTUGUESE,
+	LFS_FRENCH,
+	LFS_SUOMI,
+	LFS_NORSK,
+	LFS_NEDERLANDS,
+	LFS_CATALAN,
+	LFS_TURKISH,
+	LFS_CASTELLANO,
+	LFS_ITALIANO,
+	LFS_DANSK,
+	LFS_CZECH,
+	LFS_RUSSIAN,
+	LFS_ESTONIAN,
+	LFS_SERBIAN,
+	LFS_GREEK,
+	LFS_POLSKI,
+	LFS_CROATIAN,
+	LFS_HUNGARIAN,
+	LFS_BRAZILIAN,
+	LFS_SWEDISH,
+	LFS_SLOVAK,
+	LFS_GALEGO,
+	LFS_SLOVENSKI,
+	LFS_BELARUSSIAN,
+	LFS_LATVIAN,
+	LFS_LITHUANIAN,
+	LFS_TRADITIONAL_CHINESE,
+	LFS_SIMPLIFIED_CHINESE,
+	LFS_JAPANESE,
+	LFS_KOREAN,
+	LFS_BULGARIAN,
+	LFS_LATINO,
+	LFS_UKRAINIAN,
+	LFS_INDONESIAN,
+	LFS_ROMANIAN,
+	LFS_NUM_LANG
 }
 enum LocalCarLights {
 	LCL_SET_SIGNALS = 1,
@@ -687,23 +723,23 @@ enum LocalCarLights {
 	LCL_SET_EXTRA = 0x40,
 }
 enum LocalCarSwitches {
-	LCS_SET_SIGNALS = 1,
+	LCS_SET_SIGNALS = 1,  ## Deprecated, use [InSim.Small.SMALL_LCL] instead.
 	LCS_SET_FLASH = 2,
-	LCS_SET_HEADLIGHTS = 4,
+	LCS_SET_HEADLIGHTS = 4,  ## Deprecated, use [InSim.Small.SMALL_LCL] instead.
 	LCS_SET_HORN = 8,
 	LCS_SET_SIREN = 16,
 }
 enum LeaveReason {
-	LEAVR_DISCO,
-	LEAVR_TIMEOUT,
-	LEAVR_LOSTCONN,
-	LEAVR_KICKED,
-	LEAVR_BANNED,
-	LEAVR_SECURITY,
-	LEAVR_CPW,
-	LEAVR_OOS,
-	LEAVR_JOOS,
-	LEAVR_HACK,
+	LEAVR_DISCO,  ## no reason given
+	LEAVR_TIMEOUT,  ## timed out
+	LEAVR_LOSTCONN,  ## lost connection
+	LEAVR_KICKED,  ## kicked
+	LEAVR_BANNED,  ## ban
+	LEAVR_SECURITY,  ## security
+	LEAVR_CPW,  ## cheat protection wrong
+	LEAVR_OOS,  ## out of sync with host
+	LEAVR_JOOS,  ## join OOS (initial sync failed)
+	LEAVR_HACK,  ## invalid packet
 	LEAVR_NUM
 }
 enum MessageUserValue {
@@ -722,19 +758,19 @@ enum MessageSound {
 	SND_NUM
 }
 enum OBHFlag {
-	OBH_LAYOUT = 1,
-	OBH_CAN_MOVE = 2,
-	OBH_WAS_MOVING = 4,
-	OBH_ON_SPOT = 8,
+	OBH_LAYOUT = 1,  ## an added object
+	OBH_CAN_MOVE = 2,  ## a movable object
+	OBH_WAS_MOVING = 4,  ## was moving before this hit
+	OBH_ON_SPOT = 8,  ## object in original position
 }
 enum OCOAction {
 	OCO_ZERO,
 	OCO_1,
 	OCO_2,
 	OCO_3,
-	OCO_LIGHTS_RESET,
-	OCO_LIGHTS_SET,
-	OCO_LIGHTS_UNSET,
+	OCO_LIGHTS_RESET,  ## give up control of all lights
+	OCO_LIGHTS_SET,  ## use Data byte to set the bulbs
+	OCO_LIGHTS_UNSET,  ## give up control of the specified lights
 	OCO_NUM
 }
 enum Penalty {
@@ -748,13 +784,13 @@ enum Penalty {
 	PENALTY_NUM
 }
 enum PenaltyReason {
-	PENR_UNKNOWN,
-	PENR_ADMIN,
-	PENR_WRONG_WAY,
-	PENR_FALSE_START,
-	PENR_SPEEDING,
-	PENR_STOP_SHORT,
-	PENR_STOP_LATE,
+	PENR_UNKNOWN,  ## unknown or cleared penalty
+	PENR_ADMIN,  ## penatly given by admin
+	PENR_WRONG_WAY,  ## wrong way driving
+	PENR_FALSE_START,  ## starting before green light
+	PENR_SPEEDING,  ## speeding in pit lane
+	PENR_STOP_SHORT,  ## stop-go pit stop too short
+	PENR_STOP_LATE,  ## compulsory stop is too late
 	PENR_NUM
 }
 enum PitLane {
@@ -821,23 +857,23 @@ enum PMOFlags {
 	PMO_AVOID_CHECK = 8,
 }
 enum Replay {
-	RIP_OK,
-	RIP_ALREADY,
-	RIP_DEDICATED,
-	RIP_WRONG_MODE,
-	RIP_NOT_REPLAY,
-	RIP_CORRUPTED,
-	RIP_NOT_FOUND,
-	RIP_UNLOADABLE,
-	RIP_DEST_OOB,
-	RIP_UNKNOWN,
-	RIP_USER,
-	RIP_OOS,
+	RIP_OK,  ## completed instruction
+	RIP_ALREADY,  ## already at the destination
+	RIP_DEDICATED,  ## can't run a replay - dedicated host
+	RIP_WRONG_MODE,  ## can't start a replay - not in a suitable mode
+	RIP_NOT_REPLAY,  ## RName is zero but no replay is currently loaded
+	RIP_CORRUPTED,  ## IS_RIP corrupted (e.g. RName does not end with zero)
+	RIP_NOT_FOUND,  ## the replay file was not found
+	RIP_UNLOADABLE,  ## obsolete / future / corrupted
+	RIP_DEST_OOB,  ## destination is beyond replay length
+	RIP_UNKNOWN,  ## unknown error found starting replay
+	RIP_USER,  ## replay search was terminated by user
+	RIP_OOS,  ## can't reach destination - SPR is out of sync
 }
 enum ReplayOption {
-	RIPOPT_LOOP = 1,
-	RIPOPT_SKINS = 2,
-	RIPOPT_FULL_PHYS = 4,
+	RIPOPT_LOOP = 1,  ## replay will loop
+	RIPOPT_SKINS = 2,  ## download missing skins
+	RIPOPT_FULL_PHYS = 4,  ## use full physics when searching an MPR
 }
 enum Screenshot {
 	SSH_OK,  ## 0 - OK: completed instruction
@@ -851,22 +887,22 @@ enum Setup {
 	SETF_ABS_ENABLE = 4,
 }
 enum State {
-	ISS_GAME = 1,
-	ISS_REPLAY = 2,
-	ISS_PAUSED = 4,
-	ISS_SHIFTU = 8,
-	ISS_DIALOG = 16,
-	ISS_SHIFTU_FOLLOW = 32,
-	ISS_SHIFTU_NO_OPT = 64,
-	ISS_SHOW_2D = 128,
-	ISS_FRONT_END = 256,
-	ISS_MULTI = 512,
-	ISS_MPSPEEDUP = 1024,
-	ISS_WINDOWED = 2048,
-	ISS_SOUND_MUTE = 4096,
-	ISS_VIEW_OVERRIDE = 8192,
-	ISS_VISIBLE = 16384,
-	ISS_TEXT_ENTRY = 32768,
+	ISS_GAME = 1,  ## in game (or MPR)
+	ISS_REPLAY = 2,  ## in SPR
+	ISS_PAUSED = 4,  ## paused
+	ISS_SHIFTU = 8,  ## free view mode
+	ISS_DIALOG = 16,  ## in a dialog
+	ISS_SHIFTU_FOLLOW = 32,  ## FOLLOW view
+	ISS_SHIFTU_NO_OPT = 64,  ## free view buttons hidden
+	ISS_SHOW_2D = 128,  ## showing 2d display
+	ISS_FRONT_END = 256,  ## entry screen
+	ISS_MULTI = 512,  ## multiplayer mode
+	ISS_MPSPEEDUP = 1024,  ## multiplayer speedup option
+	ISS_WINDOWED = 2048,  ## LFS is running in a window
+	ISS_SOUND_MUTE = 4096,  ## sound is switched off
+	ISS_VIEW_OVERRIDE = 8192,  ## override user view
+	ISS_VISIBLE = 16384,  ## InSim buttons visible
+	ISS_TEXT_ENTRY = 32768,  ## in a text entry dialog
 }
 enum Tyre {
 	TYRE_R1,
@@ -880,10 +916,10 @@ enum Tyre {
 	TYRE_NUM
 }
 enum UCOAction {
-	UCO_CIRCLE_ENTER,
-	UCO_CIRCLE_LEAVE,
-	UCO_CP_FWD,
-	UCO_CP_REV,
+	UCO_CIRCLE_ENTER,  ## entered a circle
+	UCO_CIRCLE_LEAVE,  ## left a circle
+	UCO_CP_FWD,  ## crossed cp in forward direction
+	UCO_CP_REV,  ## crossed cp in backward direction
 }
 enum View {
 	VIEW_FOLLOW,  ## 0 - arcade
@@ -906,20 +942,29 @@ enum GISRequest {
 	REQ_0 = 250,  ## Standard request ID for automatic requests
 }
 
-const VERSION := 9
-const PING_INTERVAL := 31
-const TIMEOUT_DELAY := 10
+const VERSION := 9  ## Current supported InSim version
+const PING_INTERVAL := 31  ## Interval between pings, if no packet is received before that.
+const TIMEOUT_DELAY := 10  ## Timeout if no reply to ping within this delay.
 
-const RELAY_ADDRESS := "isrelay.lfs.net"
-const RELAY_PORT := 47474
+const RELAY_ADDRESS := "isrelay.lfs.net"  ## InSim Relay address
+const RELAY_PORT := 47474  ## InSim Relay port
 
-var lfs_connection: LFSConnection = null
+var lfs_connection: LFSConnection = null  ## Internal connection for TCP/UDP communication
+## UDP connection used specifically for receiving NLP or MCI packets, see [InSimISIPacket].
 var nlp_mci_connection: LFSConnectionUDP = null
-var is_relay := false
+var is_relay := false  ## Whether this is a Relay connection, do not set manually.
+## Helper struct for InSim initialization, see [InSimISIPacket].
 var initialization_data := InSimInitializationData.new()
 
+## Current status of the InSim connection; can report [code]false[/code] even if TCP is connected.
+## InSim is considered connected when the first [InSimVERPacket] is received after
+## [method initialize], and whenever it receives a packet after that. Connection is considered
+## dropped after [method close] or a [signal timeout]. If you need to handle timeouts, connect
+## to [signal timeout] instead of checking the value of this variable.
 var insim_connected := false
+## A timer used to check the connection status, resets when a packet is received.
 var ping_timer: Timer = null
+## A timer used to check for timeouts, after [member ping_timer] has expired.
 var timeout_timer: Timer = null
 
 ## Current state of the game, as per IS_STA documentation. Updated automatically upon
@@ -943,12 +988,12 @@ func _init() -> void:
 
 
 func _ready() -> void:
-	var _discard := nlp_mci_connection.packet_received.connect(_on_packet_received)
+	var _discard := nlp_mci_connection.packet_received.connect(_on_udp_packet_received)
 
 	ping_timer.one_shot = true
-	_discard = ping_timer.timeout.connect(send_ping)
+	_discard = ping_timer.timeout.connect(_send_ping)
 	timeout_timer.one_shot = true
-	_discard = timeout_timer.timeout.connect(handle_timeout)
+	_discard = timeout_timer.timeout.connect(_handle_timeout)
 
 	_discard = isp_cnl_received.connect(_on_cnl_packet_received)
 	_discard = isp_cpr_received.connect(_on_cpr_packet_received)
@@ -959,11 +1004,13 @@ func _ready() -> void:
 	_discard = isp_small_received.connect(_on_small_packet_received)
 	_discard = isp_sta_received.connect(_on_sta_packet_received)
 	_discard = isp_tiny_received.connect(_on_tiny_packet_received)
-	_discard = isp_ver_received.connect(read_version_packet)
+	_discard = isp_ver_received.connect(_read_version_packet)
 	_discard = tiny_clr_received.connect(_on_tiny_clr_received)
 	_discard = tiny_mpe_received.connect(_on_tiny_mpe_received)
 
 
+## Closes the InSim connection. Trying to send packets after this may cause numerous errors in
+## the log or terminal.
 func close() -> void:
 	if not lfs_connection:
 		return
@@ -974,12 +1021,6 @@ func close() -> void:
 	insim_connected = false
 	ping_timer.stop()
 	disconnected.emit()
-
-
-func connect_lfs_connection_signals() -> void:
-	var _discard := lfs_connection.connected.connect(_on_connected_to_host)
-	_discard = lfs_connection.connection_failed.connect(_on_connection_failed)
-	_discard = lfs_connection.packet_received.connect(_on_packet_received)
 
 
 ## Returns the LFS license name corresponding to the given [param ucid], or an empty [String]
@@ -1006,13 +1047,15 @@ func get_player_name(plid: int) -> String:
 	return ""
 
 
-func handle_timeout() -> void:
-		timeout.emit()
-		insim_connected = false
-		push_warning("InSim connection timed out.")
-		close()
-
-
+## Attempts to connect to InSim at the given [param address] and [param port], with the
+## specified [param init_data]. If [param use_udp] is [code]true[/code], a UDP connection will be
+## used instead of TCP.[br]
+## [b]Note:[/b] Using TCP is generally the preferred solution to prevent missing or unordered
+## packets; UDP should be reserved for cases where you want minimal latency and don't mind losing
+## some packets.[br]
+## [b]Tip:[/b] You can set the [member InSimInitializationData.udp_port] to request [InSimNLPPacket]
+## or [InSimMCIPacket] updates via UDP while using a TCP connection for other packets. Read
+## [code]InSim.txt[/code] for more details.
 func initialize(
 	address: String, port: int, init_data: InSimInitializationData, use_udp := false
 ) -> void:
@@ -1032,7 +1075,7 @@ func initialize(
 		else:
 			lfs_connection = LFSConnectionTCP.new()
 		add_child(lfs_connection)
-		connect_lfs_connection_signals()
+		_connect_lfs_connection_signals()
 	is_relay = (
 		address == RELAY_ADDRESS
 		and port == RELAY_PORT
@@ -1040,44 +1083,7 @@ func initialize(
 	lfs_connection._connect_to_host(address, port, initialization_data.udp_port)
 
 
-func push_error_unknown_packet_subtype(type: int, subtype: int) -> void:
-	push_error("%s with unknown packet subtype" % [Packet.keys()[type], subtype])
-
-
-func push_error_unknown_packet_type(type: int) -> void:
-	push_error("Unknown packet type: %d" % [type])
-
-
-func read_ping_reply() -> void:
-	insim_connected = true
-	reset_timeout_timer()
-
-
-func read_version_packet(packet: InSimVERPacket) -> void:
-	if packet.insim_ver != VERSION:
-		print("Host InSim version (%d) is different from local version (%d)." % \
-				[packet.insim_ver, VERSION])
-		close()
-		return
-	if not insim_connected:
-		insim_connected = true
-		print("Host InSim version matches local version (%d)." % [VERSION])
-		send_packet(InSimTinyPacket.create(GISRequest.REQ_0, InSim.Tiny.TINY_SST))
-		send_packet(InSimTinyPacket.create(GISRequest.REQ_0, InSim.Tiny.TINY_NCN))
-		send_packet(InSimTinyPacket.create(GISRequest.REQ_0, InSim.Tiny.TINY_NPL))
-
-
-func reset_timeout_timer() -> void:
-	ping_timer.start(PING_INTERVAL)
-	timeout_timer.stop()
-
-
-func send_keep_alive_packet() -> void:
-	send_packet(InSimTinyPacket.create(0, Tiny.TINY_NONE))
-	reset_timeout_timer()
-
-
-## Call this function to send a UTF8-formatted text string to LFS as a local message.
+## Sends a UTF8-formatted text string to LFS as a local message.
 func send_local_message(
 	message: String, sound := InSim.MessageSound.SND_SILENT, sender := "InSim"
 ) -> void:
@@ -1089,8 +1095,8 @@ func send_local_message(
 		send_local_message(split_message, sound, sender)
 
 
-## Call this function to send a UTF8-formatted message to LFS as user. Color codes
-## (e.g. ^1 for red) will be converted accordingly.
+## Sends a UTF8-formatted message to LFS as user. Color codes (e.g. ^1 for red)
+## will be converted accordingly.
 func send_message(message: String, sender := "InSim") -> void:
 	var message_buffer := LFSText.unicode_to_lfs_bytes(message)
 	var packet: InSimPacket = null
@@ -1107,8 +1113,8 @@ func send_message(message: String, sender := "InSim") -> void:
 	send_packet(packet, sender)
 
 
-## Call this function to send a UTF8-formatted message to a specific connection, identified
-## by its [param ucid]. A value of 255 will send the message to everyone.
+## Sends a UTF8-formatted message to a specific connection, identified by its [param ucid].
+## A value of 255 will send the message to everyone.
 func send_message_to_connection(
 	ucid: int, message: String, sound := InSim.MessageSound.SND_SILENT, sender := "InSim"
 ) -> void:
@@ -1120,8 +1126,7 @@ func send_message_to_connection(
 		send_message_to_connection(ucid, split_message, sound, sender)
 
 
-## Call this function to send a UTF8-formatted message to a specific player, identified
-## by their [param plid].
+## Sends a UTF8-formatted message to a specific player, identified by their [param plid].
 func send_message_to_player(
 	plid: int, message: String, sound := InSim.MessageSound.SND_SILENT, sender := "InSim"
 ) -> void:
@@ -1133,9 +1138,9 @@ func send_message_to_player(
 		send_message_to_player(plid, split_message, sound, sender)
 
 
-## Call this function to send an InSim packet to LFS. You can pass the name
-## of your application to [param sender] if you want to identify the origin of
-## sent packets (by connecting the [signal packet_sent] signal).
+## Sends an InSim packet to LFS. You can pass the name of your application to
+## [param sender] if you want to identify the origin of sent packets (by connecting
+## the [signal packet_sent] signal).
 func send_packet(packet: InSimPacket, sender := "InSim") -> void:
 	if not lfs_connection:
 		push_error("No connection, cannot send packet.")
@@ -1144,7 +1149,10 @@ func send_packet(packet: InSimPacket, sender := "InSim") -> void:
 		not insim_connected
 		and not is_relay
 		and packet.type != Packet.ISP_ISI
-		and not (packet.type == Packet.ISP_TINY and (packet as InSimTinyPacket).sub_type == Tiny.TINY_PING)
+		and not (
+			packet.type == Packet.ISP_TINY
+			and (packet as InSimTinyPacket).sub_type == Tiny.TINY_PING
+		)
 		and packet.type < Packet.IRP_ARQ
 	):
 		push_warning("Warning: Sending packet but InSim is not initialized.")
@@ -1155,15 +1163,9 @@ func send_packet(packet: InSimPacket, sender := "InSim") -> void:
 
 
 ## Sends multiple [param packets] passed in an array, calling [method send_packet] for each packet.
-func send_packets(packets: Array[InSimPacket]) -> void:
+func send_packets(packets: Array[InSimPacket], sender := "InSim") -> void:
 	for packet in packets:
-		send_packet(packet)
-
-
-## Sends a ping request to LFS using an [InSimTinyPacket].
-func send_ping() -> void:
-	timeout_timer.start(TIMEOUT_DELAY)
-	send_packet(InSimTinyPacket.create(GISRequest.REQ_0, Tiny.TINY_PING))
+		send_packet(packet, sender)
 
 
 #region Buttons
@@ -1271,9 +1273,66 @@ func get_button_by_prefix(prefix: StringName, ucid: int) -> Array[InSimButton]:
 #endregion
 
 
+func _connect_lfs_connection_signals() -> void:
+	var _discard := lfs_connection.connected.connect(_on_connected_to_host)
+	_discard = lfs_connection.connection_failed.connect(_on_connection_failed)
+	_discard = lfs_connection.packet_received.connect(_on_packet_received)
+
+
+func _handle_timeout() -> void:
+		timeout.emit()
+		insim_connected = false
+		push_warning("InSim connection timed out.")
+		close()
+
+
+func _push_error_unknown_packet_subtype(type: int, subtype: int) -> void:
+	push_error("%s with unknown packet subtype" % [Packet.keys()[type], subtype])
+
+
+func _push_error_unknown_packet_type(type: int) -> void:
+	push_error("Unknown packet type: %d" % [type])
+
+
+func _read_ping_reply() -> void:
+	insim_connected = true
+	_reset_timeout_timer()
+
+
+func _read_version_packet(packet: InSimVERPacket) -> void:
+	if packet.insim_ver != VERSION:
+		print("Host InSim version (%d) is different from local version (%d)." % \
+				[packet.insim_ver, VERSION])
+		close()
+		return
+	if not insim_connected:
+		insim_connected = true
+		connected.emit()
+		print("Host InSim version matches local version (%d)." % [VERSION])
+		send_packet(InSimTinyPacket.create(GISRequest.REQ_0, InSim.Tiny.TINY_SST))
+		send_packet(InSimTinyPacket.create(GISRequest.REQ_0, InSim.Tiny.TINY_NCN))
+		send_packet(InSimTinyPacket.create(GISRequest.REQ_0, InSim.Tiny.TINY_NPL))
+
+
+func _reset_timeout_timer() -> void:
+	ping_timer.start(PING_INTERVAL)
+	timeout_timer.stop()
+
+
+func _send_keep_alive_packet() -> void:
+	send_packet(InSimTinyPacket.create(0, Tiny.TINY_NONE))
+	_reset_timeout_timer()
+
+
+func _send_ping() -> void:
+	timeout_timer.start(TIMEOUT_DELAY)
+	send_packet(InSimTinyPacket.create(GISRequest.REQ_0, Tiny.TINY_PING))
+
+
 func _on_connected_to_host() -> void:
 	if is_relay:
 		insim_connected = true
+		connected.emit()
 	else:
 		send_packet(InSimISIPacket.create(
 			initialization_data.udp_port,
@@ -1288,8 +1347,7 @@ func _on_connected_to_host() -> void:
 			nlp_mci_connection._connect_to_host(
 				lfs_connection.address, lfs_connection.udp_port, 0, true
 			)
-		reset_timeout_timer()
-	connected.emit()
+		_reset_timeout_timer()
 
 
 func _on_connection_failed() -> void:
@@ -1415,7 +1473,7 @@ func _on_packet_received(packet_buffer: PackedByteArray) -> void:
 		Packet.IRP_ERR:
 			irp_err_received.emit(packet)
 		_:
-			push_error_unknown_packet_type(packet.type)
+			_push_error_unknown_packet_type(packet.type)
 
 
 func _on_small_packet_received(packet: InSimSmallPacket) -> void:
@@ -1427,15 +1485,15 @@ func _on_small_packet_received(packet: InSimSmallPacket) -> void:
 		Small.SMALL_ALC:
 			small_alc_received.emit(packet)
 		_:
-			push_error_unknown_packet_subtype(packet.type, packet.sub_type)
+			_push_error_unknown_packet_subtype(packet.type, packet.sub_type)
 
 
 func _on_tiny_packet_received(packet: InSimTinyPacket) -> void:
 	match packet.sub_type:
 		Tiny.TINY_NONE:
-			send_keep_alive_packet()
+			_send_keep_alive_packet()
 		Tiny.TINY_REPLY:
-			read_ping_reply()
+			_read_ping_reply()
 			tiny_reply_received.emit(packet)
 		Tiny.TINY_VTC:
 			tiny_vtc_received.emit(packet)
@@ -1448,7 +1506,19 @@ func _on_tiny_packet_received(packet: InSimTinyPacket) -> void:
 		Tiny.TINY_AXC:
 			tiny_axc_received.emit(packet)
 		_:
-			push_error_unknown_packet_subtype(packet.type, packet.sub_type)
+			_push_error_unknown_packet_subtype(packet.type, packet.sub_type)
+
+
+func _on_udp_packet_received(packet_buffer: PackedByteArray) -> void:
+	var packet := InSimPacket.create_packet_from_buffer(packet_buffer)
+	udp_packet_received.emit(packet)
+	match packet.type:
+		Packet.ISP_NLP:
+			udp_nlp_received.emit(packet)
+		Packet.ISP_MCI:
+			udp_mci_received.emit(packet)
+		_:
+			_push_error_unknown_packet_type(packet.type)
 
 
 #region InSim event management: connections, players, state
