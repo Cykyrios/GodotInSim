@@ -1,0 +1,54 @@
+[data-theme='light'] {
+  .token.comment {
+    color: rgba(20, 20, 20, 0.5);
+  }
+  .token.doc-comment {
+    color: rgba(38, 38, 102, 0.7);
+  }
+  .token.function {
+    color: rgb(0, 57, 230);
+  }
+  .token.string {
+    color: rgb(153, 107, 0);
+  }
+  .token.operator,
+  .token.punctuation {
+    color: rgb(0, 0, 156);
+  }
+  .token.class-name {
+    color: rgb(46, 115, 102);
+  }
+  .token.keyword,
+  .token.operator-word,
+  .token.builtin-pseudo {
+    color: rgb(230, 34, 130);
+  }
+}
+[data-theme='dark'] {
+  --docusaurus-highlighted-code-line-bg: rgba(255, 255, 255, 0.15);
+  --ifm-code-background: rgba(255, 255, 255, 0.2);
+  .token.comment {
+    color: rgba(205, 207, 210, 0.5);
+  }
+  .token.doc-comment {
+    color: rgba(153, 179, 204, 0.8);
+  }
+  .token.function {
+    color: rgb(87, 179, 255);
+  }
+  .token.string {
+    color: rgb(255, 237, 161);
+  }
+  .token.operator,
+  .token.punctuation {
+    color: rgb(171, 201, 255);
+  }
+  .token.class-name {
+    color: rgb(199, 255, 237);
+  }
+  .token.keyword,
+  .token.operator-word,
+  .token.builtin-pseudo {
+    color: rgb(255, 112, 133);
+  }
+}

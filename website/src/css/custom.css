@@ -1,0 +1,80 @@
+/**
+ * Any CSS included here will be global. The classic template
+ * bundles Infima by default. Infima is a CSS framework designed to
+ * work well for content-centric websites.
+ */
+
+/* You can override the default Infima variables here. */
+:root {
+  --ifm-color-primary: #2e8555;
+  --ifm-color-primary-dark: #29784c;
+  --ifm-color-primary-darker: #277148;
+  --ifm-color-primary-darkest: #205d3b;
+  --ifm-color-primary-light: #33925d;
+  --ifm-color-primary-lighter: #359962;
+  --ifm-color-primary-lightest: #3cad6e;
+  --ifm-code-font-size: 95%;
+  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
+  tab-size: 4;
+}
+
+/* For readability concerns, you should choose a lighter palette in dark mode. */
+[data-theme='dark'] {
+  --ifm-color-primary: #25c2a0;
+  --ifm-color-primary-dark: #21af90;
+  --ifm-color-primary-darker: #1fa588;
+  --ifm-color-primary-darkest: #1a8870;
+  --ifm-color-primary-light: #29d5b0;
+  --ifm-color-primary-lighter: #32d8b4;
+  --ifm-color-primary-lightest: #4fddbf;
+  --docusaurus-highlighted-code-line-bg: rgba(255, 255, 255, 0.15);
+}
+html[data-theme='light'] {
+  --ifm-background-color: #fafafa;
+}
+html[data-theme='dark'] {
+  --ifm-background-color: #22201f;
+}
+
+@font-face {
+  font-family: "CommitMono-Regular";
+  src: url("../fonts/CommitMono-400-Regular.otf")
+}
+@font-face {
+  font-family: "CommitMono-Bold";
+  src: url("../fonts/CommitMono-700-Regular.otf")
+}
+
+html[class*="docs-doc-id-class_ref"] {
+  h3, h4 {
+    font-family: "CommitMono-Regular";
+    font-weight: var(--ifm-font-weight-normal);
+  }
+  h3 > strong, h4 > strong {
+    font-family: "CommitMono-Bold";
+    font-weight: var(--ifm-font-weight-normal);
+  }
+  a[class="hash-link"] {
+    font-weight: var(--ifm-heading-font-weight);
+  }
+}
+
+pre {
+  font-family: "CommitMono-Bold";
+}
+
+code {
+  font-family: "CommitMono-Regular";
+  vertical-align: initial;
+}
+html[data-theme="dark"] {
+  code {
+    border: 0.1rem solid rgba(255, 255, 255, 0.1);
+  }
+}
+
+hr[class="section"] {
+  border: 3px solid var(--ifm-color-primary);
+  border-radius: 3px;
+  opacity: 0.5;
+}
