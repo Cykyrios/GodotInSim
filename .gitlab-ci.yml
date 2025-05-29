@@ -71,7 +71,6 @@ export-demos:
 
 generate-docs:
   stage: deploy
-  dependencies: []
   script:
     - apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y git
     - mv .submodules/gdscript_xml_converter/addons/gdscript_xml_converter addons/
@@ -86,11 +85,6 @@ generate-docs:
 build-site:
   stage: deploy
   image: node:lts-alpine3.20
-  rules:
-    - changes:
-      - website/**/*
-  dependencies:
-    - generate-docs
   script:
     - cd website
     - npm install
