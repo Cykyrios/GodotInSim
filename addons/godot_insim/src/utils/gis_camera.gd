@@ -5,14 +5,14 @@ extends RefCounted
 ## This class provides utility functions to manipulate Godot cameras from LFS via [InSimCPPPacket]
 ## and [code]/cp[/code] strings, and to set LFS's camera from a Godot camera.[br]
 ## [br]
-## [u][b]Important note:[/b][/u] LFS uses horizontal FoV in order to make multi-monitor setups
+## [b]Warning:[/b] LFS uses horizontal FoV in order to make multi-monitor setups
 ## easy to work with. Godot, on the other hand, defaults to vertical FoV; you can either switch
 ## cameras to [code]Keep Width[/code], and ignore the [code]aspect_ratio[/code] parameter in
 ## conversion functions (as long as your application window has the same aspect ratio as LFS),
 ## or keep the default [code]Keep Height[/code] and provide the aspect ratio.
 ## The expected use in both cases is to have the same aspect ratio on both LFS and Godot.[br]
 ## [br]
-## [u][b]Note:[/b][/u] The functions in this class do not convert from the LFS coordinates
+## [b]Tip:[/b] The functions in this class do not convert from LFS coordinates
 ## (Y forward, Z up) to Godot coordinates (Y up, Z backward); if you want your scene to still
 ## have Y up, the easiest way to obtain the expected result is to have your entire scene
 ## parented to a [Node3D] rotated -90 degrees.

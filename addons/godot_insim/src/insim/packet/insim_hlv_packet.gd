@@ -13,7 +13,8 @@ var plid := 0  ## player's unique id
 
 var hlvc := 0  ## 0: ground / 1: wall / 4: speeding / 5: out of bounds
 var sp1 := 0  ## Sapre
-var time := 0  ## looping time stamp (hundredths - time since reset - like [constant InSim.TINY_GTH])
+## looping time stamp (hundredths - time since reset - like [constant InSim.Tiny.TINY_GTH])
+var time := 0
 
 var object := CarContObj.new()  ## Details about the car that violated HLV rules.
 

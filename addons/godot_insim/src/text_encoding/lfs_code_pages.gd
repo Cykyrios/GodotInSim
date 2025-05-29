@@ -1,13 +1,9 @@
 class_name LFSCodePages
 extends RefCounted
-## LFS Code Pages
-##
-## This contains the entire list of code pages and corresponding characters used by LFS, and their
-## corresponding unicode values.
+## nodoc
 
 # Adapted from Victor van Vlaardingen's HTML Remote:
 # https://github.com/VictorVanV/HtmlRemote/blob/dbc6c702d12d86f1b3a76194cb662c0da2c493f6/js/LfsString.js
-## The list of code pages and character values.
 const CODE_PAGE_TABLES := {
 	"E": {
 		128: 8364,

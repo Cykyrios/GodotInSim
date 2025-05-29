@@ -26,7 +26,8 @@ const PACKET_TYPE := InSim.Packet.ISP_OBH  ## The packet's type, see [enum InSim
 var plid := 0  ## Player's unique id
 
 var sp_close := 0  ## high 4 bits: reserved / low 12 bits: closing speed (10 = 1 m/s)
-var time := 0  ## looping time stamp (hundredths - time since reset - like [constant InSim.TINY_GTH])
+## looping time stamp (hundredths - time since reset - like [constant InSim.Tiny.TINY_GTH])
+var time := 0
 
 var object := CarContObj.new()  ## Details about the car that hit the object
 

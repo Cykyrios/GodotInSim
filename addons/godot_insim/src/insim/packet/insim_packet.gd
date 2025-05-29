@@ -242,7 +242,7 @@ func get_type_string() -> String:
 	return InSim.Packet.keys()[index]
 
 
-## Resizes the packet's [member buffer].
+## Resizes the packet's [member LFSPacket.buffer].
 func resize_buffer(new_size: int) -> void:
 	size = new_size
 	_adjust_packet_size()
@@ -250,7 +250,7 @@ func resize_buffer(new_size: int) -> void:
 	buffer.encode_u8(0, int(size / float(SIZE_MULTIPLIER)))
 
 
-## Encodes the packet's [member req_i] in the [member buffer].
+## Encodes the packet's [member req_i] in the [member LFSPacket.buffer].
 func update_req_i() -> void:
 	buffer.encode_u8(2, req_i)
 

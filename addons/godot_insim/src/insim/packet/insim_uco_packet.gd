@@ -16,7 +16,7 @@ var uco_action := InSim.UCOAction.UCO_CIRCLE_ENTER  ## UCO Action, see [enum InS
 var sp2 := 0  ## Spare
 var sp3 := 0  ## Spare
 
-var time := 0  ## Hundredths of a second since start (as in [constant InSim.SMALL_RTP])
+var time := 0  ## Hundredths of a second since start (as in [constant InSim.Small.SMALL_RTP])
 var object := CarContObj.new()  ## Info about the car
 var info := ObjectInfo.new()  ## Info about the checkpoint or circle
 

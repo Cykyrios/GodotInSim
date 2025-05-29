@@ -5,8 +5,9 @@ extends InSimPacket
 ## This packet is received when a player changes cameras.[br]
 ## InSim doc excerpt:[br]
 ## To track cameras you need to consider 3 points:[br]
-## 1) The default camera: [constant InSim.VIEW_DRIVER][br]
-## 2) Player flags: [constant InSim.PIF_CUSTOM_VIEW] means [constant InSim.VIEW_CUSTOM]
+## 1) The default camera: [constant InSim.View.VIEW_DRIVER][br]
+## 2) Player flags: [constant InSim.PlayerFlag.PIF_CUSTOM_VIEW] means
+## [constant InSim.View.VIEW_CUSTOM]
 ## at start or pit exit[br]
 ## 3) IS_CCH ([InSimCCHPacket]): sent when an existing driver changes camera
 

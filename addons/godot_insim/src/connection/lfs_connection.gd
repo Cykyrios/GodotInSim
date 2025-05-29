@@ -4,9 +4,10 @@ extends Node
 ##
 ## InSim initialization automatically creates either a TCP connection or a UDP connection,
 ## depending on parameters passed.[br]
-## [b]Note:[/b] This class is abstract and cannot be used directly, [LFSConnectionTCP] or
-## [LFSConnectionUDP] must be used instead; those two are not meant to be used directly either,
-## an [LFSConnection] object is included in all protocol objects ([InSim], [OutGauge], [OutSim]).
+## [b]Warning:[/b] This class is not intended to be used directly, nor are [LFSConnectionTCP] and
+## [LFSConnectionUDP]; an [LFSConnection] object is included in all protocol objects ([InSim],
+## [OutGauge], [OutSim]) and is supposed to stay internal. You can use [signal InSim.timeout]
+## and [member InSim.insim_connected] instead if you need to check connection status.
 
 @warning_ignore_start("unused_signal")
 signal connection_failed

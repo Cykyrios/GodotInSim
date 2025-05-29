@@ -17,7 +17,8 @@ const PACKET_TYPE := InSim.Packet.ISP_CON  ## The packet's type, see [enum InSim
 var zero := 0  ## Zero byte
 
 var sp_close := 0  ## high 4 bits: reserved / low 12 bits: closing speed (10 = 1 m/s)
-var time := 0  ## looping time stamp (hundredths - time since reset - like [constant InSim.TINY_GTH]
+## looping time stamp (hundredths - time since reset - like [constant InSim.Tiny.TINY_GTH]
+var time := 0
 
 var car_a := CarContact.new()  ## Car contact data for the first car.
 var car_b := CarContact.new()  ## Car contact data for the second car.

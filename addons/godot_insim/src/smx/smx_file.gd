@@ -147,7 +147,7 @@ func get_mesh() -> Node3D:
 ## the [param mesh]'s position and orientation to match the ground's altitude and normal direction.
 ## The base position of the raycast is determined by the [param object]'s position.[br]
 ## [br]
-## [u]Note:[/u] A check for the non-floating status of the [param object] should be performed
+## [b]Note:[/b] A check for the non-floating status of the [param object] should be performed
 ## prior to calling this function; as a reminder, concrete objects are always floating, and
 ## other objects should only be checked for ground contact if they do not have the
 ## [code]0x80[/code] bit set in their [member LYTObject.flags].

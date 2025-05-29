@@ -5,7 +5,10 @@ extends RefCounted
 ## All packets inherit from this base class, which includes common parameters and methods to
 ## facilitate reading and writing data.[br]
 ## This class is generally not intended to be used directly, instead prefer using [InSimPacket],
-## [OutSimPacket] or [OutGaugePacket] as needed for your application.
+## [OutSimPacket] or [OutGaugePacket] as needed for your application.[br]
+## [b]Tip:[/b] While generally not intended to be used directly, this class can be used as a
+## base for custom data structures that need to be encoded with specific types: see for instance
+## [CarInfo] or [PTHFile], among others.
 
 ## The packet's raw data buffer.
 var buffer := PackedByteArray()

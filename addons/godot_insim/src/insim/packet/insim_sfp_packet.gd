@@ -3,10 +3,10 @@ extends InSimPacket
 ## State Flags Pack
 ##
 ## This packet is sent to update some [enum InSim.State] flags.[br]
-## [b]Note:[/b]Only the following state can be set with this packet:
-## [constant InSim.ISS_SHIFTU_NO_OPT], [constant InSim.ISS_SHOW_2D] - showing 2d display,
-## [constant InSim.ISS_MPSPEEDUP], [constant InSim.ISS_SOUND_MUTE]; other states must be set
-## by using keypresses or messages.
+## [b]Note:[/b] Only the following states can be set with this packet:
+## [constant InSim.State.ISS_SHIFTU_NO_OPT], [constant InSim.State.ISS_SHOW_2D],
+## [constant InSim.State.ISS_MPSPEEDUP], [constant InSim.State.ISS_SOUND_MUTE]; other states
+## must be set by using keypresses or messages.
 
 const PACKET_SIZE := 8  ## Packet size
 const PACKET_TYPE := InSim.Packet.ISP_SFP  ## The packet's type, see [enum InSim.Packet].

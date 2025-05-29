@@ -19,7 +19,7 @@ var model := 0  ## Player model
 var passengers := 0  ## Passengers
 var rw_adjust := 0  ## Rear tyre width adjustment
 var fw_adjust := 0  ## Front tyre width adjustment
-var setup_flags := 0  ## Setup flags, see [enum InSim.SetupFlag].
+var setup_flags := 0  ## Setup flags, see [enum InSim.Setup].
 var config := 0  ## Vehicle configuration
 
 

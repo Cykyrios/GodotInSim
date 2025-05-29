@@ -16,7 +16,7 @@ var csc_action := InSim.CSCAction.CSC_START  ## CSC action, see [enum InSim.CSCA
 var sp2 := 0  ## Spare
 var sp3 := 0  ## Spare
 
-var time := 0  ## hundredths of a second since start (as in [constant InSim.SMALL_RTP])
+var time := 0  ## hundredths of a second since start (as in [constant InSim.Small.SMALL_RTP])
 var object := CarContObj.new()  ## Car data when the action occurred.
 
 var gis_time := 0.0  ## Time in seconds
