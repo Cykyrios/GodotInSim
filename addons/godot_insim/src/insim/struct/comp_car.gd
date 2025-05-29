@@ -19,7 +19,7 @@ var node := 0  ## current path node
 var lap := 0  ## current lap
 var plid := 0  ## player's unique id
 var position := 0  ## current race position: 0 = unknown, 1 = leader, etc...
-var info := 0  ## flags and other info - see below
+var info := 0  ## flags and other info - see [enum InSim.CompCarInfo]
 var sp3 := 0  ## spare
 var x := 0  ## X map (65536 = 1 metre)
 var y := 0  ## Y map (65536 = 1 metre)
