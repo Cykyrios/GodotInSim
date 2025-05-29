@@ -1,99 +1,165 @@
 {
-  "InSim": [
-    "InSim",
-    "InSimInitializationData",
-    {
-      "InSim Structs": [
-        "InSimStruct"
-      ]
-    },
-    {
-      "Utilities": [
-        "Connection",
-        "Player",
-        "GameState"
-      ]
-    }
-  ],
-  "OutGauge": [
-    "OutGauge",
-    "OutGaugePacket"
-    ],
-  "OutSim": [
-    "OutSim",
-    "OutSimPacket",
-    "OutSimMain",
-    "OutSimInputs",
-    "OutSimPack",
-    "OutSimWheel"
-  ],
-  "Packets": [
-    {
-      "InSim Packets": [
-        "InSimPacket"
-      ]
-    },
-    {
-    "Relay Packets": [
-      "InSimRelayPacket"
-      ]
-    },
-    {
-      "Other Packetes": [
-        "LFSPacket"
-      ]
-    }
-  ],
-  "InSim Buttons": [
-    "InSimButton",
-    "InSimButtons",
-    "InSimButtonDictionary"
-  ],
-  "Text Encoding": [
-    "LFSText",
-    "LFSCodePages"
-  ],
-  "Utilities": [
-    "GISCamera",
-    "GISTime",
-    "GISUnit",
-    "GISViewer"
-  ],
-  "File Formats": [
-    {
-      "CAR.BIN": [
-        "CarInfo",
-        "AeroInfo",
-        "WheelInfo"
-      ]
-    },
-    {
-      "LYT": [
-        "LYTFile",
-        "LYTObject"
-      ]
-    },
-    {
-      "PTH": [
-        "PTHFile",
-        "PTHNode"
-      ]
-    },
-    {
-      "SET": [
-        "SETFile"
-      ]
-    },
-    {
-      "SMX": [
-        "SMXFile",
-        "SMXObject",
-        "SMXPoint",
-        "SMXTriangle"
-      ]
-    }
-  ],
-  "Connection Protocols": [
-    "LFSConnection"
-  ]
+  "InSim": {
+    "label": "InSim",
+    "items": [
+      "InSim",
+      "InSimInitializationData",
+      {
+        "InSim Structs": {
+          "label": "InSim Structs",
+          "items": [
+            "InSimStruct",
+            "CarLights",
+            "CarSwitches"
+          ]
+        }
+      },
+      {
+        "Utilities": {
+          "label": "Utilities",
+          "items": [
+            "Connection",
+            "Player",
+            "LFSState"
+          ]
+        }
+      }
+    ]
+  },
+  "OutGauge": {
+    "label": "OutGauge",
+    "items": [
+      "OutGauge",
+      "OutGaugePacket"
+    ]
+  },
+  "OutSim": {
+    "label": "OutSim",
+    "items": [
+      "OutSim",
+      "OutSimPacket",
+      "OutSimMain",
+      "OutSimInputs",
+      "OutSimPack",
+      "OutSimWheel"
+    ]
+  },
+  "REST API": {
+    "label": "REST API",
+    "items": [
+      "LFSAPI",
+      "VehicleInfo"
+    ]
+  },
+  "Packets": {
+    "label": "Packets",
+    "items": [
+      {
+        "InSim Packets": {
+          "label": "InSim Packets",
+          "items": [
+            "InSimPacket"
+          ]
+        }
+      },
+      {
+        "Relay Packets": {
+          "label": "Relay Packets",
+          "items": [
+            "InSimRelayPacket"
+          ]
+        }
+      },
+      {
+        "Other Packets": {
+          "label": "Other Packets",
+          "items": [
+            "LFSPacket"
+          ]
+        }
+      }
+    ]
+  },
+  "InSim Buttons": {
+    "label": "InSim Buttons",
+    "items": [
+      "InSimButton",
+      "InSimButtons",
+      "InSimButtonDictionary"
+    ]
+  },
+  "Text Encoding": {
+    "label": "Text Encoding",
+    "items": [
+      "LFSText",
+      "LFSCodePages"
+    ]
+  },
+  "Utilities": {
+    "label": "Utilities",
+    "items": [
+      "GISCamera",
+      "GISTime",
+      "GISUnit",
+      "GISViewer"
+    ]
+  },
+  "File Formats": {
+    "label": "File Formats",
+    "items": [
+      {
+        "CAR.BIN": {
+          "label": "CAR.BIN",
+          "items": [
+            "CarInfo",
+            "AeroInfo",
+            "WheelInfo"
+          ]
+        }
+      },
+      {
+        "LYT": {
+          "label": "LYT",
+          "items": [
+            "LYTFile",
+            "LYTObject"
+          ]
+        }
+      },
+      {
+        "PTH": {
+          "label": "PTH",
+          "items": [
+            "PTHFile",
+            "PTHNode"
+          ]
+        }
+      },
+      {
+        "SET": {
+          "label": "SET",
+          "items": [
+            "SETFile"
+          ]
+        }
+      },
+      {
+        "SMX": {
+          "label": "SMX",
+          "items": [
+            "SMXFile",
+            "SMXObject",
+            "SMXPoint",
+            "SMXTriangle"
+          ]
+        }
+      }
+    ]
+  },
+  "Connection Protocols": {
+    "label": "Connection Protocols",
+    "items": [
+      "LFSConnection"
+    ]
+  }
 }

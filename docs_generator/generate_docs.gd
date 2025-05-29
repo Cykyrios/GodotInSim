@@ -121,7 +121,7 @@ func generate_index() -> int:
 			parent_category = groups[parent_category]["label"]
 			var regex := RegEx.create_from_string(
 				"(?m) +type: \"category\",\\n +label: \"%s\",\\n" % [parent_category]
-				+ "(?:.+\\n)* +items: \\[\\n(?:.+\\n)+?( +\\],)"
+				+ "(?:.+\\n)*?( +)items: \\[\\n"
 			)
 			var result := regex.search(contents)
 			if not result:
@@ -129,7 +129,10 @@ func generate_index() -> int:
 					parent_category, group_dict["label"]
 				])
 				continue
-			var insert_pos := result.get_start(1)
+			var closing_regex := RegEx.create_from_string(
+				"(?:.+?\\n)(?=%s\\],\\n)" % [result.strings[1]]
+			)
+			var insert_pos := closing_regex.search(contents, result.get_end(1)).get_end()
 			contents = contents.insert(insert_pos, category)
 	contents += "%s],\n%s},\n%s],\n};\n" % [
 		make_indent.call(3),
@@ -147,6 +150,7 @@ func set_configuration() -> int:
 	if error != OK:
 		push_error("Failed to open config.cfg, aborting")
 		return 1
+	config.set_value("config", "class_groups_path", "res://docs_generator/class_groups.json")
 	config.set_value("config", "fail_on_class_ref_issues", false)
 	error = config.save(CONFIG_PATH)
 	if error != OK:
