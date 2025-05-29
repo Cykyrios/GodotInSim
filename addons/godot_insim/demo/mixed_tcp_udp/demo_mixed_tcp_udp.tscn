@@ -1,0 +1,42 @@
+[gd_scene load_steps=2 format=3 uid="uid://bwvp20e63ejff"]
+
+[ext_resource type="Script" uid="uid://b20jie2c7iilr" path="res://addons/godot_insim/demo/mixed_tcp_udp/demo_mixed_tcp_udp.gd" id="1_yiicf"]
+
+[node name="DemoMixedTcpUdp" type="MarginContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+script = ExtResource("1_yiicf")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="VBoxTCP" type="VBoxContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="HBoxContainer/VBoxTCP"]
+layout_mode = 2
+text = "TCP packets:"
+
+[node name="LabelTCP" type="Label" parent="HBoxContainer/VBoxTCP"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="VBoxUDP" type="VBoxContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="HBoxContainer/VBoxUDP"]
+layout_mode = 2
+text = "UDP MCI packets:"
+
+[node name="LabelUDP" type="Label" parent="HBoxContainer/VBoxUDP"]
+unique_name_in_owner = true
+layout_mode = 2
