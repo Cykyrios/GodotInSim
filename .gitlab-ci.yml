@@ -9,6 +9,7 @@ workflow:
 stages:
   - setup
   - test
+  - docs
   - deploy
 
 variables:
@@ -70,7 +71,7 @@ export-demos:
       done
 
 generate-docs:
-  stage: deploy
+  stage: docs
   script:
     - apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y git
     - mv .submodules/gdscript_xml_converter/addons/gdscript_xml_converter addons/
