@@ -68,3 +68,28 @@ export-demos:
         done
         cd ..
       done
+
+generate-docs:
+  stage: deploy
+  script:
+    - apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y git
+    - godot --headless --import
+    - godot --headless -s ./docs_generator/generate_docs.gd
+  artifacts:
+    paths:
+      - website/sidebars.ts
+      - website/src/pages/index.md
+      - website/docs/class_ref/*.mdx
+
+build-site:
+  stage: deploy
+  image: node:lts-alpine3.20
+  rules:
+    - changes:
+      - website/**/*
+  script:
+    - cd website
+    - npm install
+    - npm run build
+  pages:
+    publish: website/build
