@@ -71,9 +71,11 @@ export-demos:
 
 generate-docs:
   stage: deploy
+  dependencies: []
   script:
     - apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y git
-    - godot --headless --import
+    - mv .submodules/gdscript_xml_converter/addons/gdscript_xml_converter addons/
+    - godot --headless -v --import
     - godot --headless -s ./docs_generator/generate_docs.gd
   artifacts:
     paths:
@@ -87,6 +89,8 @@ build-site:
   rules:
     - changes:
       - website/**/*
+  dependencies:
+    - generate-docs
   script:
     - cd website
     - npm install
