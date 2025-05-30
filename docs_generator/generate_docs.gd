@@ -7,7 +7,7 @@ extends SceneTree
 ## copies and replaces some text in the README.md file to make it the site's home page.
 
 const CONFIG_PATH := "res://addons/gdscript_xml_converter/config.cfg"
-const URL := "https://gitlab.com/Cykyrios/gdscript-xml-converter/-/blob/main/"
+const URL := "https://gitlab.com/Cykyrios/godot_insim/-/blob/main/"
 
 
 func _initialize() -> void:
