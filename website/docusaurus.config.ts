@@ -57,9 +57,9 @@ const config: Config = {
       items: [
         {
           type: 'docSidebar',
-          sidebarId: 'sidebar',
+          sidebarId: 'classrefSidebar',
           position: 'left',
-          label: 'Documentation',
+          label: 'Class Reference',
         },
         {
           href: 'https://gitlab.com/Cykyrios/godot_insim',

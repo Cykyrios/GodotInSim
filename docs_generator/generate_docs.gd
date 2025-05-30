@@ -26,7 +26,9 @@ func execute_or_exit(callable: Callable) -> void:
 
 
 func generate_docs() -> int:
-	var dict := OS.execute_with_pipe("/bin/bash", ["-c", "./docs_generator/generate_docs.sh"], false)
+	var dict := OS.execute_with_pipe(
+		"/bin/bash", ["-c", "./docs_generator/generate_docs.sh"], false
+	)
 	var pid := dict.pid as int
 	var stdio := dict.stdio as FileAccess
 	var stderr := dict.stderr as FileAccess
@@ -49,19 +51,19 @@ func generate_index() -> int:
 		push_error("Failed to open \"grouped_classes.json\": error %d" % [error])
 		return error
 	var groups := JSON.parse_string(file.get_as_text()) as Dictionary
-	var sidebars := FileAccess.open("website/sidebars.ts", FileAccess.WRITE)
-	if not sidebars:
+	var sidebar := FileAccess.open("website/classref_sidebar.ts", FileAccess.WRITE)
+	if not sidebar:
 		var error := FileAccess.get_open_error()
-		push_error("Failed to open sidebars.ts: error %d" % [error])
+		push_error("Failed to open classref_sidebar.ts: error %d" % [error])
 		return error
 
 	var indent_level := 0
 	var make_indent := func make_indent(level: int) -> String:
 		return "  ".repeat(level)
 
-	var contents := "import type {SidebarsConfig} from \"@docusaurus/plugin-content-docs\";\n\n"
-	contents += "const sidebars: SidebarsConfig = {\n  sidebar: [\n"
-	indent_level = 3
+	var contents := "import type {SidebarConfig} from \"@docusaurus/plugin-content-docs\";\n\n"
+	contents += "const classrefSidebar: SidebarConfig = [\n"
+	indent_level = 2
 	contents += "%s{\n%stype: \"category\",\n%slabel: \"Class Reference\",\n%slink: {\n" % [
 		make_indent.call(indent_level - 1),
 		make_indent.call(indent_level),
@@ -76,7 +78,7 @@ func generate_index() -> int:
 		make_indent.call(indent_level),
 		make_indent.call(indent_level),
 	]
-	indent_level = 5
+	indent_level = 4
 	var add_category := func add_category(group: Dictionary, depth: int) -> String:
 		var category := ""
 		var current_indent := indent_level + depth * 2
@@ -134,13 +136,12 @@ func generate_index() -> int:
 			)
 			var insert_pos := closing_regex.search(contents, result.get_end(1)).get_end()
 			contents = contents.insert(insert_pos, category)
-	contents += "%s],\n%s},\n%s],\n};\n" % [
-		make_indent.call(3),
+	contents += "%s],\n%s},\n];\n" % [
 		make_indent.call(2),
 		make_indent.call(1),
 	]
-	contents += "\nexport default sidebars;\n"
-	var _error := sidebars.store_string(contents)
+	contents += "\nexport default classrefSidebar;\n"
+	var _error := sidebar.store_string(contents)
 	return 0
 
 
