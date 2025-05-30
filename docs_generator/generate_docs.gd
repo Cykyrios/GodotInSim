@@ -7,14 +7,12 @@ extends SceneTree
 ## copies and replaces some text in the README.md file to make it the site's home page.
 
 const CONFIG_PATH := "res://addons/gdscript_xml_converter/config.cfg"
-const URL := "https://gitlab.com/Cykyrios/godot_insim/-/blob/main/"
 
 
 func _initialize() -> void:
 	await execute_or_exit(set_configuration)
 	await execute_or_exit(generate_docs)
 	await execute_or_exit(generate_index)
-	await execute_or_exit(update_readme)
 	quit(0)
 
 
@@ -157,27 +155,4 @@ func set_configuration() -> int:
 	if error != OK:
 		push_error("Failed to update config.cfg, aborting")
 		return 1
-	return 0
-
-
-func update_readme() -> int:
-	var file := FileAccess.open("./website/src/pages/index.md", FileAccess.READ_WRITE)
-	if not file:
-		var error := FileAccess.get_open_error()
-		push_error("Failed to open \"index.md\": error %d" % [error])
-		return error
-	var text := file.get_as_text()
-	text = RegEx.create_from_string(r"```sh").sub(text, "```bash", true)
-	var url_regex := RegEx.create_from_string(r"(?<=.\])\((.+?)\)")
-	var results := url_regex.search_all(text)
-	for i in results.size():
-		var result := results[-1 - i]
-		if result.strings[1].begins_with("http"):
-			continue
-		text = url_regex.sub(
-			text, "(%s%s)" % [URL, result.strings[1].trim_prefix("/")], false, result.get_start()
-		)
-	file.seek(0)
-	var _discard := file.store_string(text)
-	file.close()
 	return 0

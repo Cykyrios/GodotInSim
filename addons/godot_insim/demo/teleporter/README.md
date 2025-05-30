@@ -27,5 +27,5 @@ spawn points from the same file, e.g. `WE.txt` for WE1X, WE1Y, WE2X, etc.);
 Upon teleport, a message is sent to the player with the destination coordinates (`IS_MSL` in
 single player, `IS_MTC` in multiplayer).
 
-![Packet logger](./screenshots/teleporter_1.jpg)
-![Packet logger](./screenshots/teleporter_2.jpg)
+![Teleporter 1](./screenshots/teleporter_1.jpg)
+![Teleporter 2](./screenshots/teleporter_2.jpg)

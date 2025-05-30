@@ -25,8 +25,16 @@ const plugin = (options) => {
             hName: "abbr",
             hProperties: {
               title: node.attributes.title ? node.attributes.title : getAbbreviationTitle(text),
-            }
-          }
+            },
+          };
+        } else if (node.name === "godot") {
+          const text = node.children[0].value;
+          node.data = {
+            hName: "a",
+            hProperties: {
+              href: `https://docs.godotengine.org/en/stable/classes/class_${text.toLowerCase()}.html`,
+            },
+          };
         } else if (node.name === "kbd") {
           node.data = {
             hName: "kbd",
@@ -37,7 +45,7 @@ const plugin = (options) => {
           node.data = {
             hName: "hr",
             hProperties: node.attributes,
-          }
+          };
         } else if (node.name === "center") {
           node.data = {
             hName: "center",

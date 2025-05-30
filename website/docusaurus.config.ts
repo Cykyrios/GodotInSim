@@ -62,6 +62,12 @@ const config: Config = {
           label: 'Class Reference',
         },
         {
+          type: 'docSidebar',
+          sidebarId: 'guidesSidebar',
+          position: 'left',
+          label: 'Guides',
+        },
+        {
           href: 'https://gitlab.com/Cykyrios/godot_insim',
           label: 'GitLab',
           position: 'right',
@@ -78,6 +84,10 @@ const config: Config = {
               label: 'Class Reference',
               to: '/docs/class_ref/intro',
             },
+            {
+              label: 'Guides',
+              to: '/docs/guides/intro',
+            },
           ],
         },
         {
@@ -86,6 +96,10 @@ const config: Config = {
             {
               label: 'GitLab',
               href: 'https://gitlab.com/Cykyrios/godot_insim',
+            },
+            {
+              label: 'Live For Speed',
+              href: 'https://lfs.net',
             },
           ],
         },

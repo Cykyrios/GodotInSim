@@ -24,5 +24,5 @@ zone will increase the green light duration by 5 seconds, or decrease the red li
 
 The light sequence is 15-second green, 4-second amber, 2-second red before the next green.
 
-![Packet logger](./screenshots/traffic_lights_1.jpg)
-![Packet logger](./screenshots/traffic_lights_2.jpg)
+![Traffic lights 1](./screenshots/traffic_lights_1.jpg)
+![Traffic lights 2](./screenshots/traffic_lights_2.jpg)
