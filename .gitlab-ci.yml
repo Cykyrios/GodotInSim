@@ -82,7 +82,6 @@ generate-docs:
   artifacts:
     paths:
       - website/classref_sidebar.ts
-      - website/src/pages/index.md
       - website/docs/class_ref/*.mdx
 
 build-site:
