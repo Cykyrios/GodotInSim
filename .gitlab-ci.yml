@@ -81,7 +81,7 @@ generate-docs:
     - godot --headless -s ./docs_generator/generate_docs.gd
   artifacts:
     paths:
-      - website/sidebars.ts
+      - website/classref_sidebar.ts
       - website/src/pages/index.md
       - website/docs/class_ref/*.mdx
 
