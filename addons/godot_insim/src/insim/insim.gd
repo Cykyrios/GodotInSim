@@ -723,9 +723,9 @@ enum LocalCarLights {
 	LCL_SET_EXTRA = 0x40,
 }
 enum LocalCarSwitches {
-	LCS_SET_SIGNALS = 1,  ## Deprecated, use [InSim.Small.SMALL_LCL] instead.
+	LCS_SET_SIGNALS = 1,  ## Deprecated, use [constant InSim.Small.SMALL_LCL] instead.
 	LCS_SET_FLASH = 2,
-	LCS_SET_HEADLIGHTS = 4,  ## Deprecated, use [InSim.Small.SMALL_LCL] instead.
+	LCS_SET_HEADLIGHTS = 4,  ## Deprecated, use [constant InSim.Small.SMALL_LCL] instead.
 	LCS_SET_HORN = 8,
 	LCS_SET_SIREN = 16,
 }
