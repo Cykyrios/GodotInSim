@@ -1,7 +1,7 @@
 # Godot InSim
 
 This project aims to provide an API to build apps with the
-[Godot game engine](https://github.com/godotengine/godot) that can communicate with
+[Godot game engine](https://godotengine.org/) that can communicate with
 [Live For Speed](https://www.lfs.net) through its InSim protocol, as well as OutSim,
 OutGauge and InSimRelay.
 
@@ -132,10 +132,10 @@ choose to fill the packet's buffer from `gis_*` values or from standard InSim va
 ## Demos
 
 Demos showcasing some of `GodotInSim`'s features are available in the
-[demo folder](adons/godot_insim/demo/). The following images are from some of those demos.
+[demo folder](./godot_insim/demo/). The following images are from some of those demos.
 
-![Random Lights](/addons/godot_insim/demo/multiple_protocols/media/random_lights.webm)
+![Random Lights](./godot_insim/demo/multiple_protocols/media/random_lights.webm)
 
-![Live Telemetry](/addons/godot_insim/demo/basic_telemetry/screenshots/telemetry_2.jpg)
+![Live Telemetry](./godot_insim/demo/basic_telemetry/screenshots/telemetry_2.jpg)
 
-![InSim Relay](/addons/godot_insim/demo/relay/screenshots/relay.jpg)
+![InSim Relay](./godot_insim/demo/relay/screenshots/relay.jpg)
