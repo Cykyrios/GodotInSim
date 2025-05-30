@@ -72,6 +72,8 @@ export-demos:
 
 generate-docs:
   stage: docs
+  ## The image used here contains a doctool fix, see Godot PR #106256.
+  image: registry.gitlab.com/cykyrios/godot-builder:4.5-dev-docs-generator
   script:
     - apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y git
     - mv .submodules/gdscript_xml_converter/addons/gdscript_xml_converter addons/
