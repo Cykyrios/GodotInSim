@@ -8,7 +8,7 @@ This demo showcases the use of [OutSim](../../../class_ref/OutSim.mdx) and
 
 ## Prerequisites
 
-This demo requires [setting up OutSim](../../getting_started/outsim.md)
+This demo requires [setting up OutSim](../../getting_started/outsim/outsim.md)
 and [OutGauge](../../getting_started/outgauge.md) to properly receive the corresponding packets.
 
 ## The demo

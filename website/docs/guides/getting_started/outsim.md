@@ -1,3 +1,0 @@
-# OutSim
-
-⚠ Under construction ⚠

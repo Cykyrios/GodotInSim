@@ -61,6 +61,10 @@ insim.initialize(
 )
 ```
 
+You can refer to [InSimInitializationData](../../class_ref/InSimInitializationData) for more details
+on initialization, and [InSim.InitFlag](../../class_ref/InSim#class_InSim_enum_InitFlag) for available
+initialization flags.
+
 With LFS running, let's make sure the game is listening for connections by typing `/insim 29999`.
 
 If you added the above snippet to the `_ready()` function, launch the scene, and you should see LFS display the
@@ -102,9 +106,10 @@ have - the latter is recommended to avoid creating variables we may not be using
 	</TabItem>
 	<TabItem value="instance" label="new instance">
 		```gdscript
-		var packet := InSimMSTPacket.new()  # You can also write InSimMSTPacket.create("Hello InSim!")
+		var packet := InSimMSTPacket.new()
 		packet.msg = "Hello InSim!"
 		insim.send_packet(packet)
+		var packet2 := InSimMSTPacket.create("Hello InSim!")  # This is equivalent to the first 2 lines.
 		```
 	</TabItem>
 </Tabs>
@@ -180,13 +185,13 @@ the InSim node includes more signals than those related to packets:
 * `disconnected` is emitted when you [close](../../class_ref/InSim#class_InSim_method_close) the connection,
     or when the connection times out.
 * `timeout` is emitted after some time has passed with no packet being received; GodotInSim will send a ping
-    to LFS if it hasn't received any packet for a while, and if no response is given with a few seconds,
+    to LFS if it hasn't received any packet for a while, and if no response is given within a few seconds,
     the connection is dropped.
 
 ### Putting it all together
 
 Everything we have learned thus far allows us to make a very simple InSim app that sends a message when
-connecting, and prints message contents when someone (including you) types a message.
+connecting, and prints the contents of every message displayed in the game.
 
 ```gdscript
 extends Node
@@ -224,7 +229,29 @@ TCP status: connected - 127.0.0.1:29999
 Host InSim version matches local version (9).
 MSO packet received: Cyk : Hello InSim!
 ```
+The message we sent automatically when connecting is displayed in the game, which sends a corresponding
+[InSimMSOPacket](../../class_ref/InSimMSOPacket), so our app prints the contents of that message.
 Of course, "Cyk" will be replaced with your own name.
+
+## A word on host InSim apps
+
+We have only discussed local InSim connections so far, but you can also create a host InSim app.
+Host apps connect directly to the host server, and not through your game: you don't need to have
+LFS running on your PC for those. Whether you rent a server or start a host via the ingame interface,
+you will need to get the host's IP and port, and use those to connect to InSim.
+
+```gdscript
+insim.initialize(
+	"11.22.33.44",  # Set the host's IP address here
+	12345,  # Set the host's port here
+	InSimInitializationData.create(
+		"My host InSim",
+		0,  # Do not set the ISF_LOCAL flag, but you can set any other flag
+		"!",  # Example prefix, optional
+		"admin",  # You can set an admin password, which must match the host's
+	),
+)
+```
 
 ## What's next?
 

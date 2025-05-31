@@ -20,7 +20,7 @@ const sidebars: SidebarsConfig = {
         "guides/getting_started/installation",
         "guides/getting_started/insim",
         "guides/getting_started/outgauge",
-        "guides/getting_started/outsim",
+        "guides/getting_started/outsim/outsim",
         "guides/getting_started/relay",
         "guides/getting_started/rest_api",
         "guides/getting_started/text_handling",
