@@ -56,4 +56,4 @@ request.
 An additional utility function is included to download a PNG image, which can be used to get a mod's
 cover image.
 
-For an example of actually using the API, refer to [this demo](../demos/lfs_api/demo_lfs_api).
+For an example of actually using the API, refer to [this demo](/guides/demos/lfs_api/demo_lfs_api.md).

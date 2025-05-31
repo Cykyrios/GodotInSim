@@ -8,7 +8,7 @@ formats, and provides access to the [REST API](/docs/guides/getting_started/rest
 
 ## Installation and usage
 
-Refer to the [guides](/docs/guides/intro) to get started.
+Refer to the [guides](/docs/guides) to get started.
 
 ## Implementation and compatibility
 

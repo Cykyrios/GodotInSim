@@ -1,8 +1,8 @@
 # Traffic Lights
 
-This demo showcases using [InSimOCOPacket](../../../class_ref/InSimOCOPacket) for light control
-and [InSimUCOPacket](../../../class_ref/InSimUCOPacket) for car detection, as well as adding
-layout objects via [InSimAXMPackets](../../../class_ref/InSimAXMPacket).
+This demo showcases using [InSimOCOPacket](/class_ref/InSimOCOPacket.mdx) for light control
+and [InSimUCOPacket](/class_ref/InSimUCOPacket.mdx) for car detection, as well as adding
+layout objects via [InSimAXMPackets](/class_ref/InSimAXMPacket.mdx).
 
 ![Traffic lights](./traffic_lights_2.jpg)
 
@@ -11,7 +11,7 @@ layout objects via [InSimAXMPackets](../../../class_ref/InSimAXMPacket).
 This demo is intended to run on a Westhill open configuration (WE1X, WE2Y, etc.). If any other
 environment is loaded, you will be prompted to load Westhill and the demo will close immediately.
 
-This demo only needs [InSim](../../getting_started/insim.md) to be listening on port `29999`,
+This demo only needs [InSim](/guides/getting_started/insim.md) to be listening on port `29999`,
 which you can do by typing `/insim 29999` in LFS.
 
 ## The demo

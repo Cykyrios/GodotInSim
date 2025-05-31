@@ -1,6 +1,6 @@
 # LFS REST API
 
-This demo showcases requests to the [LFS REST API](../../../class_ref/LFSAPI).
+This demo showcases requests to the [LFS REST API](/class_ref/LFSAPI.mdx).
 
 ![REST API](./lfs_api_mods.jpg)
 

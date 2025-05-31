@@ -51,7 +51,7 @@ func _on_packet_received(packet: OutGaugePacket) -> void:
 	print("OutGauge packet received!")
 ```
 
-Just like [InSim](./insim), you can create an OutGauge instance entirely from code, or add it
+Just like [InSim](./insim.md), you can create an OutGauge instance entirely from code, or add it
 as a node in your scene and use `@onready`.
 
 Initialization is even simpler than InSim: you only need to provide the address and port, and you
@@ -68,10 +68,10 @@ OutGauge is primarily intended to be used for external dash displays, both on ex
 tablets/phones and custom-built cockpits. For instance, you can replicate the dash lights, get the
 current speed, turbo gauge, fuel, engine RPM, etc.
 
-All available data is detailed in [OutGaugePacket](../../class_ref/OutGaugePacket). This packet also
+All available data is detailed in [OutGaugePacket](/class_ref/OutGaugePacket.mdx). This packet also
 provides a helper function to get the available and currently turned on dash lights, so you don't
-need to decode the [dash_light](../../class_ref/OutGaugePacket#class_OutGauge_packet_property_dash_lights)
-and [show_light](../../class_ref/OutGaugePacket#class_OutGauge_packet_property_show_lights) values.
+need to decode the [dash_light](/class_ref/OutGaugePacket.mdx#class_OutGaugePacket_property_dash_lights)
+and [show_light](/class_ref/OutGaugePacket.mdx#class_OutGaugePacket_property_show_lights) values.
 
 ## A practical example: custom ABS light
 

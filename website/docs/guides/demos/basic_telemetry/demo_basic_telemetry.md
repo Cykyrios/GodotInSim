@@ -1,15 +1,15 @@
 # Basic Telemetry
 
-This demo showcases the use of [OutSim](../../../class_ref/OutSim.mdx) and
-[OutGauge](../../../class_ref/OutGauge.mdx) to retrieve live data about your car.
-[InSim](../../../class_ref/InSim.mdx) is not used at all here.
+This demo showcases the use of [OutSim](/class_ref/OutSim.mdx) and
+[OutGauge](/class_ref/OutGauge.mdx) to retrieve live data about your car.
+[InSim](/class_ref/InSim.mdx) is not used at all here.
 
 ![Telemetry](./telemetry_2.jpg)
 
 ## Prerequisites
 
-This demo requires [setting up OutSim](../../getting_started/outsim/outsim.md)
-and [OutGauge](../../getting_started/outgauge.md) to properly receive the corresponding packets.
+This demo requires [setting up OutSim](/guides/getting_started/outsim/outsim.md)
+and [OutGauge](/guides/getting_started/outgauge.md) to properly receive the corresponding packets.
 
 ## The demo
 

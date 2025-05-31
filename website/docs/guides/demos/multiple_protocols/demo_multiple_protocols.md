@@ -12,9 +12,9 @@ You can also use multiple InSim instances from a single app.
 
 ## Prerequisites
 
-This demo needs [InSim](../../getting_started/insim.md) to be listening on port `29999`,
+This demo needs [InSim](/guides/getting_started/insim.md) to be listening on port `29999`,
 which you can do by typing `/insim 29999` in LFS. It also requires
-[OutSim](../../getting_started/outsim/outsim.md) and [OutGauge](../../getting_started/outgauge.md)
+[OutSim](/guides/getting_started/outsim/outsim.md) and [OutGauge](/guides/getting_started/outgauge.md)
 to be set up on ports `29997` and `29998`.
 
 ## The demo

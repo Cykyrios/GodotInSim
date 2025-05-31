@@ -3,7 +3,7 @@ import TabItem from "@theme/TabItem";
 
 # InSim
 
-Using InSim from Godot is straightforward: add an [InSim](../../class_ref/InSim) node to your scene
+Using InSim from Godot is straightforward: add an [InSim](/class_ref/InSim.mdx) node to your scene
 and initialize it, then you can connect to one of its many signals to listen for specific packets,
 and send packets manually or using the provided helper functions.
 
@@ -61,8 +61,8 @@ insim.initialize(
 )
 ```
 
-You can refer to [InSimInitializationData](../../class_ref/InSimInitializationData) for more details
-on initialization, and [InSim.InitFlag](../../class_ref/InSim#class_InSim_enum_InitFlag) for available
+You can refer to [InSimInitializationData](/class_ref/InSimInitializationData.mdx) for more details
+on initialization, and [InSim.InitFlag](/class_ref/InSim.mdx#class_InSim_enum_InitFlag) for available
 initialization flags.
 
 With LFS running, let's make sure the game is listening for connections by typing `/insim 29999`.
@@ -93,8 +93,8 @@ and send a text message using two different methods.
 
 #### Sending specific packets
 
-The standard way to send a packet is to create an instance of that [InSimPacket](../../class_ref/InSimPacket)
-using the [send_packet()](../../class_ref/InSim#class_InSim_method_send_packet) method. To do this, we can
+The standard way to send a packet is to create an instance of that [InSimPacket](/class_ref/InSimPacket.mdx)
+using the [send_packet()](/class_ref/InSim.mdx#class_InSim_method_send_packet) method. To do this, we can
 either create an instance of the packet, or use the `create()` static function that all sendable packets
 have - the latter is recommended to avoid creating variables we may not be using at all after sending the packet.
 
@@ -119,22 +119,22 @@ have - the latter is recommended to avoid creating variables we may not be using
 Some packets have wrapper functions to facilitate their use. Messages in particular are a very common thing
 to send, but they come in various packet types:
 
-* [InSimMSTPacket](../../class_ref/InSimMSTPacket) for commands and messages
-* [InSimMSXPacket](../../class_ref/InSimMSXPacket) for longer messages
-* [InSimMSLPacket](../../class_ref/InSimMSLPacket) for local messages
-* [InSimMTCPacket](../../class_ref/InSimMTCPacket) for messages to specific connections or players
+* [InSimMSTPacket](/class_ref/InSimMSTPacket.mdx) for commands and messages
+* [InSimMSXPacket](/class_ref/InSimMSXPacket.mdx) for longer messages
+* [InSimMSLPacket](/class_ref/InSimMSLPacket.mdx) for local messages
+* [InSimMTCPacket](/class_ref/InSimMTCPacket.mdx) for messages to specific connections or players
 
 Instead of thinking of which packet to send every time, and their specificities, you can use the following
 helper functions:
-* [send_message](../../class_ref/InSim#class_InSim_method_send_message) for both commands and messages: the
+* [send_message](/class_ref/InSim.mdx#class_InSim_method_send_message) for both commands and messages: the
     packet type is determined automatically, and longer messages are split and sent in multiple packets.
-* [send_local_message](../../class_ref/InSim#class_InSim_method_send_local_message) for local messages
-* [send_message_to_connection](../../class_ref/InSim#class_InSim_method_send_message_to_connection) for messages
+* [send_local_message](/class_ref/InSim.mdx#class_InSim_method_send_local_message) for local messages
+* [send_message_to_connection](/class_ref/InSim.mdx#class_InSim_method_send_message_to_connection) for messages
     to a specific connected player
-* [send_message_to_player](../../class_ref/InSim#class_InSim_method_send_message_to_player) for messages
+* [send_message_to_player](/class_ref/InSim.mdx#class_InSim_method_send_message_to_player) for messages
     to a specific driving player
 
-Instead of sending an [InSimMSTPacket](../../class_ref/InSimMSTPacket), this time we will do the following:
+Instead of sending an [InSimMSTPacket](/class_ref/InSimMSTPacket.mdx), this time we will do the following:
 
 ```gdscript
 insim.send_message("Hello InSim!")
@@ -156,11 +156,11 @@ received from LFS. Read on for the latter (and preferred) way of handling events
 
 We will typically want to execute code in response to events in the game; to do that, we need to connect to
 signals for the packets we are interested in. The
-[packet_received](../../class_ref/InSim#class_InSim_signal_packet_received) signal is emitted every time a packet
+[packet_received](/class_ref/InSim.mdx#class_InSim_signal_packet_received) signal is emitted every time a packet
 is received from LFS, but we usually want finer control, so we can instead connect to signals corresponding to
 specific packets: if we want to know when a player has typed a message, we can connect to the
-[isp_mso_received](../../class_ref/InSim#class_InSim_signal_isp_mso_received) signal, which is emitted when an
-[InSimMSOPacket](../../class_ref/InSimMSOPacket) is received. For this, we will add the connection in the
+[isp_mso_received](/class_ref/InSim.mdx#class_InSim_signal_isp_mso_received) signal, which is emitted when an
+[InSimMSOPacket](/class_ref/InSimMSOPacket.mdx) is received. For this, we will add the connection in the
 `_ready()` function:
 
 ```gdscript
@@ -180,9 +180,9 @@ Earlier on, we talked about having to wait for the connection to be established 
 the InSim node includes more signals than those related to packets:
 
 * `connected` is emitted when the connection is established (this is detected by the first
-    [InSimVERPacket](../../class_ref/InSimVERPacket) received after initialization, as LFS responds with
+    [InSimVERPacket](/class_ref/InSimVERPacket.mdx) received after initialization, as LFS responds with
     such a packet).
-* `disconnected` is emitted when you [close](../../class_ref/InSim#class_InSim_method_close) the connection,
+* `disconnected` is emitted when you [close](/class_ref/InSim.mdx#class_InSim_method_close) the connection,
     or when the connection times out.
 * `timeout` is emitted after some time has passed with no packet being received; GodotInSim will send a ping
     to LFS if it hasn't received any packet for a while, and if no response is given within a few seconds,
@@ -230,7 +230,7 @@ Host InSim version matches local version (9).
 MSO packet received: Cyk : Hello InSim!
 ```
 The message we sent automatically when connecting is displayed in the game, which sends a corresponding
-[InSimMSOPacket](../../class_ref/InSimMSOPacket), so our app prints the contents of that message.
+[InSimMSOPacket](/class_ref/InSimMSOPacket.mdx), so our app prints the contents of that message.
 Of course, "Cyk" will be replaced with your own name.
 
 ## A word on host InSim apps
@@ -256,4 +256,4 @@ insim.initialize(
 ## What's next?
 
 Now that you know how to use InSim with GodotInSim, you can continue with the related `OutGauge` and `OutSim`,
-you can [check out the demos](../demos/intro), or you can start experimenting on your own!
+you can [check out the demos](/guides/demos/intro.md), or you can start experimenting on your own!

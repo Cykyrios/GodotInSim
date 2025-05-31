@@ -82,11 +82,11 @@ const config: Config = {
           items: [
             {
               label: 'Class Reference',
-              to: '/docs/class_ref/intro',
+              to: '/docs/class_ref',
             },
             {
               label: 'Guides',
-              to: '/docs/guides/intro',
+              to: '/docs/guides',
             },
           ],
         },

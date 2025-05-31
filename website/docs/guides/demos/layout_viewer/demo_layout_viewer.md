@@ -1,7 +1,7 @@
 # Layout Viewer
 
-This demo showcases [SMX](../../../class_ref/SMXFile) parsing and 3D mesh generation, as well as
-loading and displaying [layouts](../../../class_ref/LYTFile) and keeping them synchronized with
+This demo showcases [SMX](/class_ref/SMXFile.mdx) parsing and 3D mesh generation, as well as
+loading and displaying [layouts](/class_ref/LYTFile.mdx) and keeping them synchronized with
 any changes made in LFS.
 
 ![Layout viewer](./layout_viewer_gis.jpg)
@@ -28,4 +28,4 @@ the camera will also synchronize with LFS, and loading a layout will display it 
 model. Any modification to the layout in LFS will be replicated (if you start the demo with a
 layout that has been modified but not saved, unsaved modifications will not be replicated properly;
 this is only a limitation of the demo itself, you can properly update every object using
-[InSimAXMPackets](../../../class_ref/InSimAXMPacket)).
+[InSimAXMPackets](/class_ref/InSimAXMPacket.mdx)).

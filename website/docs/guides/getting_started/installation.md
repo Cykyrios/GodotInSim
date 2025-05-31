@@ -26,8 +26,8 @@ ln -s -r .submodules/godot_insim/addons/godot_insim ./addons/
 You should also enable the `Godot InSim` plugin in **Project Settings > Plugins** to enable features
 from autoloads.
 
-From there, you can manually create and manage [InSim](./insim), [OutSim](./outsim) and
-[OutGauge](./outgauge) nodes to communicate with LFS.
+From there, you can manually create and manage [InSim](./insim.md), [OutSim](./outsim/outsim.md) and
+[OutGauge](./outgauge.md) nodes to communicate with LFS.
 
 If you wish to connect to multiple InSim instances, you will need to create and manage several
-[InSim](../../class_ref/InSim) nodes.
+[InSim](/class_ref/InSim.mdx) nodes.
