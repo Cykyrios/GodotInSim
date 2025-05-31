@@ -100,3 +100,9 @@ func get_rim_width_inch() -> float:
 		GISUnit.Length.METER,
 		GISUnit.Length.INCH
 	), 0.25)
+
+
+## Returns the total wheel radius in meters, as the sum of the [member rim_radius] and the product
+## of [member tyre_width] and [member tyre_ratio].
+func get_wheel_radius() -> float:
+	return rim_radius + tyre_width * tyre_ratio
