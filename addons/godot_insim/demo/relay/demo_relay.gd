@@ -17,11 +17,7 @@ func _ready() -> void:
 	_connect = insim.isp_ncn_received.connect(_on_ncn_received)
 	_connect = insim.irp_hos_received.connect(_on_hos_received)
 
-	insim.initialize(
-		InSim.RELAY_ADDRESS,
-		InSim.RELAY_PORT,
-		InSimInitializationData.new(),  # Empty init data as we don't actually need it
-	)
+	insim.initialize_relay()
 
 
 func add_host_info(host_info: HostInfo) -> void:

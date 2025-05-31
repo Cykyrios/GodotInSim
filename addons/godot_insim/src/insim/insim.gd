@@ -1083,6 +1083,11 @@ func initialize(
 	lfs_connection._connect_to_host(address, port, initialization_data.udp_port)
 
 
+## Attempts to connect to the InSim Relay.
+func initialize_relay() -> void:
+	initialize(RELAY_ADDRESS, RELAY_PORT, InSimInitializationData.new())
+
+
 ## Sends a UTF8-formatted text string to LFS as a local message.
 func send_local_message(
 	message: String, sound := InSim.MessageSound.SND_SILENT, sender := "InSim"
