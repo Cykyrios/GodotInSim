@@ -331,6 +331,28 @@ static func get_display_string(text: String, colors := ColorType.BBCODE) -> Stri
 	return remove_double_carets(output)
 
 
+## Returns the contents of the message contained in the given [param mso_packet].
+static func get_mso_message(mso_packet: InSimMSOPacket, insim: InSim) -> String:
+	return mso_packet.msg.substr(get_mso_start(mso_packet, insim))
+
+
+## Returns the name of the sender of the message contained in the given [param mso_packet].
+static func get_mso_sender(mso_packet: InSimMSOPacket, insim: InSim) -> String:
+	var sender := "%s %d" % [
+		"PLID" if mso_packet.plid else "UCID",
+		mso_packet.plid if mso_packet.plid > 0 else mso_packet.ucid
+	]
+	sender = replace_plid_with_name(
+		"PLID %d" % [mso_packet.plid], insim, false
+	) if mso_packet.plid else replace_ucid_with_name(
+		"UCID %d" % [mso_packet.ucid], insim, false, false
+	)
+	sender = sender.trim_suffix("^9")
+	if not (insim.initialization_data.flags & InSim.InitFlag.ISF_MSO_COLS):
+		sender = strip_colors(sender)
+	return sender
+
+
 ## Returns the start position of the actual message, since [member InSimMSOPacket.text_start]
 ## is unreliable when code pages and multi-byte characters appear in the connection/player name
 ## (LFS issue). [code]/me[/code] messages return [code]0[/code], as the name is part of
@@ -341,17 +363,8 @@ static func get_mso_start(mso_packet: InSimMSOPacket, insim: InSim) -> int:
 		return 0
 	var colored_mso := insim.initialization_data.flags & InSim.InitFlag.ISF_MSO_COLS as bool
 	var formatting_length := 9 if colored_mso else 3  # length of LFS formatting: "^7 ^7: ^8"
-	var use_plid := true if mso_packet.plid != 0 else false
-	var id := "%s %d" % [
-		"PLID" if use_plid else "UCID",
-		mso_packet.plid if use_plid else mso_packet.ucid
-	]
-	id = replace_plid_with_name(id, insim, false) if use_plid \
-			else replace_ucid_with_name(id, insim, false, false)
-	id = id.trim_suffix("^9")
-	if not colored_mso:
-		id = strip_colors(id)
-	return id.length() + formatting_length
+	var sender := get_mso_sender(mso_packet, insim)
+	return sender.length() + formatting_length
 
 
 ## Returns a regular expression matching ANSI escape sequences for foreground color.

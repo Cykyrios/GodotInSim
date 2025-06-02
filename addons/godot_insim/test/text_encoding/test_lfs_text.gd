@@ -310,6 +310,52 @@ func test_strip_colors(text: String, expected: String, test_parameters := [
 
 
 @warning_ignore("unused_parameter")
+func test_get_mso_message(message: String, expected: String, test_parameters := [
+	["^7Player ^7: ^8Simple message", "Simple message"],
+	["^7^7Cyk ^7: ^8^1Colored ^5日本語 ^9message", "^1Colored ^5日本語 ^9message"],
+	["Player ^8sent a message", "Player ^8sent a message"],
+	["^7Cyk ^8sent a message", "^7Cyk ^8sent a message"],
+]) -> void:
+	var insim := auto_free(InSim.new()) as InSim
+	insim.initialization_data.flags |= InSim.InitFlag.ISF_MSO_COLS
+	# We need some Connections to test this
+	var connection := Connection.new()
+	connection.nickname = "Player"
+	insim.connections[1] = connection
+	connection = Connection.new()
+	connection.nickname = "^7Cyk"
+	insim.connections[2] = connection
+	var packet := InSimMSOPacket.new()
+	packet.ucid = 1 if message.left(10).contains("Player") else 2
+	packet.msg = message
+	# Required to differentiate /me messages
+	packet.text_start = 1 if message.left(12).contains("^7:") else 0
+	var _test := assert_str(LFSText.get_mso_message(packet, insim)).is_equal(expected)
+
+
+@warning_ignore("unused_parameter")
+func test_get_mso_sender(message: String, expected: String, test_parameters := [
+	["^7Player ^7: ^8Simple message", "Player"],
+	["^7^7Cyk ^7: ^8^1Colored ^5日本語 ^9message", "^7Cyk"],
+	["Player ^8sent a message", "Player"],
+	["^7Cyk ^8sent a message", "^7Cyk"],
+]) -> void:
+	var insim := auto_free(InSim.new()) as InSim
+	insim.initialization_data.flags |= InSim.InitFlag.ISF_MSO_COLS
+	# We need a Connection to test this
+	var connection := Connection.new()
+	connection.nickname = "Player"
+	insim.connections[1] = connection
+	connection = Connection.new()
+	connection.nickname = "^7Cyk"
+	insim.connections[2] = connection
+	var packet := InSimMSOPacket.new()
+	packet.ucid = 1 if message.left(10).contains("Player") else 2
+	packet.msg = message
+	var _test := assert_str(LFSText.get_mso_sender(packet, insim)).is_equal(expected)
+
+
+@warning_ignore("unused_parameter")
 func test_get_mso_start(player_name: String, message: String, test_parameters := [
 	["Player", "Message"],
 	["Nick\\^^name", "Message"],
