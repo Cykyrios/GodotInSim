@@ -22,7 +22,7 @@ more closely to Godot's
 Enums and bitflags are implemented as enums in [InSim](/docs/class_ref/InSim), [OutSim](/docs/class_ref/OutSim),
 and [OutGauge](/docs/class_ref/OutGauge) as appropriate, some enums specific to a single type of packet can be
 included in the corresponding packet directly. InSimRelay is handled directly by
-[InSim](/docs/class_ref/InSim#class_InSim_property_is_relay).
+[InSim](/docs/class_ref/InSim#property_is_relay).
 
 Utility classes [GISCamera](/docs/class_ref/GISCamera), [GISTime](/docs/class_ref/GISTime), and
 [GISUnit](/docs/class_ref/GISUnit) provide functions to convert data and manipulate Godot cameras.
