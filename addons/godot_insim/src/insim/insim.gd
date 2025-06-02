@@ -955,6 +955,10 @@ var nlp_mci_connection: LFSConnectionUDP = null
 var is_relay := false  ## Whether this is a Relay connection, do not set manually.
 ## Helper struct for InSim initialization, see [InSimISIPacket].
 var initialization_data := InSimInitializationData.new()
+## This boolean controls whether connecting to InSim versions other than [constant VERSION]
+## is allowed. If you know the target version is compatible with the current [constant VERSION],
+## enable this, but be aware that issues may occur.
+var allow_different_insim_versions := false
 
 ## Current status of the InSim connection; can report [code]false[/code] even if TCP is connected.
 ## InSim is considered connected when the first [InSimVERPacket] is received after
@@ -1316,10 +1320,16 @@ func _read_ping_reply() -> void:
 
 func _read_version_packet(packet: InSimVERPacket) -> void:
 	if packet.insim_ver != VERSION:
-		print("Host InSim version (%d) is different from local version (%d)." % \
-				[packet.insim_ver, VERSION])
-		close()
-		return
+		var message := "Host InSim version (%d) is different from local version (%d)." % [
+			packet.insim_ver, VERSION
+		]
+		if not allow_different_insim_versions:
+			push_error(message)
+			printerr("Connection to InSim versions other than %d is not allowed." % [VERSION])
+			printerr("You can force connection by enabling InSim.allow_different_insim_versions.")
+			close()
+			return
+		push_warning(message)
 	if not insim_connected:
 		insim_connected = true
 		print("Host InSim version matches local version (%d)." % [VERSION])
