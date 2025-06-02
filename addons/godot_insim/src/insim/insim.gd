@@ -1312,7 +1312,7 @@ func _read_version_packet(packet: InSimVERPacket) -> void:
 		return
 	if not insim_connected:
 		insim_connected = true
-		connected.emit()
+		connected.emit.call_deferred()  # Defer signal to allow for internal processing
 		print("Host InSim version matches local version (%d)." % [VERSION])
 		send_packet(InSimTinyPacket.create(GISRequest.REQ_0, InSim.Tiny.TINY_SST))
 		send_packet(InSimTinyPacket.create(GISRequest.REQ_0, InSim.Tiny.TINY_NCN))
@@ -1337,7 +1337,7 @@ func _send_ping() -> void:
 func _on_connected_to_host() -> void:
 	if is_relay:
 		insim_connected = true
-		connected.emit()
+		connected.emit.call_deferred()  # Defer signal to allow for internal processing
 	else:
 		send_packet(InSimISIPacket.create(
 			initialization_data.udp_port,
