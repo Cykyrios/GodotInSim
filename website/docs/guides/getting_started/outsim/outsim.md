@@ -71,9 +71,9 @@ packets coming in at a really fast pace. You can stop the test scene after a few
 ## OutSim Packets
 
 LFS sends data based on the `Opts` you set in `cfg.txt`. To make things easier to use, GodotInSim
-includes all data in the [OutSimPack](/class_ref/OutSimPack.mdx) object, which is included in the
-[OutSimPacket](/class_ref/OutSimPacket.mdx). Missing data will therefore be at thei default values;
-if you need to check which data is valid, the options value is included in the OutSimPacket.
+includes all data in the [OutSimPacket](/class_ref/OutSimPacket.mdx). Missing data will therefore
+be at their default values; if you need to check which data is valid, the options value is included
+in the [OutSimPacket](/class_ref/OutSimPacket.mdx).
 
 ## What can we do with this?
 
@@ -115,17 +115,17 @@ var drive := car_info.drive
 And we can use that to fill an array of driven wheels, with the following function:
 
 ```gdscript
-func get_driven_wheels(drive: CarInfo.Drive) -> Array[OutSimPack.WheelIndex]:
-	var wheels: Array[OutSimPack.WheelIndex] = []
+func get_driven_wheels(drive: CarInfo.Drive) -> Array[OutSimPacket.WheelIndex]:
+	var wheels: Array[OutSimPacket.WheelIndex] = []
 	if drive in [CarInfo.Drive.RWD, CarInfo.Drive.AWD]:
 		wheels.append_array([
-			OutSimPack.WheelIndex.REAR_LEFT,
-			OutSimPack.WheelIndex.REAR_RIGHT,
+			OutSimPacket.WheelIndex.REAR_LEFT,
+			OutSimPacket.WheelIndex.REAR_RIGHT,
 		])
 	if drive in [CarInfo.Drive.FWD, CarInfo.Drive.AWD]:
 		wheels.append_array([
-			OutSimPack.WheelIndex.FRONT_LEFT,
-			OutSimPack.WheelIndex.FRONT_RIGHT,
+			OutSimPacket.WheelIndex.FRONT_LEFT,
+			OutSimPacket.WheelIndex.FRONT_RIGHT,
 		])
 	return wheels
 ```
@@ -133,7 +133,7 @@ func get_driven_wheels(drive: CarInfo.Drive) -> Array[OutSimPack.WheelIndex]:
 :::note
 
 OutSim packets always include 4 [OutSimWheel](/class_ref/OutSimWheel.mdx) objects, the order is
-given in the [OutSimPack.WheelIndex](/class_ref/OutSimPack.mdx#class_OutSimPack_enum_WheelIndex)
+given in the [OutSimPacket.WheelIndex](/class_ref/OutSimPacket.mdx#enum_WheelIndex)
 enum: rear left, rear right, front left, front right.
 
 :::
@@ -223,10 +223,10 @@ var outsim: OutSim = null
 # highlight-start
 # We declare some global variables here, instead of inside the functions.
 var vehicle_id := "FZ5"
-var driven_wheels: Array[OutSimPack.WheelIndex] = []
+var driven_wheels: Array[OutSimPacket.WheelIndex] = []
 var wheel_radii: Array[float] = []
 # This is the list of color rects we added to the scene, indexed by their WheelIndex.
-var indicators: Dictionary[OutSimPack.WheelIndex, ColorRect] = {}
+var indicators: Dictionary[OutSimPacket.WheelIndex, ColorRect] = {}
 
 # We add a threshold to the spin detection, otherwise every time you apply throttle,
 # the indicators light up. This is an arbitrary 10% threshold.
@@ -255,25 +255,25 @@ func _ready() -> void:
 		# highlight-start
 		# We fill the indicators dictionary with our ColorRects
 		indicators[w] = (
-			rear_left if w == OutSimPack.WheelIndex.REAR_LEFT
-			else rear_right if w == OutSimPack.WheelIndex.REAR_RIGHT
-			else front_left if w == OutSimPack.WheelIndex.FRONT_LEFT
+			rear_left if w == OutSimPacket.WheelIndex.REAR_LEFT
+			else rear_right if w == OutSimPacket.WheelIndex.REAR_RIGHT
+			else front_left if w == OutSimPacket.WheelIndex.FRONT_LEFT
 			else front_right
 		)
 		# highlight-end
 
 
-func get_driven_wheels(drive: CarInfo.Drive) -> Array[OutSimPack.WheelIndex]:
-	var wheels: Array[OutSimPack.WheelIndex] = []
+func get_driven_wheels(drive: CarInfo.Drive) -> Array[OutSimPacket.WheelIndex]:
+	var wheels: Array[OutSimPacket.WheelIndex] = []
 	if drive in [CarInfo.Drive.RWD, CarInfo.Drive.AWD]:
 		wheels.append_array([
-			OutSimPack.WheelIndex.REAR_LEFT,
-			OutSimPack.WheelIndex.REAR_RIGHT,
+			OutSimPacket.WheelIndex.REAR_LEFT,
+			OutSimPacket.WheelIndex.REAR_RIGHT,
 		])
 	if drive in [CarInfo.Drive.FWD, CarInfo.Drive.AWD]:
 		wheels.append_array([
-			OutSimPack.WheelIndex.FRONT_LEFT,
-			OutSimPack.WheelIndex.FRONT_RIGHT,
+			OutSimPacket.WheelIndex.FRONT_LEFT,
+			OutSimPacket.WheelIndex.FRONT_RIGHT,
 		])
 	return wheels
 

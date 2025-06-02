@@ -47,11 +47,10 @@ func _on_outgauge_packet_received(packet: OutGaugePacket) -> void:
 
 
 func _on_outsim_packet_received(packet: OutSimPacket) -> void:
-	var data := packet.outsim_pack
-	var steer := data.os_inputs.input_steer
+	var steer := packet.os_inputs.input_steer
 	chart_steering.data.append(Vector3(0, steer, 0))
-	var angles := data.os_main.gis_angles
-	var acceleration := data.os_main.accel
+	var angles := packet.os_main.gis_angles
+	var acceleration := packet.os_main.accel
 	var basis := Basis.from_euler(angles, EULER_ORDER_ZXY)
 	var g_forces := acceleration * basis / GRAVITY
 	chart_g_forces.data.append(Vector3(-g_forces.x, -g_forces.y, 0))

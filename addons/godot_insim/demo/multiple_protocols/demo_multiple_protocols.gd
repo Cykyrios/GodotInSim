@@ -154,16 +154,15 @@ func update_outgauge(outgauge_packet: OutGaugePacket) -> void:
 
 func update_outsim(outsim_packet: OutSimPacket) -> void:
 	outsim_label_1.text = "OutSim:"
-	var pack := outsim_packet.outsim_pack
-	var os_options := pack.outsim_options
+	var os_options := outsim_packet.outsim_options
 	if os_options & OutSim.OutSimOpts.OSO_HEADER:
-		outsim_label_1.text += "\n%s" % [pack.header]
+		outsim_label_1.text += "\n%s" % [outsim_packet.header]
 	if os_options & OutSim.OutSimOpts.OSO_ID:
-		outsim_label_1.text += "\n%s: %d" % ["ID", pack.id]
+		outsim_label_1.text += "\n%s: %d" % ["ID", outsim_packet.id]
 	if os_options & OutSim.OutSimOpts.OSO_TIME:
-		outsim_label_1.text += "\n%s: %d" % ["Time", pack.time]
+		outsim_label_1.text += "\n%s: %d" % ["Time", outsim_packet.time]
 	if os_options & OutSim.OutSimOpts.OSO_MAIN:
-		var outsim_main := pack.os_main
+		var outsim_main := outsim_packet.os_main
 		outsim_label_1.text += "\n%s: %.2v" % ["AngVel", outsim_main.ang_vel]
 		outsim_label_1.text += "\n%s: %.2f, %s: %.2f, %s: %.2f" % [
 			"Heading", outsim_main.heading,
@@ -174,24 +173,24 @@ func update_outsim(outsim_packet: OutSimPacket) -> void:
 		outsim_label_1.text += "\n%s: %.2v" % ["Vel", outsim_main.vel]
 		outsim_label_1.text += "\n%s: %s" % ["Pos", outsim_main.pos]
 	if os_options & OutSim.OutSimOpts.OSO_INPUTS:
-		var outsim_inputs := pack.os_inputs
+		var outsim_inputs := outsim_packet.os_inputs
 		outsim_label_1.text += "\n%s: %.2f\n%s: %.2f\n%s: %.2f\n%s: %.2f\n%s: %.2f" % \
 				["Throttle", outsim_inputs.throttle, "Brake", outsim_inputs.brake,
 				"InputSteer", outsim_inputs.input_steer, "Clutch", outsim_inputs.clutch,
 				"Handbrake", outsim_inputs.handbrake]
 	if os_options & OutSim.OutSimOpts.OSO_DRIVE:
-		var gear := pack.gear - 1
+		var gear := outsim_packet.gear - 1
 		outsim_label_1.text += "\n%s: %s" % [
 			"Gear",
 			"R" if gear < 0 else "N" if gear == 0 else str(gear),
 		]
-		outsim_label_1.text += "\n%s: %.2f" % ["EngineAngVel", pack.engine_ang_vel]
-		outsim_label_1.text += "\n%s: %.2f" % ["MaxTorqueAtVel", pack.max_torque_at_vel]
+		outsim_label_1.text += "\n%s: %.2f" % ["EngineAngVel", outsim_packet.engine_ang_vel]
+		outsim_label_1.text += "\n%s: %.2f" % ["MaxTorqueAtVel", outsim_packet.max_torque_at_vel]
 	if os_options & OutSim.OutSimOpts.OSO_DISTANCE:
-		outsim_label_1.text += "\n%s: %.2f" % ["CurrentLapDistance", pack.current_lap_distance]
-		outsim_label_1.text += "\n%s: %.2f" % ["IndexedDistance", pack.indexed_distance]
+		outsim_label_1.text += "\n%s: %.2f" % ["CurrentLapDistance", outsim_packet.current_lap_distance]
+		outsim_label_1.text += "\n%s: %.2f" % ["IndexedDistance", outsim_packet.indexed_distance]
 	if os_options & OutSim.OutSimOpts.OSO_WHEELS:
-		var outsim_wheels := pack.os_wheels
+		var outsim_wheels := outsim_packet.os_wheels
 		outsim_label_2.text = "{0} front: {3}/{4}\n{0} rear: {1}/{2}".format([
 			"SuspDeflect",
 			"%.2f" % outsim_wheels[0].susp_deflect, "%.2f" % outsim_wheels[1].susp_deflect,
@@ -253,4 +252,4 @@ func update_outsim(outsim_packet: OutSimPacket) -> void:
 			"%.2f" % outsim_wheels[2].tan_slip_angle, "%.2f" % outsim_wheels[3].tan_slip_angle,
 		])
 	if os_options & OutSim.OutSimOpts.OSO_EXTRA_1:
-		outsim_label_2.text += "\n%s: %.2f" % ["SteerTorque", pack.steer_torque]
+		outsim_label_2.text += "\n%s: %.2f" % ["SteerTorque", outsim_packet.steer_torque]

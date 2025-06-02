@@ -11,7 +11,7 @@ extends Node
 signal packet_received(packet: OutSimPacket)
 
 ## OutSim options, which determine what data is sent by LFS; refer to
-## [code]docs/InSimPack.txt[/code] for more details.
+## [code]docs/OutSimPack.txt[/code] for more details.
 enum OutSimOpts {
 	OSO_HEADER = 1,
 	OSO_ID = 2,
