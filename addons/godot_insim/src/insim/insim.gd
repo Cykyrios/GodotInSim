@@ -1284,6 +1284,16 @@ func _connect_lfs_connection_signals() -> void:
 	_discard = lfs_connection.packet_received.connect(_on_packet_received)
 
 
+# Defers connected signal to allow for given number of auto-requested packets to be received.
+func _emit_connected_deferred(auto_requested_packets := 0) -> void:
+	var remaining_packets := auto_requested_packets
+	while remaining_packets > 0:
+		var packet: InSimPacket = await packet_received
+		if packet.req_i == GISRequest.REQ_0:
+			remaining_packets -= 1
+	connected.emit.call_deferred()
+
+
 func _handle_timeout() -> void:
 		timeout.emit()
 		insim_connected = false
@@ -1312,11 +1322,15 @@ func _read_version_packet(packet: InSimVERPacket) -> void:
 		return
 	if not insim_connected:
 		insim_connected = true
-		connected.emit.call_deferred()  # Defer signal to allow for internal processing
 		print("Host InSim version matches local version (%d)." % [VERSION])
-		send_packet(InSimTinyPacket.create(GISRequest.REQ_0, InSim.Tiny.TINY_SST))
-		send_packet(InSimTinyPacket.create(GISRequest.REQ_0, InSim.Tiny.TINY_NCN))
-		send_packet(InSimTinyPacket.create(GISRequest.REQ_0, InSim.Tiny.TINY_NPL))
+		var auto_packets: Array[InSimPacket] = [
+			InSimTinyPacket.create(GISRequest.REQ_0, InSim.Tiny.TINY_SST),
+			InSimTinyPacket.create(GISRequest.REQ_0, InSim.Tiny.TINY_NCN),
+			InSimTinyPacket.create(GISRequest.REQ_0, InSim.Tiny.TINY_NPL),
+		]
+		for auto_packet in auto_packets:
+			send_packet(auto_packet)
+		_emit_connected_deferred(auto_packets.size())
 
 
 func _reset_timeout_timer() -> void:
@@ -1337,7 +1351,7 @@ func _send_ping() -> void:
 func _on_connected_to_host() -> void:
 	if is_relay:
 		insim_connected = true
-		connected.emit.call_deferred()  # Defer signal to allow for internal processing
+		_emit_connected_deferred()
 	else:
 		send_packet(InSimISIPacket.create(
 			initialization_data.udp_port,
