@@ -57,8 +57,8 @@ func _on_packet_received(packet: OutSimPacket) -> void:
 	print("OutSim packet received!")
 ```
 
-Just like [OutGauge](../outgauge.md), you can create an OutSim instance entirely from code, or add it
-as a node in your scene and use `@onready`.
+Just like [OutGauge](../outgauge.md), you can create an [OutSim](/class_ref/OutSim.mdx) instance
+entirely from code, or add it as a node in your scene and use `@onready`.
 
 Initialization is almost the same as OutGauge, with one additional parameter: you have to specify
 the InSim options, which should match the `Opts` value in `cfg.txt`.
@@ -143,7 +143,7 @@ add each wheel's angular velocity to an array:
 
 ```gdscript
 func _on_packet_received(packet: OutSimPacket) -> void:
-	var wheel_data := packet.outsim_pack.os_wheels
+	var wheel_data := packet.os_wheels
 	var wheel_speeds: Array[float] = []
 	for w in wheel_data.size():
 		wheel_speeds.append(wheel_data[w].ang_vel)
@@ -161,13 +161,13 @@ for w in car_info.wheels.size():
 	wheel_radii.append(car_info.wheels[w].get_wheel_radius())
 ```
 
-Next, the conversion itself: Velocity at the contact patch (again, considering the theoretical
-wheel radius) if simply the product of the angular velocity and radius. We can now compare the
-wheel's speed to the car speed, which is part of the [OutSimMain](/class_ref/OutSimMain.mdx)
-data of the OutSim packet:
+Next, the conversion itself: velocity at the contact patch (again, considering the theoretical
+wheel radius) is simply the product of the angular velocity and radius. We can now compare the
+wheel's speed to the car's overal speed, which is part of the
+[OutSimMain](/class_ref/OutSimMain.mdx) data of the [OutSimPacket](/class_ref/OutSimPacket.mdx):
 
 ```gdscript
-	var car_speed := packet.outsim_pack.os_main.vel
+	var car_speed := packet.os_main.vel
 	for w in wheel_speeds.size():
 		if w not in driven_wheels or absf(wheel_speeds[w]) < 1.0:
 			# We ignore non-driven wheels and negative speeds.
@@ -283,18 +283,18 @@ func set_rect_color(rect: ColorRect, speeding: bool) -> void:
 
 
 func _on_packet_received(packet: OutSimPacket) -> void:
-	var wheel_data := packet.outsim_pack.os_wheels
+	var wheel_data := packet.os_wheels
 	var wheel_speeds: Array[float] = []
 	for w in wheel_data.size():
 		wheel_speeds.append(wheel_data[w].ang_vel)
 
-	var car_speed := packet.outsim_pack.os_main.vel
+	var car_speed := packet.os_main.vel
 	# highlight-start
 	# Here we include the car's heading, so the velocity is compared to the forward direction
 	# of the car; otherwise we would miss some tyre spinning because of the lateral velocity.
 	# We then use the dot product to update the speed we will compare to.
 	# NOTE: This is an oversimplification, but it works well enough for this example.
-	var car_heading := packet.outsim_pack.os_main.gis_angles.z
+	var car_heading := packet.os_main.gis_angles.z
 	car_speed *= car_speed.normalized().dot(Vector3(0, 1, 0).rotated(Vector3(0, 0, 1), car_heading))
 	# highlight-end
 	for w in wheel_speeds.size():
@@ -325,7 +325,7 @@ you to work around the limitations of OutSim.
 :::warning
 
 OutSim only works in the driver and custom views, and only for local cars. This means that in
-multiplayer, you can only use OutSim for your own car, and an MPR replay will not output OutSim
+multiplayer, you can only use OutSim for your own car, and an MPR replay will not output any OutSim
 data at all.
 
 :::

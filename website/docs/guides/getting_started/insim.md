@@ -222,7 +222,7 @@ func _on_mso_received(packet: InSimMSOPacket) -> void:
 	print("MSO packet received: %s" % packet.msg)
 ```
 
-Running this first app procudes the following output in Godot:
+Running this first app produces the following output in Godot:
 ```text
 TCP connecting...
 TCP status: connected - 127.0.0.1:29999
