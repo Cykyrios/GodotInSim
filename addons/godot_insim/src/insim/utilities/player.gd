@@ -4,6 +4,11 @@ extends RefCounted
 ##
 ## Utility object representing a player or AI currently driving, associated to a PLID.
 
+enum PlayerType {
+	FEMALE = 1,
+	AI = 2,
+	REMOTE = 4,
+}
 
 var ucid := 0  ## UCID associated to this player
 var player_type := 0  ## Player type (female, AI and remote flags)
@@ -54,3 +59,43 @@ func get_flags_changes(new_flags: int) -> Dictionary[String, String]:
 		if new_flags & value != flags & value:
 			changes[key] = "ON" if new_flags & value else "OFF"
 	return changes
+
+
+## Returns [code]true[/code] is the player is an AI.
+func is_ai() -> bool:
+	return player_type & PlayerType.AI
+
+
+## Returns [code]true[/code] is the player model is female.
+func is_female() -> bool:
+	return player_type & PlayerType.FEMALE
+
+
+## Returns [code]true[/code] is the player is a human driver.
+func is_human() -> bool:
+	return not is_ai()
+
+
+## Returns [code]true[/code] is the player is local to the InSim instance.
+func is_local() -> bool:
+	return not is_remote()
+
+
+## Returns [code]true[/code] is the player is male.
+func is_male() -> bool:
+	return not is_female()
+
+
+## Returns [code]true[/code] is the player is remote to the InSim instance.
+func is_remote() -> bool:
+	return player_type & PlayerType.REMOTE
+
+
+## Sets [member player_type] from the values of [param p_female], [param p_ai],
+## and [param p_remote].
+func set_player_type(p_female := false, p_ai := false, p_remote := false) -> void:
+	player_type = (
+		(PlayerType.FEMALE if p_female else 0)
+		+ (PlayerType.AI if p_ai else 0)
+		+ (PlayerType.REMOTE if p_remote else 0)
+	)
