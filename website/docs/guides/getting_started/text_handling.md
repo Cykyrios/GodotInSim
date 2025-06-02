@@ -117,8 +117,9 @@ text should convert properly.
 > insim.send_message("Hello ^7日^1本^7語^9 InSim!")
 > ```
 >
-> Will result in LFS displaying: <span style={{color: "white"}}>Player : </span>Hello
-> <span style={{color: "white"}}>日</span><span style={{color: "red"}}>本</span><span style={{color: "white"}}>語</span> InSim!
+> LFS displays: <span style={{color: "white"}}>Player : </span>Hello
+> <span style={{color: "white"}}>日</span><span style={{color: "red"}}>本</span><span style={{color: "white"}}>語</span>
+> InSim!
 
 Emoji and a number of Unicode symbols are not supported by LFS.
 
@@ -126,4 +127,4 @@ Emoji and a number of Unicode symbols are not supported by LFS.
 > insim.send_message("⚠ Warning ⚠")
 > ```
 >
-> Will result in LFS displaying: <span style={{color: "white"}}>Player : </span>ýÿ Warning ýÿ
+> LFS displays: <span style={{color: "white"}}>Player : </span>ýÿ Warning ýÿ
