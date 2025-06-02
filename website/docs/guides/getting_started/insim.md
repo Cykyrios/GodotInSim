@@ -62,7 +62,7 @@ insim.initialize(
 ```
 
 You can refer to [InSimInitializationData](/class_ref/InSimInitializationData.mdx) for more details
-on initialization, and [InSim.InitFlag](/class_ref/InSim.mdx#class_InSim_enum_InitFlag) for available
+on initialization, and [InSim.InitFlag](/class_ref/InSim.mdx#enum_InitFlag) for available
 initialization flags.
 
 With LFS running, let's make sure the game is listening for connections by typing `/insim 29999`.
@@ -94,7 +94,7 @@ and send a text message using two different methods.
 #### Sending specific packets
 
 The standard way to send a packet is to create an instance of that [InSimPacket](/class_ref/InSimPacket.mdx)
-using the [send_packet()](/class_ref/InSim.mdx#class_InSim_method_send_packet) method. To do this, we can
+using the [send_packet()](/class_ref/InSim.mdx#method_send_packet) method. To do this, we can
 either create an instance of the packet, or use the `create()` static function that all sendable packets
 have - the latter is recommended to avoid creating variables we may not be using at all after sending the packet.
 
@@ -126,12 +126,12 @@ to send, but they come in various packet types:
 
 Instead of thinking of which packet to send every time, and their specificities, you can use the following
 helper functions:
-* [send_message](/class_ref/InSim.mdx#class_InSim_method_send_message) for both commands and messages: the
+* [send_message](/class_ref/InSim.mdx#method_send_message) for both commands and messages: the
     packet type is determined automatically, and longer messages are split and sent in multiple packets.
-* [send_local_message](/class_ref/InSim.mdx#class_InSim_method_send_local_message) for local messages
-* [send_message_to_connection](/class_ref/InSim.mdx#class_InSim_method_send_message_to_connection) for messages
+* [send_local_message](/class_ref/InSim.mdx#method_send_local_message) for local messages
+* [send_message_to_connection](/class_ref/InSim.mdx#method_send_message_to_connection) for messages
     to a specific connected player
-* [send_message_to_player](/class_ref/InSim.mdx#class_InSim_method_send_message_to_player) for messages
+* [send_message_to_player](/class_ref/InSim.mdx#method_send_message_to_player) for messages
     to a specific driving player
 
 Instead of sending an [InSimMSTPacket](/class_ref/InSimMSTPacket.mdx), this time we will do the following:
@@ -156,10 +156,10 @@ received from LFS. Read on for the latter (and preferred) way of handling events
 
 We will typically want to execute code in response to events in the game; to do that, we need to connect to
 signals for the packets we are interested in. The
-[packet_received](/class_ref/InSim.mdx#class_InSim_signal_packet_received) signal is emitted every time a packet
+[packet_received](/class_ref/InSim.mdx#signal_packet_received) signal is emitted every time a packet
 is received from LFS, but we usually want finer control, so we can instead connect to signals corresponding to
 specific packets: if we want to know when a player has typed a message, we can connect to the
-[isp_mso_received](/class_ref/InSim.mdx#class_InSim_signal_isp_mso_received) signal, which is emitted when an
+[isp_mso_received](/class_ref/InSim.mdx#signal_isp_mso_received) signal, which is emitted when an
 [InSimMSOPacket](/class_ref/InSimMSOPacket.mdx) is received. For this, we will add the connection in the
 `_ready()` function:
 
@@ -182,7 +182,7 @@ the InSim node includes more signals than those related to packets:
 * `connected` is emitted when the connection is established (this is detected by the first
     [InSimVERPacket](/class_ref/InSimVERPacket.mdx) received after initialization, as LFS responds with
     such a packet).
-* `disconnected` is emitted when you [close](/class_ref/InSim.mdx#class_InSim_method_close) the connection,
+* `disconnected` is emitted when you [close](/class_ref/InSim.mdx#method_close) the connection,
     or when the connection times out.
 * `timeout` is emitted after some time has passed with no packet being received; GodotInSim will send a ping
     to LFS if it hasn't received any packet for a while, and if no response is given within a few seconds,

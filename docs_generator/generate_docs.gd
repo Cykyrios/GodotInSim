@@ -3,8 +3,7 @@ extends SceneTree
 ## Doc generation script
 ##
 ## This script generates the XML files for the addons folder, converts them to MDX, moves them
-## to the website/docs/class_ref directory, generates the class reference index, and finally
-## copies and replaces some text in the README.md file to make it the site's home page.
+## to the website/docs/class_ref directory, and generates the class reference index.
 
 const CONFIG_PATH := "res://addons/gdscript_xml_converter/config.cfg"
 

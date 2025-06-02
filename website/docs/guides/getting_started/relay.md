@@ -17,11 +17,11 @@ The InSim Relay does not require LFS to be running at all, since it connects to 
 ## Connecting to the relay
 
 Connecting to the relay can be done in one of two ways: using the standard
-[initialize](/class_ref/InSim.mdx#class_InSim_method_initialize) method with the specific IP
+[initialize](/class_ref/InSim.mdx#method_initialize) method with the specific IP
 and port for the relay, which are available as constants in GodotInSim, or the dedicated
-[initialize_relay](/class_ref/InSim.mdx#class_InSim_method_initialize_relay) method.
+[initialize_relay](/class_ref/InSim.mdx#method_initialize_relay) method.
 
-When you connect to the relay, the [is_relay](/class_ref/InSim.mdx#class_InSim_property_is_relay)
+When you connect to the relay, the [is_relay](/class_ref/InSim.mdx#property_is_relay)
 variable is set to `true`.
 
 <Tabs>

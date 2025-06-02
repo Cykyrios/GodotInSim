@@ -15,7 +15,7 @@ The demo is a host InSim program, so it works in multiplayer too. Two panel cont
 buttons are displayed: the **Manual Buttons** panel contains buttons created by sending the
 corresponding [InSimBTNPackets](/class_ref/InSimBTNPacket.mdx); the **Auto Buttons** panel
 contains buttons created using InSim's
-[add_button()](/class_ref/InSim.mdx#class_InSim_method_add_button), allowing for more concise
+[add_button()](/class_ref/InSim.mdx#method_add_button), allowing for more concise
 declaration, button naming for later identification, as well as mapping a button's text to each
 connection, e.g. to display each player's name through a single button definition.
 

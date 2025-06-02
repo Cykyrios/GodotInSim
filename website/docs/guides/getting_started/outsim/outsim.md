@@ -150,7 +150,7 @@ func _on_packet_received(packet: OutSimPacket) -> void:
 ```
 
 Then we need to convert that angular velocity into linear velocity.
-[OutSimWheel.ang_vel](/class_ref/OutSimWheel.mdx#class_OutSimWheel_property_ang_vel) is given in
+[OutSimWheel.ang_vel](/class_ref/OutSimWheel.mdx#property_ang_vel) is given in
 rad/s, which is exactly what we need here; if the value is positive, the wheel is "going forward".
 We now need the radius of the wheel, and we will ignore possible variations due to tyre pressure.
 This is also data we can get from the CAR_info file:
