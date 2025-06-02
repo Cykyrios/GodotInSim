@@ -8,19 +8,22 @@ extends RefCounted
 ## everything is converted, but characters are encoded in UTF16 instead of proper LFS format
 ## (which removes intermediate zeros).
 
-## The list of color codes used by LFS; also includes the reset code, which resets the cod page
-## in addition to the color.
+## The list of color codes used by LFS; also includes the reset code, which resets the code page
+## in addition to the color.[br]
+## [b]Warning:[/b] You should never use the reset code when sending messages: when combined with
+## code pages, it can break the formatting of the message. Always use the default code when you
+## want to reset colors, and let code pages handle themselves.
 enum ColorCode {
-	BLACK,  ## 0
-	RED,  ## 1
-	GREEN,  ## 2
-	YELLOW,  ## 3
-	BLUE,  ## 4
-	MAGENTA,  ## 5
-	CYAN,  ## 6
-	WHITE,  ## 7
-	RESET,  ## 8 - also resets code page
-	DEFAULT,  ## 9 - default color (context-dependent in LFS, gray here)
+	BLACK,
+	RED,
+	GREEN,
+	YELLOW,
+	BLUE,
+	MAGENTA,
+	CYAN,
+	WHITE,
+	RESET,  ## 8 - also resets code page (you should [i]never[/i] use this to send messages)
+	DEFAULT,  ## 9 - default color (context-dependent in LFS, gray for GodotInSim)
 }
 ## The color format to use or replace in text strings.
 enum ColorType {
