@@ -108,8 +108,8 @@
     "label": "File Formats",
     "items": [
       {
-        "CAR.BIN": {
-          "label": "CAR.BIN",
+        "CAR_info": {
+          "label": "CAR_info",
           "items": [
             "CarInfo",
             "AeroInfo",
