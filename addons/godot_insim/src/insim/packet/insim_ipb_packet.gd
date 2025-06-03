@@ -27,6 +27,7 @@ static func create(ipb_numb: int, ipb_array: Array[IPAddress]) -> InSimIPBPacket
 	var packet := InSimIPBPacket.new()
 	packet.numb = ipb_numb
 	packet.ban_ips = ipb_array.duplicate()
+	packet._trim_packet_size()
 	return packet
 
 
@@ -79,6 +80,7 @@ func _fill_buffer() -> void:
 		add_byte(ip[1])
 		add_byte(ip[2])
 		add_byte(ip[3])
+	_trim_packet_size()
 
 
 func _get_data_dictionary() -> Dictionary:
@@ -100,7 +102,6 @@ func _get_pretty_text() -> String:
 	return "IP bans: %s" % ["NONE" if numb == 0 else ips]
 
 
-# FIXME: Never actually used
-func _remove_unused_data() -> void:
-	size = PACKET_BASE_SIZE + IPB_DATA_SIZE * ban_ips.size()
+func _trim_packet_size() -> void:
+	size = PACKET_BASE_SIZE + IPB_DATA_SIZE * mini(ban_ips.size(), numb)
 	resize_buffer(size)

@@ -82,3 +82,14 @@ func test_encode_packet(buffer: PackedByteArray, test_parameters := params_encod
 		fail("Incorrect packet type")
 		return
 	var _test := assert_array(packet.buffer).is_equal(buffer)
+
+
+func test_trim_packet() -> void:
+	var objects: Array[ObjectInfo] = []
+	for i in 3:
+		var object := ObjectInfo.create(0, 0, 0, 0, 0, 0)
+		objects.append(object)
+	var count := 2
+	var packet := InSimAXMPacket.create(count, 0, InSim.PMOAction.PMO_ADD_OBJECTS, 0, objects)
+	var _test := assert_int(packet.size) \
+			.is_equal(InSimAXMPacket.PACKET_BASE_SIZE + count * ObjectInfo.STRUCT_SIZE)

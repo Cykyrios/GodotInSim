@@ -34,6 +34,7 @@ static func create(
 	packet.pmo_action = axm_action
 	packet.pmo_flags = axm_flags
 	packet.info = axm_info.duplicate()
+	packet._trim_packet_size()
 	return packet
 
 
@@ -82,6 +83,7 @@ func _fill_buffer() -> void:
 		var info_buffer := info[i].get_buffer()
 		for byte in info_buffer:
 			add_byte(byte)
+	_trim_packet_size()
 
 
 func _get_data_dictionary() -> Dictionary:
@@ -105,7 +107,6 @@ func _get_pretty_text() -> String:
 			"" if pmo_flags == 0 else " (%s)" % [flags]]
 
 
-# FIXME: Never actually used
-func trim_packet_size() -> void:
-	size = PACKET_BASE_SIZE + num_objects * ObjectInfo.STRUCT_SIZE
+func _trim_packet_size() -> void:
+	size = PACKET_BASE_SIZE + mini(num_objects, info.size()) * ObjectInfo.STRUCT_SIZE
 	resize_buffer(size)

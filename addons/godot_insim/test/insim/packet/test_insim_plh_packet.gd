@@ -48,3 +48,14 @@ func test_encode_packet(buffer: PackedByteArray, test_parameters := buffers) -> 
 		fail("Incorrect packet type")
 		return
 	var _test := assert_array(packet.buffer).is_equal(buffer)
+
+
+func test_trim_packet() -> void:
+	var handicaps: Array[PlayerHandicap] = []
+	for i in 3:
+		var handicap := PlayerHandicap.create(i, 0, 0, 0)
+		handicaps.append(handicap)
+	var count := 2
+	var packet := InSimPLHPacket.create(count, handicaps)
+	var _test := assert_int(packet.size) \
+			.is_equal(InSimPLHPacket.PACKET_BASE_SIZE + count * PlayerHandicap.STRUCT_SIZE)

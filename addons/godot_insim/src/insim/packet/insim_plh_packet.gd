@@ -21,6 +21,7 @@ static func create(plh_nump: int, plh_hcaps: Array[PlayerHandicap]) -> InSimPLHP
 	var packet := InSimPLHPacket.new()
 	packet.nump = plh_nump
 	packet.hcaps = plh_hcaps.duplicate()
+	packet._trim_packet_size()
 	return packet
 
 
@@ -64,6 +65,7 @@ func _fill_buffer() -> void:
 		add_byte(hcaps[i].flags)
 		add_byte(hcaps[i].h_mass)
 		add_byte(hcaps[i].h_tres)
+	_trim_packet_size()
 
 
 func _get_data_dictionary() -> Dictionary:
@@ -82,7 +84,6 @@ func _get_pretty_text() -> String:
 	return "Players handicaps: %s" % [handicaps]
 
 
-# FIXME: Never actually used
-func remove_unused_data() -> void:
-	size = PACKET_BASE_SIZE + PLH_DATA_SIZE * hcaps.size()
+func _trim_packet_size() -> void:
+	size = PACKET_BASE_SIZE + PLH_DATA_SIZE * mini(hcaps.size(), nump)
 	resize_buffer(size)

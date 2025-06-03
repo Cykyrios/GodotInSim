@@ -69,3 +69,15 @@ func test_add_too_many_ips() -> void:
 	var packet := InSimIPBPacket.create(count, ips)
 	packet.fill_buffer()
 	var _test := assert_int(packet.ban_ips.size()).is_equal(InSimIPBPacket.IPB_MAX_BANS)
+
+
+func test_trim_packet() -> void:
+	var ips: Array[IPAddress] = []
+	for i in 3:
+		var ip := IPAddress.new()
+		ip.fill_from_array([i, i, i, i])
+		ips.append(ip)
+	var count := 2
+	var packet := InSimIPBPacket.create(count, ips)
+	var _test := assert_int(packet.size) \
+			.is_equal(InSimIPBPacket.PACKET_BASE_SIZE + count * IPAddress.STRUCT_SIZE)
