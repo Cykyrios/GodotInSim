@@ -32,6 +32,10 @@ setup-project:
 
 run-tests:
   stage: test
+  rules:
+    - changes:
+      - addons/godot_insim/src/**/*
+      - addons/godot_insim/test/**/*
   script:
     - export GODOT_BIN=$(which godot)
     - ./addons/gdUnit4/runtest.sh --headless --ignoreHeadlessMode -c -a addons/godot_insim/test
