@@ -7,6 +7,12 @@ extends RefCounted
 
 ## The maximum number of buttons across all InSim apps.
 const MAX_BUTTONS := 240
+## The UCID value corresponding to all players; you can use this when creating global buttons.
+const EVERYONE := 255
+
+## A reference to the parent [InSim] instance, used to fetch [member InSim.connections] for
+## per-player button management.
+var insim: InSim = null
 
 ## The range of click IDs this instance can use. This range should remain as small as possible
 ## to allow other instances or InSim apps to manage their own range of buttons.
@@ -16,11 +22,10 @@ var id_range := Vector2i(0, MAX_BUTTONS - 1):
 			clampi(value.x, 0, MAX_BUTTONS - 1),
 			clampi(value.y, value.x, MAX_BUTTONS - 1)
 		)
-## List of button click IDs, and the number of users of those IDs. The list has a fixed size
-## of [constant MAX_BUTTONS], and each added button increases an ID's count by one, including
-## UCID 255; conversely, deleting a button decreases the count by one, except when deleting
-## a button for UCID 255, which resets the count to zero.
-var used_ids: Array[int] = []
+## A dictionary mapping all button clickIDs for every connection. Any button added to a UCID
+## will also appear as used by UCID 255; see [method _remove_button_mapping] for details about
+## clickID deletion.
+var id_map: Dictionary[int, Array] = {}
 ## Current known buttons, as a [Dictionary] with keys corresponding to connection IDs
 ## (including 0 for local buttons and 255 for buttons common to all connections), and values
 ## corresponding to [InSimButtonDictionary] objects for each connection ID, containing
@@ -28,11 +33,21 @@ var used_ids: Array[int] = []
 ## and [InSimBFNPacket] to keep this dictionary as up to date as possible, using
 ## [code]req_i[/code] to distinguish buttons created by other apps.
 var buttons: Dictionary[int, InSimButtonDictionary] = {}
+## The list of current global button IDs, i.e. buttons that were creating with a UCID of 255;
+## those are converted to individual buttons for each UCID in the server, and the buttons'
+## clickIDs become reserved overall until the corresponding buttons are cleared. The dictionary's
+## keys are the button clickIDs, and the values are the lists of UCIDs displaying buttons with
+## those clickIDs. When a player connects, they are sent all currently existing global buttons;
+## conversely, buttons are removed when a player disconnects.
+var global_buttons: Dictionary[int, Array] = {}
+## The list of UCIDs corresponding to players who have disabled InSim buttons (by pressing
+## [kbd]Shift + I[/kbd]); adding and updating buttons (including global buttons with UCID 255)
+## should be disabled for those.
+var disabled_ucids: Array[int] = []
 
 
-func _init() -> void:
-	var _resize := used_ids.resize(MAX_BUTTONS)
-	used_ids.fill(0)
+func _init(insim_instance: InSim) -> void:
+	insim = insim_instance
 
 
 ## Creates an [InSimButton] from the given parameters, which is added to the [member buttons]
@@ -58,14 +73,20 @@ func add_button(
 ) -> Array[InSimBTNPacket]:
 	var inst := 0 | (InSimButton.INST_ALWAYS_ON if show_everywhere else 0)
 	var packets: Array[InSimBTNPacket] = []
-	var new_id := get_free_id()
-	if new_id == -1:
-		push_warning("Cannot create button: no clickID available.")
-		return packets
 	var text_type := typeof(text)
+	var global_button := false
+	if ucids.is_empty() or EVERYONE in ucids:
+		global_button = true
+		ucids = insim.connections.keys()
 	for ucid in ucids:
+		if ucid in disabled_ucids:
+			continue
 		if not has_ucid(ucid):
 			buttons[ucid] = InSimButtonDictionary.new()
+		var new_id := get_free_id(ucid)
+		if new_id == -1:
+			push_warning("Cannot create button for UCID %d: no clickID available." % [ucid])
+			continue
 		var button_text := "^1INVALID"  # Serves as an error message if no String or valid Callable
 		if text_type in [TYPE_STRING, TYPE_STRING_NAME]:
 			button_text = str(text)
@@ -76,11 +97,22 @@ func add_button(
 		var button := InSimButton.create(
 			ucid, new_id, inst, style, position, size, button_text, button_name, type_in, caption
 		)
-		used_ids[new_id] += 1
-		buttons[ucid].buttons[new_id] = button
+		register_buttons([button])
+		if global_button:
+			_register_global_button(button)
 		var packet := button.get_btn_packet()
 		packets.append(packet)
 	return packets
+
+
+## Adds a global button (shown to every player). See [method add_button] for more details.
+func add_global_button(
+	position: Vector2i, size: Vector2i, style: int, text: Variant,
+	button_name := "", type_in := 0, caption := "", show_everywhere := false
+) -> Array[InSimBTNPacket]:
+	return add_button(
+		[], position, size, style, text, button_name, type_in, caption, show_everywhere
+	)
 
 
 ## Returns an array of [InSimBFNPacket]s requesting the deletion of the given button
@@ -91,12 +123,11 @@ func delete_button_by_id(click_id: int, ucids: Array[int]) -> Array[InSimBFNPack
 		if not has_ucid(ucid):
 			continue
 		if buttons[ucid].has_id(click_id):
-			used_ids[click_id] = 0 if ucid == 255 \
-					else clampi(used_ids[click_id] - 1, 0, MAX_BUTTONS)
 			var packet := InSimBFNPacket.create(
 				InSim.ButtonFunction.BFN_DEL_BTN, ucid, click_id, 0
 			)
 			packets.append(packet)
+			_remove_button_mapping(ucid, click_id)
 			var _discard := buttons[ucid].buttons.erase(click_id)
 			if buttons[ucid].buttons.is_empty():
 				_discard = buttons.erase(ucid)
@@ -105,7 +136,7 @@ func delete_button_by_id(click_id: int, ucids: Array[int]) -> Array[InSimBFNPack
 
 ## Returns an array of [InSimBFNPacket]s requesting the deletion of the given button
 ## [param name] for all [param ucids].
-func delete_buttons_by_name(name: StringName, ucids: Array[int]) -> Array[InSimBFNPacket]:
+func delete_button_by_name(name: StringName, ucids: Array[int]) -> Array[InSimBFNPacket]:
 	var packets: Array[InSimBFNPacket] = []
 	for ucid in ucids:
 		if not has_ucid(ucid):
@@ -114,6 +145,7 @@ func delete_buttons_by_name(name: StringName, ucids: Array[int]) -> Array[InSimB
 			var button := buttons[ucid].buttons[button_id]
 			if button.name == name:
 				packets.append_array(delete_button_by_id(button.click_id, [ucid]))
+				_remove_button_mapping(ucid, button.click_id)
 				var _discard := buttons[ucid].buttons.erase(button.click_id)
 				if buttons[ucid].buttons.is_empty():
 					_discard = buttons.erase(ucid)
@@ -131,10 +163,52 @@ func delete_buttons_by_prefix(prefix: String, ucids: Array[int]) -> Array[InSimB
 			var button := buttons[ucid].buttons[button_id]
 			if button.name.begins_with(prefix):
 				packets.append_array(delete_button_by_id(button.click_id, [ucid]))
+				_remove_button_mapping(ucid, button.click_id)
 				var _discard := buttons[ucid].buttons.erase(button.click_id)
 				if buttons[ucid].buttons.is_empty():
 					_discard = buttons.erase(ucid)
 	return packets
+
+
+## Deletes a global button (shown to every player) selected by its click [param id]. See
+## [method delete_button_by_id] for buttons specific to one UCID.
+func delete_global_button_by_id(id: int) -> Array[InSimBFNPacket]:
+	var packets := delete_button_by_id(id, insim.connections.keys())
+	for packet in packets:
+		var _existed := global_buttons.erase(packet.click_id)
+	return packets
+
+
+## Deletes a global button (shown to every player) selected by its [param name]. See
+## [method delete_button_by_name] for buttons specific to one UCID.
+func delete_global_button_by_name(name: StringName) -> Array[InSimBFNPacket]:
+	var packets := delete_button_by_name(name, insim.connections.keys())
+	for packet in packets:
+		var _existed := global_buttons.erase(packet.click_id)
+	return packets
+
+
+## Deletes global buttons (shown to every player) selected by their [param prefix]. See
+## [method delete_buttons_by_prefix] for buttons specific to one UCID.
+func delete_global_buttons_by_prefix(prefix: StringName) -> Array[InSimBFNPacket]:
+	var packets := delete_buttons_by_prefix(prefix, insim.connections.keys())
+	for packet in packets:
+		var _existed := global_buttons.erase(packet.click_id)
+	return packets
+
+
+## Removes all button mappings for [param ucid] and disables button updates by adding [param ucid]
+## to [member disabled_ucids].
+func disable_buttons_for_ucid(ucid: int) -> void:
+	_forget_buttons_for_ucid(ucid)
+	disabled_ucids.erase(ucid)
+	disabled_ucids.append(ucid)
+
+
+## Allows buttons to be sent to the given [param ucid] again, by removing it from
+## [member disabled_ucids].
+func enable_buttons_for_ucid(ucid: int) -> void:
+	disabled_ucids.erase(ucid)
 
 
 ## Returns the [InSimButton] at the given [param id], or [code]null[/code] if it does not exist.
@@ -158,7 +232,7 @@ func get_button_by_name(name: StringName, ucid: int) -> InSimButton:
 
 ## Returns all [InSimButton]s whose [member InSimButton.name] starts with the given
 ## [param prefix] and [param ucid], or an empty array if no matching button is found.
-func get_button_by_prefix(prefix: StringName, ucid: int) -> Array[InSimButton]:
+func get_buttons_by_prefix(prefix: StringName, ucid: int) -> Array[InSimButton]:
 	var matching_buttons: Array[InSimButton] = []
 	if has_ucid(ucid):
 		for click_id in buttons[ucid].buttons:
@@ -168,19 +242,152 @@ func get_button_by_prefix(prefix: StringName, ucid: int) -> Array[InSimButton]:
 	return matching_buttons
 
 
-## Returns a free [code]click_id[/code] value to create a new button, or [code]-1[/code]
-## if no ID is available in the [member id_range].[br]
-## [b]Note:[/b] At this time, all UCIDs share the same button click IDs; individual mappings
-## will be added later.
-func get_free_id() -> int:
+## Returns a free [code]click_id[/code] value to create a new button for UCID [param for_ucid],
+## or [code]-1[/code] if no ID is available in the [member id_range_general] (for UCID < 255)
+## or [member id_range_everyone] (for UCID == 255).
+func get_free_id(for_ucid: int) -> int:
+	if not id_map.has(for_ucid):
+		return id_range.x
 	for i in id_range.y - id_range.x + 1:
 		var test_id := id_range.x + i
-		if used_ids[test_id] > 0:
+		if id_map[for_ucid].has(test_id):
 			continue
 		return test_id
 	return -1
 
 
+## Returns all global buttons as an array of [InSimBTNPacket]s, including the given
+## [param for_ucid], to be sent to that UCID.
+func get_global_buttons(for_ucid: int) -> Array[InSimBTNPacket]:
+	var packets: Array[InSimBTNPacket] = []
+	for click_id in global_buttons:
+		var button := get_button_by_id(click_id, global_buttons[click_id][0] as int)
+		var packet := button.get_btn_packet()
+		packet.ucid = for_ucid
+		packets.append(packet)
+		_add_button_mapping(for_ucid, click_id)
+	return packets
+
+
+## Returns an array of [InSimButton] objects corresponding to the global button identified by
+## the given [param click_id].
+func get_global_button_by_id(click_id: int) -> Array[InSimButton]:
+	var found_buttons: Array[InSimButton] = []
+	for ucid in insim.connections:
+		var button := get_button_by_id(click_id, ucid)
+		if button:
+			found_buttons.append(button)
+	return found_buttons
+
+
+## Returns an array of [InSimButton] objects corresponding to the global button identified by
+## the given [param name].
+func get_global_button_by_name(name: String) -> Array[InSimButton]:
+	var found_buttons: Array[InSimButton] = []
+	for ucid in insim.connections:
+		var button := get_button_by_name(name, ucid)
+		if button:
+			found_buttons.append(button)
+	return found_buttons
+
+
+## Returns an array of [InSimButton] objects corresponding to all global buttons matchin the
+## given [param prefix].
+func get_global_buttons_by_prefix(prefix: String) -> Array[InSimButton]:
+	var found_buttons: Array[InSimButton] = []
+	for ucid in insim.connections:
+		var button := get_buttons_by_prefix(prefix, ucid)
+		if button:
+			found_buttons.append(button)
+	return found_buttons
+
+
 ## Returns [code]true[/code] if the given [param ucid] has an entry in [member buttons].
 func has_ucid(ucid: int) -> bool:
 	return true if buttons.has(ucid) else false
+
+
+## Adds the given [param new_buttons] to the [member id_map]. If [param register_global] is
+## [code]true[/code], the clickIDs and UCIDs will also be added to [member global_buttons].
+func register_buttons(new_buttons: Array[InSimButton], register_global := false) -> void:
+	for button in new_buttons:
+		var ucid := button.ucid
+		var click_id := button.click_id
+		_add_button_mapping(ucid, click_id)
+		if register_global:
+			_register_global_button(button)
+		if not buttons.has(ucid):
+			buttons[ucid] = InSimButtonDictionary.new()
+		buttons[ucid].buttons[click_id] = button
+
+
+## Sends all global buttons to UCID [param for_ucid], and registers them while doing so.
+## [param for_ucid], to be sent to that UCID.
+func restore_global_buttons(for_ucid: int) -> void:
+	var new_buttons: Array[InSimButton] = []
+	for click_id in global_buttons:
+		var button := get_button_by_id(click_id, global_buttons[click_id][0] as int)
+		var new_button := InSimButton.create(
+			for_ucid, click_id, button.inst, button.style, button.position, button.size,
+			button.text, button.name, button.type_in, button.caption,
+		)
+		new_buttons.append(new_button)
+		insim.send_packet(new_button.get_btn_packet())
+	register_buttons(new_buttons, true)
+
+
+## Updates the given [param button]'s [param text], and returns an [InSimBTNPacket] to be sent.
+func update_button_text(button: InSimButton, text: String, caption := "") -> InSimBTNPacket:
+	if button.ucid in disabled_ucids:
+		return null
+	button.text = text
+	button.caption = caption
+	return button.get_btn_packet(true)
+
+
+## Updates the text of the global button (show to every player) identified by its[param click_id],
+## using the given [param text], which can be either a [String] or a [Callable] taking a single
+## UCID parameter and returning a [String]. Returns an array of [InSimBTNPacket]s corresponding
+## to the button's updated text.
+func update_global_button_text(click_id: int, text: String, caption := "") -> Array[InSimBTNPacket]:
+	var packets: Array[InSimBTNPacket]
+	for button in get_global_button_by_id(click_id):
+		if button.ucid in disabled_ucids:
+			continue
+		button.text = text
+		button.caption = caption
+		packets.append(button.get_btn_packet(true))
+	return packets
+
+
+func _add_button_mapping(for_ucid: int, click_id: int) -> void:
+	if not id_map.has(for_ucid):
+		id_map[for_ucid] = [click_id]
+	elif not id_map[for_ucid].has(click_id):
+		id_map[for_ucid].append(click_id)
+
+
+func _forget_buttons_for_ucid(ucid: int) -> void:
+	if id_map.has(ucid):
+		for click_id in id_map[ucid] as Array[int]:
+			if global_buttons.has(click_id):
+				for global_ucid in global_buttons[click_id] as Array[int]:
+					if global_ucid == ucid:
+						global_buttons[click_id].erase(global_ucid)
+						break
+	var _existed := buttons.erase(ucid)
+	_existed = id_map.erase(ucid)
+
+
+func _register_global_button(button: InSimButton) -> void:
+	var click_id := button.click_id
+	var ucid := button.ucid
+	if click_id not in global_buttons:
+		global_buttons[click_id] = []
+	if not global_buttons[click_id].has(ucid):
+		global_buttons[click_id].append(ucid)
+
+
+func _remove_button_mapping(for_ucid: int, click_id: int) -> void:
+	if id_map.has(for_ucid):
+		id_map[for_ucid].erase(click_id)

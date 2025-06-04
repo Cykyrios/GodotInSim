@@ -135,6 +135,15 @@ signal udp_nlp_received(packet: InSimNLPPacket)
 ## Emitted when an [InSimMCIPacket] is received by the [member nlp_mci_connection].
 signal udp_mci_received(packet: InSimMCIPacket)
 
+## Emitted when a player clears InSim buttons using [kbd]Shift + I[/kbd] or [kbd]Shift + I[/kbd].
+signal connection_cleared_buttons(ucid: int)
+## Emitted when a player requests InSim buttons using [kbd]Shift + I[/kbd] or [kbd]Shift + I[/kbd].
+signal connection_requested_buttons(ucid: int)
+## Emitted when a player has received global InSim buttons (on connection or after
+## requesting buttons). This can be used to update the buttons' contents, for buttons that are
+## customized to each player.
+signal global_buttons_restored(ucid: int)
+
 enum Packet {
 	ISP_NONE,  ## 0: not used
 	ISP_ISI,  ## 1 - instruction: insim initialise
@@ -979,10 +988,11 @@ var connections: Dictionary[int, Connection] = {}
 ## Dictionary of PLID/UCID pairs, updated automatically.
 var players: Dictionary[int, Player] = {}
 ## Dictionary of UCID/[InSimButtonDictionary] pairs containing all known [InSimButton] objects.
-var buttons := InSimButtons.new()
+var buttons: InSimButtons = null
 
 
 func _init() -> void:
+	buttons = InSimButtons.new(self)
 	nlp_mci_connection = LFSConnectionUDP.new()
 	add_child(nlp_mci_connection)
 	ping_timer = Timer.new()
@@ -999,6 +1009,7 @@ func _ready() -> void:
 	timeout_timer.one_shot = true
 	_discard = timeout_timer.timeout.connect(_handle_timeout)
 
+	_discard = isp_bfn_received.connect(_on_bfn_packet_received)
 	_discard = isp_cnl_received.connect(_on_cnl_packet_received)
 	_discard = isp_cpr_received.connect(_on_cpr_packet_received)
 	_discard = isp_ism_received.connect(_on_ism_packet_received)
@@ -1192,13 +1203,8 @@ func add_button(
 	ucids: Array[int], position: Vector2i, size: Vector2i, style: int, text: Variant,
 	button_name := "", type_in := 0, caption := "", show_everywhere := false
 ) -> void:
-	if ucids.is_empty():
-		if typeof(text) == TYPE_CALLABLE and (text as Callable).is_valid():
-			ucids = connections.keys()
-			if lfs_state.flags & InSim.State.ISS_MULTI:
-				ucids.erase(0)
-		else:
-			ucids = [255]
+	if 255 in ucids:
+		ucids.clear()
 	if type_in > 0:
 		style |= InSim.ButtonStyle.ISB_CLICK
 	for packet in buttons.add_button(
@@ -1227,7 +1233,7 @@ func delete_buttons_by_name(button_name: StringName, ucids: Array[int] = []) -> 
 	if ucids.is_empty():
 		ucids = connections.keys()
 		ucids.append(255)
-	for packet in buttons.delete_buttons_by_name(button_name, ucids):
+	for packet in buttons.delete_button_by_name(button_name, ucids):
 		send_packet(packet)
 
 
@@ -1264,6 +1270,36 @@ func delete_button_range(from_id: int, to_id: int, ucids: Array[int] = []) -> vo
 		var _discard := buttons.delete_button_by_id(id_low + i, ucids)
 
 
+## Deletes a global button (shown to every player) selected by its click [param id].
+func delete_global_button_by_id(id: int) -> void:
+	for packet in buttons.delete_global_button_by_id(id):
+		send_packet(packet)
+
+
+## Deletes a global button (shown to every player) selected by its [param button_name].
+func delete_global_button_by_name(button_name: StringName) -> void:
+	for packet in buttons.delete_global_button_by_name(button_name):
+		send_packet(packet)
+
+
+## Deletes global buttons (shown to every player) selected by their [param prefix].
+func delete_global_buttons_by_prefix(prefix: StringName) -> void:
+	for packet in buttons.delete_global_buttons_by_prefix(prefix):
+		send_packet(packet)
+
+
+## Disables button updates for the given [param ucid]. See [member InSimButtons.disabled_ucids]
+## for details, and [method enable_buttons_for_ucid] for the opposite method.
+func disable_buttons_for_ucid(ucid: int) -> void:
+	buttons.disable_buttons_for_ucid(ucid)
+
+
+## Enables button updates for the given [param ucid]. Removes [param ucid] from
+## [member InSimButtons.disabled_ucids]
+func enable_buttons_for_ucid(ucid: int) -> void:
+	buttons.enable_buttons_for_ucid(ucid)
+
+
 ## Returns the [InSimButton] at the given [param id], or [code]null[/code] if it does not exist.
 func get_button_by_id(id: int, ucid: int) -> InSimButton:
 	return buttons.get_button_by_id(id, ucid)
@@ -1277,8 +1313,49 @@ func get_button_by_name(button_name: StringName, ucid: int) -> InSimButton:
 
 ## Returns all [InSimButton]s whose [member InSimButton.name] starts with the given
 ## [param prefix] and [param ucid], or an empty array if no matching button is found.
-func get_button_by_prefix(prefix: StringName, ucid: int) -> Array[InSimButton]:
-	return buttons.get_button_by_prefix(prefix, ucid)
+func get_buttons_by_prefix(prefix: StringName, ucid: int) -> Array[InSimButton]:
+	return buttons.get_buttons_by_prefix(prefix, ucid)
+
+
+## Returns the [InSimButton] at the given [param id], or [code]null[/code] if it does not exist.
+func get_global_button_by_id(id: int) -> Array[InSimButton]:
+	return buttons.get_global_button_by_id(id)
+
+
+## Returns the first [InSimButton] matching the given [param button_name] and [param ucid],
+## or [code]null[/code] if no matching button is found.
+func get_global_button_by_name(button_name: StringName) -> Array[InSimButton]:
+	return buttons.get_global_button_by_name(button_name)
+
+
+## Returns all [InSimButton]s whose [member InSimButton.name] starts with the given
+## [param prefix] and [param ucid], or an empty array if no matching button is found.
+func get_global_buttons_by_prefix(prefix: StringName) -> Array[InSimButton]:
+	return buttons.get_global_buttons_by_prefix(prefix)
+
+
+## Updates the text of the given [param button] to [param text], with an optional [param caption].
+func update_button_text(button: InSimButton, text: String, caption := "") -> void:
+	send_packet(buttons.update_button_text(button, text, caption))
+
+
+## Updates the text of the global button (shown to everyone) with the given [param text], which
+## can be either a [String] or a [Callable] taking a [code]ucid[/code] parameter and returning
+## a [String].
+func update_global_button_text(click_id: int, text: String, caption := "") -> void:
+	for packet in buttons.update_global_button_text(click_id, text, caption):
+		send_packet(packet)
+
+
+# Removes all buttons and mappings for the given ucid.
+func _forget_buttons_for_ucid(ucid: int) -> void:
+	buttons._forget_buttons_for_ucid(ucid)
+
+
+# Adds global buttons to the given ucid.
+func _send_global_buttons(to_ucid: int) -> void:
+	buttons.restore_global_buttons(to_ucid)
+	global_buttons_restored.emit(to_ucid)
 #endregion
 
 
@@ -1550,10 +1627,21 @@ func _on_udp_packet_received(packet_buffer: PackedByteArray) -> void:
 			_push_error_unknown_packet_type(packet.type)
 
 
-#region InSim event management: connections, players, state
+#region InSim event management: connections, players, state, buttons
+func _on_bfn_packet_received(packet: InSimBFNPacket) -> void:
+	var ucid := packet.ucid
+	match packet.subtype:
+		InSim.ButtonFunction.BFN_USER_CLEAR:
+			disable_buttons_for_ucid(ucid)
+			connection_cleared_buttons.emit(ucid)
+		InSim.ButtonFunction.BFN_REQUEST:
+			enable_buttons_for_ucid(ucid)
+			connection_requested_buttons.emit(ucid)
+
+
 func _on_cnl_packet_received(packet: InSimCNLPacket) -> void:
 	var _discard := connections.erase(packet.ucid)
-	_discard = buttons.buttons.erase(packet.ucid)
+	_forget_buttons_for_ucid(packet.ucid)
 
 
 func _on_cpr_packet_received(packet: InSimCPRPacket) -> void:
@@ -1569,7 +1657,9 @@ func _on_ism_packet_received(packet: InSimISMPacket) -> void:
 
 
 func _on_ncn_packet_received(packet: InSimNCNPacket) -> void:
-	connections[packet.ucid] = Connection.create_from_ncn_packet(packet)
+	if packet.req_i in [0, GISRequest.REQ_0]:
+		connections[packet.ucid] = Connection.create_from_ncn_packet(packet)
+		_send_global_buttons(packet.ucid)
 
 
 func _on_npl_packet_received(packet: InSimNPLPacket) -> void:
