@@ -962,6 +962,7 @@ var lfs_connection: LFSConnection = null  ## Internal connection for TCP/UDP com
 ## UDP connection used specifically for receiving NLP or MCI packets, see [InSimISIPacket].
 var nlp_mci_connection: LFSConnectionUDP = null
 var is_relay := false  ## Whether this is a Relay connection, do not set manually.
+var is_host := false  ## Whether this is a host InSim application, do not set manually.
 ## Helper struct for InSim initialization, see [InSimISIPacket].
 var initialization_data := InSimInitializationData.new()
 ## This boolean controls whether connecting to InSim versions other than [constant VERSION]
@@ -1405,6 +1406,13 @@ func _perform_internal_initialization() -> void:
 		packet = await isp_npl_received
 		if packet.req_i == GISRequest.REQ_0:
 			received_packets += 1
+	send_packet(InSimTinyPacket.create(GISRequest.REQ_0, InSim.Tiny.TINY_ISM))
+	while true:
+		packet = await isp_ism_received
+		if packet.req_i == GISRequest.REQ_0:
+			break
+	var ism_packet := packet as InSimISMPacket
+	is_host = lfs_state.flags & InSim.State.ISS_MULTI and ism_packet.host == 1
 
 	_initializing = false
 	insim_connected = true

@@ -29,7 +29,7 @@ func _ready() -> void:
 		)
 	)
 	await insim.connected
-	if insim.lfs_state.flags & InSim.State.ISS_MULTI:
+	if insim.is_host:
 		insim.send_message("Host InSim started")
 	show_manual_buttons()
 	show_auto_buttons()
@@ -37,7 +37,8 @@ func _ready() -> void:
 
 
 func _exit_tree() -> void:
-	insim.send_message("Host InSim closed")
+	if is_host:
+		insim.send_message("Host InSim closed")
 
 
 func show_auto_buttons(for_ucid := 255) -> void:
