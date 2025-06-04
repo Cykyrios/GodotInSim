@@ -397,6 +397,7 @@ func _forget_buttons_for_ucid(ucid: int) -> void:
 						break
 	var _existed := buttons.erase(ucid)
 	_existed = id_map.erase(ucid)
+	disabled_ucids.erase(ucid)
 
 
 func _register_global_button(button: InSimButton) -> void:
