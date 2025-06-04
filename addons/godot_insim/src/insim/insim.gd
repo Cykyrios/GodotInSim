@@ -1028,6 +1028,35 @@ func _ready() -> void:
 	_discard = tiny_mpe_received.connect(_on_tiny_mpe_received)
 
 
+## Awaits and returns a packet of the given [param type]. The returned packet must have the
+## given [param req_i], and can additionally be filtered by filling [param details] with
+## properties to filter the packet. Property keys should be names of the awaited packet's
+## properties, and values can be any desired value; e.g. [code]{"username": "Player"}[/code]
+## for a packet of [param type] [constant Packet.ISP_NCN] will only return an [InSimNCNPacket]
+## for which [code]packet.username == "Player"[/code]. You can also use this to filter specific
+## subtypes for [InSimTinyPacket] or [InSimSmallPacket]:
+## [code]{"subtype": InSim.Small.SMALL_RTP}[/code] will only return an [InSimSmallPacket] with
+## the given subtype.
+func await_packet(type: Packet, req_i := 0, details := {}) -> InSimPacket:
+	details["req_i"] = req_i
+	return await _await_packet(type, details)
+
+
+## Awaits and returns [param number] packets of the given [param type]. All packets must have
+## the given [param req_i] and are further filtered by [param details]. See [method await_packet]
+## for more details about filtering packets.[br]
+## [b]Note:[/b] As your code awaits for the given amount of packets, this can be used to easily
+## wait for a specific number of events, e.g. wait until 5 players join the track after some event;
+## on the other hand, it also means you can soft-lock your code, depending on where you use
+## this method.
+func await_packets(type: Packet, number: int, req_i := 0, details := {}) -> Array[InSimPacket]:
+	details["req_i"] = req_i
+	var packets: Array[InSimPacket] = []
+	for i in number:
+		packets.append(await _await_packet(type, details))
+	return packets
+
+
 ## Closes the InSim connection. Trying to send packets after this may cause numerous errors in
 ## the log or terminal.
 func close() -> void:
@@ -1190,6 +1219,30 @@ func send_packet(packet: InSimPacket, sender := "InSim") -> void:
 	var packet_sent_successfully := lfs_connection._send_packet(packet.buffer)
 	if packet_sent_successfully:
 		packet_sent.emit(packet, sender)
+
+
+## Sends the given packet [param to_send], and awaits and returns the packet [param to_await].
+## The returned packet must have the same [member InSimPacket.req_i] as the packet [param to_send].
+## [param details] can be filled with properties to filter the packet. If [param details] is
+## not empty, only a packet matching all [param details] will be returned. Property keys should be
+## names of the awaited packet's properties, and values can be any desired value; e.g.
+## [code]{"username": "Player"}[/code] for a [param to_await] type of [constant Packet.ISP_NCN]
+## will only return an [InSimNCNPacket] for which [code]packet.username == "Player"[/code].
+func send_packet_await_packet(
+	to_send: InSimPacket, to_await: Packet, details := {}
+) -> InSimPacket:
+	send_packet(to_send)
+	return await await_packet(to_await, to_send.req_i, details)
+
+
+## Sends the given packet [param to_send], and awaits for the given [param number] of packets
+## of type [param to_await] to be received before returning them. You can provide [param details]
+## to further filter the received packets. See [method send_packet_await_packet] for more details.
+func send_packet_await_packets(
+	to_send: InSimPacket, to_await: Packet, number: int, details := {}
+) -> Array[InSimPacket]:
+	send_packet(to_send)
+	return await await_packets(to_await, number, to_send.req_i, details)
 
 
 ## Sends multiple [param packets] passed in an array, calling [method send_packet] for each packet.
@@ -1369,6 +1422,22 @@ func _send_global_buttons(to_ucid: int) -> void:
 #endregion
 
 
+func _await_packet(type: Packet, details := {}) -> InSimPacket:
+	while true:
+		var packet: InSimPacket = await packet_received
+		if packet.type == type:
+			var properties := packet.get_property_list().filter(func(prop: Dictionary) -> bool:
+				return prop["name"] in details
+			)
+			if properties.all(func(prop: Dictionary) -> bool:
+				var prop_name := prop["name"] as String
+				var prop_type := prop["type"] as int
+				return packet.get(prop_name) == type_convert(details[prop_name], prop_type)
+			):
+				return packet
+	return null
+
+
 func _connect_lfs_connection_signals() -> void:
 	var _discard := lfs_connection.connected.connect(_on_connected_to_host)
 	_discard = lfs_connection.connection_failed.connect(_on_connection_failed)
@@ -1385,33 +1454,24 @@ func _handle_timeout() -> void:
 # Defers connected signal until all requested packets for initialization are received.
 func _perform_internal_initialization() -> void:
 	print("Initializing Godot InSim...")
-	var packet: InSimPacket = null
-	send_packet(InSimTinyPacket.create(GISRequest.REQ_0, InSim.Tiny.TINY_SST))
-	while true:
-		packet = await isp_sta_received
-		if packet.req_i == GISRequest.REQ_0:
-			break
-	var sta_packet := packet as InSimSTAPacket
+	var sta_packet: InSimSTAPacket = await send_packet_await_packet(
+		InSimTinyPacket.create(GISRequest.REQ_0, InSim.Tiny.TINY_SST), Packet.ISP_STA
+	)
 	var num_connections := sta_packet.num_connections
-	send_packet(InSimTinyPacket.create(GISRequest.REQ_0, InSim.Tiny.TINY_NCN))
-	var received_packets := 0
-	while received_packets < num_connections:
-		packet = await isp_ncn_received
-		if packet.req_i == GISRequest.REQ_0:
-			received_packets += 1
 	var num_players := sta_packet.num_players
-	send_packet(InSimTinyPacket.create(GISRequest.REQ_0, InSim.Tiny.TINY_NPL))
-	received_packets = 0
-	while received_packets < num_players:
-		packet = await isp_npl_received
-		if packet.req_i == GISRequest.REQ_0:
-			received_packets += 1
-	send_packet(InSimTinyPacket.create(GISRequest.REQ_0, InSim.Tiny.TINY_ISM))
-	while true:
-		packet = await isp_ism_received
-		if packet.req_i == GISRequest.REQ_0:
-			break
-	var ism_packet := packet as InSimISMPacket
+	var _ncn_packets: Array[InSimPacket] = await send_packet_await_packets(
+		InSimTinyPacket.create(GISRequest.REQ_0, InSim.Tiny.TINY_NCN),
+		Packet.ISP_NCN,
+		num_connections,
+	)
+	var _npl_packets: Array[InSimPacket] = await send_packet_await_packets(
+		InSimTinyPacket.create(GISRequest.REQ_0, InSim.Tiny.TINY_NPL),
+		Packet.ISP_NPL,
+		num_players,
+	)
+	var ism_packet: InSimISMPacket = await send_packet_await_packet(
+		InSimTinyPacket.create(GISRequest.REQ_0, InSim.Tiny.TINY_ISM), Packet.ISP_ISM
+	)
 	is_host = lfs_state.flags & InSim.State.ISS_MULTI and ism_packet.host == 1
 
 	_initializing = false
