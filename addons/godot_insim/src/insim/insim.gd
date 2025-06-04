@@ -1384,7 +1384,7 @@ func _handle_timeout() -> void:
 
 # Defers connected signal until all requested packets for initialization are received.
 func _perform_internal_initialization() -> void:
-	print("Initializing...")
+	print("Initializing Godot InSim...")
 	var packet: InSimPacket = null
 	send_packet(InSimTinyPacket.create(GISRequest.REQ_0, InSim.Tiny.TINY_SST))
 	while true:
@@ -1434,8 +1434,9 @@ func _read_ping_reply() -> void:
 
 
 func _read_version_packet(packet: InSimVERPacket) -> void:
+	print("Connected to LFS %s %s" % [packet.version, packet.product])
 	if packet.insim_ver != VERSION:
-		var message := "Host InSim version (%d) is different from local version (%d)." % [
+		var message := "Game InSim version (%d) is different from local version (%d)" % [
 			packet.insim_ver, VERSION
 		]
 		if not allow_different_insim_versions:
@@ -1446,7 +1447,7 @@ func _read_version_packet(packet: InSimVERPacket) -> void:
 			return
 		push_warning(message)
 	if not insim_connected:
-		print("Host InSim version matches local version (%d)." % [VERSION])
+		print("Game InSim version matches local version (%d)" % [VERSION])
 		_perform_internal_initialization()
 
 
