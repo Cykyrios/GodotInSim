@@ -1402,7 +1402,7 @@ func _perform_internal_initialization() -> void:
 	send_packet(InSimTinyPacket.create(GISRequest.REQ_0, InSim.Tiny.TINY_NPL))
 	received_packets = 0
 	while received_packets < num_players:
-		packet = await isp_ncn_received
+		packet = await isp_npl_received
 		if packet.req_i == GISRequest.REQ_0:
 			received_packets += 1
 
