@@ -74,19 +74,22 @@ func add_button(
 	var inst := 0 | (InSimButton.INST_ALWAYS_ON if show_everywhere else 0)
 	var packets: Array[InSimBTNPacket] = []
 	var text_type := typeof(text)
+	var new_id := -1
 	var global_button := false
 	if ucids.is_empty() or EVERYONE in ucids:
 		global_button = true
 		ucids = insim.connections.keys()
+		new_id = get_free_global_id()
 	for ucid in ucids:
 		if ucid in disabled_ucids:
 			continue
 		if not has_ucid(ucid):
 			buttons[ucid] = InSimButtonDictionary.new()
-		var new_id := get_free_id(ucid)
-		if new_id == -1:
-			push_warning("Cannot create button for UCID %d: no clickID available." % [ucid])
-			continue
+		if not global_button:
+			new_id = get_free_id(ucid)
+			if new_id == -1:
+				push_warning("Cannot create button for UCID %d: no clickID available." % [ucid])
+				continue
 		var button_text := "^1INVALID"  # Serves as an error message if no String or valid Callable
 		if text_type in [TYPE_STRING, TYPE_STRING_NAME]:
 			button_text = str(text)
@@ -243,8 +246,7 @@ func get_buttons_by_prefix(prefix: StringName, ucid: int) -> Array[InSimButton]:
 
 
 ## Returns a free [code]click_id[/code] value to create a new button for UCID [param for_ucid],
-## or [code]-1[/code] if no ID is available in the [member id_range_general] (for UCID < 255)
-## or [member id_range_everyone] (for UCID == 255).
+## or [code]-1[/code] if no ID is available in the [member id_range].
 func get_free_id(for_ucid: int) -> int:
 	if not id_map.has(for_ucid):
 		return id_range.x
@@ -253,6 +255,24 @@ func get_free_id(for_ucid: int) -> int:
 		if id_map[for_ucid].has(test_id):
 			continue
 		return test_id
+	return -1
+
+
+## Returns a free [code]click_id[/code] value to create a new button for all connected UCIDs,
+## or [code]-1[/code] if no ID is available in the [member id_range].
+func get_free_global_id() -> int:
+	var ucids := insim.connections.keys() as Array[int]
+	for i in id_range.y - id_range.x + 1:
+		var test_id := id_range.x + i
+		var valid_id := true
+		for ucid in ucids:
+			if not id_map.has(ucid):
+				continue
+			if id_map[ucid].has(test_id):
+				valid_id = false
+				break
+		if valid_id:
+			return test_id
 	return -1
 
 
