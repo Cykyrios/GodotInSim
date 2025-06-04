@@ -990,6 +990,9 @@ var players: Dictionary[int, Player] = {}
 ## Dictionary of UCID/[InSimButtonDictionary] pairs containing all known [InSimButton] objects.
 var buttons: InSimButtons = null
 
+# Set to true in initialize(), used to silence unconnected InSim warning when sending packets
+var _initializing := false
+
 
 func _init() -> void:
 	buttons = InSimButtons.new(self)
@@ -1035,6 +1038,7 @@ func close() -> void:
 	nlp_mci_connection._disconnect_from_host()
 	insim_connected = false
 	ping_timer.stop()
+	_initializing = false
 	disconnected.emit()
 
 
@@ -1095,6 +1099,7 @@ func initialize(
 		address == RELAY_ADDRESS
 		and port == RELAY_PORT
 	)
+	_initializing = true
 	lfs_connection._connect_to_host(address, port, initialization_data.udp_port)
 
 
@@ -1170,6 +1175,7 @@ func send_packet(packet: InSimPacket, sender := "InSim") -> void:
 		return
 	if (
 		not insim_connected
+		and not _initializing
 		and not is_relay
 		and packet.type != Packet.ISP_ISI
 		and not (
@@ -1368,21 +1374,42 @@ func _connect_lfs_connection_signals() -> void:
 	_discard = lfs_connection.packet_received.connect(_on_packet_received)
 
 
-# Defers connected signal to allow for given number of auto-requested packets to be received.
-func _emit_connected_deferred(auto_requested_packets := 0) -> void:
-	var remaining_packets := auto_requested_packets
-	while remaining_packets > 0:
-		var packet: InSimPacket = await packet_received
-		if packet.req_i == GISRequest.REQ_0:
-			remaining_packets -= 1
-	connected.emit.call_deferred()
-
-
 func _handle_timeout() -> void:
 		timeout.emit()
 		insim_connected = false
 		push_warning("InSim connection timed out.")
 		close()
+
+
+# Defers connected signal until all requested packets for initialization are received.
+func _perform_internal_initialization() -> void:
+	print("Initializing...")
+	var packet: InSimPacket = null
+	send_packet(InSimTinyPacket.create(GISRequest.REQ_0, InSim.Tiny.TINY_SST))
+	while true:
+		packet = await isp_sta_received
+		if packet.req_i == GISRequest.REQ_0:
+			break
+	var sta_packet := packet as InSimSTAPacket
+	var num_connections := sta_packet.num_connections
+	send_packet(InSimTinyPacket.create(GISRequest.REQ_0, InSim.Tiny.TINY_NCN))
+	var received_packets := 0
+	while received_packets < num_connections:
+		packet = await isp_ncn_received
+		if packet.req_i == GISRequest.REQ_0:
+			received_packets += 1
+	var num_players := sta_packet.num_players
+	send_packet(InSimTinyPacket.create(GISRequest.REQ_0, InSim.Tiny.TINY_NPL))
+	received_packets = 0
+	while received_packets < num_players:
+		packet = await isp_ncn_received
+		if packet.req_i == GISRequest.REQ_0:
+			received_packets += 1
+
+	_initializing = false
+	insim_connected = true
+	print("Godot InSim is ready")
+	connected.emit.call_deferred()
 
 
 func _push_error_unknown_packet_subtype(type: int, subtype: int) -> void:
@@ -1411,16 +1438,8 @@ func _read_version_packet(packet: InSimVERPacket) -> void:
 			return
 		push_warning(message)
 	if not insim_connected:
-		insim_connected = true
 		print("Host InSim version matches local version (%d)." % [VERSION])
-		var auto_packets: Array[InSimPacket] = [
-			InSimTinyPacket.create(GISRequest.REQ_0, InSim.Tiny.TINY_SST),
-			InSimTinyPacket.create(GISRequest.REQ_0, InSim.Tiny.TINY_NCN),
-			InSimTinyPacket.create(GISRequest.REQ_0, InSim.Tiny.TINY_NPL),
-		]
-		for auto_packet in auto_packets:
-			send_packet(auto_packet)
-		_emit_connected_deferred(auto_packets.size())
+		_perform_internal_initialization()
 
 
 func _reset_timeout_timer() -> void:
@@ -1441,7 +1460,8 @@ func _send_ping() -> void:
 func _on_connected_to_host() -> void:
 	if is_relay:
 		insim_connected = true
-		_emit_connected_deferred()
+		_initializing = false
+		connected.emit.call_deferred()
 	else:
 		send_packet(InSimISIPacket.create(
 			initialization_data.udp_port,
