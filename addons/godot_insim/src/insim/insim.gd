@@ -1162,6 +1162,9 @@ func send_message_to_player(
 ## [param sender] if you want to identify the origin of sent packets (by connecting
 ## the [signal packet_sent] signal).
 func send_packet(packet: InSimPacket, sender := "InSim") -> void:
+	if not packet:
+		push_warning("Null packet was not sent.")
+		return
 	if not lfs_connection:
 		push_error("No connection, cannot send packet.")
 		return
