@@ -1454,16 +1454,17 @@ func _handle_timeout() -> void:
 # Defers connected signal until all requested packets for initialization are received.
 func _perform_internal_initialization() -> void:
 	print("Initializing Godot InSim...")
-	var sta_packet: InSimSTAPacket = await send_packet_await_packet(
+	var num_connections: int = (await send_packet_await_packet(
 		InSimTinyPacket.create(GISRequest.REQ_0, InSim.Tiny.TINY_SST), Packet.ISP_STA
-	)
-	var num_connections := sta_packet.num_connections
-	var num_players := sta_packet.num_players
+	) as InSimSTAPacket).num_connections
 	var _ncn_packets: Array[InSimPacket] = await send_packet_await_packets(
 		InSimTinyPacket.create(GISRequest.REQ_0, InSim.Tiny.TINY_NCN),
 		Packet.ISP_NCN,
 		num_connections,
 	)
+	var num_players: int = (await send_packet_await_packet(
+		InSimTinyPacket.create(GISRequest.REQ_0, InSim.Tiny.TINY_SST), Packet.ISP_STA
+	) as InSimSTAPacket).num_players
 	var _npl_packets: Array[InSimPacket] = await send_packet_await_packets(
 		InSimTinyPacket.create(GISRequest.REQ_0, InSim.Tiny.TINY_NPL),
 		Packet.ISP_NPL,
