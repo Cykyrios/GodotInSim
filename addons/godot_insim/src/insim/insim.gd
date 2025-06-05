@@ -1030,13 +1030,25 @@ func _ready() -> void:
 
 ## Awaits and returns a packet of the given [param type]. The returned packet must have the
 ## given [param req_i], and can additionally be filtered by filling [param details] with
-## properties to filter the packet. Property keys should be names of the awaited packet's
-## properties, and values can be any desired value; e.g. [code]{"username": "Player"}[/code]
-## for a packet of [param type] [constant Packet.ISP_NCN] will only return an [InSimNCNPacket]
-## for which [code]packet.username == "Player"[/code]. You can also use this to filter specific
-## subtypes for [InSimTinyPacket] or [InSimSmallPacket]:
-## [code]{"subtype": InSim.Small.SMALL_RTP}[/code] will only return an [InSimSmallPacket] with
-## the given subtype.
+## properties. Property keys should be names of the awaited packet's properties, and values
+## can be any desired value; for instance, the following example returns the first [InSimNPLPacket]
+## for a player which has R3 tyres:
+## [codeblock]
+## await await_packet(
+##     InSimTinyPacket.create(1, InSim.Tiny.TINY_NPL),
+##     InSim.Packet.ISP_NPL,
+##     {"tyres": [InSim.Tyre.TYRE_R3, InSim.Tyre.TYRE_R3, InSim.Tyre.TYRE_R3, InSim.Tyre.TYRE_R3]},
+## )
+## [/codeblock]
+## If, however, no player has all R3 tyres, your code will get stuck awaiting those specific
+## requirements; you should generally use this method only when you know the expected packet
+## will be received immediately or when that packet can be sent from other parts of your code.[br]
+## [b]Danger:[/b] Awaiting a non-zero [param req_i] means the expected packet has to be requested
+## specifically; this can lead to your code being soft-locked! This is something you especially
+## need to consider when using [method await_packets] or [method send_packet_await_packets].
+## Filtering results using [param details] can also lead to soft-locking when too specific; make
+## sure the expected packet [i]will[/i] eventually be received, and you don't need the code
+## following this call to run until the packet is received.
 func await_packet(type: Packet, req_i := 0, details := {}) -> InSimPacket:
 	details["req_i"] = req_i
 	return await _await_packet(type, details)
@@ -1226,12 +1238,7 @@ func send_packet(packet: InSimPacket, sender := "InSim") -> void:
 
 
 ## Sends the given packet [param to_send], and awaits and returns the packet [param to_await].
-## The returned packet must have the same [member InSimPacket.req_i] as the packet [param to_send].
-## [param details] can be filled with properties to filter the packet. If [param details] is
-## not empty, only a packet matching all [param details] will be returned. Property keys should be
-## names of the awaited packet's properties, and values can be any desired value; e.g.
-## [code]{"username": "Player"}[/code] for a [param to_await] type of [constant Packet.ISP_NCN]
-## will only return an [InSimNCNPacket] for which [code]packet.username == "Player"[/code].
+## Calls [method await_packet] internally, passing [param to_send]'s [member InSimPacket.req_i].
 func send_packet_await_packet(
 	to_send: InSimPacket, to_await: Packet, details := {}
 ) -> InSimPacket:
@@ -1240,8 +1247,8 @@ func send_packet_await_packet(
 
 
 ## Sends the given packet [param to_send], and awaits for the given [param number] of packets
-## of type [param to_await] to be received before returning them. You can provide [param details]
-## to further filter the received packets. See [method send_packet_await_packet] for more details.
+## of type [param to_await] to be received before returning them. Calls
+## [method await_packets] internally, passing [param to_send]'s [member InSimPacket.req_i].
 func send_packet_await_packets(
 	to_send: InSimPacket, to_await: Packet, number: int, details := {}
 ) -> Array[InSimPacket]:
