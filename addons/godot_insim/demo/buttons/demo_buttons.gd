@@ -223,10 +223,11 @@ func update_auto_buttons() -> void:
 				"",
 				"blink",
 			)
-			buttons = insim.get_global_button_by_name("blink")
-			for blink_button in buttons:
-				blink_button.text = "ID=%d, name=%s" % [blink_button.click_id, blink_button.name]
-				insim.send_packet(blink_button.get_btn_packet(true))
+			var click_id := insim.buttons.get_global_button_id_from_name("blink")
+			if click_id != -1:
+				insim.update_global_button_text(click_id, "ID=%d, name=%s" % [
+					click_id, "blink"
+				])
 		else:
 			insim.delete_global_button_by_name("blink")
 

@@ -321,6 +321,16 @@ func get_global_buttons_by_prefix(prefix: String) -> Array[InSimButton]:
 	return found_buttons
 
 
+## Returns the clickID of the first global button matching the given [param button_name].
+## This can help get the clicKID without having to handle the array returned by
+## [method get_global_button_by_name]. Returns [code]-1[/code] if no button can be found.
+func get_global_button_id_from_name(button_name: String) -> int:
+	var button_array := insim.get_global_button_by_name(button_name)
+	if not button_array.is_empty():
+		return button_array[0].click_id
+	return -1
+
+
 ## Returns [code]true[/code] if the given [param ucid] has an entry in [member buttons].
 func has_ucid(ucid: int) -> bool:
 	return true if buttons.has(ucid) else false
