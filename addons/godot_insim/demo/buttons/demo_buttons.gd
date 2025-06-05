@@ -16,6 +16,8 @@ var manual_button_height := 5
 func _ready() -> void:
 	insim = InSim.new()
 	add_child(insim)
+	# You can connect to InSim.connection_cleared_buttons and InSim.connection_requested_buttons
+	# instead of InSim.isp_bfn_received and differentiating the subtype.
 	var _connect := insim.isp_bfn_received.connect(_on_bfn_received)
 	_connect = insim.isp_btc_received.connect(_on_btc_received)
 	_connect = insim.isp_btt_received.connect(_on_btt_received)
@@ -37,7 +39,7 @@ func _ready() -> void:
 
 
 func _exit_tree() -> void:
-	if is_host:
+	if insim.is_host:
 		insim.send_message("Host InSim closed")
 
 
@@ -238,6 +240,7 @@ func update_player_name_button(ucid: int) -> void:
 
 
 func _on_bfn_received(packet: InSimBFNPacket) -> void:
+	# You can connect to InSim.connection_cleared_buttons instead
 	if packet.subtype == InSim.ButtonFunction.BFN_USER_CLEAR:
 		var message := "%s cleared the InSim buttons." % [
 			"You" if packet.ucid == 0 else (insim.connections[packet.ucid].nickname + "^9")
@@ -246,6 +249,7 @@ func _on_bfn_received(packet: InSimBFNPacket) -> void:
 			insim.send_message_to_connection(packet.ucid, message)
 		else:
 			insim.send_local_message(message)
+	# You can connect to InSim.connection_requested_buttons instead
 	elif packet.subtype == InSim.ButtonFunction.BFN_REQUEST:
 		var message := "%s requested InSim buttons." % [
 			"You" if packet.ucid == 0 else (insim.connections[packet.ucid].nickname + "^9")
