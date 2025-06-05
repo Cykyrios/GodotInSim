@@ -149,7 +149,7 @@ func set_configuration() -> int:
 		push_error("Failed to open config.cfg, aborting")
 		return 1
 	config.set_value("config", "class_groups_path", "res://docs_generator/class_groups.json")
-	config.set_value("config", "fail_on_class_ref_issues", false)
+	config.set_value("config", "fail_on_class_ref_issues", true)
 	error = config.save(CONFIG_PATH)
 	if error != OK:
 		push_error("Failed to update config.cfg, aborting")
