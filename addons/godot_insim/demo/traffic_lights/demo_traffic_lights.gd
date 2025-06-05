@@ -16,6 +16,9 @@ const TIME_OFFSET := 5.0
 const INTERSECTION_CENTER := Vector2(-534, 779)
 const LAYOUT_PATH := "res://addons/godot_insim/demo/traffic_lights/WE1X_demo_lights.lyt"
 
+@export var insim_ip := "127.0.0.1"
+@export var insim_port := 29_999
+
 var insim: InSim = null
 
 var intersection_state := IntersectionState.X_GREEN
@@ -33,8 +36,8 @@ func _ready() -> void:
 	_connect = approach_circle_entered.connect(_on_approach_circle_entered)
 
 	insim.initialize(
-		"127.0.0.1",
-		29_999,
+		insim_ip,
+		insim_port,
 		InSimInitializationData.create(
 			"Traffic LIghts",
 			0,

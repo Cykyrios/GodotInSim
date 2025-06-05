@@ -5,6 +5,9 @@ extends MarginContainer
 const SPAWN_DIR_EDITOR := "res://addons/godot_insim/demo/teleporter/spawn"
 const SPAWN_DIR_STANDALONE := "res://spawn"
 
+@export var insim_ip := "127.0.0.1"
+@export var insim_port := 29_999
+
 var insim: InSim = null
 var current_track := ""
 var spawn_points: Dictionary[String, Vector4] = {}
@@ -18,8 +21,8 @@ func _ready() -> void:
 	_connect = insim.isp_sta_received.connect(_on_sta_received)
 
 	insim.initialize(
-		"127.0.0.1",
-		29_999,
+		insim_ip,
+		insim_port,
 		InSimInitializationData.create(
 			"Teleporter",
 			0,

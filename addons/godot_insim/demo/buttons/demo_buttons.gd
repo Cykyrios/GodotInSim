@@ -1,6 +1,9 @@
 extends Control
 
 
+@export var insim_ip := "127.0.0.1"
+@export var insim_port := 29_999
+
 var insim: InSim = null
 
 var auto_buttons_left := 70
@@ -23,8 +26,8 @@ func _ready() -> void:
 	_connect = insim.isp_btt_received.connect(_on_btt_received)
 	_connect = insim.global_buttons_restored.connect(_on_global_buttons_restored)
 	insim.initialize(
-		"127.0.0.1",
-		29_999,
+		insim_ip,
+		insim_port,
 		InSimInitializationData.create(
 			"InSim Buttons",
 			InSim.InitFlag.ISF_MSO_COLS,
