@@ -1468,15 +1468,17 @@ func _perform_internal_initialization() -> void:
 	var _packet: InSimPacket = await send_packet_await_packet(
 		InSimTinyPacket.create(GISRequest.REQ_0, InSim.Tiny.TINY_SST), Packet.ISP_STA
 	)
+	var ism_packet: InSimISMPacket = await send_packet_await_packet(
+		InSimTinyPacket.create(GISRequest.REQ_0, InSim.Tiny.TINY_ISM), Packet.ISP_ISM
+	)
+	is_host = lfs_state.flags & InSim.State.ISS_MULTI and ism_packet.host == 1
+	await get_tree().process_frame
+	# We don't need to request IS_NCN/IS_NPL packets as this is done when receiving an IS_ISM.
 	while (
 		connections.size() < lfs_state.num_connections
 		and players.size() < lfs_state.num_players
 	):
 		await get_tree().process_frame
-	var ism_packet: InSimISMPacket = await send_packet_await_packet(
-		InSimTinyPacket.create(GISRequest.REQ_0, InSim.Tiny.TINY_ISM), Packet.ISP_ISM
-	)
-	is_host = lfs_state.flags & InSim.State.ISS_MULTI and ism_packet.host == 1
 
 	_initializing = false
 	insim_connected = true
