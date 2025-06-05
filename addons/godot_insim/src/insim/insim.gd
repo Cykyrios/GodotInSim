@@ -1756,7 +1756,8 @@ func _on_ism_packet_received(packet: InSimISMPacket) -> void:
 func _on_ncn_packet_received(packet: InSimNCNPacket) -> void:
 	if packet.req_i in [0, GISRequest.REQ_0]:
 		connections[packet.ucid] = Connection.create_from_ncn_packet(packet)
-		_send_global_buttons(packet.ucid)
+		if packet.req_i == 0:
+			_send_global_buttons(packet.ucid)
 		lfs_state.num_connections = packet.total
 
 
