@@ -22,9 +22,8 @@ var id_range := Vector2i(0, MAX_BUTTONS - 1):
 			clampi(value.x, 0, MAX_BUTTONS - 1),
 			clampi(value.y, value.x, MAX_BUTTONS - 1)
 		)
-## A dictionary mapping all button clickIDs for every connection. Any button added to a UCID
-## will also appear as used by UCID 255; see [method _remove_button_mapping] for details about
-## clickID deletion.
+## A dictionary mapping all button clickIDs for every connection. You should not need
+## to use this directly.
 var id_map: Dictionary[int, Array] = {}
 ## Current known buttons, as a [Dictionary] with keys corresponding to connection IDs
 ## (including 0 for local buttons and 255 for buttons common to all connections), and values

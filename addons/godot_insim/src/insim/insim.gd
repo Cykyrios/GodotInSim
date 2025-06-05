@@ -135,9 +135,9 @@ signal udp_nlp_received(packet: InSimNLPPacket)
 ## Emitted when an [InSimMCIPacket] is received by the [member nlp_mci_connection].
 signal udp_mci_received(packet: InSimMCIPacket)
 
-## Emitted when a player clears InSim buttons using [kbd]Shift + I[/kbd] or [kbd]Shift + I[/kbd].
+## Emitted when a player clears InSim buttons using [kbd]Shift + I[/kbd] or [kbd]Shift + B[/kbd].
 signal connection_cleared_buttons(ucid: int)
-## Emitted when a player requests InSim buttons using [kbd]Shift + I[/kbd] or [kbd]Shift + I[/kbd].
+## Emitted when a player requests InSim buttons using [kbd]Shift + I[/kbd] or [kbd]Shift + B[/kbd].
 signal connection_requested_buttons(ucid: int)
 ## Emitted when a player has received global InSim buttons (on connection or after
 ## requesting buttons). This can be used to update the buttons' contents, for buttons that are
@@ -1389,14 +1389,14 @@ func get_global_button_by_id(id: int) -> Array[InSimButton]:
 	return buttons.get_global_button_by_id(id)
 
 
-## Returns the first [InSimButton] matching the given [param button_name] and [param ucid],
+## Returns the first [InSimButton] matching the given [param button_name] and [param button_name],
 ## or [code]null[/code] if no matching button is found.
 func get_global_button_by_name(button_name: StringName) -> Array[InSimButton]:
 	return buttons.get_global_button_by_name(button_name)
 
 
 ## Returns all [InSimButton]s whose [member InSimButton.name] starts with the given
-## [param prefix] and [param ucid], or an empty array if no matching button is found.
+## [param prefix], or an empty array if no matching button is found.
 func get_global_buttons_by_prefix(prefix: StringName) -> Array[InSimButton]:
 	return buttons.get_global_buttons_by_prefix(prefix)
 
