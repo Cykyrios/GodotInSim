@@ -1738,6 +1738,7 @@ func _on_bfn_packet_received(packet: InSimBFNPacket) -> void:
 func _on_cnl_packet_received(packet: InSimCNLPacket) -> void:
 	var _discard := connections.erase(packet.ucid)
 	_forget_buttons_for_ucid(packet.ucid)
+	lfs_state.num_connections = packet.total
 
 
 func _on_cpr_packet_received(packet: InSimCPRPacket) -> void:
@@ -1756,10 +1757,13 @@ func _on_ncn_packet_received(packet: InSimNCNPacket) -> void:
 	if packet.req_i in [0, GISRequest.REQ_0]:
 		connections[packet.ucid] = Connection.create_from_ncn_packet(packet)
 		_send_global_buttons(packet.ucid)
+		lfs_state.num_connections = packet.total
 
 
 func _on_npl_packet_received(packet: InSimNPLPacket) -> void:
 	players[packet.plid] = Player.create_from_npl_packet(packet)
+	if packet.num_players > 0:
+		lfs_state.num_players = packet.num_players
 
 
 func _on_pfl_packet_received(packet: InSimPFLPacket) -> void:
@@ -1773,6 +1777,7 @@ func _on_pfl_packet_received(packet: InSimPFLPacket) -> void:
 
 func _on_pll_packet_received(packet: InSimPLLPacket) -> void:
 	var _discard := players.erase(packet.plid)
+	lfs_state.num_players -= 1
 
 
 func _on_sta_packet_received(packet: InSimSTAPacket) -> void:
@@ -1781,6 +1786,7 @@ func _on_sta_packet_received(packet: InSimSTAPacket) -> void:
 
 func _on_tiny_clr_received(_packet: InSimTinyPacket) -> void:
 	players.clear()
+	lfs_state.num_players = 0
 
 
 func _on_tiny_mpe_received(_packet: InSimTinyPacket) -> void:
