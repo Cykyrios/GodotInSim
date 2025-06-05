@@ -1050,10 +1050,14 @@ func await_packet(type: Packet, req_i := 0, details := {}) -> InSimPacket:
 ## on the other hand, it also means you can soft-lock your code, depending on where you use
 ## this method.
 func await_packets(type: Packet, number: int, req_i := 0, details := {}) -> Array[InSimPacket]:
+	print_verbose("Awaiting %d packet%s of type %s" % [
+		number, "s" if number > 1 else "", Packet.keys()[type]
+	])
 	details["req_i"] = req_i
 	var packets: Array[InSimPacket] = []
 	for i in number:
 		packets.append(await _await_packet(type, details))
+		print_verbose("Received %d/%d packet%s" % [i + 1, number, "s" if number > 1 else ""])
 	return packets
 
 
