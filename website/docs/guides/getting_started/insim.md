@@ -187,6 +187,7 @@ the InSim node includes more signals than those related to packets:
 * `timeout` is emitted after some time has passed with no packet being received; GodotInSim will send a ping
     to LFS if it hasn't received any packet for a while, and if no response is given within a few seconds,
     the connection is dropped.
+* There are more signals, you can check out the list on the [InSim](/class_ref/InSim.mdx#signals) page.
 
 ### Putting it all together
 
@@ -226,12 +227,89 @@ Running this first app produces the following output in Godot:
 ```text
 TCP connecting...
 TCP status: connected - 127.0.0.1:29999
-Host InSim version matches local version (9).
-MSO packet received: Cyk : Hello InSim!
+Connected to LFS 0.7F S3
+Game InSim version matches local version (9)
+Initializing Godot InSim...
+Godot InSim is ready
+MSO packet received: Player : Hello InSim!
 ```
 The message we sent automatically when connecting is displayed in the game, which sends a corresponding
 [InSimMSOPacket](/class_ref/InSimMSOPacket.mdx), so our app prints the contents of that message.
-Of course, "Cyk" will be replaced with your own name.
+Of course, "Player" will be replaced with your own name.
+
+## Sending and receiving packets in one go
+
+GodotInSim also includes a number of helper functions to send a packet and immediately return a response packet
+(or to be more precise, await the packet), or to await a packet without sending one first:
+
+* [send_packet_await_packet](/class_ref/InSim.mdx#method_send_packet_await_packet) sends a packet and returns
+    a response packet.
+* [send_packet_await_packets](/class_ref/InSim.mdx#method_send_packet_await_packets) sends a packet and returns
+    an array of response packets.
+* [await_packet](/class_ref/InSim.mdx#method_await_packet) waits for and returns a packet.
+* [await_packets](/class_ref/InSim.mdx#method_await_packet) waits for and returns an array of packets.
+
+For instance, if you want to request information about the ongoing session with an
+[InSimRSTPacket](/class_ref/InSimRSTPacket.mdx), you can do the following:
+
+```gdscript
+var packet: InSimRSTPacket = await insim.send_packet_await_packet(
+	InSimTinyPacket.create(1, InSim.Tiny.TINY_RST),  # The packet you want to send
+	Packet.ISP_RST,  # The packet type you expect
+)
+```
+
+This would send a request for an [InSimRSTPacket](/class_ref/InSimRSTPacket.mdx), then return that packet
+when GodotInSim receives it.
+
+:::note
+
+Only packets with the same `req_i` as your request will be returned, so there is no risk of intercepting
+packets you didn't ask for (except if those packets were requested by other InSim apps using the same `req_i`).
+
+:::
+
+Additionally, you can add optional filters to the packet to return; this is especially useful to filter
+specific subtypes of [InSimTinyPacket](/class_ref/InSimTinyPacket.mdx) or
+[InSimSmallPacket](/class_ref/InSimSmallPacket.mdx):
+
+```gdscript
+var packet: InSimSmallPacket = await insim.send_packet_await_packet(
+	InSimTinyPacket.create(1, InSim.Tiny.TINY_GTH),
+	InSim.Packet.ISP_SMALL,
+	{"subtype": InSim.Small.SMALL_RTP}
+)
+```
+
+You can also retrieve an array of packets, using
+[send_packet_await_packets](/class_ref/InSim.mdx#method_send_packet_await_packets), which takes
+an additional parameter for the number of packets you expect to be returned. For instance, you can
+request the list of players and expect the number of currently driving players.
+
+Finally, you can use the await-only versions of the above methods, such as
+[await_packet](/class_ref/InSim.mdx#method_await_packet), which allow you to await packets without
+first sending another packet; those require an explicitly defined `req_i` to be passed, which will
+likely be `0`, and as such is the default value.
+
+:::info
+
+All of the above methods must be awaited in code, and can therefore soft-lock your code: nothing will be
+executed past a call to these methods until the awaited packets are returned. However, callbacks connected
+to other signals will still execute while waiting for packets. You can use this to your advantage
+to simplify code that requires a specific sequences of events.
+
+For instance, the following code will print every [InSimLAPPacket](/class_ref/InSimLAPPacket.mdx) received
+while waiting for the array of 5 packets to fill up, but any code after
+[await_packets](/class_ref/InSim.mdx#method_await_packets) will have to wait until the array is returned:
+
+```gdscript
+var _connect := insim.isp_lap_received.connect(
+	func(packet: InSimLAPPacket) -> void: print(packet.get_pretty_text())
+)
+var laps: Array[InSimPacket] = await_packets(InSim.Packet.ISP_LAP, 5)
+```
+
+:::
 
 ## A word on host InSim apps
 
@@ -251,6 +329,10 @@ insim.initialize(
 		"admin",  # You can set an admin password, which must match the host's
 	),
 )
+# You can check for the host status of your app with the following condition
+# (evaluates to true when running in multiplayer as server host).
+if insim.is_host:
+	# Execute host-specific code
 ```
 
 ## What's next?
