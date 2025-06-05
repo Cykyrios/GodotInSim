@@ -32,9 +32,9 @@ func _ready() -> void:
 
 	if not Engine.is_editor_hint():
 		var standalone_path := ProjectSettings.globalize_path(SPAWN_DIR_STANDALONE)
-		DirAccess.make_dir_absolute(standalone_path)
+		var _error := DirAccess.make_dir_absolute(standalone_path)
 		for file in DirAccess.get_files_at(SPAWN_DIR_EDITOR):
-			var _error := DirAccess.copy_absolute(
+			_error = DirAccess.copy_absolute(
 				SPAWN_DIR_EDITOR.path_join(file),
 				standalone_path.path_join(file),
 			)
