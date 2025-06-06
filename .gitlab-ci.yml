@@ -23,6 +23,7 @@ setup-project:
   script:
     - mv .submodules/gdUnit4/addons/gdUnit4 addons/
     - rm -rf addons/gdUnit4/test
+    - sed -E '/gdscript\/warnings\/.+?/a gdscript\/warnings\/redundant_await=0' project.godot
     - godot --headless -v --import
   artifacts:
     expire_in: 20 minutes
