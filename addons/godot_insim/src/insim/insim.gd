@@ -1476,7 +1476,7 @@ func _perform_internal_initialization() -> void:
 	# We don't need to request IS_NCN/IS_NPL packets as this is done when receiving an IS_ISM.
 	while (
 		connections.size() < lfs_state.num_connections
-		and players.size() < lfs_state.num_players
+		or players.size() < lfs_state.num_players
 	):
 		await get_tree().process_frame
 
