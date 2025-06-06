@@ -131,6 +131,8 @@ func delete_button_by_id(ucids: Array[int], click_id: int, max_id := 0) -> Array
 			)
 			packets.append(packet)
 			_remove_button_mapping(ucid, click_id)
+			if not buttons.has(ucid):
+				continue
 			var _discard := buttons[ucid].buttons.erase(click_id)
 			if buttons[ucid].buttons.is_empty():
 				_discard = buttons.erase(ucid)
@@ -149,6 +151,8 @@ func delete_button_by_name(ucids: Array[int], name: StringName) -> Array[InSimBF
 			if button.name == name:
 				packets.append_array(delete_button_by_id([ucid], button.click_id))
 				_remove_button_mapping(ucid, button.click_id)
+				if not buttons.has(ucid):
+					continue
 				var _discard := buttons[ucid].buttons.erase(button.click_id)
 				if buttons[ucid].buttons.is_empty():
 					_discard = buttons.erase(ucid)
@@ -162,11 +166,14 @@ func delete_buttons_by_prefix(ucids: Array[int], prefix: String) -> Array[InSimB
 	for ucid in ucids:
 		if not has_ucid(ucid):
 			continue
-		for button_id in buttons[ucid].buttons:
+		# For some reason, not adding .keys() only visits the first id...
+		for button_id in buttons[ucid].buttons.keys() as Array[int]:
 			var button := buttons[ucid].buttons[button_id]
 			if button.name.begins_with(prefix):
 				packets.append_array(delete_button_by_id([ucid], button.click_id))
 				_remove_button_mapping(ucid, button.click_id)
+				if not buttons.has(ucid):
+					continue
 				var _discard := buttons[ucid].buttons.erase(button.click_id)
 				if buttons[ucid].buttons.is_empty():
 					_discard = buttons.erase(ucid)
