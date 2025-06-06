@@ -23,7 +23,6 @@ setup-project:
   script:
     - mv .submodules/gdUnit4/addons/gdUnit4 addons/
     - rm -rf addons/gdUnit4/test
-    - sed -E '/gdscript\/warnings\/.+?/a gdscript\/warnings\/redundant_await=0' project.godot
     - godot --headless -v --import
   artifacts:
     expire_in: 20 minutes
@@ -34,6 +33,7 @@ setup-project:
 run-tests:
   stage: test
   script:
+    - sed -E -i '/gdscript\/warnings\/.+?/a gdscript\/warnings\/redundant_await=0' project.godot
     - export GODOT_BIN=$(which godot)
     - ./addons/gdUnit4/runtest.sh --headless --ignoreHeadlessMode -c -a addons/godot_insim/test
   artifacts:
