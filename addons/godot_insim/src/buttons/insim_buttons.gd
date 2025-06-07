@@ -404,6 +404,40 @@ func _add_button_mapping(for_ucid: int, click_id: int) -> void:
 		id_map[for_ucid].append(click_id)
 
 
+func _compact_bfn_packets(packets: Array[InSimBFNPacket]) -> Array[InSimBFNPacket]:
+	var compacted_packets: Array[InSimBFNPacket] = []
+	packets.sort_custom(func(a: InSimBFNPacket, b: InSimBFNPacket) -> bool:
+		if 1000 * a.ucid + a.click_id < 1000 * b.ucid + b.click_id:
+			return true
+		return false
+	)
+	var count := packets.size()
+	var i := 0
+	while i < count:
+		var packet := packets[i]
+		var new_packet := InSimBFNPacket.create(
+			packet.subtype, packet.ucid, packet.click_id, packet.click_max
+		)
+		var j := i + 1
+		while j < count:
+			var next_packet := packets[j]
+			if (
+				next_packet.ucid == packet.ucid
+				and next_packet.click_id == new_packet.click_max + 1
+			):
+				if next_packet.click_max > next_packet.click_id:
+					new_packet.click_max = next_packet.click_max
+				else:
+					new_packet.click_max = next_packet.click_id
+				i += 1
+				j += 1
+			else:
+				break
+		compacted_packets.append(new_packet)
+		i += 1
+	return compacted_packets
+
+
 func _forget_buttons_for_ucid(ucid: int) -> void:
 	if id_map.has(ucid):
 		for click_id in id_map[ucid] as Array[int]:
