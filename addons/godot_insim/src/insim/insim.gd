@@ -1277,7 +1277,7 @@ func add_button(
 	ucids: Array[int], position: Vector2i, size: Vector2i, style: int, text: Variant,
 	button_name := "", type_in := 0, caption := "", show_everywhere := false
 ) -> void:
-	if 255 in ucids:
+	if buttons.EVERYONE in ucids:
 		ucids.clear()
 	if type_in > 0:
 		style |= InSim.ButtonStyle.ISB_CLICK
@@ -1292,8 +1292,8 @@ func add_button(
 ## to delete the button for every UCID in the current connection list. If [param max_id] is greater
 ## than [param click_id], all buttons from [param click_id] to [param max_id] are deleted.
 func delete_button_by_id(ucids: Array[int], click_id: int, max_id := 0) -> void:
-	if ucids.is_empty():
-		ucids = [buttons.EVERYONE]
+	if ucids.is_empty() or buttons.EVERYONE in ucids:
+		ucids = connections.keys()
 	for packet in buttons.delete_button_by_id(ucids, click_id, max_id):
 		send_packet(packet)
 
@@ -1302,8 +1302,8 @@ func delete_button_by_id(ucids: Array[int], click_id: int, max_id := 0) -> void:
 ## and sends the corresponding [InSimBFNPacket]s. If [param ucids] is empty, this function will try
 ## to delete buttons for every UCID in the current connection list.
 func delete_buttons_by_name(ucids: Array[int], button_name: StringName) -> void:
-	if ucids.is_empty():
-		ucids = [buttons.EVERYONE]
+	if ucids.is_empty() or buttons.EVERYONE in ucids:
+		ucids = connections.keys()
 	for packet in buttons.delete_button_by_name(ucids, button_name):
 		send_packet(packet)
 
@@ -1312,8 +1312,8 @@ func delete_buttons_by_name(ucids: Array[int], button_name: StringName) -> void:
 ## and sends the corresponding [InSimBFNPacket]s. If [param ucids] is empty, this function
 ## will try to delete buttons for every UCID in the current connection list.
 func delete_buttons_by_prefix(ucids: Array[int], prefix: StringName) -> void:
-	if ucids.is_empty():
-		ucids = [buttons.EVERYONE]
+	if ucids.is_empty() or buttons.EVERYONE in ucids:
+		ucids = connections.keys()
 	for packet in buttons.delete_buttons_by_prefix(ucids, prefix):
 		send_packet(packet)
 
