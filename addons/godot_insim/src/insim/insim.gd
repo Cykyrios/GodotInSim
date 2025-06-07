@@ -1287,6 +1287,21 @@ func add_button(
 		send_packet(packet)
 
 
+## Creates an [InSimButton] for every connected player, and sends the corresponding
+## [InSimBTNPacket]s. See [method add_button] for more details, as the parameters are the same,
+## except UCIDs are not needed here.
+func add_global_button(
+	position: Vector2i, size: Vector2i, style: int, text: Variant,
+	button_name := "", type_in := 0, caption := "", show_everywhere := false
+) -> void:
+	if type_in > 0:
+		style |= InSim.ButtonStyle.ISB_CLICK
+	for packet in buttons.add_global_button(
+		position, size, style, text, button_name, type_in, caption, show_everywhere
+	):
+		send_packet(packet)
+
+
 ## Deletes an [InSimButton] and sends the corresponding [InSimBFNPacket] for all [param ucids],
 ## based on the given button [param click_id]. If [param ucids] is empty, this function will try
 ## to delete the button for every UCID in the current connection list. If [param max_id] is greater
