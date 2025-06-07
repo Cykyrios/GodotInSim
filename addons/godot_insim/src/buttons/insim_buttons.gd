@@ -177,7 +177,7 @@ func delete_buttons_by_prefix(ucids: Array[int], prefix: String) -> Array[InSimB
 				var _discard := buttons[ucid].buttons.erase(button.click_id)
 				if buttons[ucid].buttons.is_empty():
 					_discard = buttons.erase(ucid)
-	return packets
+	return _compact_bfn_packets(packets)
 
 
 ## Deletes a global button (shown to every player) selected by its click [param id]. See
@@ -423,7 +423,11 @@ func _compact_bfn_packets(packets: Array[InSimBFNPacket]) -> Array[InSimBFNPacke
 			var next_packet := packets[j]
 			if (
 				next_packet.ucid == packet.ucid
-				and next_packet.click_id == new_packet.click_max + 1
+				and (
+					new_packet.click_max > new_packet.click_id
+					and next_packet.click_id == new_packet.click_max + 1
+					or next_packet.click_id == new_packet.click_id + 1
+				)
 			):
 				if next_packet.click_max > next_packet.click_id:
 					new_packet.click_max = next_packet.click_max
