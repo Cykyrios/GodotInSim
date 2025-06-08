@@ -15,7 +15,7 @@ const EVERYONE := 255
 var insim: InSim = null
 ## Determines whether buttons cleared by pressing [kbd]Shift + I[/kbd] are remembered or
 ## forgotten, i.e. whether their corresponding mappings are deleted.
-## [signal connection_cleared_buttons] is emitted right after an InSim clear request.
+## [signal InSim.connection_cleared_buttons] is emitted right after an InSim clear request.
 var forget_cleared_buttons := false
 
 ## The range of click IDs this instance can use. This range should remain as small as possible
