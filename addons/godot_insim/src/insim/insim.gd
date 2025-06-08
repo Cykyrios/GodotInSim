@@ -1352,7 +1352,8 @@ func delete_global_buttons_by_prefix(prefix: StringName) -> void:
 
 
 ## Disables button updates for the given [param ucid]. See [member InSimButtons.disabled_ucids]
-## for details, and [method enable_buttons_for_ucid] for the opposite method.
+## and [member InSimButtons.forget_cleared_buttons] for details, and
+## [method enable_buttons_for_ucid] for the opposite method.
 func disable_buttons_for_ucid(ucid: int) -> void:
 	buttons.disable_buttons_for_ucid(ucid)
 

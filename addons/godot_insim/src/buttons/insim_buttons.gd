@@ -13,6 +13,10 @@ const EVERYONE := 255
 ## A reference to the parent [InSim] instance, used to fetch [member InSim.connections] for
 ## per-player button management.
 var insim: InSim = null
+## Determines whether buttons cleared by pressing [kbd]Shift + I[/kbd] are remembered or
+## forgotten, i.e. whether their corresponding mappings are deleted.
+## [signal connection_cleared_buttons] is emitted right after an InSim clear request.
+var forget_cleared_buttons := false
 
 ## The range of click IDs this instance can use. This range should remain as small as possible
 ## to allow other instances or InSim apps to manage their own range of buttons.
@@ -207,18 +211,27 @@ func delete_global_buttons_by_prefix(prefix: StringName) -> Array[InSimBFNPacket
 	return packets
 
 
-## Removes all button mappings for [param ucid] and disables button updates by adding [param ucid]
-## to [member disabled_ucids].
+## Disables button updates by adding [param ucid] to [member disabled_ucids]. If
+## [member forget_cleared_buttons] is [code]true[/code], all button mappings for [param ucid]
+## are removed.
 func disable_buttons_for_ucid(ucid: int) -> void:
-	_forget_buttons_for_ucid(ucid)
+	if forget_cleared_buttons:
+		_forget_buttons_for_ucid(ucid)
 	disabled_ucids.erase(ucid)
 	disabled_ucids.append(ucid)
 
 
 ## Allows buttons to be sent to the given [param ucid] again, by removing it from
-## [member disabled_ucids].
+## [member disabled_ucids]. If button mappings were not removed, all remembered buttons are
+## immediately sent again.
 func enable_buttons_for_ucid(ucid: int) -> void:
 	disabled_ucids.erase(ucid)
+	if not id_map.has(ucid):
+		return
+	for click_id in id_map[ucid] as Array[int]:
+		var button := get_button_by_id(click_id, ucid)
+		if button:
+			insim.send_packet(button.get_btn_packet())
 
 
 ## Returns the [InSimButton] at the given [param id], or [code]null[/code] if it does not exist.
