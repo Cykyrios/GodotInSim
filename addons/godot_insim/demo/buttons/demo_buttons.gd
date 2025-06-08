@@ -6,14 +6,20 @@ extends Control
 
 var insim: InSim = null
 
-var auto_buttons_left := 70
+var auto_buttons_left := 50
 var auto_buttons_top := 40
 var auto_button_width := 15
 var auto_button_height := 5
-var manual_buttons_left := 30
+var manual_buttons_left := 10
 var manual_buttons_top := 40
 var manual_button_width := 15
 var manual_button_height := 5
+var menu_buttons_left := 80
+var menu_buttons_top := 40
+var menu_button_width := 10
+var menu_button_height := 5
+
+var menu_open: Array[int] = []  # List of UCIDs that have the menu open.
 
 
 func _ready() -> void:
@@ -38,6 +44,7 @@ func _ready() -> void:
 		insim.send_message("Host InSim started")
 	show_manual_buttons()
 	show_auto_buttons()
+	show_global_button()
 	update_auto_buttons()
 
 
@@ -54,13 +61,15 @@ func show_auto_buttons(for_ucid := 255) -> void:
 		Vector2i(2 * auto_button_width, 9 * auto_button_height),
 		InSim.ButtonStyle.ISB_LIGHT,
 		"",
+		"auto/background",
 	)
 	insim.add_button(
 		[for_ucid],
 		Vector2i(auto_buttons_left, auto_buttons_top),
 		Vector2i(2 * auto_button_width, roundi(1.5 * auto_button_height)),
 		InSim.ButtonColor.ISB_TITLE,
-		"Auto Buttons"
+		"Auto Buttons",
+		"auto/title",
 	)
 	insim.add_button(
 		[for_ucid],
@@ -70,6 +79,7 @@ func show_auto_buttons(for_ucid := 255) -> void:
 		"Custom clickID range: %d-%d" % [
 			insim.buttons.id_range.x, insim.buttons.id_range.y
 		],
+		"auto/range",
 	)
 	insim.add_button(
 		[for_ucid],
@@ -77,9 +87,9 @@ func show_auto_buttons(for_ucid := 255) -> void:
 		Vector2i(2 * auto_button_width, auto_button_height),
 		0,
 		"test",
-		"test",
+		"auto/test",
 	)
-	var button := insim.get_button_by_name("test", for_ucid)
+	var button := insim.get_button_by_name("auto/test", for_ucid)
 	if button:
 		button.text = "ID=%d, name=%s" % [button.click_id, button.name]
 		insim.send_packet(button.get_btn_packet(true))
@@ -89,7 +99,7 @@ func show_auto_buttons(for_ucid := 255) -> void:
 		Vector2i(2 * auto_button_width - 4, auto_button_height),
 		InSim.ButtonStyle.ISB_DARK | InSim.ButtonStyle.ISB_CLICK,
 		func(ucid: int) -> String: return insim.get_connection_nickname(ucid),
-		"player_name",
+		"auto/player_name",
 	)
 	insim.add_button(
 		[for_ucid],
@@ -97,7 +107,25 @@ func show_auto_buttons(for_ucid := 255) -> void:
 		Vector2i(2 * auto_button_width - 4, auto_button_height),
 		InSim.ButtonStyle.ISB_DARK | InSim.ButtonStyle.ISB_CLICK,
 		"Time",
-		"clock",
+		"auto/clock",
+	)
+	insim.add_button(
+		[for_ucid],
+		Vector2i(auto_buttons_left + 2, auto_buttons_top + 7 * auto_button_height),  # 6 is blink
+		Vector2i(2 * auto_button_width - 4, auto_button_height),
+		InSim.ButtonStyle.ISB_DARK | InSim.ButtonStyle.ISB_CLICK,
+		"Show menu",
+		"auto/menu",
+	)
+
+
+func show_global_button() -> void:
+	insim.add_global_button(
+		Vector2i(50, 1),
+		Vector2i(50, 5),
+		InSim.ButtonStyle.ISB_DARK | InSim.ButtonStyle.ISB_CLICK,
+		"Last clicker: nobody",
+		"global/last_clicker",
 	)
 
 
@@ -200,6 +228,56 @@ func show_manual_buttons() -> void:
 	))
 
 
+func toggle_menu(for_ucid: int) -> void:
+	if menu_open.has(for_ucid):
+		menu_open.erase(for_ucid)
+		insim.delete_buttons_by_prefix([for_ucid], "menu/")
+		insim.update_button_text(insim.get_button_by_name("auto/menu", for_ucid), "Show menu")
+		return
+	menu_open.append(for_ucid)
+	insim.update_button_text(insim.get_button_by_name("auto/menu", for_ucid), "Close menu")
+	insim.add_button(
+		[for_ucid],
+		Vector2i(menu_buttons_left, menu_buttons_top),
+		Vector2i(2 * menu_button_width, 5 * menu_button_height),
+		InSim.ButtonStyle.ISB_LIGHT,
+		"",
+		"menu/background",
+	)
+	insim.add_button(
+		[for_ucid],
+		Vector2i(menu_buttons_left + 2, menu_buttons_top),
+		Vector2i(2 * menu_button_width - 4, 2 * menu_button_height),
+		InSim.ButtonColor.ISB_TITLE,
+		"Menu",
+		"menu/title",
+	)
+	insim.add_button(
+		[for_ucid],
+		Vector2i(menu_buttons_left + 2 * menu_button_width - 4, menu_buttons_top),
+		Vector2i(4, menu_button_height),
+		InSim.ButtonStyle.ISB_DARK | InSim.ButtonStyle.ISB_CLICK,
+		LFSText.get_color_code(LFSText.ColorCode.RED) + "X",
+		"menu/close",
+	)
+	insim.add_button(
+		[for_ucid],
+		Vector2i(menu_buttons_left + 2, menu_buttons_top + 2 * menu_button_height),
+		Vector2i(2 * menu_button_width - 4, menu_button_height),
+		InSim.ButtonStyle.ISB_DARK | InSim.ButtonStyle.ISB_CLICK,
+		"Item 1",
+		"menu/item_1",
+	)
+	insim.add_button(
+		[for_ucid],
+		Vector2i(menu_buttons_left + 2, menu_buttons_top + 3 * menu_button_height),
+		Vector2i(2 * menu_button_width - 4, menu_button_height),
+		InSim.ButtonStyle.ISB_DARK | InSim.ButtonStyle.ISB_CLICK,
+		"Item 2",
+		"menu/item_2",
+	)
+
+
 func update_auto_buttons() -> void:
 	# Infinite loop to get updates every second, obviously not a good choice if you want
 	# to be able to interrupt the loop cleanly. However, global buttons allow disabling InSim
@@ -207,7 +285,7 @@ func update_auto_buttons() -> void:
 	var loop := 0
 	while true:
 		await get_tree().create_timer(1).timeout
-		var buttons := insim.get_global_button_by_name("clock")
+		var buttons := insim.get_global_button_by_name("auto/clock")
 		if not buttons.is_empty():
 			insim.update_global_button_text(
 				buttons[0].click_id,
@@ -221,20 +299,31 @@ func update_auto_buttons() -> void:
 				Vector2i(2 * auto_button_width - 4, auto_button_height),
 				0,
 				"",
-				"blink",
+				"auto/blink",
 			)
-			var click_id := insim.buttons.get_global_button_id_from_name("blink")
+			var click_id := insim.buttons.get_global_button_id_from_name("auto/blink")
 			if click_id != -1:
 				insim.update_global_button_text(click_id, "ID=%d, name=%s" % [
-					click_id, "blink"
+					click_id, "auto/blink"
 				])
 		else:
-			insim.delete_global_button_by_name("blink")
+			insim.delete_global_button_by_name("auto/blink")
+
+
+func update_last_clicker_button(clicker_ucid: int) -> void:
+	var button_array := insim.get_global_button_by_name("global/last_clicker")
+	var button_id := button_array[0].click_id if not button_array.is_empty() else -1
+	if button_id < 0:
+		return
+	insim.update_global_button_text(
+		button_id,
+		"Last clicker: %s" % [insim.get_connection_nickname(clicker_ucid)]
+	)
 
 
 func update_player_name_button(ucid: int) -> void:
-	var button := insim.get_button_by_name("player_name", ucid)
-	if button and button.name == "player_name":
+	var button := insim.get_button_by_name("auto/player_name", ucid)
+	if button and button.name == "auto/player_name":
 		button.text = "ID=%d, name=%s" % [
 			button.click_id,
 			button.name,
@@ -262,8 +351,9 @@ func _on_bfn_received(packet: InSimBFNPacket) -> void:
 			insim.send_message_to_connection(packet.ucid, message)
 		else:
 			insim.send_local_message(message)
+		# Here we show manual buttons again, as they are not tracked by the button manager.
+		# Auto buttons are restored automatically, and so is the menu if it was open.
 		show_manual_buttons()
-		show_auto_buttons(packet.ucid)
 
 
 func _on_btc_received(packet: InSimBTCPacket) -> void:
@@ -276,7 +366,7 @@ func _on_btc_received(packet: InSimBTCPacket) -> void:
 	var flags := packet.click_flags
 	var message := "You clicked %s (%s)." % [
 		"the ^2Click^8 button in the Manual Buttons category" if packet.click_id == 10 \
-				else "the player name button" if button and button.name == "player_name" \
+				else "the player name button" if button and button.name == "auto/player_name" \
 				else "a button",
 		"%s click%s%s" % [
 			"right" if flags & InSim.ButtonClick.ISB_RMB else "left",
@@ -284,17 +374,21 @@ func _on_btc_received(packet: InSimBTCPacket) -> void:
 			" + Shift" if flags & InSim.ButtonClick.ISB_SHIFT else "",
 		],
 	]
-	if insim.lfs_state.flags & InSim.State.ISS_MULTI:
-		insim.send_message_to_connection(
-			255,
-			message.replace("You", insim.get_connection_nickname(packet.ucid) \
-					+ LFSText.get_color_code(LFSText.ColorCode.DEFAULT)),
-			InSim.MessageSound.SND_MESSAGE
-		)
+	if insim.is_host:
+		insim.send_message_to_connection(packet.ucid, message, InSim.MessageSound.SND_SYSMESSAGE)
 	else:
-		insim.send_local_message(message, InSim.MessageSound.SND_MESSAGE)
-	if packet.click_id == insim.get_button_by_name("player_name", packet.ucid).click_id:
-		update_player_name_button(packet.ucid)
+		insim.send_local_message(message, InSim.MessageSound.SND_SYSMESSAGE)
+	if not button:
+		return
+	match button.name:
+		"auto/menu":
+			toggle_menu(packet.ucid)
+		"auto/player_name":
+			update_player_name_button(packet.ucid)
+		"global/last_clicker":
+			update_last_clicker_button(packet.ucid)
+		"menu/close":
+			toggle_menu(packet.ucid)
 
 
 func _on_btt_received(packet: InSimBTTPacket) -> void:
@@ -317,3 +411,5 @@ func _on_btt_received(packet: InSimBTTPacket) -> void:
 
 func _on_global_buttons_restored(ucid: int) -> void:
 	update_player_name_button(ucid)
+	# We could connect to isp_ncn_received and check the req_i instead, but this works too.
+	show_manual_buttons()
