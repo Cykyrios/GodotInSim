@@ -134,12 +134,7 @@ func delete_button_by_id(ucids: Array[int], click_id: int, max_id := 0) -> Array
 				InSim.ButtonFunction.BFN_DEL_BTN, ucid, click_id, max_id if max_id > click_id else 0
 			)
 			packets.append(packet)
-			_remove_button_mapping(ucid, click_id)
-			if not buttons.has(ucid):
-				continue
-			var _discard := buttons[ucid].buttons.erase(click_id)
-			if buttons[ucid].buttons.is_empty():
-				_discard = buttons.erase(ucid)
+			_delete_button(ucid, click_id)
 	return packets
 
 
@@ -154,12 +149,7 @@ func delete_button_by_name(ucids: Array[int], name: StringName) -> Array[InSimBF
 			var button := buttons[ucid].buttons[button_id]
 			if button.name == name:
 				packets.append_array(delete_button_by_id([ucid], button.click_id))
-				_remove_button_mapping(ucid, button.click_id)
-				if not buttons.has(ucid):
-					continue
-				var _discard := buttons[ucid].buttons.erase(button.click_id)
-				if buttons[ucid].buttons.is_empty():
-					_discard = buttons.erase(ucid)
+				_delete_button(ucid, button.click_id)
 	return packets
 
 
@@ -175,12 +165,7 @@ func delete_buttons_by_prefix(ucids: Array[int], prefix: String) -> Array[InSimB
 			var button := buttons[ucid].buttons[button_id]
 			if button.name.begins_with(prefix):
 				packets.append_array(delete_button_by_id([ucid], button.click_id))
-				_remove_button_mapping(ucid, button.click_id)
-				if not buttons.has(ucid):
-					continue
-				var _discard := buttons[ucid].buttons.erase(button.click_id)
-				if buttons[ucid].buttons.is_empty():
-					_discard = buttons.erase(ucid)
+				_delete_button(ucid, button.click_id)
 	return _compact_bfn_packets(packets)
 
 
@@ -453,6 +438,15 @@ func _compact_bfn_packets(packets: Array[InSimBFNPacket]) -> Array[InSimBFNPacke
 		compacted_packets.append(new_packet)
 		i += 1
 	return compacted_packets
+
+
+func _delete_button(ucid: int, click_id: int) -> void:
+	_remove_button_mapping(ucid, click_id)
+	if not buttons.has(ucid):
+		return
+	var _discard := buttons[ucid].buttons.erase(click_id)
+	if buttons[ucid].buttons.is_empty():
+		_discard = buttons.erase(ucid)
 
 
 func _forget_buttons_for_ucid(ucid: int) -> void:
