@@ -361,7 +361,12 @@ func register_buttons(new_buttons: Array[InSimButton], register_global := false)
 func restore_global_buttons(for_ucid: int) -> void:
 	var new_buttons: Array[InSimButton] = []
 	for click_id in global_buttons:
+		if global_buttons[click_id].is_empty():
+			var _existed := global_buttons.erase(click_id)
+			continue
 		var button := get_button_by_id(click_id, global_buttons[click_id][0] as int)
+		if not button:
+			continue
 		var new_button := InSimButton.create(
 			for_ucid, click_id, button.inst, button.style, button.position, button.size,
 			button.text, button.name, button.type_in, button.caption,
