@@ -169,7 +169,7 @@ func delete_buttons_by_prefix(ucids: Array[int], prefix: String) -> Array[InSimB
 	return _compact_bfn_packets(packets)
 
 
-## Returns an array of [InSimFBNPacket]s requesting the deletion of all buttons that have a
+## Returns an array of [InSimBFNPacket]s requesting the deletion of all buttons that have a
 ## [member InSimButton.name] matching the given [param regex] for all [param ucids].
 func delete_buttons_by_regex(ucids: Array[int], regex: RegEx) -> Array[InSimBFNPacket]:
 	var packets: Array[InSimBFNPacket] = []
