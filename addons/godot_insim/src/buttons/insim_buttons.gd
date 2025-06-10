@@ -79,7 +79,9 @@ func add_button(
 	var text_type := typeof(text)
 	var new_id := -1
 	var global_button := false
-	if ucids.is_empty() or EVERYONE in ucids:
+	# Allow UCID 255 if it is the only UCID passed to the function (for "true" global buttons
+	# that will update regardless of disabled_ucids).
+	if ucids.is_empty() or EVERYONE in ucids and ucids.size() > 1:
 		global_button = true
 		ucids = insim.connections.keys()
 		new_id = get_free_global_id()
@@ -277,11 +279,11 @@ func get_buttons_by_prefix(prefix: StringName, ucid: int) -> Array[InSimButton]:
 ## Returns a free [code]click_id[/code] value to create a new button for UCID [param for_ucid],
 ## or [code]-1[/code] if no ID is available in the [member id_range].
 func get_free_id(for_ucid: int) -> int:
-	if not id_map.has(for_ucid):
+	if not id_map.has(for_ucid) and not id_map.has(EVERYONE):
 		return id_range.x
 	for i in id_range.y - id_range.x + 1:
 		var test_id := id_range.x + i
-		if id_map[for_ucid].has(test_id):
+		if id_map[for_ucid].has(test_id) or id_map[EVERYONE].has(test_id):
 			continue
 		return test_id
 	return -1
@@ -291,6 +293,7 @@ func get_free_id(for_ucid: int) -> int:
 ## or [code]-1[/code] if no ID is available in the [member id_range].
 func get_free_global_id() -> int:
 	var ucids := insim.connections.keys() as Array[int]
+	ucids.append(EVERYONE)
 	for i in id_range.y - id_range.x + 1:
 		var test_id := id_range.x + i
 		var valid_id := true
