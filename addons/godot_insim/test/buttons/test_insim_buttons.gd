@@ -14,6 +14,21 @@ func before_test() -> void:
 	insim.insim_connected = true
 
 
+func test_add_button() -> void:
+	var packets := insim.buttons.add_button(
+		[1, 2], Vector2i(10, 50), Vector2i(20, 5), InSim.ButtonStyle.ISB_DARK, "text", "button"
+	)
+	var _test: GdUnitAssert = assert_int(packets.size()).is_equal(2)
+	_test = assert_array(packets).is_equal([
+		InSimBTNPacket.create(1, 0, 0, InSim.ButtonStyle.ISB_DARK, 0, 10, 50, 20, 5, "text"),
+		InSimBTNPacket.create(2, 0, 0, InSim.ButtonStyle.ISB_DARK, 0, 10, 50, 20, 5, "text"),
+	])
+	_test = assert_bool(
+		insim.get_button_by_name("button", 1) != null
+		and insim.get_button_by_name("button", 2) != null
+	).is_true()
+
+
 func test_compact_bfn_packets() -> void:
 	var packets: Array[InSimBFNPacket] = [
 		InSimBFNPacket.create(InSim.ButtonFunction.BFN_DEL_BTN, 1, 10, 20),
