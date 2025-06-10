@@ -283,7 +283,7 @@ func get_free_id(for_ucid: int) -> int:
 		return id_range.x
 	for i in id_range.y - id_range.x + 1:
 		var test_id := id_range.x + i
-		if id_map[for_ucid].has(test_id) or id_map[EVERYONE].has(test_id):
+		if id_map[for_ucid].has(test_id) or id_map.has(EVERYONE) and id_map[EVERYONE].has(test_id):
 			continue
 		return test_id
 	return -1
