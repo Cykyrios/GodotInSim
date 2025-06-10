@@ -124,7 +124,7 @@ func add_global_button(
 ## Returns an array of [InSimBFNPacket]s requesting the deletion of the given button
 ## [param click_id] for all [param ucids]. If [param max_id] is non-zero, and greater than
 ## [param click_id], all buttons from [param click_id] to [param max_id] are deleted.
-func delete_button_by_id(ucids: Array[int], click_id: int, max_id := 0) -> Array[InSimBFNPacket]:
+func delete_buttons_by_id(ucids: Array[int], click_id: int, max_id := 0) -> Array[InSimBFNPacket]:
 	var packets: Array[InSimBFNPacket] = []
 	for ucid in ucids:
 		if not has_ucid(ucid):
@@ -140,7 +140,7 @@ func delete_button_by_id(ucids: Array[int], click_id: int, max_id := 0) -> Array
 
 ## Returns an array of [InSimBFNPacket]s requesting the deletion of the given button
 ## [param name] for all [param ucids].
-func delete_button_by_name(ucids: Array[int], name: StringName) -> Array[InSimBFNPacket]:
+func delete_buttons_by_name(ucids: Array[int], name: StringName) -> Array[InSimBFNPacket]:
 	var packets: Array[InSimBFNPacket] = []
 	for ucid in ucids:
 		if not has_ucid(ucid):
@@ -148,7 +148,7 @@ func delete_button_by_name(ucids: Array[int], name: StringName) -> Array[InSimBF
 		for button_id in buttons[ucid].buttons:
 			var button := buttons[ucid].buttons[button_id]
 			if button.name == name:
-				packets.append_array(delete_button_by_id([ucid], button.click_id))
+				packets.append_array(delete_buttons_by_id([ucid], button.click_id))
 				_delete_button(ucid, button.click_id)
 	return packets
 
@@ -164,7 +164,7 @@ func delete_buttons_by_prefix(ucids: Array[int], prefix: String) -> Array[InSimB
 		for button_id in buttons[ucid].buttons.keys() as Array[int]:
 			var button := buttons[ucid].buttons[button_id]
 			if button.name.begins_with(prefix):
-				packets.append_array(delete_button_by_id([ucid], button.click_id))
+				packets.append_array(delete_buttons_by_id([ucid], button.click_id))
 				_delete_button(ucid, button.click_id)
 	return _compact_bfn_packets(packets)
 
@@ -179,31 +179,31 @@ func delete_buttons_by_regex(ucids: Array[int], regex: RegEx) -> Array[InSimBFNP
 		for button_id in buttons[ucid].buttons.keys() as Array[int]:
 			var button := buttons[ucid].buttons[button_id]
 			if regex.search(button.name):
-				packets.append_array(delete_button_by_id([ucid], button.click_id))
+				packets.append_array(delete_buttons_by_id([ucid], button.click_id))
 				_delete_button(ucid, button.click_id)
 	return _compact_bfn_packets(packets)
 
 
 ## Deletes a global button (shown to every player) selected by its click [param id]. See
-## [method delete_button_by_id] for buttons specific to one UCID.
-func delete_global_button_by_id(id: int) -> Array[InSimBFNPacket]:
-	var packets := delete_button_by_id(insim.connections.keys(), id)
+## [method delete_buttons_by_id] for buttons specific to specific UCIDs.
+func delete_global_buttons_by_id(id: int) -> Array[InSimBFNPacket]:
+	var packets := delete_buttons_by_id(insim.connections.keys(), id)
 	for packet in packets:
 		var _existed := global_buttons.erase(packet.click_id)
 	return packets
 
 
 ## Deletes a global button (shown to every player) selected by its [param name]. See
-## [method delete_button_by_name] for buttons specific to one UCID.
-func delete_global_button_by_name(name: StringName) -> Array[InSimBFNPacket]:
-	var packets := delete_button_by_name(insim.connections.keys(), name)
+## [method delete_buttons_by_name] for buttons specific to specific UCIDs.
+func delete_global_buttons_by_name(name: StringName) -> Array[InSimBFNPacket]:
+	var packets := delete_buttons_by_name(insim.connections.keys(), name)
 	for packet in packets:
 		var _existed := global_buttons.erase(packet.click_id)
 	return packets
 
 
 ## Deletes global buttons (shown to every player) selected by their [param prefix]. See
-## [method delete_buttons_by_prefix] for buttons specific to one UCID.
+## [method delete_buttons_by_prefix] for buttons specific to specific UCIDs.
 func delete_global_buttons_by_prefix(prefix: StringName) -> Array[InSimBFNPacket]:
 	var packets := delete_buttons_by_prefix(insim.connections.keys(), prefix)
 	for packet in packets:

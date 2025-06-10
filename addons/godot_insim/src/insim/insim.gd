@@ -1306,10 +1306,10 @@ func add_global_button(
 ## based on the given button [param click_id]. If [param ucids] is empty, this function will try
 ## to delete the button for every UCID in the current connection list. If [param max_id] is greater
 ## than [param click_id], all buttons from [param click_id] to [param max_id] are deleted.
-func delete_button_by_id(ucids: Array[int], click_id: int, max_id := 0) -> void:
+func delete_buttons_by_id(ucids: Array[int], click_id: int, max_id := 0) -> void:
 	if ucids.is_empty() or buttons.EVERYONE in ucids:
 		ucids = connections.keys()
-	for packet in buttons.delete_button_by_id(ucids, click_id, max_id):
+	for packet in buttons.delete_buttons_by_id(ucids, click_id, max_id):
 		send_packet(packet)
 
 
@@ -1319,7 +1319,7 @@ func delete_button_by_id(ucids: Array[int], click_id: int, max_id := 0) -> void:
 func delete_buttons_by_name(ucids: Array[int], button_name: StringName) -> void:
 	if ucids.is_empty() or buttons.EVERYONE in ucids:
 		ucids = connections.keys()
-	for packet in buttons.delete_button_by_name(ucids, button_name):
+	for packet in buttons.delete_buttons_by_name(ucids, button_name):
 		send_packet(packet)
 
 
@@ -1345,13 +1345,13 @@ func delete_buttons_by_regex(ucids: Array[int], regex: RegEx) -> void:
 
 ## Deletes a global button (shown to every player) selected by its click [param id].
 func delete_global_button_by_id(id: int) -> void:
-	for packet in buttons.delete_global_button_by_id(id):
+	for packet in buttons.delete_global_buttons_by_id(id):
 		send_packet(packet)
 
 
 ## Deletes a global button (shown to every player) selected by its [param button_name].
 func delete_global_button_by_name(button_name: StringName) -> void:
-	for packet in buttons.delete_global_button_by_name(button_name):
+	for packet in buttons.delete_global_buttons_by_name(button_name):
 		send_packet(packet)
 
 
