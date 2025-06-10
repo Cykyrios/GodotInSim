@@ -37,6 +37,10 @@ func test_get_time_string_from_seconds() -> void:
 			.is_equal("+5.678")
 	_test = assert_str(GISTime.get_time_string_from_seconds(5.678, 2, true, true, true)) \
 			.is_equal("+0:05.68")
+	_test = assert_str(GISTime.get_time_string_from_seconds(42, 0, true, false, true)) \
+			.is_equal("0:42")
+	_test = assert_str(GISTime.get_time_string_from_seconds(42, 0, true, false, false)) \
+			.is_equal("42")
 
 
 func test_get_seconds_from_time_string() -> void:
