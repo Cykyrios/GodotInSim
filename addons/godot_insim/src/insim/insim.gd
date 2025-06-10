@@ -1333,6 +1333,16 @@ func delete_buttons_by_prefix(ucids: Array[int], prefix: StringName) -> void:
 		send_packet(packet)
 
 
+## Deletes all [InSimButton]s with a name matching the given [param regex] for all [param ucids],
+## and sends the corresponding [InSimBFNPacket]s. If [param ucids] is empty, this functions
+## will try to delete buttons for every UCID in the current connection list.
+func delete_buttons_by_regex(ucids: Array[int], regex: RegEx) -> void:
+	if ucids.is_empty() or buttons.EVERYONE in ucids:
+		ucids = connections.keys()
+	for packet in buttons.delete_buttons_by_regex(ucids, regex):
+		send_packet(packet)
+
+
 ## Deletes a global button (shown to every player) selected by its click [param id].
 func delete_global_button_by_id(id: int) -> void:
 	for packet in buttons.delete_global_button_by_id(id):
@@ -1348,6 +1358,12 @@ func delete_global_button_by_name(button_name: StringName) -> void:
 ## Deletes global buttons (shown to every player) selected by their [param prefix].
 func delete_global_buttons_by_prefix(prefix: StringName) -> void:
 	for packet in buttons.delete_global_buttons_by_prefix(prefix):
+		send_packet(packet)
+
+
+## Deletes global buttons (shown to every player) matching [param regex].
+func delete_global_buttons_by_regex(regex: RegEx) -> void:
+	for packet in buttons.delete_global_buttons_by_regex(regex):
 		send_packet(packet)
 
 

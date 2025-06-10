@@ -169,6 +169,21 @@ func delete_buttons_by_prefix(ucids: Array[int], prefix: String) -> Array[InSimB
 	return _compact_bfn_packets(packets)
 
 
+## Returns an array of [InSimFBNPacket]s requesting the deletion of all buttons that have a
+## [member InSimButton.name] matching the given [param regex] for all [param ucids].
+func delete_buttons_by_regex(ucids: Array[int], regex: RegEx) -> Array[InSimBFNPacket]:
+	var packets: Array[InSimBFNPacket] = []
+	for ucid in ucids:
+		if not has_ucid(ucid):
+			continue
+		for button_id in buttons[ucid].buttons.keys() as Array[int]:
+			var button := buttons[ucid].buttons[button_id]
+			if regex.search(button.name):
+				packets.append_array(delete_button_by_id([ucid], button.click_id))
+				_delete_button(ucid, button.click_id)
+	return _compact_bfn_packets(packets)
+
+
 ## Deletes a global button (shown to every player) selected by its click [param id]. See
 ## [method delete_button_by_id] for buttons specific to one UCID.
 func delete_global_button_by_id(id: int) -> Array[InSimBFNPacket]:
@@ -191,6 +206,15 @@ func delete_global_button_by_name(name: StringName) -> Array[InSimBFNPacket]:
 ## [method delete_buttons_by_prefix] for buttons specific to one UCID.
 func delete_global_buttons_by_prefix(prefix: StringName) -> Array[InSimBFNPacket]:
 	var packets := delete_buttons_by_prefix(insim.connections.keys(), prefix)
+	for packet in packets:
+		var _existed := global_buttons.erase(packet.click_id)
+	return packets
+
+
+## Deletes global buttons (shown to every player) matching [param regex]. See
+## [method delete_buttons_by_regex] for buttons specific to specific UCIDs.
+func delete_global_buttons_by_regex(regex: RegEx) -> Array[InSimBFNPacket]:
+	var packets := delete_buttons_by_regex(insim.connections.keys(), regex)
 	for packet in packets:
 		var _existed := global_buttons.erase(packet.click_id)
 	return packets
