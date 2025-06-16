@@ -41,7 +41,7 @@ func get_state_changes(state_packet: InSimSTAPacket) -> Dictionary[String, Varia
 	if state_packet.flags != flags:
 		changes["Flags"] = get_flags_changes(state_packet.flags)
 	if state_packet.ingame_cam != ingame_cam:
-		changes["InGame Cam"] = InSim.View.keys()[state_packet.ingame_cam]
+		changes["InGame Cam"] = InSim.View.keys()[InSim.View.values().find(state_packet.ingame_cam)]
 	if state_packet.view_plid != view_plid:
 		changes["View PLID"] = state_packet.view_plid
 	if state_packet.num_players != num_players:

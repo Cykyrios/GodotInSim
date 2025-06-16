@@ -56,5 +56,9 @@ func _get_pretty_text() -> String:
 	var details_actions: Array[InSim.OCOAction] = [InSim.OCOAction.OCO_LIGHTS_SET,
 			InSim.OCOAction.OCO_LIGHTS_UNSET]
 	var details_string := " (index=%d, identifier=%d, data=%d)" % [index, identifier, data]
-	return "%s%s" % [InSim.OCOAction.keys()[action], details_string if action in details_actions \
-			else ""]
+	return "%s%s" % [
+		str(InSim.OCOAction.keys()[action]) if (
+			action in InSim.OCOAction.values()
+		) else "INVALID ACTION",
+		details_string if action in details_actions else ""
+	]

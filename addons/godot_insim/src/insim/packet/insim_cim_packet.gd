@@ -75,10 +75,15 @@ func _get_pretty_text() -> String:
 		var idx := InSim.AXOIndex.values().find(value)
 		return InSim.AXOIndex.keys()[idx] if idx != -1 else "no selection"
 
-	var submode_string := " (%s%s)" % [get_submode_string.call(mode, submode),
-			(", %s" % [get_selection.call(sel_type)]) if (
-				mode == InSim.InterfaceMode.CIM_SHIFTU
-				and submode == InSim.InterfaceShiftU.FVM_EDIT
-			) else ""]
-	return "UCID %d: %s%s" % [ucid, InSim.InterfaceMode.keys()[mode],
-			submode_string if mode in submode_filter else ""]
+	var submode_string := " (%s%s)" % [
+		get_submode_string.call(mode, submode),
+		(", %s" % [get_selection.call(sel_type)]) if (
+			mode == InSim.InterfaceMode.CIM_SHIFTU
+			and submode == InSim.InterfaceShiftU.FVM_EDIT
+		) else "",
+	]
+	return "UCID %d: %s%s" % [
+		ucid,
+		InSim.InterfaceMode.keys()[mode],
+		submode_string if mode in submode_filter else "",
+	]

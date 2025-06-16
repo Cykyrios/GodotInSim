@@ -50,4 +50,9 @@ func _get_data_dictionary() -> Dictionary:
 
 
 func _get_pretty_text() -> String:
-	return "Set flag %s to %s" % [InSim.State.keys()[flag], "OFF" if off_on == 0 else "ON"]
+	return "Set flag %s to %s" % [
+		str(InSim.State.keys()[InSim.State.values().find(flag)]) if (
+			flag in InSim.State.values()
+		) else "INVALID FLAG",
+		"OFF" if off_on == 0 else "ON",
+	]

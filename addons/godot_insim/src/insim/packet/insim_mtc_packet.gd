@@ -67,7 +67,9 @@ func _get_data_dictionary() -> Dictionary:
 func _get_pretty_text() -> String:
 	return "(%s)(%s) %s" % [
 		("PLID %d" % [plid]) if plid != 0 else ("UCID %d" % [ucid]),
-		InSim.MessageSound.keys()[sound],
+		str(InSim.MessageSound.keys()[InSim.MessageSound.values().find(sound)]) if (
+			sound in InSim.MessageSound.values()
+		) else "INVALID SOUND",
 		text,
 	]
 

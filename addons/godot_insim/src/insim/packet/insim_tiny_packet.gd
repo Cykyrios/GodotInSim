@@ -153,4 +153,8 @@ func _get_pretty_text() -> String:
 			tiny_description = "request player handicaps"
 		InSim.Tiny.TINY_IPB:
 			tiny_description = "request IP ban list"
-	return "(ReqI %d) %s - %s" % [req_i, InSim.Tiny.keys()[sub_type], tiny_description]
+	return "(ReqI %d) %s - %s" % [
+		req_i,
+		str(InSim.Tiny.keys()[sub_type]) if sub_type in InSim.Tiny.values() else "INVALID SUBTYPE",
+		tiny_description,
+	]

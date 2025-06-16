@@ -1063,7 +1063,7 @@ func await_packet(type: Packet, req_i := 0, details := {}) -> InSimPacket:
 ## this method.
 func await_packets(type: Packet, number: int, req_i := 0, details := {}) -> Array[InSimPacket]:
 	print_verbose("Awaiting %d packet%s of type %s" % [
-		number, "s" if number > 1 else "", Packet.keys()[type]
+		number, "s" if number > 1 else "", Packet.keys()[Packet.values().find(type)]
 	])
 	details["req_i"] = req_i
 	var packets: Array[InSimPacket] = []
@@ -1495,7 +1495,10 @@ func _perform_internal_initialization() -> void:
 
 
 func _push_error_unknown_packet_subtype(type: int, subtype: int) -> void:
-	push_error("%s with unknown packet subtype" % [Packet.keys()[type], subtype])
+	push_error("%s with unknown packet subtype" % [
+		Packet.keys()[Packet.values().find(type)],
+		subtype,
+	])
 
 
 func _push_error_unknown_packet_type(type: int) -> void:

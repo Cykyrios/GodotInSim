@@ -102,9 +102,15 @@ func _get_pretty_text() -> String:
 	for i in InSim.PMOFlags.size():
 		if pmo_flags & InSim.PMOFlags.values()[i]:
 			flags.append(InSim.PMOFlags.keys()[i])
-	return "UCID %d: %s for %d object%s%s" % [ucid, InSim.PMOAction.keys()[pmo_action],
-			num_objects, "" if num_objects < 2 else "s",
-			"" if pmo_flags == 0 else " (%s)" % [flags]]
+	return "UCID %d: %s for %d object%s%s" % [
+		ucid,
+		str(InSim.PMOAction.keys()[pmo_action]) if (
+			pmo_action in InSim.PMOAction.values()
+		) else "INVALID ACTION",
+		num_objects,
+		"" if num_objects < 2 else "s",
+		"" if pmo_flags == 0 else " (%s)" % [flags],
+	]
 
 
 func _trim_packet_size() -> void:

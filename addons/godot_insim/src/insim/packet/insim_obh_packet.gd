@@ -89,8 +89,13 @@ func _get_pretty_text() -> String:
 	for i in InSim.OBHFlag.size():
 		if obh_flags & InSim.OBHFlag.values()[i]:
 			flags.append(InSim.OBHFlag.keys()[i])
-	return "PLID %d hit an object: %s (%s) at coordinates %.1v (closing speed %s m/s)" % [plid,
-			InSim.AXOIndex.keys()[index], flags, gis_position, gis_closing_speed]
+	return "PLID %d hit an object: %s (%s) at coordinates %.1v (closing speed %s m/s)" % [
+		plid,
+		InSim.AXOIndex.keys()[index] if index in InSim.AXOIndex.values() else "INVALID INDEX",
+		flags,
+		gis_position,
+		gis_closing_speed,
+		]
 
 
 func _update_gis_values() -> void:

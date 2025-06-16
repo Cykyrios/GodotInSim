@@ -44,4 +44,9 @@ func _get_data_dictionary() -> Dictionary:
 
 
 func _get_pretty_text() -> String:
-	return "(%s) %s" % [InSim.MessageSound.keys()[sound], msg]
+	return "(%s) %s" % [
+		str(InSim.MessageSound.keys()[sound]) if (
+			sound in InSim.MessageSound.values()
+		) else "INVALID SOUND",
+		msg,
+	]
