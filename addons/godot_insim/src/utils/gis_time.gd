@@ -59,15 +59,3 @@ static func get_time_string_from_seconds(
 			) else "%02d" % [seconds_int]
 		) + (".%0*d" % [decimal_places, seconds_decimals] if decimal_places > 0 else ""),
 	})
-	return "%s%s%s%s" % [
-		"+" if show_plus_sign and not negative else "-" if negative else "",
-		"" if hours == 0 else "%d:" % [hours],
-		"" if minutes == 0 and hours == 0 and not always_show_minutes \
-				else "%d:" % [minutes] if simplify_zero and \
-				(hours == 0 or always_show_minutes) \
-				else "%02d:" % [minutes],
-		("%d" % [seconds_int] if simplify_zero and minutes == 0 and hours == 0 \
-				and not always_show_minutes \
-				else "%02d" % [seconds_int]) \
-				+ ".%0*d" % [decimal_places, seconds_decimals]
-	]
