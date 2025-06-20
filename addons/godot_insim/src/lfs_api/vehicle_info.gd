@@ -18,6 +18,8 @@ enum VehicleClass {
 	TRUCK,
 	FORMULA_1,
 	FORMULA_SAE,
+	BUS,
+	PROTOTYPE,
 }
 ## Internal combustion engine layouts
 enum ICELayout {
