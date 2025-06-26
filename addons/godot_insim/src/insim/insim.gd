@@ -1179,7 +1179,7 @@ func send_message(message: String, sender := "InSim") -> void:
 		packet = InSimMSXPacket.create(message)
 	else:
 		for split_message in LFSText.split_message(message, InSimMSXPacket.MSG_MAX_LENGTH):
-			send_message(split_message)
+			send_message(split_message, sender)
 		return
 	send_packet(packet, sender)
 
@@ -1240,9 +1240,9 @@ func send_packet(packet: InSimPacket, sender := "InSim") -> void:
 ## Sends the given packet [param to_send], and awaits and returns the packet [param to_await].
 ## Calls [method await_packet] internally, passing [param to_send]'s [member InSimPacket.req_i].
 func send_packet_await_packet(
-	to_send: InSimPacket, to_await: Packet, details := {}
+	to_send: InSimPacket, to_await: Packet, details := {}, sender := "InSim"
 ) -> InSimPacket:
-	send_packet(to_send)
+	send_packet(to_send, sender)
 	return await await_packet(to_await, to_send.req_i, details)
 
 
@@ -1250,9 +1250,9 @@ func send_packet_await_packet(
 ## of type [param to_await] to be received before returning them. Calls
 ## [method await_packets] internally, passing [param to_send]'s [member InSimPacket.req_i].
 func send_packet_await_packets(
-	to_send: InSimPacket, to_await: Packet, number: int, details := {}
+	to_send: InSimPacket, to_await: Packet, number: int, details := {}, sender := "InSim"
 ) -> Array[InSimPacket]:
-	send_packet(to_send)
+	send_packet(to_send, sender)
 	return await await_packets(to_await, number, to_send.req_i, details)
 
 
@@ -1275,7 +1275,7 @@ func send_packets(packets: Array[InSimPacket], sender := "InSim") -> void:
 ## [constant InSim.ButtonStyle.ISB_CLICK] is automatically set.
 func add_button(
 	ucids: Array[int], position: Vector2i, size: Vector2i, style: int, text: Variant,
-	button_name := "", type_in := 0, caption := "", show_everywhere := false
+	button_name := "", type_in := 0, caption := "", show_everywhere := false, sender := "InSim",
 ) -> void:
 	# Allow UCID 255 if it is the only UCID passed to he function; this results in
 	# "true" global buttons that by pass InSimButtons.disabled_ucids.
@@ -1286,7 +1286,7 @@ func add_button(
 	for packet in buttons.add_button(
 		ucids, position, size, style, text, button_name, type_in, caption, show_everywhere
 	):
-		send_packet(packet)
+		send_packet(packet, sender)
 
 
 ## Creates an [InSimButton] for every connected player, and sends the corresponding
@@ -1294,79 +1294,79 @@ func add_button(
 ## except UCIDs are not needed here.
 func add_global_button(
 	position: Vector2i, size: Vector2i, style: int, text: Variant,
-	button_name := "", type_in := 0, caption := "", show_everywhere := false
+	button_name := "", type_in := 0, caption := "", show_everywhere := false, sender := "InSim",
 ) -> void:
 	if type_in > 0:
 		style |= InSim.ButtonStyle.ISB_CLICK
 	for packet in buttons.add_global_button(
 		position, size, style, text, button_name, type_in, caption, show_everywhere
 	):
-		send_packet(packet)
+		send_packet(packet, sender)
 
 
 ## Deletes an [InSimButton] and sends the corresponding [InSimBFNPacket] for all [param ucids],
 ## based on the given button [param click_id]. If [param ucids] is empty, this function will try
 ## to delete the button for every UCID in the current connection list. If [param max_id] is greater
 ## than [param click_id], all buttons from [param click_id] to [param max_id] are deleted.
-func delete_buttons_by_id(ucids: Array[int], click_id: int, max_id := 0) -> void:
+func delete_buttons_by_id(ucids: Array[int], click_id: int, max_id := 0, sender := "InSim") -> void:
 	if ucids.is_empty() or buttons.EVERYONE in ucids and ucids.size() > 1:
 		ucids = connections.keys()
 	for packet in buttons.delete_buttons_by_id(ucids, click_id, max_id):
-		send_packet(packet)
+		send_packet(packet, sender)
 
 
 ## Deletes all [InSimButton]s matching the given [param button_name] for all [param ucids],
 ## and sends the corresponding [InSimBFNPacket]s. If [param ucids] is empty, this function will try
 ## to delete buttons for every UCID in the current connection list.
-func delete_buttons_by_name(ucids: Array[int], button_name: StringName) -> void:
+func delete_buttons_by_name(ucids: Array[int], button_name: StringName, sender := "InSim") -> void:
 	if ucids.is_empty() or buttons.EVERYONE in ucids and ucids.size() > 1:
 		ucids = connections.keys()
 	for packet in buttons.delete_buttons_by_name(ucids, button_name):
-		send_packet(packet)
+		send_packet(packet, sender)
 
 
 ## Deletes all [InSimButton]s with a name starting with [param prefix] for all [param ucids],
 ## and sends the corresponding [InSimBFNPacket]s. If [param ucids] is empty, this function
 ## will try to delete buttons for every UCID in the current connection list.
-func delete_buttons_by_prefix(ucids: Array[int], prefix: StringName) -> void:
+func delete_buttons_by_prefix(ucids: Array[int], prefix: StringName, sender := "InSim") -> void:
 	if ucids.is_empty() or buttons.EVERYONE in ucids and ucids.size() > 1:
 		ucids = connections.keys()
 	for packet in buttons.delete_buttons_by_prefix(ucids, prefix):
-		send_packet(packet)
+		send_packet(packet, sender)
 
 
 ## Deletes all [InSimButton]s with a name matching the given [param regex] for all [param ucids],
 ## and sends the corresponding [InSimBFNPacket]s. If [param ucids] is empty, this functions
 ## will try to delete buttons for every UCID in the current connection list.
-func delete_buttons_by_regex(ucids: Array[int], regex: RegEx) -> void:
+func delete_buttons_by_regex(ucids: Array[int], regex: RegEx, sender := "InSim") -> void:
 	if ucids.is_empty() or buttons.EVERYONE in ucids and ucids.size() > 1:
 		ucids = connections.keys()
 	for packet in buttons.delete_buttons_by_regex(ucids, regex):
-		send_packet(packet)
+		send_packet(packet, sender)
 
 
 ## Deletes a global button (shown to every player) selected by its click [param id].
-func delete_global_button_by_id(id: int) -> void:
+func delete_global_button_by_id(id: int, sender := "InSim") -> void:
 	for packet in buttons.delete_global_buttons_by_id(id):
-		send_packet(packet)
+		send_packet(packet, sender)
 
 
 ## Deletes a global button (shown to every player) selected by its [param button_name].
-func delete_global_button_by_name(button_name: StringName) -> void:
+func delete_global_button_by_name(button_name: StringName, sender := "InSim") -> void:
 	for packet in buttons.delete_global_buttons_by_name(button_name):
-		send_packet(packet)
+		send_packet(packet, sender)
 
 
 ## Deletes global buttons (shown to every player) selected by their [param prefix].
-func delete_global_buttons_by_prefix(prefix: StringName) -> void:
+func delete_global_buttons_by_prefix(prefix: StringName, sender := "InSim") -> void:
 	for packet in buttons.delete_global_buttons_by_prefix(prefix):
-		send_packet(packet)
+		send_packet(packet, sender)
 
 
 ## Deletes global buttons (shown to every player) matching [param regex].
-func delete_global_buttons_by_regex(regex: RegEx) -> void:
+func delete_global_buttons_by_regex(regex: RegEx, sender := "InSim") -> void:
 	for packet in buttons.delete_global_buttons_by_regex(regex):
-		send_packet(packet)
+		send_packet(packet, sender)
 
 
 ## Disables button updates for the given [param ucid]. See [member InSimButtons.disabled_ucids]
@@ -1417,16 +1417,20 @@ func get_global_buttons_by_prefix(prefix: StringName) -> Array[InSimButton]:
 
 
 ## Updates the text of the given [param button] to [param text], with an optional [param caption].
-func update_button_text(button: InSimButton, text: String, caption := "") -> void:
-	send_packet(buttons.update_button_text(button, text, caption))
+func update_button_text(
+	button: InSimButton, text: String, caption := "", sender := "InSim"
+) -> void:
+	send_packet(buttons.update_button_text(button, text, caption), sender)
 
 
 ## Updates the text of the global button (shown to everyone) with the given [param text], which
 ## can be either a [String] or a [Callable] taking a [code]ucid[/code] parameter and returning
 ## a [String].
-func update_global_button_text(click_id: int, text: String, caption := "") -> void:
+func update_global_button_text(
+	click_id: int, text: String, caption := "", sender := "InSim"
+) -> void:
 	for packet in buttons.update_global_button_text(click_id, text, caption):
-		send_packet(packet)
+		send_packet(packet, sender)
 
 
 # Removes all buttons and mappings for the given ucid.
