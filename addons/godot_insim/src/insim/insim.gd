@@ -1230,7 +1230,7 @@ func send_packet(packet: InSimPacket, sender := "InSim") -> void:
 		)
 		and packet.type < Packet.IRP_ARQ
 	):
-		push_warning("Warning: Sending packet but InSim is not initialized.")
+		push_error("Cannot send packet: InSim is not connected.")
 	packet.fill_buffer()
 	var packet_sent_successfully := lfs_connection._send_packet(packet.buffer)
 	if packet_sent_successfully:
@@ -1466,7 +1466,7 @@ func _connect_lfs_connection_signals() -> void:
 func _handle_timeout() -> void:
 		timeout.emit()
 		insim_connected = false
-		push_warning("InSim connection timed out.")
+		push_error("InSim connection timed out.")
 		close()
 
 
@@ -1566,7 +1566,7 @@ func _on_connected_to_host() -> void:
 
 
 func _on_connection_failed() -> void:
-	push_warning("Could not connect to %s:%d." % [lfs_connection.address, lfs_connection.port])
+	push_error("Could not connect to %s:%d." % [lfs_connection.address, lfs_connection.port])
 
 
 func _on_packet_received(packet_buffer: PackedByteArray) -> void:
