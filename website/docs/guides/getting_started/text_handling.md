@@ -35,7 +35,7 @@ Assuming a player named `Player` typed the following message:
 > <span style={{color: "white"}}>This</span> is a <span style={{color: "magenta"}}>very</span>
 > <span style={{color: "yellow"}}>colorful</span> ^<span style={{color: "cyan"}}>message</span>^.
 
-LFS will send an [InSimMSOPacket](/class_ref/InSimMSOPacket.mdx), which contains:
+LFS will send an [InSimMSOPacket](/class_ref/InSimMSOPacket.mdx) with the following message:
 
 > ^7Player ^7: ^8^2Hello ^1InSim^9! ^7This ^9is a ^5very ^3colorful ^9^^^6message^9^^.
 
@@ -53,9 +53,9 @@ the sender's name), as color codes are converted to BBCode tags, and remaining d
 characters are escaped. The string actually passed to the :godot[RichTextLabel] or the
 `print_rich()` method is the following:
 
-> [color=#ffffff][/color][color=#ffffff]Player [/color][color=#ffffff]: [/color]
-> [color=#00ff00]Hello [/color][color=#ff0000]InSim[/color]! [color=#ffffff]This [/color]is a
-> [color=#ff00ff]very [/color][color=#ffff00]colorful [/color]^[color=#00ffff]message[/color]^.
+> \[color=#ffffff]Player \[/color]\[color=#ffffff]: \[/color]
+> \[color=#00ff00]Hello \[/color]\[color=#ff0000]InSim\[/color]! \[color=#ffffff]This \[/color]is a
+> \[color=#ff00ff]very \[/color]\[color=#ffff00]colorful \[/color]^\[color=#00ffff]message\[/color]^.
 
 ### Retrieving the sender's name and the message contents
 
@@ -85,9 +85,17 @@ determines whether color codes are included in the message.
 
 :::
 
+:::tip
+
+If you want to properly identify the sender, consider using the `plid` or `ucid` properties from
+the packet instead, you can then get all data about the sender using `players[packet.plid]` or
+`connections[packet.ucid]`.
+
+:::
+
 ## Sending colored messages
 
-You can of course include colors to messages sent from GodotInSim to LFS, but you have to keep a few
+You can of course include colors in messages sent from GodotInSim to LFS, but you have to keep a few
 points in mind:
 
 * You can (and should) use the provided color codes in
@@ -99,6 +107,17 @@ points in mind:
     terminals to not display them properly (support should be pretty much universal, but you never
     know; standard color codes are not used as the actual color depends on each implementation, and
     often avoids fully-saturated colors).
+
+The following example shows different ways of writing the same message:
+
+```gdscript
+"This is a ^1red ^9word."
+"This is a ^%dred ^%dword." % [LFSText.ColorCode.RED, LFSText.ColorCode.DEFAULT]
+"This is a %sred %sword." % [
+    LFSText.get_color_code(LFSText.ColorCode.RED),
+    LFSText.get_color_code(LFSText.ColorCode.DEFAULT),
+]
+```
 
 :::note
 
