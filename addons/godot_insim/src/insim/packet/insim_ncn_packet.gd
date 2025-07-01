@@ -49,10 +49,20 @@ func _get_data_dictionary() -> Dictionary:
 		"Admin": admin,
 		"Total": total,
 		"Flags": flags,
-		"Sp3": sp3,
 	}
 
 
 func _get_pretty_text() -> String:
 	return "%s %s" % ["host" if ucid == 0 else "UCID %d" % [ucid],
 			"connected" if req_i == 0 else "is online"]
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(dict, ["UCID", "UName", "PName", "Admin", "Total", "Flags"]):
+		return
+	ucid = dict["UCID"]
+	user_name = dict["UName"]
+	player_name = dict["PName"]
+	admin = dict["Admin"]
+	total = dict["Total"]
+	flags = dict["Flags"]

@@ -42,10 +42,8 @@ func _fill_buffer() -> void:
 
 func _get_data_dictionary() -> Dictionary:
 	return {
-		"Zero": zero,
 		"Flag": flag,
 		"OffOn": off_on,
-		"Sp3": sp3,
 	}
 
 
@@ -56,3 +54,10 @@ func _get_pretty_text() -> String:
 		) else "INVALID FLAG",
 		"OFF" if off_on == 0 else "ON",
 	]
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(dict, ["Flag", "OffOn"]):
+		return
+	flag = dict["Flag"]
+	off_on = dict["OffOn"]

@@ -87,13 +87,15 @@ func _fill_buffer() -> void:
 
 
 func _get_data_dictionary() -> Dictionary:
+	var info_dicts: Array[Dictionary] = []
+	for object_info in info:
+		info_dicts.append(object_info.get_dictionary())
 	return {
 		"NumO": num_objects,
 		"UCID": ucid,
 		"PMOAction": pmo_action,
 		"PMOFlags": pmo_flags,
-		"Sp3": sp3,
-		"Info": info,
+		"Info": info_dicts,
 	}
 
 
@@ -111,6 +113,20 @@ func _get_pretty_text() -> String:
 		"" if num_objects < 2 else "s",
 		"" if pmo_flags == 0 else " (%s)" % [flags],
 	]
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(dict, ["NumO", "UCID", "PMOAction", "PMOFlags", "Info"]):
+		return
+	num_objects = dict["NumO"]
+	ucid = dict["UCID"]
+	pmo_action = dict["PMOAction"]
+	pmo_flags = dict["PMOFlags"]
+	info.clear()
+	for info_dict in dict["Info"] as Array[Dictionary]:
+		var object_info := ObjectInfo.new()
+		object_info.set_from_dictionary(info_dict)
+		info.append(object_info)
 
 
 func _trim_packet_size() -> void:

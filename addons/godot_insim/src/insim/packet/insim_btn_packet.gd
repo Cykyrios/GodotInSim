@@ -103,6 +103,25 @@ func _get_pretty_text() -> String:
 			left, top, width, height, text]
 
 
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(
+		dict,
+		["UCID", "ClickID", "Inst", "BStyle", "TypeIn", "L", "T", "W", "H", "Text", "Caption"],
+	):
+		return
+	ucid = dict["UCID"]
+	click_id = dict["ClickID"]
+	inst = dict["Inst"]
+	button_style = dict["BStyle"]
+	type_in = dict["TypeIn"]
+	left = dict["L"]
+	top = dict["T"]
+	width = dict["W"]
+	height = dict["H"]
+	text = dict["Text"]
+	caption = dict["Caption"]
+
+
 func _trim_packet_size() -> void:
 	for i in TEXT_MAX_LENGTH:
 		if buffer[PACKET_MAX_SIZE - i - 1] != 0:

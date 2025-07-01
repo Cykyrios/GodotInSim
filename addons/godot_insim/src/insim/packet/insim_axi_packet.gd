@@ -40,7 +40,6 @@ func _decode_packet(packet: PackedByteArray) -> void:
 
 func _get_data_dictionary() -> Dictionary:
 	return {
-		"Zero": zero,
 		"AXStart": ax_start,
 		"NumCP": num_checkpoints,
 		"NumO": num_objects,
@@ -52,3 +51,12 @@ func _get_pretty_text() -> String:
 	return "%s layout: %s (start %d, %d checkpoints, %d objects)" % [
 		"Loaded" if req_i == 0 else "Current", layout_name, ax_start, num_checkpoints, num_objects
 	]
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(dict, ["AXStart", "NumCP", "NumO", "LName"]):
+		return
+	ax_start = dict["AXStart"]
+	num_checkpoints = dict["NumCP"]
+	num_objects = dict["NumO"]
+	layout_name = dict["LName"]

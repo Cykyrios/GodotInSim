@@ -68,3 +68,10 @@ func _get_pretty_text() -> String:
 			break
 		text += "%s %s" % [":" if i == 0 else ",", "PLID %d" % [plids[i]]]
 	return text
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(dict, ["NumP", "PLID"]):
+		return
+	num_players = dict["NumP"]
+	plids.assign(dict["PLID"] as Array[int])

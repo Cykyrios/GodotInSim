@@ -71,6 +71,24 @@ func _get_buffer() -> PackedByteArray:
 	return buffer
 
 
+func _get_dictionary() -> Dictionary:
+	return {
+		"PLID": plid,
+		"Info": info,
+		"Steer": steer,
+		"ThrBrk": throttle_brake,
+		"CluHan": clutch_handbrake,
+		"GearSp": gear << 4,
+		"Speed": speed,
+		"Direction": direction,
+		"Heading": heading,
+		"AccelF": accel_forward,
+		"AccelR": accel_right,
+		"X": x,
+		"Y": y,
+	}
+
+
 func _set_from_buffer(buffer: PackedByteArray) -> void:
 	if buffer.size() != STRUCT_SIZE:
 		push_error("Wrong buffer size, expected %d, got %d" % [STRUCT_SIZE, buffer.size()])
@@ -90,6 +108,30 @@ func _set_from_buffer(buffer: PackedByteArray) -> void:
 	accel_right = buffer.decode_s8(11)
 	x = buffer.decode_s16(12)
 	y = buffer.decode_s16(14)
+
+
+func _set_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(
+		dict,
+		[
+			"PLID", "Info", "Steer", "ThrBrk", "CluHan", "GearSp", "Speed",
+			"Direction", "Heading", "AccelF", "AccelR", "X", "Y",
+		],
+	):
+		return
+	plid = dict["PLID"]
+	info = dict["Info"]
+	steer = dict["Steer"]
+	throttle_brake = dict["ThrBrk"]
+	clutch_handbrake = dict["CluHan"]
+	gear = (dict["GearSp"] as int) >> 4
+	speed = dict["Speed"]
+	direction = dict["Direction"]
+	heading = dict["Heading"]
+	accel_forward = dict["AccelF"]
+	accel_right = dict["AccelR"]
+	x = dict["X"]
+	y = dict["Y"]
 
 
 func _set_values_from_gis() -> void:

@@ -42,3 +42,11 @@ func _get_data_dictionary() -> Dictionary:
 
 func _get_pretty_text() -> String:
 	return "UCID %d renamed to %s" % [ucid, player_name]
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(dict, ["UCID", "PName", "Plate"]):
+		return
+	ucid = dict["UCID"]
+	player_name = dict["PName"]
+	plate = dict["Plate"]

@@ -38,13 +38,19 @@ func _get_data_dictionary() -> Dictionary:
 	return {
 		"PLID": plid,
 		"StopTime": stop_time,
-		"Spare": spare,
 	}
 
 
 func _get_pretty_text() -> String:
 	return "PLID %d stopped for %ss" % [plid,
 			GISTime.get_time_string_from_seconds(gis_stop_time, 3, true)]
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(dict, ["PLID", "StopTime"]):
+		return
+	plid = dict["PLID"]
+	stop_time = dict["StopTime"]
 
 
 func _update_gis_values() -> void:

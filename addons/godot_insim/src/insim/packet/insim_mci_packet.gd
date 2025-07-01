@@ -42,9 +42,12 @@ func _decode_packet(packet: PackedByteArray) -> void:
 
 
 func _get_data_dictionary() -> Dictionary:
+	var info_dicts: Array[Dictionary] = []
+	for comp_car in info:
+		info_dicts.append(comp_car.get_dictionary())
 	return {
 		"NumC": num_cars,
-		"Info": info,
+		"Info": info_dicts,
 	}
 
 
@@ -55,3 +58,14 @@ func _get_pretty_text() -> String:
 				info[i].lap, info[i].node]
 		text += "%s%s" % ["" if i == 0 else ", ", info_string]
 	return text
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(dict, ["NumC", "Info"]):
+		return
+	num_cars = dict["NumC"]
+	info.clear()
+	for info_dict in dict["Info"] as Array[Dictionary]:
+		var comp_car := CompCar.new()
+		comp_car.set_from_dictionary(info_dict)
+		info.append(comp_car)

@@ -55,6 +55,12 @@ func _get_pretty_text() -> String:
 	return str(get_dictionary())
 
 
+## Override to define packet behavior.
+@warning_ignore("unused_parameter")
+func _set_from_dictionary(dict: Dictionary) -> void:
+	pass
+
+
 ## Override to update values with non-standard units from gis (GodotInSim) prefixed values, e.g.
 ## [code]position = gis_position * 65536[/code].
 func _set_values_from_gis() -> void:

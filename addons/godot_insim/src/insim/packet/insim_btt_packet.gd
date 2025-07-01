@@ -44,7 +44,6 @@ func _get_data_dictionary() -> Dictionary:
 		"ClickID": click_id,
 		"Inst": inst,
 		"TypeIn": type_in,
-		"Sp3": sp3,
 		"Text": text,
 	}
 
@@ -52,3 +51,13 @@ func _get_data_dictionary() -> Dictionary:
 func _get_pretty_text() -> String:
 	return "Button type in (%s): ID %d, %s" % ["local" if ucid == 0 else "UCID %d" % [ucid],
 			click_id, text]
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(dict, ["UCID", "ClickID", "Inst", "TypeIn", "Text"]):
+		return
+	ucid = dict["UCID"]
+	click_id = dict["ClickID"]
+	inst = dict["Inst"]
+	type_in = dict["TypeIn"]
+	text = dict["Text"]

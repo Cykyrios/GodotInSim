@@ -46,11 +46,9 @@ func _decode_packet(packet: PackedByteArray) -> void:
 
 func _get_data_dictionary() -> Dictionary:
 	return {
-		"Zero": zero,
 		"UCID": ucid,
 		"Admin": admin,
 		"Result": result,
-		"Sp3": sp3,
 		"Text": text,
 	}
 
@@ -59,3 +57,12 @@ func _get_pretty_text() -> String:
 	var result_string := "Processed" if result == 1 else "Rejected" if result == 2 else "Unknown"
 	return "%s admin command from UCID %d (%sadmin): %s" % [result_string, ucid,
 			"not " if admin == 0 else "", text]
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(dict, ["UCID", "Admin", "Result", "Text"]):
+		return
+	ucid = dict["UCID"]
+	admin = dict["Admin"]
+	result = dict["Result"]
+	text = dict["Text"]

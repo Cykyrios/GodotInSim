@@ -41,9 +41,12 @@ func _fill_buffer() -> void:
 
 
 func _get_data_dictionary() -> Dictionary:
+	var input_dicts: Array[Dictionary] = []
+	for input in inputs:
+		input_dicts.append(input.get_dictionary())
 	return {
 		"PLID": plid,
-		"Inputs": inputs,
+		"Inputs": input_dicts,
 	}
 
 
@@ -54,3 +57,14 @@ func _get_pretty_text() -> String:
 		input_array.append("%s (%d, %d ms)" % [InSim.AIControl.keys().find(input.input),
 				input.value, input.time * 10])
 	return "PLID %d input: %s" % [plid, input_array]
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(dict, ["PLID", "Inputs"]):
+		return
+	plid = dict["PLID"]
+	inputs.clear()
+	for input_dict in dict["Inputs"] as Array[Dictionary]:
+		var input := AIInputVal.new()
+		input.set_from_dictionary(input_dict)
+		inputs.append(input)

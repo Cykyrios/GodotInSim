@@ -64,7 +64,6 @@ func _decode_packet(packet: PackedByteArray) -> void:
 
 func _get_data_dictionary() -> Dictionary:
 	return {
-		"Zero": zero,
 		"RaceLaps": race_laps,
 		"QualMins": qual_mins,
 		"NumP": num_players,
@@ -92,3 +91,27 @@ func _get_pretty_text() -> String:
 			"laps" if race_laps <= 190 else "hour%s" % ["" if race_laps == 191 else "s"]])
 	var wind_strength := "no" if wind == 0 else "low" if wind == 1 else "high"
 	return "%s started%s at %s (%s wind)" % [session, duration, track, wind_strength]
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(
+		dict,
+		[
+			"RaceLaps", "QualMins", "NumP", "Timing", "Track", "Weather", "Wind",
+			"Flags", "NumNodes", "Finish", "Split1", "Split2", "Split3",
+		],
+	):
+		return
+	race_laps = dict["RaceLaps"]
+	qual_mins = dict["QualMins"]
+	num_players = dict["NumP"]
+	timing = dict["Timing"]
+	track = dict["Track"]
+	weather = dict["Weather"]
+	wind = dict["Wind"]
+	flags = dict["Flags"]
+	num_nodes = dict["NumNodes"]
+	finish = dict["Finish"]
+	split1 = dict["Split1"]
+	split2 = dict["Split2"]
+	split3 = dict["Split3"]

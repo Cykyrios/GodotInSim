@@ -58,8 +58,6 @@ func _get_data_dictionary() -> Dictionary:
 		"Sound": sound,
 		"UCID": ucid,
 		"PLID": plid,
-		"Sp2": sp2,
-		"Sp3": sp3,
 		"Text": text,
 	}
 
@@ -72,6 +70,15 @@ func _get_pretty_text() -> String:
 		) else "INVALID SOUND",
 		text,
 	]
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(dict, ["Sound", "UCID", "PLID", "Text"]):
+		return
+	sound = dict["Sound"]
+	ucid = dict["UCID"]
+	plid = dict["PLID"]
+	text = dict["Text"]
 
 
 func _trim_packet_size() -> void:

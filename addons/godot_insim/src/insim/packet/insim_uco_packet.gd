@@ -52,13 +52,10 @@ func _decode_packet(packet: PackedByteArray) -> void:
 func _get_data_dictionary() -> Dictionary:
 	return {
 		"PLID": plid,
-		"Sp0": sp0,
 		"UCOAction": uco_action,
-		"Sp2": sp2,
-		"Sp3": sp3,
 		"Time": time,
-		"C": object,
-		"Info": info,
+		"C": object.get_dictionary(),
+		"Info": info.get_dictionary(),
 	}
 
 
@@ -73,6 +70,16 @@ func _get_pretty_text() -> String:
 			else "crossed checkpoint %d%s at %.1v" % [checkpoint_id,
 			"" if uco_action == InSim.UCOAction.UCO_CP_FWD else " backward", info.gis_position]
 	return "PLID %d %s" % [plid, action_string]
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(dict, ["PLID", "UCOAction", "Time", "C", "Info"]):
+		return
+	plid = dict["PLID"]
+	uco_action = dict["UCOAction"]
+	time = dict["Time"]
+	object.set_from_dictionary(dict["C"] as Dictionary)
+	info.set_from_dictionary(dict["Info"] as Dictionary)
 
 
 func _update_gis_values() -> void:

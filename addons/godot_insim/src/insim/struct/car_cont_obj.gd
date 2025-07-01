@@ -45,6 +45,17 @@ func _get_buffer() -> PackedByteArray:
 	return buffer
 
 
+func _get_dictionary() -> Dictionary:
+	return {
+		"Direction": direction,
+		"Heading": heading,
+		"Speed": speed,
+		"ZByte": z,
+		"X": x,
+		"Y": y,
+	}
+
+
 func _set_from_buffer(buffer: PackedByteArray) -> void:
 	if buffer.size() != STRUCT_SIZE:
 		push_error("Wrong buffer size, expected %d, got %d" % [STRUCT_SIZE, buffer.size()])
@@ -54,6 +65,17 @@ func _set_from_buffer(buffer: PackedByteArray) -> void:
 	z = buffer.decode_u8(3)
 	x = buffer.decode_s16(4)
 	y = buffer.decode_s16(6)
+
+
+func _set_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(dict, ["Direction", "Heading", "Speed", "ZByte", "X", "Y"]):
+		return
+	direction = dict["Direction"]
+	heading = dict["Heading"]
+	speed = dict["Speed"]
+	z = dict["ZByte"]
+	x = dict["X"]
+	y = dict["Y"]
 
 
 func _set_values_from_gis() -> void:

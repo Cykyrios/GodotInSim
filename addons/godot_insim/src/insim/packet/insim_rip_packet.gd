@@ -108,7 +108,6 @@ func _get_data_dictionary() -> Dictionary:
 		"MPR": mpr,
 		"Paused": paused,
 		"Options": options,
-		"Sp3": sp3,
 		"CTime": c_time,
 		"TTime": t_time,
 		"RName": replay_name,
@@ -120,6 +119,21 @@ func _get_pretty_text() -> String:
 			"S" if mpr == 0 else "M", replay_name,
 			GISTime.get_time_string_from_seconds(gis_t_time),
 			" (%s)" % [InSim.Replay.keys()[error]]]
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(
+		dict,
+		["Error", "MPR", "Paused", "Options", "CTime", "TTime", "RName"],
+	):
+		return
+	error = dict["Error"]
+	mpr = dict["MPR"]
+	paused = dict["Paused"]
+	options = dict["Options"]
+	c_time = dict["CTime"]
+	t_time = dict["TTime"]
+	replay_name = dict["RName"]
 
 
 func _set_values_from_gis() -> void:

@@ -96,8 +96,6 @@ func _get_data_dictionary() -> Dictionary:
 		"Pass": passengers,
 		"RWAdj": rw_adjust,
 		"FWAdj": fw_adjust,
-		"Sp2": sp2,
-		"Sp3": sp3,
 		"SetF": setup_flags,
 		"NumP": num_players,
 		"Config": config,
@@ -111,3 +109,34 @@ func _get_pretty_text() -> String:
 		"is in the pits" if car_name == "000000" \
 		else "%s (%s)" % ["left the pits" if req_i == 0 else "is driving", car_name]
 	]
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(
+		dict,
+		[
+			"PLID", "UCID", "PType", "Flags", "PName", "Plate", "CName", "SName",
+			"Tyres", "H_Mass", "H_TRes", "Model", "Pass", "RWAdj", "FWAdj", "SetF",
+			"NumP", "Config", "Fuel",
+		],
+	):
+		return
+	plid = dict["PLID"]
+	ucid = dict["UCID"]
+	player_type = dict["PType"]
+	flags = dict["Flags"]
+	player_name = dict["PName"]
+	plate = dict["Plate"]
+	car_name = dict["CName"]
+	skin_name = dict["SName"]
+	tyres.assign(dict["Tyres"] as Array[int])
+	h_mass = dict["H_Mass"]
+	h_tres = dict["H_TRes"]
+	model = dict["Model"]
+	passengers = dict["Pass"]
+	rw_adjust = dict["RWAdj"]
+	fw_adjust = dict["FWAdj"]
+	setup_flags = dict["SetF"]
+	num_players = dict["NumP"]
+	config = dict["Config"]
+	fuel = dict["Fuel"]

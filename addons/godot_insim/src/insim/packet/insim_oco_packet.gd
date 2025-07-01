@@ -62,3 +62,12 @@ func _get_pretty_text() -> String:
 		) else "INVALID ACTION",
 		details_string if action in details_actions else ""
 	]
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(dict, ["OCOAction", "Index", "Identifier", "Data"]):
+		return
+	action = dict["OCOAction"]
+	index = dict["Index"]
+	identifier = dict["Identifier"]
+	data = dict["Data"]

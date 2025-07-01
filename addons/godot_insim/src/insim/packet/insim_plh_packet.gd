@@ -69,9 +69,12 @@ func _fill_buffer() -> void:
 
 
 func _get_data_dictionary() -> Dictionary:
+	var hcap_dicts: Array[Dictionary] = []
+	for hcap in hcaps:
+		hcap_dicts.append(hcap.get_dictionary())
 	return {
 		"NumP": nump,
-		"HCaps": hcaps,
+		"HCaps": hcap_dicts,
 	}
 
 
@@ -82,6 +85,17 @@ func _get_pretty_text() -> String:
 		handicaps += "" if i == 0 else ", " + "PLID %d (%d kg, %d %%)" % [hcap.plid, hcap.h_mass,
 				hcap.h_tres]
 	return "Players handicaps: %s" % [handicaps]
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(dict, ["NumP", "HCaps"]):
+		return
+	nump = dict["NumP"]
+	hcaps.clear()
+	for hcap_dict in dict["HCaps"] as Array[Dictionary]:
+		var hcap := PlayerHandicap.new()
+		hcap.set_from_dictionary(hcap_dict)
+		hcaps.append(hcap)
 
 
 func _trim_packet_size() -> void:

@@ -51,11 +51,10 @@ func _decode_packet(packet: PackedByteArray) -> void:
 
 func _get_data_dictionary() -> Dictionary:
 	return {
-		"Zero": zero,
 		"SpClose": sp_close,
 		"Time": time,
-		"A": car_a,
-		"B": car_b,
+		"A": car_a.get_dictionary(),
+		"B": car_b.get_dictionary(),
 	}
 
 
@@ -63,6 +62,15 @@ func _get_pretty_text() -> String:
 	return "Contact between PLID %d and PLID %d at coordinates %.1v (closing speed %s m/s)" % \
 			[car_a.plid, car_b.plid, 0.5 * (car_a.gis_position + car_b.gis_position),
 			gis_closing_speed]
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(dict, ["SpClose", "Time", "A", "B"]):
+		return
+	sp_close = dict["SpClose"]
+	time = dict["Time"]
+	car_a.set_from_dictionary(dict["A"] as Dictionary)
+	car_b.set_from_dictionary(dict["B"] as Dictionary)
 
 
 func _update_gis_values() -> void:

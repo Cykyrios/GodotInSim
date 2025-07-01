@@ -52,11 +52,25 @@ func _get_buffer() -> PackedByteArray:
 	return buffer
 
 
+func _get_dictionary() -> Dictionary:
+	return {
+		"H_Mass": h_mass,
+		"H_TRes": h_tres,
+	}
+
+
 func _set_from_buffer(buffer: PackedByteArray) -> void:
 	if buffer.size() != STRUCT_SIZE:
 		push_error("Wrong buffer size, expected %d, got %d" % [STRUCT_SIZE, buffer.size()])
 	h_mass = buffer.decode_u8(0)
 	h_tres = buffer.decode_u8(1)
+
+
+func _set_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(dict, ["H_Mass", "H_TRes"]):
+		return
+	h_mass = dict["H_Mass"]
+	h_tres = dict["H_TRes"]
 
 
 func _set_values_from_gis() -> void:

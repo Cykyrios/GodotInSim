@@ -40,11 +40,8 @@ func _fill_buffer() -> void:
 
 func _get_data_dictionary() -> Dictionary:
 	return {
-		"Zero": zero,
 		"ViewPLID": view_plid,
 		"InGameCam": ingame_cam,
-		"Sp2": sp2,
-		"Sp3": sp3,
 	}
 
 
@@ -53,3 +50,10 @@ func _get_pretty_text() -> String:
 		view_plid,
 		str(InSim.View.keys()[ingame_cam]) if ingame_cam in InSim.View.values() else "INVALID VIEW",
 	]
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(dict, ["ViewPLID", "InGameCam"]):
+		return
+	view_plid = dict["ViewPLID"]
+	ingame_cam = dict["InGameCam"]

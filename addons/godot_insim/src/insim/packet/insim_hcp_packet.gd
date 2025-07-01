@@ -42,9 +42,11 @@ func _fill_buffer() -> void:
 
 
 func _get_data_dictionary() -> Dictionary:
+	var hcp_dicts: Array[Dictionary] = []
+	for hcp in car_hcp:
+		hcp_dicts.append(hcp.get_dictionary())
 	return {
-		"Zero": zero,
-		"CarHCP": car_hcp,
+		"CarHCP": hcp_dicts,
 	}
 
 
@@ -58,3 +60,13 @@ func _get_pretty_text() -> String:
 		handicaps.append("%s (%d/%d)" % [(car as String).split("_")[-1],
 				roundi(hcp.gis_mass), hcp.h_tres])
 	return "Car handicaps (mass kg/intake %%): %s" % [handicaps]
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(dict, ["CarHCP"]):
+		return
+	car_hcp.clear()
+	for hcp_dict in dict["CarHCP"] as Array[Dictionary]:
+		var hcp := CarHandicap.new()
+		hcp.set_from_dictionary(hcp_dict)
+		car_hcp.append(hcp)

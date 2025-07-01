@@ -39,7 +39,6 @@ func _get_data_dictionary() -> Dictionary:
 		"OldPen": old_penalty,
 		"NewPen": new_penalty,
 		"Reason": reason,
-		"Sp3": sp3,
 	}
 
 
@@ -74,3 +73,12 @@ func _get_pretty_text() -> String:
 			reason_string = "stop too late"
 	return "PLID %d: %s" % [plid, "%s%s" % [penalty_string,
 			"" if reason == InSim.PenaltyReason.PENR_UNKNOWN else " (%s)" % [reason_string]]]
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(dict, ["PLID", "OldPen", "NewPen", "Reason"]):
+		return
+	plid = dict["PLID"]
+	old_penalty = dict["OldPen"]
+	new_penalty = dict["NewPen"]
+	reason = dict["Reason"]

@@ -41,7 +41,6 @@ func _get_data_dictionary() -> Dictionary:
 		"Mode": mode,
 		"SubMode": submode,
 		"SelType": sel_type,
-		"Sp3": sp3,
 	}
 
 
@@ -87,3 +86,12 @@ func _get_pretty_text() -> String:
 		InSim.InterfaceMode.keys()[mode],
 		submode_string if mode in submode_filter else "",
 	]
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(dict, ["UCID", "Mode", "SubMode", "SelType"]):
+		return
+	ucid = dict["UCID"]
+	mode = dict["Mode"]
+	submode = dict["SubMode"]
+	sel_type = dict["SelType"]

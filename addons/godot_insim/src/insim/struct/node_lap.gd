@@ -26,6 +26,15 @@ func _get_buffer() -> PackedByteArray:
 	return buffer
 
 
+func _get_dictionary() -> Dictionary:
+	return {
+		"Node": node,
+		"Lap": lap,
+		"PLID": plid,
+		"Pos": position,
+	}
+
+
 func _set_from_buffer(buffer: PackedByteArray) -> void:
 	if buffer.size() != STRUCT_SIZE:
 		push_error("Wrong buffer size, expected %d, got %d" % [STRUCT_SIZE, buffer.size()])
@@ -33,3 +42,12 @@ func _set_from_buffer(buffer: PackedByteArray) -> void:
 	lap = buffer.decode_u16(2)
 	plid = buffer.decode_u8(4)
 	position = buffer.decode_u8(5)
+
+
+func _set_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(dict, ["Node", "Lap", "PLID", "Pos"]):
+		return
+	node = dict["Node"]
+	lap = dict["Lap"]
+	plid = dict["PLID"]
+	position = dict["Pos"]

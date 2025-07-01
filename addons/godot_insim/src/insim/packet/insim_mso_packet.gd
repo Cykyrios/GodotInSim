@@ -50,7 +50,6 @@ func _decode_packet(packet: PackedByteArray) -> void:
 
 func _get_data_dictionary() -> Dictionary:
 	return {
-		"Zero": zero,
 		"UCID": ucid,
 		"PLID": plid,
 		"UserType": user_type,
@@ -61,3 +60,13 @@ func _get_data_dictionary() -> Dictionary:
 
 func _get_pretty_text() -> String:
 	return "(%s) %s" % [InSim.MessageUserValue.keys()[user_type], msg]
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(dict, ["UCID", "PLID", "UserType", "TextStart", "Msg"]):
+		return
+	ucid = dict["UCID"]
+	plid = dict["PLID"]
+	user_type = dict["UserType"]
+	text_start = dict["TextStart"]
+	msg = dict["Msg"]

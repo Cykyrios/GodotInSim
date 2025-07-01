@@ -42,11 +42,7 @@ func _fill_buffer() -> void:
 
 func _get_data_dictionary() -> Dictionary:
 	return {
-		"Zero": zero,
 		"UCID": ucid,
-		"Sp1": sp1,
-		"Sp2": sp2,
-		"Sp3": sp3,
 		"Cars": cars,
 	}
 
@@ -65,3 +61,10 @@ func _get_pretty_text() -> String:
 			car_list += "%s%s" % ["" if i == 0 else ", ", car_array[i]]
 	return "Allowed cars for %s: %s" % ["everyone" if ucid == 255 else "host" if ucid == 0 \
 			else "UCID %d" % [ucid], car_list]
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(dict, ["UCID", "Cars"]):
+		return
+	ucid = dict["UCID"]
+	cars = dict["Cars"]

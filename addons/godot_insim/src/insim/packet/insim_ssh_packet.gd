@@ -65,10 +65,6 @@ func _fill_buffer() -> void:
 func _get_data_dictionary() -> Dictionary:
 	return {
 		"Error": error,
-		"Sp0": sp3,
-		"Sp1": sp3,
-		"Sp2": sp3,
-		"Sp3": sp3,
 		"Name": screenshot_name,
 	}
 
@@ -80,3 +76,10 @@ func _get_pretty_text() -> String:
 		) else "INVALID ERROR",
 		screenshot_name,
 	]
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(dict, ["Error", "Name"]):
+		return
+	error = dict["Error"]
+	screenshot_name = dict["Name"]

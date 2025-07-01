@@ -22,10 +22,22 @@ func _get_buffer() -> PackedByteArray:
 	return buffer
 
 
+func _get_dictionary() -> Dictionary:
+	return {
+		"IP": address_string,
+	}
+
+
 func _set_from_buffer(buffer: PackedByteArray) -> void:
 	if buffer.size() != STRUCT_SIZE:
 		push_error("Wrong buffer size, expected %d, got %d" % [STRUCT_SIZE, buffer.size()])
 	fill_from_array(buffer)
+
+
+func _set_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(dict, ["IP"]):
+		return
+	fill_from_string(str(dict["IP"]))
 
 
 ## Sets the IP address from the given [param ip_array].

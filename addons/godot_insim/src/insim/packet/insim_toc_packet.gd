@@ -38,10 +38,16 @@ func _get_data_dictionary() -> Dictionary:
 		"PLID": plid,
 		"OldUCID": old_ucid,
 		"NewUCID": new_ucid,
-		"Sp2": sp2,
-		"Sp3": sp3,
 	}
 
 
 func _get_pretty_text() -> String:
 	return "UCID %d took over from UCID %d" % [new_ucid, old_ucid]
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(dict, ["PLID", "OldUCID", "NewUCID"]):
+		return
+	plid = dict["PLID"]
+	old_ucid = dict["OldUCID"]
+	new_ucid = dict["NewUCID"]

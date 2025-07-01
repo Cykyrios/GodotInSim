@@ -53,9 +53,7 @@ func _get_data_dictionary() -> Dictionary:
 		"PLID": plid,
 		"UCID": ucid,
 		"Action": action,
-		"Sp2": sp2,
-		"Sp3": sp3,
-		"StartPos": start_pos,
+		"StartPos": start_pos.get_dictionary(),
 	}
 
 
@@ -69,3 +67,12 @@ func _get_pretty_text() -> String:
 		"repaired" if action == InSim.JRRAction.JRR_RESET else "no repair",
 		("%.1v" % [start_pos.gis_position]) if (start_pos.flags & 0x80) else "in place"
 	])
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(dict, ["PLID", "UCID", "Action", "StartPos"]):
+		return
+	plid = dict["PLID"]
+	ucid = dict["UCID"]
+	action = dict["Action"]
+	start_pos.set_from_dictionary(dict["StartPos"] as Dictionary)

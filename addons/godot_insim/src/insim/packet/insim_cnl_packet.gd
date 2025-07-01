@@ -38,10 +38,16 @@ func _get_data_dictionary() -> Dictionary:
 		"UCID": ucid,
 		"Reason": reason,
 		"Total": total,
-		"Sp2": sp2,
-		"Sp3": sp3,
 	}
 
 
 func _get_pretty_text() -> String:
 	return "%s disconnected" % ["host" if ucid == 0 else "UCID %d" % [ucid]]
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(dict, ["UCID", "Reason", "Total"]):
+		return
+	ucid = dict["UCID"]
+	reason = dict["Reason"]
+	total = dict["Total"]

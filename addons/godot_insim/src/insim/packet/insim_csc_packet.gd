@@ -48,18 +48,24 @@ func _decode_packet(packet: PackedByteArray) -> void:
 func _get_data_dictionary() -> Dictionary:
 	return {
 		"PLID": plid,
-		"Sp0": sp0,
 		"CSCAction": csc_action,
-		"Sp2": sp2,
-		"Sp3": sp3,
 		"Time": time,
-		"C": object,
+		"C": object.get_dictionary(),
 	}
 
 
 func _get_pretty_text() -> String:
 	var action := "started" if csc_action == InSim.CSCAction.CSC_START else "stopped"
 	return "PLID %d %s moving at %.1v" % [plid, action, object.gis_position]
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(dict, ["PLID", "CSCAction", "Time", "C"]):
+		return
+	plid = dict["PLID"]
+	csc_action = dict["CSCAction"]
+	time = dict["Time"]
+	object.set_from_dictionary(dict["C"] as Dictionary)
 
 
 func _update_gis_values() -> void:

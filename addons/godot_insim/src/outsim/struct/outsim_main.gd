@@ -48,6 +48,18 @@ func get_buffer() -> PackedByteArray:
 	return buffer
 
 
+func get_dictionary() -> Dictionary:
+	return {
+		"AngVel": ang_vel,
+		"Heading": heading,
+		"Pitch": pitch,
+		"Roll": roll,
+		"Accel": accel,
+		"Vel": vel,
+		"Pos": pos,
+	}
+
+
 ## Sets the properties' values from the given [param buffer].
 func set_from_buffer(buffer: PackedByteArray) -> void:
 	var buffer_size := buffer.size()
@@ -63,3 +75,16 @@ func set_from_buffer(buffer: PackedByteArray) -> void:
 	pos = Vector3i(buffer.decode_u32(48), buffer.decode_u32(52), buffer.decode_u32(56))
 	gis_position = pos / POSITION_MULTIPLIER
 	gis_angles = Vector3(pitch, roll, heading)
+
+
+func set_from_dictionary(dict: Dictionary) -> void:
+	if not dict.has_all(["AngVel", "Heading", "Pitch", "Roll", "Accel", "Vel", "Pos"]):
+		push_error("Cannot set data from dictionary: missing keys")
+		return
+	ang_vel = dict["AngVel"]
+	heading = dict["Heading"]
+	pitch = dict["Pitch"]
+	roll = dict["Roll"]
+	accel = dict["Accel"]
+	vel = dict["Vel"]
+	pos = dict["Pos"]

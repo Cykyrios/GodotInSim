@@ -59,21 +59,25 @@ func _decode_packet(packet: PackedByteArray) -> void:
 func _get_data_dictionary() -> Dictionary:
 	return {
 		"PLID": plid,
-		"OSData": outsim_data,
+		"OSData": outsim_data.get_dictionary(),
 		"Flags": flags,
 		"Gear": gear,
-		"Sp2": sp2,
-		"Sp3": sp3,
 		"RPM": rpm,
-		"SpF0": spf0,
-		"SpF1": spf1,
 		"ShowLights": show_lights,
-		"SPU1": spu1,
-		"SPU2": spu2,
-		"SPU3": spu3,
 	}
 
 
 func _get_pretty_text() -> String:
 	var gear_string := "R" if gear == 0 else "N" if gear == 1 else "%d" % [gear + 1]
 	return "PLID %d: gear=%s, rpm=%d, flags=%d" % [plid, gear_string, roundi(rpm), flags]
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(dict, ["PLID", "OSData", "Flags", "Gear", "RPM", "ShowLights"]):
+		return
+	plid = dict["PLID"]
+	outsim_data.set_from_dictionary(dict["OSData"] as Dictionary)
+	flags = dict["Flags"]
+	gear = dict["Gear"]
+	rpm = dict["RPM"]
+	show_lights = dict["ShowLights"]

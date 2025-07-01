@@ -99,3 +99,13 @@ func _get_pretty_text() -> String:
 		b1, b2, b3,
 		ttc_description,
 	]
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(dict, ["SubT", "UCID", "B1", "B2", "B3"]):
+		return
+	sub_type = dict["SubT"]
+	ucid = dict["UCID"]
+	b1 = dict["B1"]
+	b2 = dict["B2"]
+	b3 = dict["B3"]

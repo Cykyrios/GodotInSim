@@ -59,7 +59,6 @@ func _get_data_dictionary() -> Dictionary:
 		"ETime": elapsed_time,
 		"LapsDone": laps_done,
 		"Flags": flags,
-		"Sp0": sp0,
 		"Penalty": penalty,
 		"NumStops": num_stops,
 		"Fuel200": fuel200,
@@ -70,6 +69,22 @@ func _get_pretty_text() -> String:
 	return "PLID %d completed a lap (%s, %d lap%s completed, %d pit stop%s)" % [plid,
 			GISTime.get_time_string_from_seconds(lap_time / 1000.0), laps_done,
 			"" if laps_done <= 1 else "s", num_stops, "" if num_stops <= 1 else "s"]
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(
+		dict,
+		["PLID", "LTime", "ETime", "LapsDone", "Flags", "Penalty", "NumStops", "Fuel200"],
+	):
+		return
+	plid = dict["PLID"]
+	lap_time = dict["LTime"]
+	elapsed_time = dict["ETime"]
+	laps_done = dict["LapsDone"]
+	flags = dict["Flags"]
+	penalty = dict["Penalty"]
+	num_stops = dict["NumStops"]
+	fuel200 = dict["Fuel200"]
 
 
 func _update_gis_values() -> void:

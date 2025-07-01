@@ -158,3 +158,9 @@ func _get_pretty_text() -> String:
 		str(InSim.Tiny.keys()[sub_type]) if sub_type in InSim.Tiny.values() else "INVALID SUBTYPE",
 		tiny_description,
 	]
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(dict, ["SubT"]):
+		return
+	sub_type = dict["SubT"]

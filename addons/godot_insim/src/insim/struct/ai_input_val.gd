@@ -61,12 +61,28 @@ func _get_buffer() -> PackedByteArray:
 	return buffer
 
 
+func _get_dictionary() -> Dictionary:
+	return {
+		"Input": input,
+		"Time": time,
+		"Value": value,
+	}
+
+
 func _set_from_buffer(buffer: PackedByteArray) -> void:
 	if buffer.size() != STRUCT_SIZE:
 		push_error("Wrong buffer size, expected %d, got %d" % [STRUCT_SIZE, buffer.size()])
 	input = buffer.decode_u8(0) as InSim.AIControl
 	time = buffer.decode_u8(1)
 	value = buffer.decode_u16(2)
+
+
+func _set_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(dict, ["Input", "Time", "Value"]):
+		return
+	input = dict["Input"]
+	time = dict["Time"]
+	value = dict["Value"]
 
 
 func _set_values_from_gis() -> void:

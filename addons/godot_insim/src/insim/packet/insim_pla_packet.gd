@@ -37,9 +37,6 @@ func _get_data_dictionary() -> Dictionary:
 	return {
 		"PLID": plid,
 		"Fact": fact,
-		"Sp1": sp1,
-		"Sp2": sp2,
-		"Sp3": sp3,
 	}
 
 
@@ -54,3 +51,10 @@ func _get_pretty_text() -> String:
 		InSim.PitLane.PITLANE_SG:
 			fact_string += " for stop-go penalty"
 	return "PLID %d %s" % [plid, fact_string]
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(dict, ["PLID", "Fact"]):
+		return
+	plid = dict["PLID"]
+	fact = dict["Fact"]

@@ -40,13 +40,19 @@ func _decode_packet(packet: PackedByteArray) -> void:
 
 func _get_data_dictionary() -> Dictionary:
 	return {
-		"Zero": zero,
 		"Version": version,
 		"Product": product,
 		"InSimVer": insim_ver,
-		"Spare": 0,
 	}
 
 
 func _get_pretty_text() -> String:
 	return "%s %s - InSim version %d" % [version, product, insim_ver]
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(dict, ["Version", "Product", "InSimVer"]):
+		return
+	version = dict["Version"]
+	product = dict["Product"]
+	insim_ver = dict["InSimVer"]

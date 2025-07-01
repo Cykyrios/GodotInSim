@@ -46,11 +46,8 @@ func _decode_packet(packet: PackedByteArray) -> void:
 
 func _get_data_dictionary() -> Dictionary:
 	return {
-		"Zero": zero,
 		"UCID": ucid,
 		"PLID": plid,
-		"Sp2": sp2,
-		"Sp3": sp3,
 		"Msg": msg,
 	}
 
@@ -60,3 +57,11 @@ func _get_pretty_text() -> String:
 		("PLID %d" % [plid]) if plid != 0 else ("UCID %d" % [ucid]),
 		msg,
 	]
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(dict, ["UCID", "PLId", "Msg"]):
+		return
+	ucid = dict["UCID"]
+	plid = dict["PLID"]
+	msg = dict["Msg"]

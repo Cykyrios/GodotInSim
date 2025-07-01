@@ -28,6 +28,28 @@ var req_i := 0  ## The packet's request ID, used to identify who sent a packet.
 ## packet subclass is returned.
 static func create_packet_from_buffer(packet_buffer: PackedByteArray) -> InSimPacket:
 	var packet_type := InSimPacket.decode_packet_type(packet_buffer)
+	var packet := create_packet_from_type(packet_type)
+	if packet.type not in InSim.Packet.values():
+		push_error("%s packets are not supported at this time." % [packet.get_type_string()])
+		return packet
+	packet.decode_packet(packet_buffer)
+	return packet
+
+
+## Creates and returns a new [InSimPacket] from the given [param dict]. The appropriate
+## packet subclass is returned. If the dictionary is invalid, an empty packet is returned.
+static func create_packet_from_dictionary(dict: Dictionary) -> InSimPacket:
+	if not dict.has("Type"):
+		push_error("Cannot create packet from dictionary: unknown or missing type")
+		return InSimPacket.new()
+	var packet := create_packet_from_type(dict["Type"] as InSim.Packet)
+	packet._set_from_dictionary(dict)
+	return packet
+
+
+## Creates and returns a default [InSimPacket] of the given [param packet_type].
+## The appropriate packet subclass is returned.
+static func create_packet_from_type(packet_type: InSim.Packet) -> InSimPacket:
 	var packet := InSimPacket.new()
 	match packet_type:
 		InSim.Packet.ISP_ACR:
@@ -168,22 +190,16 @@ static func create_packet_from_buffer(packet_buffer: PackedByteArray) -> InSimPa
 			packet = RelayHOSPacket.new()
 		InSim.Packet.IRP_SEL:
 			packet = RelaySELPacket.new()
-		_:
-			packet.type = packet_type
-			push_error("%s packets are not supported at this time." % [packet.get_type_string()])
-			return packet
-	packet.decode_packet(packet_buffer)
 	return packet
 
 
 ## Returns the packet type corresponding to the given [param packet_buffer] data, or
 ## [constant InSim.Packet.ISP_NONE] is the type cannot be determined.
 static func decode_packet_type(packet_buffer: PackedByteArray) -> InSim.Packet:
-	var packet_type := InSim.Packet.ISP_NONE
 	if packet_buffer.size() < HEADER_SIZE:
 		push_error("Packet is smaller than InSim packet header.")
-	packet_type = packet_buffer.decode_u8(1) as InSim.Packet
-	return packet_type
+		return InSim.Packet.ISP_NONE
+	return packet_buffer.decode_u8(1) as InSim.Packet
 
 
 func _init() -> void:
@@ -220,6 +236,23 @@ func _get_dictionary() -> Dictionary:
 	}
 	dict.merge(_get_data_dictionary())
 	return dict
+
+
+## Override to define packet behavior. This should perform the inverse operation to
+## [method _get_data_dictionary], and set the values from the given [param dict].
+## Care should be taken to verify keys.
+@warning_ignore("unused_parameter")
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	pass
+
+
+func _set_from_dictionary(dict: Dictionary) -> void:
+	if dict.has_all(["Size", "ReqI"]):
+		size = dict["Size"]
+		req_i = dict["ReqI"]
+	_set_data_from_dictionary(dict)
+	update_gis_values()
+	fill_buffer()
 
 
 ## Decodes the header of the given [param packet_buffer].
@@ -271,3 +304,11 @@ func _adjust_packet_size() -> void:
 	var remainder := size % SIZE_MULTIPLIER
 	if remainder > 0:
 		size += SIZE_MULTIPLIER - remainder
+
+
+# For use in _set_data_from_dictionary()
+func _check_dictionary_keys(dict: Dictionary, keys: Array[String]) -> bool:
+	if not dict.has_all(keys):
+		push_error("Cannot set data from dictionary: missing keys")
+		return false
+	return true

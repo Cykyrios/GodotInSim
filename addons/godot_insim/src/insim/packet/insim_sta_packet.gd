@@ -73,7 +73,6 @@ func _decode_packet(packet: PackedByteArray) -> void:
 
 func _get_data_dictionary() -> Dictionary:
 	return {
-		"Zero": zero,
 		"ReplaySpeed": replay_speed,
 		"Flags": flags,
 		"InGameCam": ingame_cam,
@@ -84,7 +83,6 @@ func _get_data_dictionary() -> Dictionary:
 		"RaceInProg": race_in_progress,
 		"QualMins": qual_mins,
 		"RaceLaps": race_laps,
-		"Sp2": sp2,
 		"ServerStatus": server_status,
 		"Track": track,
 		"Weather": weather,
@@ -94,3 +92,29 @@ func _get_data_dictionary() -> Dictionary:
 
 func _get_pretty_text() -> String:
 	return "State changed"
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(
+		dict,
+		[
+			"ReplaySpeed", "Flags", "InGameCam", "ViewPLID", "NumP", "NumConns",
+			"NumFinished", "RaceInProg", "QualMins", "RaceLaps", "ServerStatus",
+			"Track", "Weather", "Wind",
+		],
+	):
+		return
+	replay_speed = dict["ReplaySpeed"]
+	flags = dict["Flags"]
+	ingame_cam = dict["InGameCam"]
+	view_plid = dict["ViewPLID"]
+	num_players = dict["NumP"]
+	num_connections = dict["NumConns"]
+	num_finished = dict["NumFinished"]
+	race_in_progress = dict["RaceInProg"]
+	qual_mins = dict["QualMins"]
+	race_laps = dict["RaceLaps"]
+	server_status = dict["ServerStatus"]
+	track = dict["Track"]
+	weather = dict["Weather"]
+	wind = dict["Wind"]

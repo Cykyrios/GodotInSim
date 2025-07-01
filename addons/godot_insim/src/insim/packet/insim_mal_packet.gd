@@ -80,8 +80,6 @@ func _get_data_dictionary() -> Dictionary:
 		"NumM": num_mods,
 		"UCID": ucid,
 		"Flags": flags,
-		"Sp2": sp2,
-		"Sp3": sp3,
 		"SkinID": skin_id,
 	}
 
@@ -95,3 +93,12 @@ func _get_pretty_text() -> String:
 		id_bytes.encode_u32(0, id)
 		mods += ("" if i == 0 else ", ") + LFSText.car_name_from_lfs_bytes(id_bytes)
 	return "Allowed mods: %s" % ["ALL/NONE" if num_mods == 0 else mods]
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(dict, ["NumM", "UCID", "Flags", "SkinID"]):
+		return
+	num_mods = dict["NumM"]
+	ucid = dict["UCID"]
+	flags = dict["Flags"]
+	skin_id = dict["SkinID"]

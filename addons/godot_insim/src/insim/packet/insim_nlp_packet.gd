@@ -43,9 +43,12 @@ func _decode_packet(packet: PackedByteArray) -> void:
 
 
 func _get_data_dictionary() -> Dictionary:
+	var nlp_dicts: Array[Dictionary] = []
+	for nlp in info:
+		nlp_dicts.append(nlp.get_dictionary())
 	return {
 		"NumP": num_players,
-		"Info": info,
+		"Info": nlp_dicts,
 	}
 
 
@@ -56,3 +59,14 @@ func _get_pretty_text() -> String:
 				info[i].lap, info[i].node]
 		text += "%s%s" % ["" if i == 0 else ", ", info_string]
 	return text
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(dict, ["NumP", "Info"]):
+		return
+	num_players = dict["NumP"]
+	info.clear()
+	for nlp_dict in dict["Info"] as Array[Dictionary]:
+		var nlp := NodeLap.new()
+		nlp.set_from_dictionary(nlp_dict)
+		info.append(nlp)

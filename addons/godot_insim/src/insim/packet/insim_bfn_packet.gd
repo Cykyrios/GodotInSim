@@ -72,3 +72,13 @@ func _get_pretty_text() -> String:
 			else "buttons cleared by user" if subtype == InSim.ButtonFunction.BFN_USER_CLEAR \
 			else "Shift+B or Shift+I"
 	return "UCID %d: %s" % [ucid, bfn_type]
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(dict, ["SubT", "UCID", "ClickID", "ClickMax", "Inst"]):
+		return
+	subtype = dict["SubT"]
+	ucid = dict["UCID"]
+	click_id = dict["ClickID"]
+	click_max = dict["ClickMax"]
+	inst = dict["Inst"]

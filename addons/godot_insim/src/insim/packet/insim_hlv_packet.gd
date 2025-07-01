@@ -46,9 +46,8 @@ func _get_data_dictionary() -> Dictionary:
 	return {
 		"PLID": plid,
 		"HLVC": hlvc,
-		"Sp1": sp1,
 		"Time": time,
-		"C": object,
+		"C": object.get_dictionary(),
 	}
 
 
@@ -56,6 +55,15 @@ func _get_pretty_text() -> String:
 	return "PLID %d: invalid hotlap (%s at coordinates %.1v)" % [plid, "ground" if hlvc == 0 \
 			else "wall" if hlvc == 1 else "speeding" if hlvc == 4 \
 			else "out of bounds" if hlvc == 5 else "?", object.gis_position]
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(dict, ["PLID", "HLVC", "Time", "C"]):
+		return
+	plid = dict["PLID"]
+	hlvc = dict["HLVC"]
+	time = dict["Time"]
+	object.set_from_dictionary(dict["C"] as Dictionary)
 
 
 func _update_gis_values() -> void:

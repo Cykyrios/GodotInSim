@@ -43,7 +43,6 @@ func _fill_buffer() -> void:
 
 func _get_data_dictionary() -> Dictionary:
 	return {
-		"Zero": zero,
 		"Bits16": bits16,
 		"RR": refresh_rate,
 		"Width": width,
@@ -53,3 +52,12 @@ func _get_data_dictionary() -> Dictionary:
 
 func _get_pretty_text() -> String:
 	return "%dx%d@%dHz%s" % [width, height, refresh_rate, " (16bit)" if bits16 == 1 else ""]
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(dict, ["Bits16", "RR", "Width", "Height"]):
+		return
+	bits16 = dict["Bits16"]
+	refresh_rate = dict["RR"]
+	width = dict["Width"]
+	height = dict["Height"]

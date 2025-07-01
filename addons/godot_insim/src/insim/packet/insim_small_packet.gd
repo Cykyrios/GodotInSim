@@ -108,3 +108,10 @@ func _get_pretty_text() -> String:
 		value,
 		small_description,
 	]
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(dict, ["SubT", "UVal"]):
+		return
+	sub_type = dict["SubT"]
+	value = dict["UVal"]

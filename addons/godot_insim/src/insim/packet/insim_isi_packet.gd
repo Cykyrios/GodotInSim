@@ -91,7 +91,6 @@ func _fill_buffer() -> void:
 
 func _get_data_dictionary() -> Dictionary:
 	return {
-		"Zero": zero,
 		"UDPPort": udp_port,
 		"Flags": flags,
 		"InSimVer": insim_version,
@@ -105,3 +104,18 @@ func _get_data_dictionary() -> Dictionary:
 func _get_pretty_text() -> String:
 	return "Starting %s, InSim version %d, prefix=\"%s\", flags=%d, interval=%d, UDP=%d" % \
 			[i_name, insim_version, prefix, flags, interval, udp_port]
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(
+		dict,
+		["UDPPort", "Flags", "InSimVer", "Prefix", "Interval", "Admin", "IName"],
+	):
+		return
+	udp_port = dict["UDPPort"]
+	flags = dict["Flags"]
+	insim_version = dict["InSimVer"]
+	prefix = dict["Prefix"]
+	interval = dict["Interval"]
+	admin = dict["Admin"]
+	i_name = dict["IName"]

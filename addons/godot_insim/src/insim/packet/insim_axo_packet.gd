@@ -32,3 +32,9 @@ func _get_data_dictionary() -> Dictionary:
 
 func _get_pretty_text() -> String:
 	return "PLID %d hit an autocross object" % [plid]
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(dict, ["PLID"]):
+		return
+	plid = dict["PLID"]

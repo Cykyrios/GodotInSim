@@ -74,11 +74,10 @@ func _get_data_dictionary() -> Dictionary:
 		"PLID": plid,
 		"SpClose": sp_close,
 		"Time": time,
-		"C": object,
+		"C": object.get_dictionary(),
 		"X": x,
 		"Y": y,
 		"Z": z,
-		"Sp1": sp1,
 		"Index": index,
 		"OBHFlags": obh_flags,
 	}
@@ -96,6 +95,23 @@ func _get_pretty_text() -> String:
 		gis_position,
 		gis_closing_speed,
 		]
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(
+		dict,
+		["PLID", "SpClose", "Time", "C", "X", "Y", "Z", "Index", "OBHFlags"],
+	):
+		return
+	plid = dict["PLID"]
+	sp_close = dict["SpClose"]
+	time = dict["Time"]
+	object.set_from_dictionary(dict["C"] as Dictionary)
+	x = dict["X"]
+	y = dict["Y"]
+	z = dict["Z"]
+	index = dict["Index"]
+	obh_flags = dict["OBHFlags"]
 
 
 func _update_gis_values() -> void:

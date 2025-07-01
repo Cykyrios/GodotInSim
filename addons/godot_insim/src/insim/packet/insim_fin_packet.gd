@@ -54,10 +54,8 @@ func _get_data_dictionary() -> Dictionary:
 		"PLID": plid,
 		"TTime": race_time,
 		"BTime": best_lap,
-		"SpA": sp_a,
 		"NumStops": num_stops,
 		"Confirm": confirm,
-		"SpB": sp_b,
 		"LapsDone": laps_done,
 		"Flags": flags,
 	}
@@ -66,6 +64,21 @@ func _get_data_dictionary() -> Dictionary:
 func _get_pretty_text() -> String:
 	return "PLID %d finished (best lap: %s)" % [plid,
 			GISTime.get_time_string_from_seconds(gis_best_lap)]
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(
+		dict,
+		["PLID", "TTime", "BTime", "NumStops", "Confirm", "LapsDone", "Flags"],
+	):
+		return
+	plid = dict["PLID"]
+	race_time = dict["TTime"]
+	best_lap = dict["BTime"]
+	num_stops = dict["NumStops"]
+	confirm = dict["Confirm"]
+	laps_done = dict["LapsDone"]
+	flags = dict["Flags"]
 
 
 func _update_gis_values() -> void:

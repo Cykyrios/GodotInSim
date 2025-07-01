@@ -50,3 +50,10 @@ func _get_pretty_text() -> String:
 		) else "INVALID SOUND",
 		msg,
 	]
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(dict, ["Sound", "Msg"]):
+		return
+	sound = dict["Sound"]
+	msg = dict["Msg"]

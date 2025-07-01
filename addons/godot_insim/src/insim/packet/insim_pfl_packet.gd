@@ -33,9 +33,15 @@ func _get_data_dictionary() -> Dictionary:
 	return {
 		"PLID": plid,
 		"Flags": flags,
-		"Spare": spare,
 	}
 
 
 func _get_pretty_text() -> String:
 	return "PLID %d changed flags: %s" % [plid, flags]
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(dict, ["PLID", "Flags"]):
+		return
+	plid = dict["PLID"]
+	flags = dict["Flags"]

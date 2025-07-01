@@ -39,7 +39,6 @@ func _get_data_dictionary() -> Dictionary:
 		"OffOn": off_on,
 		"Flag": flag,
 		"CarBehind": car_behind,
-		"Sp3": sp3,
 	}
 
 
@@ -47,3 +46,12 @@ func _get_pretty_text() -> String:
 	var flag_color := "Blue" if flag == 1 else "Yellow" if flag == 2 else "Unknown"
 	var flag_string := " cleared for" if off_on == 0 else " caused by" if flag == 2 else " for"
 	return "%s flag%s PLID %d" % [flag_color, flag_string, plid]
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(dict, ["PLID", "OffOn", "Flag", "CarBehind"]):
+		return
+	plid = dict["PLID"]
+	off_on = dict["OffOn"]
+	flag = dict["Flag"]
+	car_behind = dict["CarBehind"]

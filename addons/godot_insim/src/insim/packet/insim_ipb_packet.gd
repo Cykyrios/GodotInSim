@@ -84,13 +84,12 @@ func _fill_buffer() -> void:
 
 
 func _get_data_dictionary() -> Dictionary:
+	var ip_dicts: Array[Dictionary] = []
+	for ip in ban_ips:
+		ip_dicts.append(ip.get_dictionary())
 	return {
 		"NumB": numb,
-		"Sp0": sp0,
-		"Sp1": sp1,
-		"Sp2": sp2,
-		"Sp3": sp3,
-		"BanIPs": ban_ips,
+		"BanIPs": ip_dicts,
 	}
 
 
@@ -100,6 +99,17 @@ func _get_pretty_text() -> String:
 		var ip := ban_ips[i]
 		ips += ("" if i == 0 else ", ") + ip.to_string()
 	return "IP bans: %s" % ["NONE" if numb == 0 else ips]
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(dict, ["NumB", "BanIPs"]):
+		return
+	numb = dict["NumB"]
+	ban_ips.clear()
+	for ip_dict in dict["BanIPs"] as Array[Dictionary]:
+		var ip := IPAddress.new()
+		ip.set_from_dictionary(ip_dict)
+		ban_ips.append(ip)
 
 
 func _trim_packet_size() -> void:

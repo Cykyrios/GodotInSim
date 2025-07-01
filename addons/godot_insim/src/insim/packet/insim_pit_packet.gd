@@ -59,10 +59,8 @@ func _get_data_dictionary() -> Dictionary:
 		"FuelAdd": fuel_add,
 		"Penalty": penalty,
 		"NumStops": num_stops,
-		"Sp3": sp3,
 		"Tyres": tyres,
 		"Work": work,
-		"Spare": spare,
 	}
 
 
@@ -95,3 +93,19 @@ func _get_pretty_text() -> String:
 	if (work >> InSim.PitWork.PSE_REFUEL) & 1:
 		pitwork.append("refuel")
 	return "PLID %d made a pit stop (pitwork: %s)" % [plid, ", ".join(pitwork)]
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(
+		dict,
+		["PLID", "LapsDone", "Flags", "FuelAdd", "Penalty", "NumStops", "Tyres", "Work"],
+	):
+		return
+	plid = dict["PLID"]
+	laps_done = dict["LapsDone"]
+	flags = dict["Flags"]
+	fuel_add = dict["FuelAdd"]
+	penalty = dict["Penalty"]
+	num_stops = dict["NumStops"]
+	tyres = dict["Tyres"]
+	work = dict["Work"]

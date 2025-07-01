@@ -116,7 +116,6 @@ func _fill_buffer() -> void:
 
 func _get_data_dictionary() -> Dictionary:
 	return {
-		"Zero": zero,
 		"Pos": pos,
 		"H": heading,
 		"P": pitch,
@@ -131,6 +130,23 @@ func _get_data_dictionary() -> Dictionary:
 
 func _get_pretty_text() -> String:
 	return get_lfs_cam_command()
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(
+		dict,
+		["Pos", "H", "P", "R", "ViewPLID", "InGameCam", "FOV", "Time", "Flags"],
+	):
+		return
+	pos = dict["Pos"]
+	heading = dict["H"]
+	pitch = dict["P"]
+	roll = dict["R"]
+	view_plid = dict["ViewPLID"]
+	ingame_cam = dict["InGameCam"]
+	fov = dict["FOV"]
+	time = dict["Time"]
+	flags = dict["Flags"]
 
 
 func _update_gis_values() -> void:

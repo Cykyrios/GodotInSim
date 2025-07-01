@@ -66,6 +66,18 @@ func _get_pretty_text() -> String:
 			"" if num_stops <= 1 else "s"]
 
 
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(dict, ["PLID", "STime", "ETime", "Split"]):
+		return
+	plid = dict["PLID"]
+	split_time = dict["STime"]
+	elapsed_time = dict["ETime"]
+	split = dict["Split"]
+	penalty = dict["Penalty"]
+	num_stops = dict["NumStops"]
+	fuel200 = dict["Fuel200"]
+
+
 func _update_gis_values() -> void:
 	gis_split_time = split_time / TIME_MULTIPLIER
 	gis_elapsed_time = elapsed_time / TIME_MULTIPLIER

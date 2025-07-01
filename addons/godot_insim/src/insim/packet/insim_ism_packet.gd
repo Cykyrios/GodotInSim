@@ -41,11 +41,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 
 func _get_data_dictionary() -> Dictionary:
 	return {
-		"Zero": zero,
 		"Host": host,
-		"Sp1": sp1,
-		"Sp2": sp2,
-		"Sp3": sp3,
 		"HName": h_name,
 	}
 
@@ -56,3 +52,10 @@ func _get_pretty_text() -> String:
 		h_name,
 		"host" if host == 1 else "guest"
 	]
+
+
+func _set_data_from_dictionary(dict: Dictionary) -> void:
+	if not _check_dictionary_keys(dict, ["Host", "HName"]):
+		return
+	host = dict["Host"]
+	h_name = dict["HName"]
