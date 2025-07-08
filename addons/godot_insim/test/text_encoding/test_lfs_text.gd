@@ -24,8 +24,6 @@ func test_car_get_short_name(full_name: String, expected: String, test_parameter
 	["E-C E", "E-C "],
 	["FZ5", "FZ5"],
 ]) -> void:
-	if full_name.begins_with("_"):
-		pass
 	var short_name := LFSText.car_get_short_name(full_name)
 	var _test := assert_str(short_name).is_equal(expected)
 

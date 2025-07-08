@@ -81,8 +81,6 @@ func display_layout() -> void:
 			(mesh.material_override as StandardMaterial3D).albedo_color = Color.WEB_GRAY
 		layout.add_child(mesh)
 		# Ground check
-		if object.index == InSim.AXOIndex.AXO_CHALK_LINE2:
-			pass
 		if (
 			not (object.flags & 0x80)  # not floating
 			and (
