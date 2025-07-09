@@ -527,7 +527,7 @@ static func replace_ucid_with_name(
 		var nickname := (
 			(connection.nickname + (get_color_code(ColorCode.DEFAULT) if reset_color else "")) \
 			if connection else ("^%d%s%s" % [
-				LFSText.COLORS[LFSText.ColorCode.RED],
+				LFSText.ColorCode.RED,
 				result.strings[0],
 				get_color_code(ColorCode.DEFAULT) if reset_color else "",
 			])
