@@ -17,10 +17,23 @@ var zero := 0  ## Zero byte
 var car_hcp: Array[CarHandicap] = []
 
 
-## Creates and returns a new [InSimHCPPacket] from the given [param hcp_array].
-static func create(hcp_array: Array[CarHandicap]) -> InSimHCPPacket:
+## Creates and returns a new [InSimHCPPacket] from the given [param hcp], which can be either
+## an array of [CarHandicap], or a dictionary specifying each car to which a handicap applies.
+static func create(hcp: Variant) -> InSimHCPPacket:
 	var packet := InSimHCPPacket.new()
-	packet.car_hcp = hcp_array.duplicate()
+	match typeof(hcp):
+		TYPE_ARRAY:
+			var hcp_array := hcp as Array
+			for i in hcp_array.size():
+				if i < MAX_CARS:
+					packet.car_hcp[i] = hcp_array[i]
+		TYPE_DICTIONARY:
+			var hcp_dict := hcp as Dictionary
+			for car in hcp_dict as Dictionary[int, CarHandicap]:
+				var car_idx := InSim.Car.values().find(car)
+				if car_idx == -1:
+					continue
+				packet.car_hcp[car_idx] = hcp_dict[car]
 	return packet
 
 
