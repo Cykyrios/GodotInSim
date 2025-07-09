@@ -19,6 +19,7 @@ static func create(reo_num: int, reo_plids: Array[int]) -> InSimREOPacket:
 	var packet := InSimREOPacket.new()
 	packet.num_players = reo_num
 	packet.plids = reo_plids.duplicate()
+	var _discard := packet.plids.resize(_MAX_PLAYERS)
 	return packet
 
 
