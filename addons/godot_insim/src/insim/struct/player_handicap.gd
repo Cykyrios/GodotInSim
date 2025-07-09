@@ -4,6 +4,12 @@ extends InSimStruct
 ##
 ## This class contains data about a player's handicap
 
+enum Flag {
+	SET_MASS = 1,
+	SET_RESTRICTION = 2,
+	SILENT = 128,
+}
+
 const MASS_MULTIPLIER := 1.0  ## Conversion factor between standard units and LFS-encoded values.
 
 const STRUCT_SIZE := 4  ## The size of this struct's data
