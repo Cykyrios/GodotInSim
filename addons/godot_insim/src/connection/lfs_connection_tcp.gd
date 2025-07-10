@@ -23,8 +23,13 @@ func _connect_to_host(c_address: String, c_port: int, c_udp_port := 0) -> void:
 		status = stream.get_status()
 	var status_string := "connected" if status == stream.STATUS_CONNECTED \
 			else "error" if status == stream.STATUS_ERROR else str(status)
-	print("TCP status: %s%s" % [status_string, (" - %s:%d" % [stream.get_connected_host(),
-			stream.get_connected_port()]) if status == stream.STATUS_CONNECTED else ""])
+	print("TCP status: %s%s" % [
+		status_string,
+		" - %s:%d" % [
+			stream.get_connected_host(),
+			stream.get_connected_port(),
+		] if status == stream.STATUS_CONNECTED else ""
+	])
 	if status == stream.STATUS_CONNECTED:
 		connected.emit()
 	else:

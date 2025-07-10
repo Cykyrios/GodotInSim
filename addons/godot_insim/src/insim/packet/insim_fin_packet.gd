@@ -62,8 +62,9 @@ func _get_data_dictionary() -> Dictionary:
 
 
 func _get_pretty_text() -> String:
-	return "PLID %d finished (best lap: %s)" % [plid,
-			GISTime.get_time_string_from_seconds(gis_best_lap)]
+	return "PLID %d finished (best lap: %s)" % [
+		plid, GISTime.get_time_string_from_seconds(gis_best_lap)
+	]
 
 
 func _set_data_from_dictionary(dict: Dictionary) -> void:

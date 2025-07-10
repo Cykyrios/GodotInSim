@@ -28,8 +28,9 @@ func _decode_packet(packet: PackedByteArray) -> void:
 		or packet_size > max_size
 		or packet_size % SIZE_MULTIPLIER != 0
 	):
-		push_error("%s packet expected size [%d..%d step %d], got %d." % [get_type_string(),
-				min_size, max_size, SIZE_MULTIPLIER, packet_size])
+		push_error("%s packet expected size [%d..%d step %d], got %d." % [
+			get_type_string(), min_size, max_size, SIZE_MULTIPLIER, packet_size
+		])
 		return
 	super(packet)
 	host_info.clear()

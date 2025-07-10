@@ -71,8 +71,13 @@ func _get_pretty_text() -> String:
 			reason_string = "stop too short"
 		InSim.PenaltyReason.PENR_STOP_LATE:
 			reason_string = "stop too late"
-	return "PLID %d: %s" % [plid, "%s%s" % [penalty_string,
-			"" if reason == InSim.PenaltyReason.PENR_UNKNOWN else " (%s)" % [reason_string]]]
+	return "PLID %d: %s" % [
+		plid,
+		"%s%s" % [
+			penalty_string,
+			"" if reason == InSim.PenaltyReason.PENR_UNKNOWN else " (%s)" % [reason_string],
+		]
+	]
 
 
 func _set_data_from_dictionary(dict: Dictionary) -> void:

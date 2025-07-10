@@ -39,8 +39,9 @@ func _decode_packet(packet: PackedByteArray) -> void:
 		or packet_size > PACKET_MAX_SIZE
 		or packet_size % SIZE_MULTIPLIER != 0
 	):
-		push_error("%s packet expected size [%d..%d step %d], got %d." % [get_type_string(),
-				PACKET_MIN_SIZE, PACKET_MAX_SIZE, SIZE_MULTIPLIER, packet_size])
+		push_error("%s packet expected size [%d..%d step %d], got %d." % [
+			get_type_string(), PACKET_MIN_SIZE, PACKET_MAX_SIZE, SIZE_MULTIPLIER, packet_size
+		])
 		return
 	super(packet)
 	nump = read_byte()
@@ -82,8 +83,9 @@ func _get_pretty_text() -> String:
 	var handicaps := ""
 	for i in hcaps.size():
 		var hcap := hcaps[i]
-		handicaps += "" if i == 0 else ", " + "PLID %d (%d kg, %d %%)" % [hcap.plid, hcap.h_mass,
-				hcap.h_tres]
+		handicaps += "" if i == 0 else ", " + "PLID %d (%d kg, %d %%)" % [
+			hcap.plid, hcap.h_mass, hcap.h_tres
+		]
 	return "Players handicaps: %s" % [handicaps]
 
 

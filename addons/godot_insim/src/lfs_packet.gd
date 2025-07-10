@@ -114,8 +114,9 @@ func add_buffer(data: PackedByteArray, at_position := -1) -> void:
 		data_offset = at_position
 	var available_space := buffer.size() - data_offset
 	if data.size() > available_space:
-		push_error("Not enough space to add buffer (size %d, available %d)" % [data.size(),
-				available_space])
+		push_error("Not enough space to add buffer (size %d, available %d)" % [
+			data.size(), available_space
+		])
 		return
 	for byte in data:
 		add_byte(byte)

@@ -27,8 +27,9 @@ func _decode_packet(packet: PackedByteArray) -> void:
 		or packet_size > PACKET_MAX_SIZE
 		or packet_size % SIZE_MULTIPLIER != 0
 	):
-		push_error("%s packet expected size [%d..%d step %d], got %d." % [get_type_string(),
-				PACKET_MIN_SIZE, PACKET_MAX_SIZE, SIZE_MULTIPLIER, packet_size])
+		push_error("%s packet expected size [%d..%d step %d], got %d." % [
+			get_type_string(), PACKET_MIN_SIZE, PACKET_MAX_SIZE, SIZE_MULTIPLIER, packet_size
+		])
 		return
 	super(packet)
 	num_cars = read_byte()
@@ -54,8 +55,9 @@ func _get_data_dictionary() -> Dictionary:
 func _get_pretty_text() -> String:
 	var text := ""
 	for i in info.size():
-		var info_string := "PLID %d (P%d, lap %d, node %d)" % [info[i].plid, info[i].position,
-				info[i].lap, info[i].node]
+		var info_string := "PLID %d (P%d, lap %d, node %d)" % [
+			info[i].plid, info[i].position, info[i].lap, info[i].node
+		]
 		text += "%s%s" % ["" if i == 0 else ", ", info_string]
 	return text
 

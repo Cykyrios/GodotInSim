@@ -54,8 +54,9 @@ func _get_pretty_text() -> String:
 	var input_array: Array[String] = []
 	for i in inputs.size():
 		var input := inputs[i]
-		input_array.append("%s (%d, %d ms)" % [InSim.AIControl.keys().find(input.input),
-				input.value, input.time * 10])
+		input_array.append("%s (%d, %d ms)" % [
+			InSim.AIControl.keys().find(input.input), input.value, input.time * 10
+		])
 	return "PLID %d input: %s" % [plid, input_array]
 
 

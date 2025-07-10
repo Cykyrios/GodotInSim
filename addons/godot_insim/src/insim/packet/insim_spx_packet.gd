@@ -61,9 +61,13 @@ func _get_data_dictionary() -> Dictionary:
 
 
 func _get_pretty_text() -> String:
-	return "PLID %d crossed split %d (%s, %d pit stop%s)" % [plid, split,
-			GISTime.get_time_string_from_seconds(split_time / 1000.0), num_stops,
-			"" if num_stops <= 1 else "s"]
+	return "PLID %d crossed split %d (%s, %d pit stop%s)" % [
+		plid,
+		split,
+		GISTime.get_time_string_from_seconds(split_time / 1000.0),
+		num_stops,
+		"" if num_stops <= 1 else "s",
+	]
 
 
 func _set_data_from_dictionary(dict: Dictionary) -> void:

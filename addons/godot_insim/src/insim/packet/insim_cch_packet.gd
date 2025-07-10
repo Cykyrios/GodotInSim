@@ -48,8 +48,9 @@ func _get_data_dictionary() -> Dictionary:
 
 
 func _get_pretty_text() -> String:
-	return "PLID %d changed camera to %s" % [plid,
-			InSim.View.keys()[InSim.View.values().find(camera)]]
+	return "PLID %d changed camera to %s" % [
+		plid, InSim.View.keys()[InSim.View.values().find(camera)]
+	]
 
 
 func _set_data_from_dictionary(dict: Dictionary) -> void:

@@ -45,8 +45,9 @@ func _decode_packet(packet: PackedByteArray) -> void:
 		or packet_size > PACKET_MAX_SIZE
 		or packet_size % SIZE_MULTIPLIER != 0
 	):
-		push_error("%s packet expected size [%d..%d step %d], got %d." % [get_type_string(),
-				PACKET_MIN_SIZE, PACKET_MAX_SIZE, SIZE_MULTIPLIER, packet_size])
+		push_error("%s packet expected size [%d..%d step %d], got %d." % [
+			get_type_string(), PACKET_MIN_SIZE, PACKET_MAX_SIZE, SIZE_MULTIPLIER, packet_size
+		])
 		return
 	super(packet)
 	numb = read_byte()
@@ -57,8 +58,9 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	ban_ips.clear()
 	for i in numb:
 		var ip_address := IPAddress.new()
-		ip_address.fill_from_string("%d.%d.%d.%d" % [read_byte(), read_byte(),
-				read_byte(), read_byte()])
+		ip_address.fill_from_string("%d.%d.%d.%d" % [
+			read_byte(), read_byte(), read_byte(), read_byte()
+		])
 		ban_ips.append(ip_address)
 
 

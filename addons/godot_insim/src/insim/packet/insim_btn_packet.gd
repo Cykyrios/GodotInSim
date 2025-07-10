@@ -99,8 +99,11 @@ func _get_pretty_text() -> String:
 		if button_style & InSim.ButtonStyle.values()[i]:
 			button_flags.append(InSim.ButtonStyle.keys()[i])
 	var target := "local" if ucid == 0 else "everyone" if ucid == 255 else "UCID %d" % [ucid]
-	return "Button for %s: ID %d, %s, %d-%d:%dx%d, \"%s\"" % [target, click_id, button_flags,
-			left, top, width, height, text + "^9" + (" (%s^9)" % [caption] if caption else "")]
+	return "Button for %s: ID %d, %s, %d-%d:%dx%d, \"%s\"" % [
+		target, click_id, button_flags,
+		left, top, width, height,
+		text + "^9" + (" (%s^9)" % [caption] if caption else ""),
+	]
 
 
 func _set_data_from_dictionary(dict: Dictionary) -> void:

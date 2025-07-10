@@ -31,8 +31,9 @@ func test_add_buffer_not_enough_space() -> void:
 	var buffer := PackedByteArray([0, 1, 2])
 	var _test := await assert_error(func() -> void:
 		packet.add_buffer(buffer)
-	).is_push_error("Not enough space to add buffer (size %d, available %d)" % [buffer.size(),
-			packet.buffer.size()])
+	).is_push_error("Not enough space to add buffer (size %d, available %d)" % [
+		buffer.size(), packet.buffer.size()
+	])
 
 
 @warning_ignore("unused_parameter")

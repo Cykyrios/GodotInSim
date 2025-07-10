@@ -42,8 +42,9 @@ func _get_data_dictionary() -> Dictionary:
 
 
 func _get_pretty_text() -> String:
-	return "PLID %d stopped for %ss" % [plid,
-			GISTime.get_time_string_from_seconds(gis_stop_time, 3, true)]
+	return "PLID %d stopped for %ss" % [
+		plid, GISTime.get_time_string_from_seconds(gis_stop_time, 3, true)
+	]
 
 
 func _set_data_from_dictionary(dict: Dictionary) -> void:
