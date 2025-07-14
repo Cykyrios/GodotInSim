@@ -522,15 +522,16 @@ static func replace_ucid_with_name(
 		var ucid := result.strings[1] as int
 		var connection: Connection = insim.connections[ucid] if insim.connections.has(ucid) \
 				else null
-		if not connection:
+		if not connection and ucid != 255:
 			push_error("Failed to convert UCID %d, list is %s" % [ucid, insim.connections.keys()])
 		var nickname := (
-			(connection.nickname + (get_color_code(ColorCode.DEFAULT) if reset_color else "")) \
-			if connection else ("^%d%s%s" % [
+			connection.nickname + (get_color_code(ColorCode.DEFAULT) if reset_color else "")
+			if connection else "Everyone" if ucid == 255
+			else "^%d%s%s" % [
 				LFSText.ColorCode.RED,
 				result.strings[0],
 				get_color_code(ColorCode.DEFAULT) if reset_color else "",
-			])
+			]
 		)
 		output = regex.sub(output, "%s%s" % [
 			nickname,
