@@ -279,16 +279,34 @@ func get_buttons_by_prefix(prefix: StringName, ucid: int) -> Array[InSimButton]:
 ## Returns a free [code]click_id[/code] value to create a new button for UCID [param for_ucid],
 ## or [code]-1[/code] if no ID is available in the [member id_range].
 func get_free_id(for_ucid: int) -> int:
-	if not id_map.has(for_ucid) and not id_map.has(EVERYONE):
+	if (
+		for_ucid != EVERYONE
+		and not id_map.has(for_ucid)
+		and not id_map.has(EVERYONE)
+	):
 		return id_range.x
-	for i in id_range.y - id_range.x + 1:
-		var test_id := id_range.x + i
-		if (
-			id_map.has(for_ucid) and id_map[for_ucid].has(test_id)
-			or id_map.has(EVERYONE) and id_map[EVERYONE].has(test_id)
-		):
-			continue
-		return test_id
+	if for_ucid == EVERYONE:
+		for i in id_range.y - id_range.x + 1:
+			var test_id := id_range.x + i
+			if id_map.has(EVERYONE) and id_map[EVERYONE].has(test_id):
+				continue
+			var invalid_id := false
+			for ucid in id_map:
+				if id_map[ucid].has(test_id):
+					invalid_id = true
+					break
+			if invalid_id:
+				continue
+			return test_id
+	else:
+		for i in id_range.y - id_range.x + 1:
+			var test_id := id_range.x + i
+			if (
+				id_map.has(for_ucid) and id_map[for_ucid].has(test_id)
+				or id_map.has(EVERYONE) and id_map[EVERYONE].has(test_id)
+			):
+				continue
+			return test_id
 	return -1
 
 
@@ -432,8 +450,8 @@ func update_global_button_text(click_id: int, text: String, caption := "") -> Ar
 
 func _add_button_mapping(for_ucid: int, click_id: int) -> void:
 	if not id_map.has(for_ucid):
-		id_map[for_ucid] = [click_id]
-	elif not id_map[for_ucid].has(click_id):
+		id_map[for_ucid] = []
+	if not id_map[for_ucid].has(click_id):
 		id_map[for_ucid].append(click_id)
 
 
