@@ -1420,6 +1420,9 @@ func get_global_buttons_by_prefix(prefix: StringName) -> Array[InSimButton]:
 func update_button_text(
 	button: InSimButton, text: String, caption := "", sender := "InSim"
 ) -> void:
+	if not button:
+		push_error("Cannot update button text, button is null.")
+		return
 	send_packet(buttons.update_button_text(button, text, caption), sender)
 
 
