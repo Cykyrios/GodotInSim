@@ -99,7 +99,7 @@ func replace_plid_ucid(text: String, packet: InSimPacket) -> String:
 				)
 			else:
 				text = LFSText.replace_plid_with_name(text, insim)
-			if not(insim.lfs_state.flags & InSim.State.ISS_GAME):
+			if not (insim.lfs_state.flags & InSim.State.ISS_GAME):
 				text = text.replace("left the pits", "joined the grid")
 				text = text.replace("is driving", "is on the grid")
 		else:

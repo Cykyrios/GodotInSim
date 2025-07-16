@@ -497,12 +497,12 @@ static func replace_plid_with_name(text: String, insim: InSim, reset_color := tr
 		if not player_found:
 			push_error("Failed to convert PLID %d, list is %s" % [plid, insim.players.keys()])
 		var player_name := (
-			(insim.players[plid].player_name + get_color_code(ColorCode.DEFAULT)) if player_found \
-			else ("^%d%s%s" % [
+			insim.players[plid].player_name + get_color_code(ColorCode.DEFAULT) if player_found
+			else "^%d%s%s" % [
 				LFSText.ColorCode.RED,
 				result.strings[0],
 				get_color_code(ColorCode.DEFAULT) if reset_color else "",
-			])
+			]
 		)
 		output = regex.sub(output, player_name, false, result.get_start())
 	return output
@@ -561,7 +561,7 @@ static func split_message(message: String, max_length: int) -> Array[String]:
 	var second_message := message.right(
 		message.length() - (first_message.length() if size == -1 else size)
 	)
-	if not(
+	if not (
 		second_message[0] == "^"
 		and char(second_message.unicode_at(1)) >= "0"
 		and char(second_message.unicode_at(1)) <= "9"
