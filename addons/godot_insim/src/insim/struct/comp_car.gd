@@ -93,7 +93,7 @@ func _set_from_buffer(buffer: PackedByteArray) -> void:
 
 
 func _set_from_dictionary(dict: Dictionary) -> void:
-	if not _check_dictionary_keys(dict, ["H_Mass", "H_TRes"]):
+	if not _check_dictionary_keys(dict, ["Node", "Lap", "PLID", "Pos", "Info", "X", "Y", "Z"]):
 		return
 	node = dict["Node"]
 	lap = dict["Lap"]
