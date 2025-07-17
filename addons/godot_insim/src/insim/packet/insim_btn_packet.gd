@@ -126,6 +126,11 @@ func _set_data_from_dictionary(dict: Dictionary) -> void:
 
 
 func _trim_packet_size() -> void:
+	if size < PACKET_MAX_SIZE and size >= PACKET_MIN_SIZE:
+		_adjust_packet_size()
+		size = mini(size, PACKET_MAX_SIZE)
+		resize_buffer(size)
+		return
 	for i in TEXT_MAX_LENGTH:
 		if buffer[PACKET_MAX_SIZE - i - 1] != 0:
 			size = PACKET_MAX_SIZE - i + 1  # + 1 to keep final zero
