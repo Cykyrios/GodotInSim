@@ -962,7 +962,7 @@ var lfs_connection: LFSConnection = null  ## Internal connection for TCP/UDP com
 ## UDP connection used specifically for receiving NLP or MCI packets, see [InSimISIPacket].
 var nlp_mci_connection: LFSConnectionUDP = null
 var is_relay := false  ## Whether this is a Relay connection, do not set manually.
-var is_host := false  ## Whether this is a host InSim application, do not set manually.
+var _is_host := false  ## Whether this is a host InSim application, do not set manually.
 ## Helper struct for InSim initialization, see [InSimISIPacket].
 var initialization_data := InSimInitializationData.new()
 ## This boolean controls whether connecting to InSim versions other than [constant VERSION]
@@ -1154,6 +1154,12 @@ func initialize_relay() -> void:
 	initialize(RELAY_ADDRESS, RELAY_PORT, InSimInitializationData.new())
 
 
+## Returns [code]true[/code] if this InSim instance is a host application (remote connected
+## to the host server with InSim access); returns [code]false[/code] otherwise.
+func is_host() -> bool:
+	return _is_host
+
+
 ## Sends a UTF8-formatted text string to LFS as a local message.
 func send_local_message(
 	message: String, sound := InSim.MessageSound.SND_SILENT, sender := "InSim"
@@ -1185,10 +1191,14 @@ func send_message(message: String, sender := "InSim") -> void:
 
 
 ## Sends a UTF8-formatted message to a specific connection, identified by its [param ucid].
-## A value of 255 will send the message to everyone.
+## A value of 255 will send the message to everyone.[br]
+## [b]Note:[/b] On a local [InSim] instance, [method send_local_message] is called instead.
 func send_message_to_connection(
 	ucid: int, message: String, sound := InSim.MessageSound.SND_SILENT, sender := "InSim"
 ) -> void:
+	if not _is_host:
+		send_local_message(message, sound, sender)
+		return
 	var message_buffer := LFSText.unicode_to_lfs_bytes(message)
 	if message_buffer.size() < InSimMTCPacket.TEXT_MAX_LENGTH:
 		send_packet(InSimMTCPacket.create(ucid, 0, message, sound), sender)
@@ -1197,10 +1207,14 @@ func send_message_to_connection(
 		send_message_to_connection(ucid, split_message, sound, sender)
 
 
-## Sends a UTF8-formatted message to a specific player, identified by their [param plid].
+## Sends a UTF8-formatted message to a specific player, identified by their [param plid].[br]
+## [b]Note:[/b] On a local [InSim] instance, [method send_local_message] is called instead.
 func send_message_to_player(
 	plid: int, message: String, sound := InSim.MessageSound.SND_SILENT, sender := "InSim"
 ) -> void:
+	if not _is_host:
+		send_local_message(message, sound, sender)
+		return
 	var message_buffer := LFSText.unicode_to_lfs_bytes(message)
 	if message_buffer.size() < InSimMTCPacket.TEXT_MAX_LENGTH:
 		send_packet(InSimMTCPacket.create(0, plid, message, sound), sender)
@@ -1486,7 +1500,7 @@ func _perform_internal_initialization() -> void:
 	var ism_packet: InSimISMPacket = await send_packet_await_packet(
 		InSimTinyPacket.create(GISRequest.REQ_0, InSim.Tiny.TINY_ISM), Packet.ISP_ISM
 	)
-	is_host = lfs_state.flags & InSim.State.ISS_MULTI and ism_packet.host == 1
+	_is_host = lfs_state.flags & InSim.State.ISS_MULTI and ism_packet.host == 1
 	await get_tree().process_frame
 	# We don't need to request IS_NCN/IS_NPL packets as this is done when receiving an IS_ISM.
 	while (

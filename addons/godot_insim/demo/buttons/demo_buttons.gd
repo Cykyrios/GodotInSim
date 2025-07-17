@@ -40,7 +40,7 @@ func _ready() -> void:
 		)
 	)
 	await insim.connected
-	if insim.is_host:
+	if insim.is_host():
 		insim.send_message("Host InSim started")
 	show_manual_buttons()
 	show_auto_buttons()
@@ -49,7 +49,7 @@ func _ready() -> void:
 
 
 func _exit_tree() -> void:
-	if insim.is_host:
+	if insim.is_host():
 		insim.send_message("Host InSim closed")
 
 
@@ -374,10 +374,7 @@ func _on_btc_received(packet: InSimBTCPacket) -> void:
 			" + Shift" if flags & InSim.ButtonClick.ISB_SHIFT else "",
 		],
 	]
-	if insim.is_host:
-		insim.send_message_to_connection(packet.ucid, message, InSim.MessageSound.SND_SYSMESSAGE)
-	else:
-		insim.send_local_message(message, InSim.MessageSound.SND_SYSMESSAGE)
+	insim.send_message_to_connection(packet.ucid, message, InSim.MessageSound.SND_SYSMESSAGE)
 	if not button:
 		return
 	match button.name:
