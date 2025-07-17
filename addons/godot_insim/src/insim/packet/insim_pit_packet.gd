@@ -107,5 +107,5 @@ func _set_data_from_dictionary(dict: Dictionary) -> void:
 	fuel_add = dict["FuelAdd"]
 	penalty = dict["Penalty"]
 	num_stops = dict["NumStops"]
-	tyres = dict["Tyres"]
+	tyres.assign(dict["Tyres"] as Array)
 	work = dict["Work"]
