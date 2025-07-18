@@ -947,16 +947,14 @@ enum Vote {
 	VOTE_NUM
 }
 
-enum GISRequest {
-	REQ_0 = 250,  ## Standard request ID for automatic requests
-}
-
 const VERSION := 9  ## Current supported InSim version
 const PING_INTERVAL := 31  ## Interval between pings, if no packet is received before that.
 const TIMEOUT_DELAY := 10  ## Timeout if no reply to ping within this delay.
 
 const RELAY_ADDRESS := "isrelay.lfs.net"  ## InSim Relay address
 const RELAY_PORT := 47474  ## InSim Relay port
+## The ReqI value used by Godot InSim for packets that use a non-zero value.
+const GIS_REQI := 250
 
 var lfs_connection: LFSConnection = null  ## Internal connection for TCP/UDP communication
 ## UDP connection used specifically for receiving NLP or MCI packets, see [InSimISIPacket].
@@ -1495,10 +1493,10 @@ func _handle_timeout() -> void:
 func _perform_internal_initialization() -> void:
 	print("Initializing Godot InSim...")
 	var _packet: InSimPacket = await send_packet_await_packet(
-		InSimTinyPacket.create(GISRequest.REQ_0, InSim.Tiny.TINY_SST), Packet.ISP_STA
+		InSimTinyPacket.create(GIS_REQI, InSim.Tiny.TINY_SST), Packet.ISP_STA
 	)
 	var ism_packet: InSimISMPacket = await send_packet_await_packet(
-		InSimTinyPacket.create(GISRequest.REQ_0, InSim.Tiny.TINY_ISM), Packet.ISP_ISM
+		InSimTinyPacket.create(GIS_REQI, InSim.Tiny.TINY_ISM), Packet.ISP_ISM
 	)
 	_is_host = lfs_state.flags & InSim.State.ISS_MULTI and ism_packet.host == 1
 	await get_tree().process_frame
@@ -1561,7 +1559,7 @@ func _send_keep_alive_packet() -> void:
 
 func _send_ping() -> void:
 	timeout_timer.start(TIMEOUT_DELAY)
-	send_packet(InSimTinyPacket.create(GISRequest.REQ_0, Tiny.TINY_PING))
+	send_packet(InSimTinyPacket.create(GIS_REQI, Tiny.TINY_PING))
 
 
 func _on_connected_to_host() -> void:
@@ -1783,12 +1781,12 @@ func _on_ism_packet_received(packet: InSimISMPacket) -> void:
 	if packet.req_i == 0:
 		connections.clear()
 		players.clear()
-	send_packet(InSimTinyPacket.create(GISRequest.REQ_0, InSim.Tiny.TINY_NCN))
-	send_packet(InSimTinyPacket.create(GISRequest.REQ_0, InSim.Tiny.TINY_NPL))
+	send_packet(InSimTinyPacket.create(GIS_REQI, InSim.Tiny.TINY_NCN))
+	send_packet(InSimTinyPacket.create(GIS_REQI, InSim.Tiny.TINY_NPL))
 
 
 func _on_ncn_packet_received(packet: InSimNCNPacket) -> void:
-	if packet.req_i in [0, GISRequest.REQ_0]:
+	if packet.req_i in [0, GIS_REQI]:
 		connections[packet.ucid] = Connection.create_from_ncn_packet(packet)
 		if packet.req_i == 0:
 			_send_global_buttons(packet.ucid)
@@ -1827,5 +1825,5 @@ func _on_tiny_clr_received(_packet: InSimTinyPacket) -> void:
 func _on_tiny_mpe_received(_packet: InSimTinyPacket) -> void:
 	connections.clear()
 	players.clear()
-	send_packet(InSimTinyPacket.create(GISRequest.REQ_0, InSim.Tiny.TINY_NCN))
+	send_packet(InSimTinyPacket.create(GIS_REQI, InSim.Tiny.TINY_NCN))
 #endregion
