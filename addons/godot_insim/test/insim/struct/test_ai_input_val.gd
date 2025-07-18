@@ -21,8 +21,9 @@ func test_buffer_to_struct(
 	struct.set_from_buffer(buffer)
 	var _test: GdUnitAssert = assert_int(struct.input).is_equal(input)
 	_test = assert_int(struct.time).is_equal(time)
-	_test = assert_float(struct.gis_time) \
-			.is_equal_approx(time / AIInputVal.TIME_MULTIPLIER, epsilon)
+	_test = assert_float(struct.gis_time).is_equal_approx(
+		time / AIInputVal.TIME_MULTIPLIER, epsilon
+	)
 	_test = assert_int(struct.value).is_equal(value)
 
 

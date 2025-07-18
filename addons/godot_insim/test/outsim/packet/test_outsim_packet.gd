@@ -51,77 +51,123 @@ func test_decode_packet(
 	var _test: GdUnitAssert = assert_int(packet.outsim_options).is_equal(outsim_opts)
 	var offset := 0
 	if packet.outsim_options & OutSim.OutSimOpts.OSO_HEADER:
-		_test = assert_str(packet.header) \
-				.is_equal(LFSText.lfs_bytes_to_unicode(buffer.slice(offset, offset + 4), false))
+		_test = (
+			assert_str(packet.header)
+			.is_equal(LFSText.lfs_bytes_to_unicode(buffer.slice(offset, offset + 4), false))
+		)
 		offset += 4
 	if packet.outsim_options & OutSim.OutSimOpts.OSO_ID:
 		_test = assert_int(packet.id).is_equal(buffer.decode_s32(offset))
 		offset += 4
 	if packet.outsim_options & OutSim.OutSimOpts.OSO_TIME:
 		_test = assert_int(packet.time).is_equal(buffer.decode_u32(offset))
-		_test = assert_float(packet.gis_time) \
-				.is_equal_approx(buffer.decode_u32(offset) / OutSimPacket.TIME_MULTIPLIER, epsilon)
+		_test = (
+			assert_float(packet.gis_time)
+			.is_equal_approx(buffer.decode_u32(offset) / OutSimPacket.TIME_MULTIPLIER, epsilon)
+		)
 		offset += 4
 	if packet.outsim_options & OutSim.OutSimOpts.OSO_MAIN:
-		_test = assert_array(packet.os_main.get_buffer()) \
-				.is_equal(buffer.slice(offset, offset + OutSimMain.STRUCT_SIZE))
+		_test = (
+			assert_array(packet.os_main.get_buffer())
+			.is_equal(buffer.slice(offset, offset + OutSimMain.STRUCT_SIZE))
+		)
 		offset += OutSimMain.STRUCT_SIZE
 	if packet.outsim_options & OutSim.OutSimOpts.OSO_INPUTS:
-		_test = assert_float(packet.os_inputs.throttle) \
-				.is_equal_approx(buffer.decode_float(offset), epsilon)
-		_test = assert_float(packet.os_inputs.brake) \
-				.is_equal_approx(buffer.decode_float(offset + 4), epsilon)
-		_test = assert_float(packet.os_inputs.input_steer) \
-				.is_equal_approx(buffer.decode_float(offset + 8), epsilon)
-		_test = assert_float(packet.os_inputs.clutch) \
-				.is_equal_approx(buffer.decode_float(offset + 12), epsilon)
-		_test = assert_float(packet.os_inputs.handbrake) \
-				.is_equal_approx(buffer.decode_float(offset + 16), epsilon)
+		_test = (
+			assert_float(packet.os_inputs.throttle)
+			.is_equal_approx(buffer.decode_float(offset), epsilon)
+		)
+		_test = (
+			assert_float(packet.os_inputs.brake)
+			.is_equal_approx(buffer.decode_float(offset + 4), epsilon)
+		)
+		_test = (
+			assert_float(packet.os_inputs.input_steer)
+			.is_equal_approx(buffer.decode_float(offset + 8), epsilon)
+		)
+		_test = (
+			assert_float(packet.os_inputs.clutch)
+			.is_equal_approx(buffer.decode_float(offset + 12), epsilon)
+		)
+		_test = (
+			assert_float(packet.os_inputs.handbrake)
+			.is_equal_approx(buffer.decode_float(offset + 16), epsilon)
+		)
 		offset += OutSimInputs.STRUCT_SIZE
 	if packet.outsim_options & OutSim.OutSimOpts.OSO_DRIVE:
 		_test = assert_int(packet.gear).is_equal(buffer.decode_u8(offset))
 		_test = assert_int(packet.sp1).is_equal(buffer.decode_u8(offset + 1))
 		_test = assert_int(packet.sp2).is_equal(buffer.decode_u8(offset + 2))
 		_test = assert_int(packet.sp3).is_equal(buffer.decode_u8(offset + 3))
-		_test = assert_float(packet.engine_ang_vel) \
-				.is_equal_approx(buffer.decode_float(offset + 4), epsilon)
-		_test = assert_float(packet.max_torque_at_vel) \
-				.is_equal_approx(buffer.decode_float(offset + 8), epsilon)
+		_test = (
+			assert_float(packet.engine_ang_vel)
+			.is_equal_approx(buffer.decode_float(offset + 4), epsilon)
+		)
+		_test = (
+			assert_float(packet.max_torque_at_vel)
+			.is_equal_approx(buffer.decode_float(offset + 8), epsilon)
+		)
 		offset += 12
 	if packet.outsim_options & OutSim.OutSimOpts.OSO_DISTANCE:
-		_test = assert_float(packet.current_lap_distance) \
-				.is_equal_approx(buffer.decode_float(offset), epsilon)
-		_test = assert_float(packet.indexed_distance) \
-				.is_equal_approx(buffer.decode_float(offset + 4), epsilon)
+		_test = (
+			assert_float(packet.current_lap_distance)
+			.is_equal_approx(buffer.decode_float(offset), epsilon)
+		)
+		_test = (
+			assert_float(packet.indexed_distance)
+			.is_equal_approx(buffer.decode_float(offset + 4), epsilon)
+		)
 		offset += 8
 	if packet.outsim_options & OutSim.OutSimOpts.OSO_WHEELS:
 		for i in 4:
 			var wheel := packet.os_wheels[i]
-			_test = assert_float(wheel.susp_deflect) \
-					.is_equal_approx(buffer.decode_float(offset), epsilon)
-			_test = assert_float(wheel.steer) \
-					.is_equal_approx(buffer.decode_float(offset + 4), epsilon)
-			_test = assert_float(wheel.x_force) \
-					.is_equal_approx(buffer.decode_float(offset + 8), epsilon)
-			_test = assert_float(wheel.y_force) \
-					.is_equal_approx(buffer.decode_float(offset + 12), epsilon)
-			_test = assert_float(wheel.vertical_load) \
-					.is_equal_approx(buffer.decode_float(offset + 16), epsilon)
-			_test = assert_float(wheel.ang_vel) \
-					.is_equal_approx(buffer.decode_float(offset + 20), epsilon)
-			_test = assert_float(wheel.lean_rel_to_road) \
-					.is_equal_approx(buffer.decode_float(offset + 24), epsilon)
+			_test = (
+				assert_float(wheel.susp_deflect)
+				.is_equal_approx(buffer.decode_float(offset), epsilon)
+			)
+			_test = (
+				assert_float(wheel.steer)
+				.is_equal_approx(buffer.decode_float(offset + 4), epsilon)
+			)
+			_test = (
+				assert_float(wheel.x_force)
+				.is_equal_approx(buffer.decode_float(offset + 8), epsilon)
+			)
+			_test = (
+				assert_float(wheel.y_force)
+				.is_equal_approx(buffer.decode_float(offset + 12), epsilon)
+			)
+			_test = (
+				assert_float(wheel.vertical_load)
+				.is_equal_approx(buffer.decode_float(offset + 16), epsilon)
+			)
+			_test = (
+				assert_float(wheel.ang_vel)
+				.is_equal_approx(buffer.decode_float(offset + 20), epsilon)
+			)
+			_test = (
+				assert_float(wheel.lean_rel_to_road)
+				.is_equal_approx(buffer.decode_float(offset + 24), epsilon)
+			)
 			_test = assert_int(wheel.air_temp).is_equal(buffer.decode_u8(offset + 28))
 			_test = assert_int(wheel.slip_fraction).is_equal(buffer.decode_u8(offset + 29))
 			_test = assert_int(wheel.touching).is_equal(buffer.decode_u8(offset + 30))
 			_test = assert_int(wheel.sp3).is_equal(buffer.decode_u8(offset + 31))
-			_test = assert_float(wheel.slip_ratio) \
-					.is_equal_approx(buffer.decode_float(offset + 32), epsilon)
-			_test = assert_float(wheel.tan_slip_angle) \
-					.is_equal_approx(buffer.decode_float(offset + 36), epsilon)
+			_test = (
+				assert_float(wheel.slip_ratio)
+				.is_equal_approx(buffer.decode_float(offset + 32), epsilon)
+			)
+			_test = (
+				assert_float(wheel.tan_slip_angle)
+				.is_equal_approx(buffer.decode_float(offset + 36), epsilon)
+			)
 			offset += OutSimWheel.STRUCT_SIZE
 	if packet.outsim_options & OutSim.OutSimOpts.OSO_EXTRA_1:
-		_test = assert_float(packet.steer_torque) \
-				.is_equal_approx(buffer.decode_float(offset), epsilon)
-		_test = assert_float(packet.spare) \
-				.is_equal_approx(buffer.decode_float(offset + 4), epsilon)
+		_test = (
+			assert_float(packet.steer_torque)
+			.is_equal_approx(buffer.decode_float(offset), epsilon)
+		)
+		_test = (
+			assert_float(packet.spare)
+			.is_equal_approx(buffer.decode_float(offset + 4), epsilon)
+		)

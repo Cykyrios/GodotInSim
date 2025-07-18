@@ -81,10 +81,16 @@ func _get_data_dictionary() -> Dictionary:
 
 
 func _get_pretty_text() -> String:
-	var session_type := 0 if race_laps == 0 and qual_mins == 0 \
-			else 1 if race_laps == 0 else 2
-	var session := "Practice" if session_type == 0 else "Qualifying" if session_type == 1 \
-			else "Race"
+	var session_type := (
+		0 if race_laps == 0 and qual_mins == 0
+		else 1 if race_laps == 0
+		else 2
+	)
+	var session := (
+		"Practice" if session_type == 0
+		else "Qualifying" if session_type == 1
+		else "Race"
+	)
 	var duration := (
 		"" if session_type == 0
 		else " (%d minutes)" % [qual_mins] if session_type == 1
@@ -95,7 +101,11 @@ func _get_pretty_text() -> String:
 			"laps" if race_laps <= 190 else "hour%s" % ["" if race_laps == 191 else "s"]
 		]
 	)
-	var wind_strength := "no" if wind == 0 else "low" if wind == 1 else "high"
+	var wind_strength := (
+		"no" if wind == 0
+		else "low" if wind == 1
+		else "high"
+	)
 	return "%s started%s at %s (%s wind)" % [session, duration, track, wind_strength]
 
 

@@ -21,12 +21,14 @@ func _ready() -> void:
 
 
 func add_host_info(host_info: HostInfo) -> void:
-	var license := "D" if not host_info.flags & InSim.RelayFlag.HOS_LICENSED \
-			else "S%d" % [
-				1 if host_info.flags & InSim.RelayFlag.HOS_S1 \
-				else 2 if host_info.flags & InSim.RelayFlag.HOS_S2 \
-				else 3
-			]
+	var license := (
+		"D" if not host_info.flags & InSim.RelayFlag.HOS_LICENSED
+		else "S%d" % [
+			1 if host_info.flags & InSim.RelayFlag.HOS_S1
+			else 2 if host_info.flags & InSim.RelayFlag.HOS_S2
+			else 3
+		]
+	)
 	var cruise := "Yes" if host_info.flags & InSim.RelayFlag.HOS_CRUISE else "No"
 	var spec_pass := "Yes" if host_info.flags & InSim.RelayFlag.HOS_SPECPASS else "No"
 	add_host_info_fields(

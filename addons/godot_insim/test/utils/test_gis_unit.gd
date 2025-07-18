@@ -16,8 +16,9 @@ func test_convert_acceleration(
 				GISUnit.Acceleration.METER_PER_SECOND_SQUARED, 9.81],
 	]
 ) -> void:
-	var _test := assert_float(GISUnit.convert_acceleration(value, unit_in, unit_out)) \
-			.is_equal_approx(expected, epsilon)
+	var _test := assert_float(
+		GISUnit.convert_acceleration(value, unit_in, unit_out)
+	).is_equal_approx(expected, epsilon)
 
 
 @warning_ignore("unused_parameter")
@@ -28,8 +29,9 @@ func test_convert_angle(
 		[10.0, GISUnit.Angle.RADIAN, GISUnit.Angle.DEGREE, 572.957_795_1],
 	]
 ) -> void:
-	var _test := assert_float(GISUnit.convert_angle(value, unit_in, unit_out)) \
-			.is_equal_approx(expected, epsilon)
+	var _test := assert_float(
+		GISUnit.convert_angle(value, unit_in, unit_out)
+	).is_equal_approx(expected, epsilon)
 
 
 @warning_ignore("unused_parameter")
@@ -40,8 +42,9 @@ func test_convert_angular_speed(
 		[1000.0, GISUnit.AngularSpeed.RPM, GISUnit.AngularSpeed.RADIAN_PER_SECOND, 104.719_755],
 	]
 ) -> void:
-	var _test := assert_float(GISUnit.convert_angular_speed(value, unit_in, unit_out)) \
-			.is_equal_approx(expected, epsilon)
+	var _test := assert_float(
+		GISUnit.convert_angular_speed(value, unit_in, unit_out)
+	).is_equal_approx(expected, epsilon)
 
 
 @warning_ignore("unused_parameter")
@@ -51,8 +54,9 @@ func test_convert_force(
 		[10.0, GISUnit.Force.NEWTON, GISUnit.Force.NEWTON, 10.0],
 	]
 ) -> void:
-	var _test := assert_float(GISUnit.convert_force(value, unit_in, unit_out)) \
-			.is_equal_approx(expected, epsilon)
+	var _test := assert_float(
+		GISUnit.convert_force(value, unit_in, unit_out)
+	).is_equal_approx(expected, epsilon)
 
 
 @warning_ignore("unused_parameter")
@@ -64,8 +68,9 @@ func test_convert_length(
 		[1.0, GISUnit.Length.INCH, GISUnit.Length.MILLIMETER, 25.4],
 	]
 ) -> void:
-	var _test := assert_float(GISUnit.convert_length(value, unit_in, unit_out)) \
-			.is_equal_approx(expected, epsilon)
+	var _test := assert_float(
+		GISUnit.convert_length(value, unit_in, unit_out)
+	).is_equal_approx(expected, epsilon)
 
 
 @warning_ignore("unused_parameter")
@@ -76,8 +81,9 @@ func test_convert_mass(
 		[10.0, GISUnit.Mass.POUND, GISUnit.Mass.TONNE, 0.004_535_923_7],
 	]
 ) -> void:
-	var _test := assert_float(GISUnit.convert_mass(value, unit_in, unit_out)) \
-			.is_equal_approx(expected, epsilon)
+	var _test := assert_float(
+		GISUnit.convert_mass(value, unit_in, unit_out)
+	).is_equal_approx(expected, epsilon)
 
 
 @warning_ignore("unused_parameter")
@@ -87,8 +93,9 @@ func test_convert_power(
 		[10.0, GISUnit.Power.WATT, GISUnit.Power.WATT, 10.0],
 	]
 ) -> void:
-	var _test := assert_float(GISUnit.convert_power(value, unit_in, unit_out)) \
-			.is_equal_approx(expected, epsilon)
+	var _test := assert_float(
+		GISUnit.convert_power(value, unit_in, unit_out)
+	).is_equal_approx(expected, epsilon)
 
 
 @warning_ignore("unused_parameter")
@@ -100,8 +107,9 @@ func test_convert_speed(
 		[100.0, GISUnit.Speed.MPH, GISUnit.Speed.KPH, 160.9344],
 	]
 ) -> void:
-	var _test := assert_float(GISUnit.convert_speed(value, unit_in, unit_out)) \
-			.is_equal_approx(expected, epsilon)
+	var _test := assert_float(
+		GISUnit.convert_speed(value, unit_in, unit_out)
+	).is_equal_approx(expected, epsilon)
 
 
 @warning_ignore("unused_parameter")
@@ -113,5 +121,6 @@ func test_convert_duration(
 		[2.5, GISUnit.Duration.HOUR, GISUnit.Duration.MINUTE, 150.0],
 	]
 ) -> void:
-	var _test := assert_float(GISUnit.convert_duration(value, unit_in, unit_out)) \
-			.is_equal_approx(expected, epsilon)
+	var _test := assert_float(
+		GISUnit.convert_duration(value, unit_in, unit_out)
+	).is_equal_approx(expected, epsilon)

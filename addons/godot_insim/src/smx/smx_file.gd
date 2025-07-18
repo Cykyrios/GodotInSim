@@ -186,8 +186,11 @@ func save_to_file(path: String) -> void:
 		return
 	var objects_size := 0
 	for object in objects:
-		objects_size += SMXObject.STRUCT_SIZE + object.num_tris * SMXTriangle.STRUCT_SIZE \
-				+ object.num_points * SMXPoint.STRUCT_SIZE
+		objects_size += (
+			SMXObject.STRUCT_SIZE
+			+ object.num_tris * SMXTriangle.STRUCT_SIZE
+			+ object.num_points * SMXPoint.STRUCT_SIZE
+		)
 	resize_buffer(HEADER_SIZE + objects_size + FOOTER_SIZE + 4 * num_cp)
 	var _string := add_string(6, "LFSSMX", false)
 	add_byte(game_version)

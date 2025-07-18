@@ -31,11 +31,15 @@ func test_decode_packet(buffer: PackedByteArray, test_parameters := [
 	_test = assert_int(packet.req_i).is_equal(buffer.decode_u8(2))
 	_test = assert_int(packet.plid).is_equal(buffer.decode_u8(3))
 	_test = assert_int(packet.race_time).is_equal(buffer.decode_u32(4))
-	_test = assert_float(packet.gis_race_time) \
-			.is_equal_approx(buffer.decode_u32(4) / InSimFINPacket.TIME_MULTIPLIER, epsilon)
+	_test = (
+		assert_float(packet.gis_race_time)
+		.is_equal_approx(buffer.decode_u32(4) / InSimFINPacket.TIME_MULTIPLIER, epsilon)
+	)
 	_test = assert_int(packet.best_lap).is_equal(buffer.decode_u32(8))
-	_test = assert_float(packet.gis_best_lap) \
-			.is_equal_approx(buffer.decode_u32(8) / InSimFINPacket.TIME_MULTIPLIER, epsilon)
+	_test = (
+		assert_float(packet.gis_best_lap)
+		.is_equal_approx(buffer.decode_u32(8) / InSimFINPacket.TIME_MULTIPLIER, epsilon)
+	)
 	_test = assert_int(packet.sp_a).is_equal(buffer.decode_u8(12))
 	_test = assert_int(packet.num_stops).is_equal(buffer.decode_u8(13))
 	_test = assert_int(packet.confirm).is_equal(buffer.decode_u8(14))

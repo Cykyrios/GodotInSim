@@ -12,8 +12,9 @@ func test_camber_from_LFS_value(input: int, expected: float, test_parameters := 
 	[45, 0.0],
 	[90, 4.5],
 ]) -> void:
-	var _test := assert_float(SETFile.camber_from_LFS_value(input)) \
-			.is_equal_approx(expected, epsilon)
+	var _test := (
+		assert_float(SETFile.camber_from_LFS_value(input)).is_equal_approx(expected, epsilon)
+	)
 
 
 @warning_ignore("unused_parameter")
@@ -30,8 +31,9 @@ func test_gear_ratio_from_LFS_value(input: int, expected: float, test_parameters
 	[0, 0.5],
 	[65534, 7.5],
 ]) -> void:
-	var _test := assert_float(SETFile.gear_ratio_from_LFS_value(input)) \
-			.is_equal_approx(expected, epsilon)
+	var _test := (
+		assert_float(SETFile.gear_ratio_from_LFS_value(input)).is_equal_approx(expected, epsilon)
+	)
 
 
 @warning_ignore("unused_parameter")
@@ -48,8 +50,7 @@ func test_toe_from_LFS_value(input: int, expected: float, test_parameters := [
 	[9, 0.0],
 	[18, 0.9],
 ]) -> void:
-	var _test := assert_float(SETFile.toe_from_LFS_value(input)) \
-			.is_equal_approx(expected, epsilon)
+	var _test := assert_float(SETFile.toe_from_LFS_value(input)).is_equal_approx(expected, epsilon)
 
 
 @warning_ignore("unused_parameter")

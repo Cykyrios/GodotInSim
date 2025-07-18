@@ -115,11 +115,13 @@ func _init(lcs_mask := 0) -> void:
 
 
 func _to_string() -> String:
-	return "Signals:" + "%d" % [signals if set_signals else -1] \
-			+ ", Flash:" + "%d" % [flash if set_flash else -1] \
-			+ ", Headlights:" + "%d" % [headlights if set_headlights else -1] \
-			+ ", Horn:" + "%d" % [horn if set_horn else -1] \
-			+ ", Siren:" + "%d" % [siren if set_siren else -1]
+	return (
+		"Signals:%d" % [signals if set_signals else -1]
+		+ ", Flash:%d" % [flash if set_flash else -1]
+		+ ", Headlights:%d" % [headlights if set_headlights else -1]
+		+ ", Horn:%d" % [horn if set_horn else -1]
+		+ ", Siren:%d" % [siren if set_siren else -1]
+	)
 
 
 ## Returns the integer value corresponding to the values set.

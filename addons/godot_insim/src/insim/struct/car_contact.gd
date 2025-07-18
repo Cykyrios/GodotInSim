@@ -45,10 +45,11 @@ var gis_steer := 0.0  ## Steering angle in radians (positive angle when steering
 
 
 func _to_string() -> String:
-	return "PLID:%d, Info:%d, Sp2:%d, Steer:%d, ThrBrk:%d, CluHan:%d, GearSp:%d" % \
-			[plid, info, sp2, steer, throttle_brake, clutch_handbrake, ((gear << 4) + spare)] \
-			+ ", Speed:%d, Direction:%d, Heading:%d, AccelF:%d, AccelR:%d, X:%d, Y:%d" % \
-			[speed, direction, heading, accel_forward, accel_right, x, y]
+	return "PLID:%d, Info:%d, Sp2:%d, Steer:%d, ThrBrk:%d, CluHan:%d, GearSp:%d" % [
+		plid, info, sp2, steer, throttle_brake, clutch_handbrake, ((gear << 4) + spare)
+	] + ", Speed:%d, Direction:%d, Heading:%d, AccelF:%d, AccelR:%d, X:%d, Y:%d" % [
+		speed, direction, heading, accel_forward, accel_right, x, y
+	]
 
 
 func _get_buffer() -> PackedByteArray:

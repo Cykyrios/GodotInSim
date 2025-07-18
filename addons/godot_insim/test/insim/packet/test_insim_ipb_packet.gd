@@ -79,5 +79,6 @@ func test_trim_packet() -> void:
 		ips.append(ip)
 	var count := 2
 	var packet := InSimIPBPacket.create(count, ips)
-	var _test := assert_int(packet.size) \
-			.is_equal(InSimIPBPacket.PACKET_BASE_SIZE + count * IPAddress.STRUCT_SIZE)
+	var _test := assert_int(packet.size).is_equal(
+		InSimIPBPacket.PACKET_BASE_SIZE + count * IPAddress.STRUCT_SIZE
+	)

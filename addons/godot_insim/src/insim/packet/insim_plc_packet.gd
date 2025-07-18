@@ -54,13 +54,23 @@ func _get_pretty_text() -> String:
 			continue
 		if cars & InSim.Car.values()[i]:
 			car_array.append((InSim.Car.keys()[i] as String).split("_")[-1])
-	var car_list := "NONE" if cars == InSim.Car.CAR_NONE else "ALL" if cars == InSim.Car.CAR_ALL \
-			else ""
+	var car_list := (
+		"NONE" if cars == InSim.Car.CAR_NONE
+		else "ALL" if cars == InSim.Car.CAR_ALL
+		else ""
+	)
 	if car_list.is_empty():
 		for i in car_array.size():
-			car_list += "%s%s" % ["" if i == 0 else ", ", car_array[i]]
-	return "Allowed cars for %s: %s" % ["everyone" if ucid == 255 else "host" if ucid == 0 \
-			else "UCID %d" % [ucid], car_list]
+			car_list += "%s%s" % [
+				"" if i == 0 else ", ",
+				car_array[i],
+			]
+	return "Allowed cars for %s: %s" % [
+		"everyone" if ucid == 255
+		else "host" if ucid == 0
+		else "UCID %d" % [ucid],
+		car_list,
+	]
 
 
 func _set_data_from_dictionary(dict: Dictionary) -> void:

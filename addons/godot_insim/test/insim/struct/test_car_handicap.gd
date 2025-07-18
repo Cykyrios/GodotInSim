@@ -20,8 +20,9 @@ func test_buffer_to_struct(
 	struct.set_from_buffer(buffer)
 	var _test: GdUnitAssert = assert_int(struct.h_mass).is_equal(h_mass)
 	_test = assert_int(struct.h_tres).is_equal(h_tres)
-	_test = assert_float(struct.gis_mass) \
-			.is_equal_approx(struct.h_mass / CarHandicap.MASS_MULTIPLIER, epsilon)
+	_test = assert_float(struct.gis_mass).is_equal_approx(
+		struct.h_mass / CarHandicap.MASS_MULTIPLIER, epsilon
+	)
 
 
 @warning_ignore("unused_parameter")

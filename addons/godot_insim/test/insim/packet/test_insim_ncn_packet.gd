@@ -24,10 +24,12 @@ func test_decode_packet(buffer: PackedByteArray, test_parameters := buffers) -> 
 	_test = assert_int(packet.type).is_equal(buffer.decode_u8(1))
 	_test = assert_int(packet.req_i).is_equal(buffer.decode_u8(2))
 	_test = assert_int(packet.ucid).is_equal(buffer.decode_u8(3))
-	_test = assert_str(packet.user_name) \
-			.is_equal(LFSText.lfs_bytes_to_unicode(buffer.slice(4, 28)))
-	_test = assert_str(packet.player_name) \
-			.is_equal(LFSText.lfs_bytes_to_unicode(buffer.slice(28, 52)))
+	_test = assert_str(packet.user_name).is_equal(
+		LFSText.lfs_bytes_to_unicode(buffer.slice(4, 28))
+	)
+	_test = assert_str(packet.player_name).is_equal(
+		LFSText.lfs_bytes_to_unicode(buffer.slice(28, 52))
+	)
 	_test = assert_int(packet.admin).is_equal(buffer.decode_u8(52))
 	_test = assert_int(packet.total).is_equal(buffer.decode_u8(53))
 	_test = assert_int(packet.flags).is_equal(buffer.decode_u8(54))

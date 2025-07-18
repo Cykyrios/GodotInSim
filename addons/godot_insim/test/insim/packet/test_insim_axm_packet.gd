@@ -91,5 +91,7 @@ func test_trim_packet() -> void:
 		objects.append(object)
 	var count := 2
 	var packet := InSimAXMPacket.create(count, 0, InSim.PMOAction.PMO_ADD_OBJECTS, 0, objects)
-	var _test := assert_int(packet.size) \
-			.is_equal(InSimAXMPacket.PACKET_BASE_SIZE + count * ObjectInfo.STRUCT_SIZE)
+	var _test := (
+		assert_int(packet.size)
+		.is_equal(InSimAXMPacket.PACKET_BASE_SIZE + count * ObjectInfo.STRUCT_SIZE)
+	)

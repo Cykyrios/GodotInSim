@@ -46,8 +46,7 @@ func test_decode_packet(buffer: PackedByteArray, test_parameters := buffers) -> 
 	_test = assert_int(packet.race_laps).is_equal(buffer.decode_u8(17))
 	_test = assert_int(packet.sp2).is_equal(buffer.decode_u8(18))
 	_test = assert_int(packet.server_status).is_equal(buffer.decode_u8(19))
-	_test = assert_str(packet.track) \
-			.is_equal(LFSText.lfs_bytes_to_unicode(buffer.slice(20, 26)))
+	_test = assert_str(packet.track).is_equal(LFSText.lfs_bytes_to_unicode(buffer.slice(20, 26)))
 	_test = assert_int(packet.weather).is_equal(buffer.decode_u8(26))
 	_test = assert_int(packet.wind).is_equal(buffer.decode_u8(27))
 	packet.fill_buffer()

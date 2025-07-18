@@ -22,8 +22,9 @@ var gis_angles := Vector3.ZERO
 
 
 func _to_string() -> String:
-	return "AngVel:%v, Heading:%f, Pitch:%f, Roll:%f, Accel:%v, Vel:%v, Pos:%v" % \
-			[ang_vel, heading, pitch, roll, accel, vel, pos]
+	return "AngVel:%v, Heading:%f, Pitch:%f, Roll:%f, Accel:%v, Vel:%v, Pos:%v" % [
+		ang_vel, heading, pitch, roll, accel, vel, pos
+	]
 
 
 ## Returns the buffer corresponding to the current data.

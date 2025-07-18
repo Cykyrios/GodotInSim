@@ -38,20 +38,25 @@ func test_buffer_to_struct(
 	_test = assert_int(struct.accel_right).is_equal(accel_right)
 	_test = assert_int(struct.x).is_equal(x)
 	_test = assert_int(struct.y).is_equal(y)
-	_test = assert_vector(struct.gis_position) \
-			.is_equal_approx(Vector2(struct.x, struct.y) \
-			/ CarContact.POSITION_MULTIPLIER, epsilon * Vector2.ONE)
-	_test = assert_float(struct.gis_speed) \
-			.is_equal_approx(struct.speed / CarContact.SPEED_MULTIPLIER, epsilon)
-	_test = assert_float(struct.gis_direction) \
-			.is_equal_approx(struct.direction / CarContact.ANGLE_MULTIPLIER, epsilon)
-	_test = assert_vector(struct.gis_acceleration) \
-			.is_equal_approx(Vector2(struct.accel_right, struct.accel_forward) \
-			/ CarContact.SPEED_MULTIPLIER, epsilon * Vector2.ONE)
-	_test = assert_float(struct.gis_heading) \
-			.is_equal_approx(struct.heading / CarContact.ANGLE_MULTIPLIER, epsilon)
-	_test = assert_float(struct.gis_steer) \
-			.is_equal_approx(struct.steer / CarContact.STEER_MULTIPLIER, epsilon)
+	_test = assert_vector(struct.gis_position).is_equal_approx(
+		Vector2(struct.x, struct.y) / CarContact.POSITION_MULTIPLIER, epsilon * Vector2.ONE
+	)
+	_test = assert_float(struct.gis_speed).is_equal_approx(
+		struct.speed / CarContact.SPEED_MULTIPLIER, epsilon
+	)
+	_test = assert_float(struct.gis_direction).is_equal_approx(
+		struct.direction / CarContact.ANGLE_MULTIPLIER, epsilon
+	)
+	_test = assert_vector(struct.gis_acceleration).is_equal_approx(
+		Vector2(struct.accel_right, struct.accel_forward) / CarContact.SPEED_MULTIPLIER,
+		epsilon * Vector2.ONE,
+	)
+	_test = assert_float(struct.gis_heading).is_equal_approx(
+		struct.heading / CarContact.ANGLE_MULTIPLIER, epsilon
+	)
+	_test = assert_float(struct.gis_steer).is_equal_approx(
+		struct.steer / CarContact.STEER_MULTIPLIER, epsilon
+	)
 
 
 @warning_ignore("unused_parameter")
@@ -97,8 +102,8 @@ func test_gis_struct_to_buffer(
 	struct.gis_speed = speed / CarContact.SPEED_MULTIPLIER
 	struct.gis_direction = direction / CarContact.ANGLE_MULTIPLIER
 	struct.gis_heading = heading / CarContact.ANGLE_MULTIPLIER
-	struct.gis_acceleration = Vector2(accel_right, accel_forward) \
-			/ CarContact.ACCELERATION_MULTIPLIER
-	struct.gis_position = Vector2(x, y) \
-			/ CarContact.POSITION_MULTIPLIER
+	struct.gis_acceleration = (
+		Vector2(accel_right, accel_forward) / CarContact.ACCELERATION_MULTIPLIER
+	)
+	struct.gis_position = Vector2(x, y) / CarContact.POSITION_MULTIPLIER
 	var _test := assert_array(struct.get_buffer(true)).is_equal(buffer)

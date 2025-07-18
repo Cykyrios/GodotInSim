@@ -59,9 +59,9 @@ func _get_data_dictionary() -> Dictionary:
 
 
 func _get_pretty_text() -> String:
-	return "Contact between PLID %d and PLID %d at coordinates %.1v (closing speed %s m/s)" % \
-			[car_a.plid, car_b.plid, 0.5 * (car_a.gis_position + car_b.gis_position),
-			gis_closing_speed]
+	return "Contact between PLID %d and PLID %d at coordinates %.1v (closing speed %s m/s)" % [
+		car_a.plid, car_b.plid, 0.5 * (car_a.gis_position + car_b.gis_position), gis_closing_speed
+	]
 
 
 func _set_data_from_dictionary(dict: Dictionary) -> void:

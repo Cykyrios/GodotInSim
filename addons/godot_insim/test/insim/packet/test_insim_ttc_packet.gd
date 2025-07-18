@@ -13,10 +13,8 @@ var buffers := [
 func test_receivable_sendable() -> void:
 	for subtype in InSim.TTC.size():
 		var packet := InSimTTCPacket.create(0, subtype)
-		var _test := assert_bool(packet.receivable) \
-				.is_equal(subtype in InSimTTCPacket.RECEIVABLES)
-		_test = assert_bool(packet.sendable) \
-				.is_equal(subtype in InSimTTCPacket.SENDABLES)
+		var _test := assert_bool(packet.receivable).is_equal(subtype in InSimTTCPacket.RECEIVABLES)
+		_test = assert_bool(packet.sendable).is_equal(subtype in InSimTTCPacket.SENDABLES)
 
 
 @warning_ignore("unused_parameter")

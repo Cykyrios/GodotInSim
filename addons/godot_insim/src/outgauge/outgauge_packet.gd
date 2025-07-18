@@ -104,8 +104,9 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	super(packet)
 	var packet_size := packet.size()
 	if packet_size != SIZE_WITHOUT_ID and packet_size != SIZE_WITH_ID:
-		push_error("OutGauge packet size incorrect: expected %d or %d, got %d." % \
-				[SIZE_WITHOUT_ID, SIZE_WITH_ID, packet_size])
+		push_error("OutGauge packet size incorrect: expected %d or %d, got %d." % [
+			SIZE_WITHOUT_ID, SIZE_WITH_ID, packet_size
+		])
 		return
 	time = read_unsigned()
 	gis_time = time / TIME_MULTIPLIER

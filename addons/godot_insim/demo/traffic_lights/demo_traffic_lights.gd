@@ -60,8 +60,9 @@ func _ready() -> void:
 	var axm_packets := layout.get_axm_packets()
 	for packet in axm_packets:
 		# Forces the object optimisation flag, as it is required to be able to control lights
-		packet.pmo_flags = (packet.pmo_flags & ~InSim.PMOFlags.PMO_FILE_END) \
-				| InSim.PMOFlags.PMO_FILE_END
+		packet.pmo_flags = (
+			(packet.pmo_flags & ~InSim.PMOFlags.PMO_FILE_END) | InSim.PMOFlags.PMO_FILE_END
+		)
 		insim.send_packet(packet)
 
 	timer = Timer.new()
@@ -87,10 +88,10 @@ func set_lights(light_groups: Array[int], light_state: LightColor) -> void:
 			InSim.OCOAction.OCO_LIGHTS_SET,
 			InSim.AXOIndex.AXO_START_LIGHTS,
 			group,
-			0 if light_state == LightColor.OFF \
-					else 1 if light_state == LightColor.RED \
-					else 2 if light_state == LightColor.AMBER \
-					else 8
+			0 if light_state == LightColor.OFF
+			else 1 if light_state == LightColor.RED
+			else 2 if light_state == LightColor.AMBER
+			else 8
 		))
 
 

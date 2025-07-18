@@ -15,8 +15,9 @@ var handbrake := 0.0  ## Handbrake input from 0 to 1
 
 
 func _to_string() -> String:
-	return "Throttle:%f, Brake:%f, InputSteer:%f, Clutch:%f, HandBrake:%f" % \
-			[throttle, brake, input_steer, clutch, handbrake]
+	return "Throttle:%f, Brake:%f, InputSteer:%f, Clutch:%f, HandBrake:%f" % [
+		throttle, brake, input_steer, clutch, handbrake
+	]
 
 
 ## Sets the properties from the given [param buffer].

@@ -23,10 +23,8 @@ var sendable_buffers := [
 func test_receivable_sendable() -> void:
 	for subtype in InSim.Tiny.size():
 		var packet := InSimTinyPacket.create(0, subtype)
-		var _test := assert_bool(packet.receivable) \
-				.is_equal(subtype in InSimTinyPacket.RECEIVABLES)
-		_test = assert_bool(packet.sendable) \
-				.is_equal(subtype in InSimTinyPacket.SENDABLES)
+		var _test := assert_bool(packet.receivable).is_equal(subtype in InSimTinyPacket.RECEIVABLES)
+		_test = assert_bool(packet.sendable).is_equal(subtype in InSimTinyPacket.SENDABLES)
 
 
 @warning_ignore("unused_parameter")

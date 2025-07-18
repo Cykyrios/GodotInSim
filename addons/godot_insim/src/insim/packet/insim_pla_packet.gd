@@ -41,8 +41,10 @@ func _get_data_dictionary() -> Dictionary:
 
 
 func _get_pretty_text() -> String:
-	var fact_string := "%s the pit lane" % ["exited" if fact == InSim.PitLane.PITLANE_EXIT \
-			else "entered"]
+	var fact_string := "%s the pit lane" % [
+		"exited" if fact == InSim.PitLane.PITLANE_EXIT
+		else "entered"
+	]
 	match fact:
 		InSim.PitLane.PITLANE_NO_PURPOSE:
 			fact_string += " for no purpose"

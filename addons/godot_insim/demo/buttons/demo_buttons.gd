@@ -324,11 +324,13 @@ func update_last_clicker_button(clicker_ucid: int) -> void:
 func update_player_name_button(ucid: int) -> void:
 	var button := insim.get_button_by_name("auto/player_name", ucid)
 	if button and button.name == "auto/player_name":
-		button.text = "ID=%d, name=%s" % [
-			button.click_id,
-			button.name,
-		] if button.text == insim.get_connection_nickname(button.ucid) \
-				else insim.get_connection_nickname(button.ucid)
+		button.text = (
+			"ID=%d, name=%s" % [
+				button.click_id,
+				button.name,
+			] if button.text == insim.get_connection_nickname(button.ucid)
+			else insim.get_connection_nickname(button.ucid)
+		)
 		insim.send_packet(button.get_btn_packet(true))
 
 
@@ -365,9 +367,9 @@ func _on_btc_received(packet: InSimBTCPacket) -> void:
 	var button := insim.get_button_by_id(packet.click_id, packet.ucid)
 	var flags := packet.click_flags
 	var message := "You clicked %s (%s)." % [
-		"the ^2Click^8 button in the Manual Buttons category" if packet.click_id == 10 \
-				else "the player name button" if button and button.name == "auto/player_name" \
-				else "a button",
+		"the ^2Click^8 button in the Manual Buttons category" if packet.click_id == 10
+		else "the player name button" if button and button.name == "auto/player_name"
+		else "a button",
 		"%s click%s%s" % [
 			"right" if flags & InSim.ButtonClick.ISB_RMB else "left",
 			" + Ctrl" if flags & InSim.ButtonClick.ISB_CTRL else "",
@@ -390,16 +392,20 @@ func _on_btc_received(packet: InSimBTCPacket) -> void:
 
 func _on_btt_received(packet: InSimBTTPacket) -> void:
 	var message := "You typed %s in %s." % [
-		"\"%s\"" % [packet.text + LFSText.get_color_code(LFSText.ColorCode.DEFAULT)] \
-				if not packet.text.is_empty() else "nothing",
-		"the ^6Type^8 button in the Manual Button category" if packet.click_id == 11 \
-				else "a button",
+		"\"%s\"" % [
+			packet.text + LFSText.get_color_code(LFSText.ColorCode.DEFAULT)
+		] if not packet.text.is_empty() else "nothing",
+		"the ^6Type^8 button in the Manual Button category" if packet.click_id == 11
+		else "a button",
 	]
 	if insim.lfs_state.flags & InSim.State.ISS_MULTI:
 		insim.send_message_to_connection(
 			255,
-			message.replace("You", insim.get_connection_nickname(packet.ucid) \
-					+ LFSText.get_color_code(LFSText.ColorCode.DEFAULT)),
+			message.replace(
+				"You",
+				insim.get_connection_nickname(packet.ucid)
+				+ LFSText.get_color_code(LFSText.ColorCode.DEFAULT),
+			),
 			InSim.MessageSound.SND_MESSAGE
 		)
 	else:

@@ -55,8 +55,10 @@ func test_decode_packet(buffer: PackedByteArray, test_parameters := buffers) -> 
 	_test = assert_int(packet.ingame_cam).is_equal(buffer.decode_u8(23))
 	_test = assert_float(packet.fov).is_equal_approx(buffer.decode_float(24), epsilon)
 	_test = assert_int(packet.time).is_equal(buffer.decode_u16(28))
-	_test = assert_float(packet.gis_time) \
-			.is_equal_approx(buffer.decode_u16(28) / InSimCPPPacket.TIME_MULTIPLIER, epsilon)
+	_test = (
+		assert_float(packet.gis_time)
+		.is_equal_approx(buffer.decode_u16(28) / InSimCPPPacket.TIME_MULTIPLIER, epsilon)
+	)
 	_test = assert_int(packet.flags).is_equal(buffer.decode_u16(30))
 	packet.fill_buffer()
 	_test = assert_array(packet.buffer).is_equal(buffer)

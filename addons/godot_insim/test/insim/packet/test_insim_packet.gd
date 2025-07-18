@@ -25,8 +25,9 @@ func test_decode_packet(buffer: PackedByteArray, test_parameters := [
 			255, 227, 251, 64, 7, 34, 0, 0, 220, 240, 0, 16, 8, 50, 40, 1, 243, 6, 252, 93, 7])],
 ]) -> void:
 	var packet := InSimPacket.create_packet_from_buffer(buffer)
-	var _test: GdUnitAssert= assert_int(packet.size) \
-			.is_equal(buffer[0] * InSimPacket.SIZE_MULTIPLIER)
+	var _test: GdUnitAssert = assert_int(packet.size).is_equal(
+		buffer[0] * InSimPacket.SIZE_MULTIPLIER
+	)
 	_test = assert_int(packet.type).is_equal(buffer[1])
 	_test = assert_int(packet.req_i).is_equal(buffer[2])
 	_test = assert_array(packet.buffer).is_equal(buffer)

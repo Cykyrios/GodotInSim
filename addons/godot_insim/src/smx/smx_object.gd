@@ -32,8 +32,9 @@ var triangles: Array[SMXTriangle] = []
 
 
 func _to_string() -> String:
-	return "Centre: %v, Radius: %d, Num Points: %d, Num Triangles: %d" % \
-			[Vector3i(centre_x, centre_y, centre_z), radius, num_points, num_tris]
+	return "Centre: %v, Radius: %d, Num Points: %d, Num Triangles: %d" % [
+		Vector3i(centre_x, centre_y, centre_z), radius, num_points, num_tris
+	]
 
 
 ## Updates the [member centre] vector from raw values.

@@ -60,8 +60,8 @@ func _get_data_dictionary() -> Dictionary:
 func _get_pretty_text() -> String:
 	return ("UCID %d: %s" % [
 		ucid,
-		"join request rejected" if action == InSim.JRRAction.JRR_REJECT \
-		else "join request accepted"
+		"join request rejected" if action == InSim.JRRAction.JRR_REJECT
+		else "join request accepted",
 	]) if plid == 0 else ("PLID %d: car reset (%s, %s)" % [
 		plid,
 		"repaired" if action == InSim.JRRAction.JRR_RESET else "no repair",

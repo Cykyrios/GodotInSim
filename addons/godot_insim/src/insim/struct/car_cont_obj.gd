@@ -29,8 +29,9 @@ var gis_speed := 0.0  ## Speed in m/s
 
 
 func _to_string() -> String:
-	return "Direction:%d, Heading:%d, Speed:%d, Zbyte:%d, X:%d, Y:%d" % \
-			[direction, heading, speed, z, x, y]
+	return "Direction:%d, Heading:%d, Speed:%d, Zbyte:%d, X:%d, Y:%d" % [
+		direction, heading, speed, z, x, y
+	]
 
 
 func _get_buffer() -> PackedByteArray:

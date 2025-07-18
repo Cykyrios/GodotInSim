@@ -37,9 +37,9 @@ var gis_angular_velocity := 0.0  ## Angular velocity in rad/s
 
 
 func _to_string() -> String:
-	return "Node:%d, Lap:%d, PLID:%d, Pos:%d, Info:%d, Sp3:%d, X:%d, Y:%d, Z:%d" % \
-			[node, lap, plid, position, info, sp3, x, y, z] \
-			+ ", Speed:%d, Direction:%d, Heading:%d, AngVel:%d" % [speed, direction, heading, ang_vel]
+	return "Node:%d, Lap:%d, PLID:%d, Pos:%d, Info:%d, Sp3:%d, X:%d, Y:%d, Z:%d" % [
+		node, lap, plid, position, info, sp3, x, y, z
+	] + ", Speed:%d, Direction:%d, Heading:%d, AngVel:%d" % [speed, direction, heading, ang_vel]
 
 
 func _get_buffer() -> PackedByteArray:

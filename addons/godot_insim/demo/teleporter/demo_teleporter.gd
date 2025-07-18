@@ -116,8 +116,10 @@ func _on_sta_received(packet: InSimSTAPacket) -> void:
 	var open_config := true if (
 		current_track.ends_with("X") or current_track.ends_with("Y")
 	) else false
-	var spawn_directory := SPAWN_DIR_EDITOR if Engine.is_editor_hint() \
-			else ProjectSettings.globalize_path(SPAWN_DIR_STANDALONE)
+	var spawn_directory := (
+		SPAWN_DIR_EDITOR if Engine.is_editor_hint()
+		else ProjectSettings.globalize_path(SPAWN_DIR_STANDALONE)
+	)
 	var spawn_file := spawn_directory.path_join(
 		"%s.txt" % [current_track.substr(0, 2) if open_config else current_track]
 	)

@@ -22,8 +22,10 @@ func test_add_buffer(buffer: PackedByteArray, test_parameters := [
 
 func test_add_buffer_empty_buffer() -> void:
 	packet.resize_buffer(10)
-	var _test := await assert_error(func() -> void: packet.add_buffer(PackedByteArray())) \
-			.is_push_error("Cannot add data, buffer is empty")
+	var _test := await (
+		assert_error(func() -> void: packet.add_buffer(PackedByteArray()))
+		.is_push_error("Cannot add data, buffer is empty")
+	)
 
 
 func test_add_buffer_not_enough_space() -> void:
@@ -98,8 +100,7 @@ func test_add_string() -> void:
 	var text := "test"
 	packet.resize_buffer(buffer_size)
 	var _buffer := packet.add_string(buffer_size, text)
-	var _test: GdUnitAssert = assert_str(LFSText.lfs_bytes_to_unicode(packet.buffer)) \
-			.is_equal(text)
+	var _test: GdUnitAssert = assert_str(LFSText.lfs_bytes_to_unicode(packet.buffer)).is_equal(text)
 	var expected := LFSText.unicode_to_lfs_bytes(text)
 	var _discard := expected.resize(buffer_size)
 	_test = assert_array(packet.buffer).is_equal(expected)
@@ -110,8 +111,7 @@ func test_add_string_as_utf8() -> void:
 	var text := "test"
 	packet.resize_buffer(buffer_size)
 	var _buffer := packet.add_string_as_utf8(buffer_size, text)
-	var _test: GdUnitAssert = assert_str(packet.buffer.get_string_from_utf8()) \
-			.is_equal(text)
+	var _test: GdUnitAssert = assert_str(packet.buffer.get_string_from_utf8()).is_equal(text)
 	var expected := LFSText.unicode_to_lfs_bytes(text)
 	var _discard := expected.resize(buffer_size)
 	_test = assert_array(packet.buffer).is_equal(expected)
@@ -130,10 +130,13 @@ func test_add_string_variable_length(text: String, max_length: int, step: int, t
 	var needed_size := (text.length() + step) - ((text.length() + step) % step)
 	var _discard := expected.resize(mini(needed_size, max_length))
 	expected[-1] = 0
-	var _test: GdUnitAssert = assert_array(packet.buffer.slice(0, expected.size())) \
-			.is_equal(expected)
-	_test = assert_str(LFSText.lfs_bytes_to_unicode(packet.buffer)) \
-			.is_equal(LFSText.lfs_bytes_to_unicode(expected))
+	var _test: GdUnitAssert = (
+		assert_array(packet.buffer.slice(0, expected.size())).is_equal(expected)
+	)
+	_test = (
+		assert_str(LFSText.lfs_bytes_to_unicode(packet.buffer))
+		.is_equal(LFSText.lfs_bytes_to_unicode(expected))
+	)
 
 
 @warning_ignore("unused_parameter")
@@ -209,8 +212,9 @@ func test_read_char(text: String, test_parameters := [
 	# can be replaced with ^ and another character (and ^ == ^^)
 	var buffer := LFSText.unicode_to_lfs_bytes(text).slice(0, 1)
 	packet.buffer = buffer
-	var _test := assert_str(packet.read_char()) \
-			.is_equal(LFSText.lfs_bytes_to_unicode(buffer, false))
+	var _test := (
+		assert_str(packet.read_char()).is_equal(LFSText.lfs_bytes_to_unicode(buffer, false))
+	)
 
 
 @warning_ignore("unused_parameter")
@@ -256,8 +260,7 @@ func test_read_string(text: String, test_parameters := [
 	["日本語"],
 ]) -> void:
 	packet.buffer = LFSText.unicode_to_lfs_bytes(text)
-	var _test := assert_str(packet.read_string(packet.buffer.size(), false)) \
-			.is_equal(text)
+	var _test := assert_str(packet.read_string(packet.buffer.size(), false)).is_equal(text)
 
 
 @warning_ignore("unused_parameter")
@@ -268,8 +271,7 @@ func test_read_string_as_utf8(text: String, test_parameters := [
 	["日本語"],
 ]) -> void:
 	packet.buffer = text.to_utf8_buffer()
-	var _test := assert_str(packet.read_string_as_utf8(packet.buffer.size())) \
-			.is_equal(text)
+	var _test := assert_str(packet.read_string_as_utf8(packet.buffer.size())).is_equal(text)
 
 
 @warning_ignore("unused_parameter")

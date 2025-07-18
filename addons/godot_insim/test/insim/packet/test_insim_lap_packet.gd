@@ -25,18 +25,24 @@ func test_decode_packet(buffer: PackedByteArray, test_parameters := buffers) -> 
 	_test = assert_int(packet.req_i).is_equal(buffer.decode_u8(2))
 	_test = assert_int(packet.plid).is_equal(buffer.decode_u8(3))
 	_test = assert_int(packet.lap_time).is_equal(buffer.decode_u32(4))
-	_test = assert_float(packet.gis_lap_time) \
-			.is_equal_approx(buffer.decode_u32(4) / InSimLAPPacket.TIME_MULTIPLIER, epsilon)
+	_test = (
+		assert_float(packet.gis_lap_time)
+		.is_equal_approx(buffer.decode_u32(4) / InSimLAPPacket.TIME_MULTIPLIER, epsilon)
+	)
 	_test = assert_int(packet.elapsed_time).is_equal(buffer.decode_u32(8))
-	_test = assert_float(packet.gis_elapsed_time) \
-			.is_equal_approx(buffer.decode_u32(8) / InSimLAPPacket.TIME_MULTIPLIER, epsilon)
+	_test = (
+		assert_float(packet.gis_elapsed_time)
+		.is_equal_approx(buffer.decode_u32(8) / InSimLAPPacket.TIME_MULTIPLIER, epsilon)
+	)
 	_test = assert_int(packet.laps_done).is_equal(buffer.decode_u16(12))
 	_test = assert_int(packet.flags).is_equal(buffer.decode_u16(14))
 	_test = assert_int(packet.sp0).is_equal(buffer.decode_u8(16))
 	_test = assert_int(packet.penalty).is_equal(buffer.decode_u8(17))
 	_test = assert_int(packet.num_stops).is_equal(buffer.decode_u8(18))
 	_test = assert_int(packet.fuel200).is_equal(buffer.decode_u8(19))
-	_test = assert_float(packet.gis_fuel) \
-			.is_equal_approx(buffer.decode_u8(19) / InSimLAPPacket.FUEL_MULTIPLIER, epsilon)
+	_test = (
+		assert_float(packet.gis_fuel)
+		.is_equal_approx(buffer.decode_u8(19) / InSimLAPPacket.FUEL_MULTIPLIER, epsilon)
+	)
 	packet.fill_buffer()
 	_test = assert_array(packet.buffer).is_equal(buffer)

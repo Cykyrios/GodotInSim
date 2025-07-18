@@ -102,8 +102,9 @@ func _get_data_dictionary() -> Dictionary:
 
 
 func _get_pretty_text() -> String:
-	return "Starting %s, InSim version %d, prefix=\"%s\", flags=%d, interval=%d, UDP=%d" % \
-			[i_name, insim_version, prefix, flags, interval, udp_port]
+	return "Starting %s, InSim version %d, prefix=\"%s\", flags=%d, interval=%d, UDP=%d" % [
+		i_name, insim_version, prefix, flags, interval, udp_port
+	]
 
 
 func _set_data_from_dictionary(dict: Dictionary) -> void:

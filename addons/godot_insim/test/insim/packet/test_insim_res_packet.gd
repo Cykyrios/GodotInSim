@@ -23,20 +23,32 @@ func test_decode_packet(buffer: PackedByteArray, test_parameters := buffers) -> 
 	_test = assert_int(packet.size).is_equal(buffer.decode_u8(0) * InSimRESPacket.SIZE_MULTIPLIER)
 	_test = assert_int(packet.type).is_equal(buffer.decode_u8(1))
 	_test = assert_int(packet.req_i).is_equal(buffer.decode_u8(2))
-	_test = assert_str(packet.username) \
-			.is_equal(LFSText.lfs_bytes_to_unicode(buffer.slice(4, 28)))
-	_test = assert_str(packet.player_name) \
-			.is_equal(LFSText.lfs_bytes_to_unicode(buffer.slice(28, 52)))
-	_test = assert_str(packet.plate) \
-			.is_equal(LFSText.lfs_bytes_to_unicode(buffer.slice(52, 60)))
-	_test = assert_str(packet.car_name) \
-			.is_equal(LFSText.car_name_from_lfs_bytes(buffer.slice(60, 64)))
+	_test = (
+		assert_str(packet.username)
+		.is_equal(LFSText.lfs_bytes_to_unicode(buffer.slice(4, 28)))
+	)
+	_test = (
+		assert_str(packet.player_name)
+		.is_equal(LFSText.lfs_bytes_to_unicode(buffer.slice(28, 52)))
+	)
+	_test = (
+		assert_str(packet.plate)
+		.is_equal(LFSText.lfs_bytes_to_unicode(buffer.slice(52, 60)))
+	)
+	_test = (
+		assert_str(packet.car_name)
+		.is_equal(LFSText.car_name_from_lfs_bytes(buffer.slice(60, 64)))
+	)
 	_test = assert_int(packet.total_time).is_equal(buffer.decode_u32(64))
-	_test = assert_float(packet.gis_total_time) \
-			.is_equal_approx(buffer.decode_u32(64) / InSimRESPacket.TIME_MULTIPLIER, epsilon)
+	_test = (
+		assert_float(packet.gis_total_time)
+		.is_equal_approx(buffer.decode_u32(64) / InSimRESPacket.TIME_MULTIPLIER, epsilon)
+	)
 	_test = assert_int(packet.best_lap).is_equal(buffer.decode_u32(68))
-	_test = assert_float(packet.gis_best_lap) \
-			.is_equal_approx(buffer.decode_u32(68) / InSimRESPacket.TIME_MULTIPLIER, epsilon)
+	_test = (
+		assert_float(packet.gis_best_lap)
+		.is_equal_approx(buffer.decode_u32(68) / InSimRESPacket.TIME_MULTIPLIER, epsilon)
+	)
 	_test = assert_int(packet.sp_a).is_equal(buffer.decode_u8(72))
 	_test = assert_int(packet.num_stops).is_equal(buffer.decode_u8(73))
 	_test = assert_int(packet.confirm).is_equal(buffer.decode_u8(74))

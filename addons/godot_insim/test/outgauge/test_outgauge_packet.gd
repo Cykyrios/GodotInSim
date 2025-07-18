@@ -32,10 +32,13 @@ var buffers := [
 func test_decode_packet(buffer: PackedByteArray, test_parameters := buffers) -> void:
 	var packet := OutGaugePacket.new(buffer)
 	var _test: GdUnitAssert = assert_int(packet.time).is_equal(buffer.decode_u32(0))
-	_test = assert_float(packet.gis_time) \
-			.is_equal_approx(buffer.decode_u32(0) / OutGaugePacket.TIME_MULTIPLIER, epsilon)
-	_test = assert_str(packet.car_name) \
-			.is_equal(LFSText.car_name_from_lfs_bytes(buffer.slice(4, 8)))
+	_test = (
+		assert_float(packet.gis_time)
+		.is_equal_approx(buffer.decode_u32(0) / OutGaugePacket.TIME_MULTIPLIER, epsilon)
+	)
+	_test = (
+		assert_str(packet.car_name).is_equal(LFSText.car_name_from_lfs_bytes(buffer.slice(4, 8)))
+	)
 	_test = assert_int(packet.flags).is_equal(buffer.decode_u16(8))
 	_test = assert_int(packet.gear).is_equal(buffer.decode_u8(10))
 	_test = assert_int(packet.plid).is_equal(buffer.decode_u8(11))
@@ -51,9 +54,11 @@ func test_decode_packet(buffer: PackedByteArray, test_parameters := buffers) -> 
 	_test = assert_float(packet.throttle).is_equal_approx(buffer.decode_float(48), epsilon)
 	_test = assert_float(packet.brake).is_equal_approx(buffer.decode_float(52), epsilon)
 	_test = assert_float(packet.clutch).is_equal_approx(buffer.decode_float(56), epsilon)
-	_test = assert_str(packet.display1) \
-			.is_equal(LFSText.lfs_bytes_to_unicode(buffer.slice(60, 76)))
-	_test = assert_str(packet.display2) \
-			.is_equal(LFSText.lfs_bytes_to_unicode(buffer.slice(76, 92)))
+	_test = (
+		assert_str(packet.display1).is_equal(LFSText.lfs_bytes_to_unicode(buffer.slice(60, 76)))
+	)
+	_test = (
+		assert_str(packet.display2).is_equal(LFSText.lfs_bytes_to_unicode(buffer.slice(76, 92)))
+	)
 	if buffer.size() == OutGaugePacket.SIZE_WITH_ID:
 		_test = assert_int(packet.id).is_equal(buffer.decode_s32(92))

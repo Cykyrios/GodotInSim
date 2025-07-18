@@ -89,8 +89,11 @@ func _get_data_dictionary() -> Dictionary:
 
 
 func _get_pretty_text() -> String:
-	return "PLID %d %s" % [plid, ("finished P%d" % [result_num + 1]) if result_num != 255 \
-			else "did not finish"]
+	return "PLID %d %s" % [
+		plid,
+		"finished P%d" % [result_num + 1] if result_num != 255
+		else "did not finish",
+	]
 
 
 func _set_data_from_dictionary(dict: Dictionary) -> void:

@@ -34,17 +34,22 @@ func test_buffer_to_struct(
 	_test = assert_int(struct.direction).is_equal(direction)
 	_test = assert_int(struct.heading).is_equal(heading)
 	_test = assert_int(struct.ang_vel).is_equal(ang_vel)
-	_test = assert_vector(struct.gis_position) \
-			.is_equal_approx(Vector3(struct.x, struct.y, struct.z) \
-			/ CompCar.POSITION_MULTIPLIER, epsilon * Vector3.ONE)
-	_test = assert_float(struct.gis_speed) \
-			.is_equal_approx(struct.speed / CompCar.SPEED_MULTIPLIER, epsilon)
-	_test = assert_float(struct.gis_direction) \
-			.is_equal_approx(struct.direction / CompCar.ANGLE_MULTIPLIER, epsilon)
-	_test = assert_float(struct.gis_heading) \
-			.is_equal_approx(struct.heading / CompCar.ANGLE_MULTIPLIER, epsilon)
-	_test = assert_float(struct.gis_angular_velocity) \
-			.is_equal_approx(struct.ang_vel / CompCar.ANGVEL_MULTIPLIER, epsilon)
+	_test = assert_vector(struct.gis_position).is_equal_approx(
+		Vector3(struct.x, struct.y, struct.z) / CompCar.POSITION_MULTIPLIER,
+		epsilon * Vector3.ONE,
+	)
+	_test = assert_float(struct.gis_speed).is_equal_approx(
+		struct.speed / CompCar.SPEED_MULTIPLIER, epsilon
+	)
+	_test = assert_float(struct.gis_direction).is_equal_approx(
+		struct.direction / CompCar.ANGLE_MULTIPLIER, epsilon
+	)
+	_test = assert_float(struct.gis_heading).is_equal_approx(
+		struct.heading / CompCar.ANGLE_MULTIPLIER, epsilon
+	)
+	_test = assert_float(struct.gis_angular_velocity).is_equal_approx(
+		struct.ang_vel / CompCar.ANGVEL_MULTIPLIER, epsilon
+	)
 
 
 @warning_ignore("unused_parameter")
@@ -83,8 +88,7 @@ func test_gis_struct_to_buffer(
 	struct.position = position
 	struct.info = info
 	struct.sp3 = sp3
-	struct.gis_position = Vector3(x, y, z) \
-			/ CompCar.POSITION_MULTIPLIER
+	struct.gis_position = Vector3(x, y, z) / CompCar.POSITION_MULTIPLIER
 	struct.gis_speed = speed / CompCar.SPEED_MULTIPLIER
 	struct.gis_direction = direction / CompCar.ANGLE_MULTIPLIER
 	struct.gis_heading = heading / CompCar.ANGLE_MULTIPLIER

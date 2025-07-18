@@ -70,59 +70,76 @@ static func create_from_gis(
 ## Override to return a [MeshInstance3D] corresponding to the object. Returns an
 ## elongated cube by default.
 func _get_mesh() -> MeshInstance3D:
+	if (
+		index >= InSim.AXOIndex.AXO_CONE_RED
+		and index <= InSim.AXOIndex.AXO_CONE_YELLOW2
+		or index >= InSim.AXOIndex.AXO_CONE_PTR_RED
+		and index <= InSim.AXOIndex.AXO_CONE_PTR_YELLOW
+	):
+		return get_mesh_cone()
+	elif (
+		index >= InSim.AXOIndex.AXO_MARKER_CURVE_L
+		and index <= InSim.AXOIndex.AXO_MARKER_U_R
+		or index >= InSim.AXOIndex.AXO_DIST25
+		and index <= InSim.AXOIndex.AXO_DIST250
+	):
+		return get_mesh_marker()
+	elif (
+		index >= InSim.AXOIndex.AXO_ARMCO1
+		and index <= InSim.AXOIndex.AXO_ARMCO5
+	):
+		return get_mesh_armco()
+	elif (
+		index >= InSim.AXOIndex.AXO_BARRIER_LONG
+		and index <= InSim.AXOIndex.AXO_BARRIER_WHITE
+	):
+		return get_mesh_barrier()
+	elif (
+		index >= InSim.AXOIndex.AXO_BANNER1
+		and index <= InSim.AXOIndex.AXO_BANNER2
+	):
+		return get_mesh_banner()
+	elif (
+		index >= InSim.AXOIndex.AXO_RAMP1
+		and index <= InSim.AXOIndex.AXO_RAMP2
+	):
+		return get_mesh_ramp()
+	elif (
+		index >= InSim.AXOIndex.AXO_SPEED_HUMP_10M
+		and index <= InSim.AXOIndex.AXO_SPEED_HUMP_6M
+	):
+		return get_mesh_speed_hump()
+	elif (
+		index >= InSim.AXOIndex.AXO_POST_GREEN
+		and index <= InSim.AXOIndex.AXO_POST_WHITE
+	):
+		return get_mesh_post()
+	elif index == InSim.AXOIndex.AXO_BALE:
+		return get_mesh_bale()
+	elif index == InSim.AXOIndex.AXO_RAILING:
+		return get_mesh_railing()
+	elif index == InSim.AXOIndex.AXO_START_LIGHTS:
+		return get_mesh_start_light()
+	elif (
+		index >= InSim.AXOIndex.AXO_SIGN_KEEP_LEFT
+		and index <= InSim.AXOIndex.AXO_SIGN_KEEP_RIGHT
+	):
+		return get_mesh_sign_direction()
+	elif (
+		index >= InSim.AXOIndex.AXO_SIGN_SPEED_80
+		and index <= InSim.AXOIndex.AXO_SIGN_SPEED_50
+	):
+		return get_mesh_sign_speed()
+	elif index == InSim.AXOIndex.AXO_START_POSITION:
+		return get_mesh_start_position()
+	elif index == InSim.AXOIndex.AXO_PIT_START_POINT:
+		return get_mesh_arrow(Color.WHITE)
+	elif index == InSim.AXOIndex.AXO_PIT_STOP_BOX:
+		return get_mesh_pit_box()
+
+	# If no mesh is found, create and return a generic one.
 	var color := Color.MAGENTA  # used as default color for unknown objects
 	var dimensions := Vector3(0.5, 0.5, 1)
-	match index:
-		InSim.AXOIndex.AXO_CONE_RED, InSim.AXOIndex.AXO_CONE_RED2, InSim.AXOIndex.AXO_CONE_RED3, \
-		InSim.AXOIndex.AXO_CONE_BLUE, InSim.AXOIndex.AXO_CONE_BLUE2, \
-		InSim.AXOIndex.AXO_CONE_GREEN, InSim.AXOIndex.AXO_CONE_GREEN2, \
-		InSim.AXOIndex.AXO_CONE_ORANGE, InSim.AXOIndex.AXO_CONE_WHITE, \
-		InSim.AXOIndex.AXO_CONE_YELLOW, InSim.AXOIndex.AXO_CONE_YELLOW2, \
-		InSim.AXOIndex.AXO_CONE_PTR_RED, InSim.AXOIndex.AXO_CONE_PTR_BLUE, \
-		InSim.AXOIndex.AXO_CONE_PTR_GREEN, InSim.AXOIndex.AXO_CONE_PTR_YELLOW:
-			return get_mesh_cone()
-		InSim.AXOIndex.AXO_MARKER_CURVE_L, InSim.AXOIndex.AXO_MARKER_CURVE_R, \
-		InSim.AXOIndex.AXO_MARKER_L, InSim.AXOIndex.AXO_MARKER_R, \
-		InSim.AXOIndex.AXO_MARKER_HARD_L, InSim.AXOIndex.AXO_MARKER_HARD_R, \
-		InSim.AXOIndex.AXO_MARKER_L_R, InSim.AXOIndex.AXO_MARKER_R_L, \
-		InSim.AXOIndex.AXO_MARKER_S_L, InSim.AXOIndex.AXO_MARKER_S_R, \
-		InSim.AXOIndex.AXO_MARKER_S2_L, InSim.AXOIndex.AXO_MARKER_S2_R, \
-		InSim.AXOIndex.AXO_MARKER_U_L, InSim.AXOIndex.AXO_MARKER_U_R, \
-		InSim.AXOIndex.AXO_DIST25, InSim.AXOIndex.AXO_DIST50, \
-		InSim.AXOIndex.AXO_DIST75, InSim.AXOIndex.AXO_DIST100, \
-		InSim.AXOIndex.AXO_DIST125, InSim.AXOIndex.AXO_DIST150, \
-		InSim.AXOIndex.AXO_DIST200, InSim.AXOIndex.AXO_DIST250:
-			return get_mesh_marker()
-		InSim.AXOIndex.AXO_ARMCO1, InSim.AXOIndex.AXO_ARMCO3, InSim.AXOIndex.AXO_ARMCO5:
-			return get_mesh_armco()
-		InSim.AXOIndex.AXO_BARRIER_LONG, InSim.AXOIndex.AXO_BARRIER_RED, \
-		InSim.AXOIndex.AXO_BARRIER_WHITE:
-			return get_mesh_barrier()
-		InSim.AXOIndex.AXO_BANNER1, InSim.AXOIndex.AXO_BANNER2:
-			return get_mesh_banner()
-		InSim.AXOIndex.AXO_RAMP1, InSim.AXOIndex.AXO_RAMP2:
-			return get_mesh_ramp()
-		InSim.AXOIndex.AXO_SPEED_HUMP_10M, InSim.AXOIndex.AXO_SPEED_HUMP_6M:
-			return get_mesh_speed_hump()
-		InSim.AXOIndex.AXO_POST_GREEN, InSim.AXOIndex.AXO_POST_ORANGE, \
-		InSim.AXOIndex.AXO_POST_RED, InSim.AXOIndex.AXO_POST_WHITE:
-			return get_mesh_post()
-		InSim.AXOIndex.AXO_BALE:
-			return get_mesh_bale()
-		InSim.AXOIndex.AXO_RAILING:
-			return get_mesh_railing()
-		InSim.AXOIndex.AXO_START_LIGHTS:
-			return get_mesh_start_light()
-		InSim.AXOIndex.AXO_SIGN_KEEP_LEFT, InSim.AXOIndex.AXO_SIGN_KEEP_RIGHT:
-			return get_mesh_sign_direction()
-		InSim.AXOIndex.AXO_SIGN_SPEED_80, InSim.AXOIndex.AXO_SIGN_SPEED_50:
-			return get_mesh_sign_speed()
-		InSim.AXOIndex.AXO_START_POSITION:
-			return get_mesh_start_position()
-		InSim.AXOIndex.AXO_PIT_START_POINT:
-			return get_mesh_arrow(Color.WHITE)
-		InSim.AXOIndex.AXO_PIT_STOP_BOX:
-			return get_mesh_pit_box()
 	var vertices := PackedVector3Array([
 		Vector3(-0.5 * dimensions.x, -0.5 * dimensions.y, 0),
 		Vector3(0.5 * dimensions.x, -0.5 * dimensions.y, 0),
@@ -228,8 +245,10 @@ func get_mesh_armco() -> MeshInstance3D:
 	for s in spans + 1:
 		var support_vertex_count := support_vertices.size()
 		for v in support_vertex_count:
-			support_vertices[v] = support_vertices[v] + Vector3(0, SPAN, 0) \
-					- (Vector3.ZERO if s > 0 else Vector3(0, (1 + 0.5 * spans) * SPAN, 0))
+			support_vertices[v] = (
+				support_vertices[v] + Vector3(0, SPAN, 0)
+				- (Vector3.ZERO if s > 0 else Vector3(0, (1 + 0.5 * spans) * SPAN, 0))
+			)
 		if s > 0:
 			for i in support_indices.size():
 				support_indices[i] = support_indices[i] + support_vertex_count
@@ -386,8 +405,10 @@ func get_mesh_arrow(color: Color) -> MeshInstance3D:
 				Vector3(-sign_right * 0.25 + 0.12, -1.07, MARKING_ALTITUDE),
 			])
 			for i in 6:
-				vertices[i] = vertices[i].rotated(Vector3(0, 0, 1), -sign_right * PI / 4) \
-						+ Vector3(sign_right * 0.05, 0.55, 0)
+				vertices[i] = (
+					vertices[i].rotated(Vector3(0, 0, 1), -sign_right * PI / 4)
+					+ Vector3(sign_right * 0.05, 0.55, 0)
+				)
 		InSim.AXOIndex.AXO_CHALK_LEFT2, InSim.AXOIndex.AXO_CHALK_RIGHT2:
 			var sign_right := -1 if index == InSim.AXOIndex.AXO_CHALK_LEFT2 else 1
 			vertices.append_array([
@@ -417,8 +438,10 @@ func get_mesh_arrow(color: Color) -> MeshInstance3D:
 				Vector3(-sign_right * 0.25 + 0.12, -1.8, MARKING_ALTITUDE),
 			])
 			for i in 6:
-				vertices[i] = vertices[i].rotated(Vector3(0, 0, 1), -sign_right * PI / 8) \
-						+ Vector3(sign_right * 0.1, 1.3, 0)
+				vertices[i] = (
+					vertices[i].rotated(Vector3(0, 0, 1), -sign_right * PI / 8)
+					+ Vector3(sign_right * 0.1, 1.3, 0)
+				)
 	var indices := PackedInt32Array()
 	indices.append_array([
 		2, 1, 0,
@@ -706,14 +729,20 @@ func get_mesh_cone() -> MeshInstance3D:
 	const HEIGHT := 0.66
 	const TIP_HEIGHT := 0.025
 	const RADIUS_TOP := 0.035
-	var radius_base := 0.12 if index == InSim.AXOIndex.AXO_CONE_RED \
-			else 0.15 if (
-				index == InSim.AXOIndex.AXO_CONE_RED3 or index >= InSim.AXOIndex.AXO_CONE_PTR_RED
-			) else 0.13
-	var base_width := 0.38 if index == InSim.AXOIndex.AXO_CONE_RED \
-			else 0.46 if (
-				index == InSim.AXOIndex.AXO_CONE_RED3 or index >= InSim.AXOIndex.AXO_CONE_PTR_RED
-			) else 0.4
+	var radius_base := (
+		0.12 if index == InSim.AXOIndex.AXO_CONE_RED
+		else 0.15 if (
+			index == InSim.AXOIndex.AXO_CONE_RED3
+			or index >= InSim.AXOIndex.AXO_CONE_PTR_RED
+		) else 0.13
+	)
+	var base_width := (
+		0.38 if index == InSim.AXOIndex.AXO_CONE_RED
+		else 0.46 if (
+			index == InSim.AXOIndex.AXO_CONE_RED3
+			or index >= InSim.AXOIndex.AXO_CONE_PTR_RED
+		) else 0.4
+	)
 	var base_low := 0.5 * base_width
 	var base_high := 0.5 * base_width - CHAMFER
 	var vertices := PackedVector3Array([
@@ -741,8 +770,10 @@ func get_mesh_cone() -> MeshInstance3D:
 	_discard = vertices.push_back(Vector3(0, 0, HEIGHT))
 	if index >= InSim.AXOIndex.AXO_CONE_PTR_RED:
 		for i in vertices.size():
-			vertices[i] = vertices[i].rotated(Vector3(1, 0, 0), deg_to_rad(106.5)) \
-					+ Vector3(0, 0.27, 0.2)
+			vertices[i] = (
+				vertices[i].rotated(Vector3(1, 0, 0), deg_to_rad(106.5))
+				+ Vector3(0, 0.27, 0.2)
+			)
 	var indices := PackedInt32Array([
 		0, 1, 2, 3, 2, 1,
 		4, 1, 0, 1, 4, 5,
@@ -902,8 +933,10 @@ func get_mesh_marker() -> MeshInstance3D:
 	match index:
 		InSim.AXOIndex.AXO_MARKER_CURVE_L, InSim.AXOIndex.AXO_MARKER_CURVE_R:
 			for v in arrow_vertices.size():
-				arrow_vertices[v] = arrow_vertices[v].rotated(Vector3(0, 1, 0), -PI / 3) \
-						+ Vector3(-0.2, 0, 0.2)
+				arrow_vertices[v] = (
+					arrow_vertices[v].rotated(Vector3(0, 1, 0), -PI / 3)
+					+ Vector3(-0.2, 0, 0.2)
+				)
 			arrow_vertices.append_array([
 				Vector3(0, 0, -0.1),
 				Vector3(0.2, 0, 0.05),
@@ -912,8 +945,10 @@ func get_mesh_marker() -> MeshInstance3D:
 			])
 		InSim.AXOIndex.AXO_MARKER_L, InSim.AXOIndex.AXO_MARKER_R:
 			for v in arrow_vertices.size():
-				arrow_vertices[v] = arrow_vertices[v].rotated(Vector3(0, 1, 0), -PI / 2) \
-						+ Vector3(-0.25, 0, 0.2)
+				arrow_vertices[v] = (
+					arrow_vertices[v].rotated(Vector3(0, 1, 0), -PI / 2)
+					+ Vector3(-0.25, 0, 0.2)
+				)
 			arrow_vertices.append_array([
 				Vector3(0.2, 0, 0.1),
 				Vector3(0.4, 0, 0.3),
@@ -922,8 +957,10 @@ func get_mesh_marker() -> MeshInstance3D:
 			])
 		InSim.AXOIndex.AXO_MARKER_HARD_L, InSim.AXOIndex.AXO_MARKER_HARD_R:
 			for v in arrow_vertices.size():
-				arrow_vertices[v] = arrow_vertices[v].rotated(Vector3(0, 1, 0), -PI * 3 / 4) \
-						+ Vector3(-0.15, 0, 0)
+				arrow_vertices[v] = (
+					arrow_vertices[v].rotated(Vector3(0, 1, 0), -PI * 3 / 4)
+					+ Vector3(-0.15, 0, 0)
+				)
 			arrow_vertices.append_array([
 				Vector3(0.1, 0, 0.05),
 				Vector3(0.3, 0, 0.45),
@@ -943,8 +980,10 @@ func get_mesh_marker() -> MeshInstance3D:
 			])
 		InSim.AXOIndex.AXO_MARKER_S_L, InSim.AXOIndex.AXO_MARKER_S_R:
 			for v in arrow_vertices.size():
-				arrow_vertices[v] = arrow_vertices[v].rotated(Vector3(0, 1, 0), -PI / 2) \
-						+ Vector3(-0.3, 0, -0.1)
+				arrow_vertices[v] = (
+					arrow_vertices[v].rotated(Vector3(0, 1, 0), -PI / 2)
+					+ Vector3(-0.3, 0, -0.1)
+				)
 			arrow_vertices.append_array([
 				Vector3(0.1, 0, -0.2),
 				Vector3(-0.1, 0, 0),
@@ -972,8 +1011,9 @@ func get_mesh_marker() -> MeshInstance3D:
 			])
 		InSim.AXOIndex.AXO_MARKER_U_L, InSim.AXOIndex.AXO_MARKER_U_R:
 			for v in arrow_vertices.size():
-				arrow_vertices[v] = arrow_vertices[v].rotated(Vector3(0, 1, 0), PI) \
-						+ Vector3(-0.2, 0, -0.1)
+				arrow_vertices[v] = (
+					arrow_vertices[v].rotated(Vector3(0, 1, 0), PI) + Vector3(-0.2, 0, -0.1)
+				)
 			arrow_vertices.append_array([
 				Vector3(-0.1, 0, 0.2),
 				Vector3(-0.3, 0, 0.4),
@@ -1046,7 +1086,7 @@ func get_mesh_marker() -> MeshInstance3D:
 		Vector3(0.2, 0, -0.35 + number_thickness),
 		Vector3(-0.2, 0, -0.35),
 		Vector3(-0.2 + 2 * number_thickness, 0, -0.35 + number_thickness),
-		Vector3(0.2 - number_thickness, 0, 0).rotated(Vector3(0, 1, 0), deg_to_rad(10)) \
+		Vector3(0.2 - number_thickness, 0, 0).rotated(Vector3(0, 1, 0), deg_to_rad(10))
 		+ Vector3(-0.05, 0, 0),
 		Vector3(0.2, 0, 0).rotated(Vector3(0, 1, 0), deg_to_rad(10)) + Vector3(-0.05, 0, 0),
 	])
@@ -1054,8 +1094,8 @@ func get_mesh_marker() -> MeshInstance3D:
 	for i in number_2_turn_segments:
 		var angle := -PI / 6.0 * i
 		number_2_vertices.append_array([
-			Vector3(0.2 - number_thickness, 0, 0).rotated(Vector3(0, 1, 0), angle) \
-					+ Vector3(0, 0, 0.15),
+			Vector3(0.2 - number_thickness, 0, 0).rotated(Vector3(0, 1, 0), angle)
+			+ Vector3(0, 0, 0.15),
 			Vector3(0.2, 0, 0).rotated(Vector3(0, 1, 0), angle) + Vector3(0, 0, 0.15),
 		])
 	var number_2_indices := PackedInt32Array([
@@ -1080,8 +1120,8 @@ func get_mesh_marker() -> MeshInstance3D:
 		var angle := PI * (-0.5 + i / 6.0)
 		number_5_vertices.append_array([
 			Vector3(0.225, 0, 0).rotated(Vector3(0, 1, 0), angle) - Vector3(0, 0, 0.125),
-			Vector3(0.225 - number_thickness, 0, 0).rotated(Vector3(0, 1, 0), angle) \
-					- Vector3(0, 0, 0.125),
+			Vector3(0.225 - number_thickness, 0, 0).rotated(Vector3(0, 1, 0), angle)
+			- Vector3(0, 0, 0.125),
 		])
 	var number_5_indices := PackedInt32Array([
 		2, 1, 0, 1, 2, 3,
@@ -1119,19 +1159,19 @@ func get_mesh_marker() -> MeshInstance3D:
 				if number not in [0, 1, 2, 5, 7]:
 					continue
 				var new_vertices := (
-					number_0_vertices if number == 0 \
-					else number_1_vertices if number == 1 \
-					else number_2_vertices if number == 2 \
-					else number_5_vertices if number == 5 \
-					else number_7_vertices if number == 7 \
+					number_0_vertices if number == 0
+					else number_1_vertices if number == 1
+					else number_2_vertices if number == 2
+					else number_5_vertices if number == 5
+					else number_7_vertices if number == 7
 					else PackedVector3Array()
 				)
 				var new_indices := (
-					number_0_indices if number == 0 \
-					else number_1_indices if number == 1 \
-					else number_2_indices if number == 2 \
-					else number_5_indices if number == 5 \
-					else number_7_indices if number == 7 \
+					number_0_indices if number == 0
+					else number_1_indices if number == 1
+					else number_2_indices if number == 2
+					else number_5_indices if number == 5
+					else number_7_indices if number == 7
 					else PackedInt32Array()
 				)
 				var index_offset := vertices.size()
@@ -1169,9 +1209,11 @@ func get_mesh_marker() -> MeshInstance3D:
 	)
 	var marking_offset := TOP_OFFSET + 0.5 * TOP_THICKNESS + 0.5 * HEIGHT * tan(marking_angle)
 	for v in marker_vertices.size():
-		marker_vertices[v] = marker_vertices[v].rotated(Vector3(0, 0, 1), PI) \
-				.rotated(Vector3(1, 0, 0), marking_angle) \
-				+ Vector3(0, marking_offset + 0.01, 0.5 * HEIGHT)
+		marker_vertices[v] = (
+			marker_vertices[v].rotated(Vector3(0, 0, 1), PI)
+			.rotated(Vector3(1, 0, 0), marking_angle)
+			+ Vector3(0, marking_offset + 0.01, 0.5 * HEIGHT)
+		)
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
 	st.set_smooth_group(0)
 	for v in marker_vertices:
@@ -1422,8 +1464,10 @@ func get_mesh_railing() -> MeshInstance3D:
 		vertices.append_array(vertical_vertices.duplicate())
 		indices.append_array(vertical_indices.duplicate())
 		for v in vertical_vertices.size():
-			vertices[-1 - v] = vertices[-1 - v] \
-					+ Vector3(SPAN * ((m + 1) as float / (VERTICAL_MEMBERS + 1) - 0.5), 0, 0)
+			vertices[-1 - v] = (
+				vertices[-1 - v]
+				+ Vector3(SPAN * ((m + 1) as float / (VERTICAL_MEMBERS + 1) - 0.5), 0, 0)
+			)
 		for i in vertical_indices.size():
 			indices[-1 - i] = indices[-1 - i] + index_offset
 		index_offset += vertical_vertices.size()
@@ -1523,8 +1567,10 @@ func get_mesh_ramp() -> MeshInstance3D:
 	var angle := atan(HEIGHT / LENGTH)
 	var bottom_offset := THICKNESS / cos(PI / 2 - angle) * 0.85  # LFS thickness not constant
 	var support_offset := OFFSET + SUPPORT_OFFSET
-	var support_height := (SUPPORT_OFFSET + 0.5 * LENGTH) * sin(angle) \
-			- 0.5 * THICKNESS / sin(PI / 2 - angle)  # simplified, good enough
+	var support_height := (
+		(SUPPORT_OFFSET + 0.5 * LENGTH) * sin(angle)
+		- 0.5 * THICKNESS / sin(PI / 2 - angle)  # simplified, good enough
+	)
 	var vertices := PackedVector3Array([
 		# Ramp
 		Vector3(-0.5 * width, OFFSET - 0.5 * LENGTH, 0),
@@ -1639,13 +1685,13 @@ func get_mesh_sign_direction() -> MeshInstance3D:
 	var arrow_angle := PI / 4 * (1 if index == InSim.AXOIndex.AXO_SIGN_KEEP_LEFT else -1)
 	for v in disk_vertices.size():
 		disk_vertices[v] = (
-			disk_vertices[v].rotated(Vector3(0, 0, 1), PI) \
+			disk_vertices[v].rotated(Vector3(0, 0, 1), PI)
 			+ Vector3(0, 0.005, arrow_height)
 		).rotated(Vector3(1, 0, 0), SIGN_ANGLE)
 	for v in arrow_vertices.size():
 		arrow_vertices[v] = (
-			arrow_vertices[v].rotated(Vector3(0, 1, 0), PI + arrow_angle) \
-			.rotated(Vector3(0, 0, 1), PI) \
+			arrow_vertices[v].rotated(Vector3(0, 1, 0), PI + arrow_angle)
+			.rotated(Vector3(0, 0, 1), PI)
 			+ Vector3(0, 0.01, arrow_height)
 		).rotated(Vector3(1, 0, 0), SIGN_ANGLE)
 	var st := SurfaceTool.new()
@@ -1682,10 +1728,15 @@ func get_mesh_sign_direction() -> MeshInstance3D:
 		1, 2, 4, 5, 4, 2,
 		4, 2, 1, 2, 4, 5,
 	])
-	var crutch_y := SPREAD - (ALTITUDE + HEIGHT * CRUTCH_RATIO) * sin(SIGN_ANGLE) \
-			- THICKNESS * cos(SIGN_ANGLE)
-	var crutch_z := (ALTITUDE + HEIGHT * CRUTCH_RATIO) * cos(SIGN_ANGLE) \
-			- THICKNESS * sin(SIGN_ANGLE)
+	var crutch_y := (
+		SPREAD
+		- (ALTITUDE + HEIGHT * CRUTCH_RATIO) * sin(SIGN_ANGLE)
+		- THICKNESS * cos(SIGN_ANGLE)
+	)
+	var crutch_z := (
+		(ALTITUDE + HEIGHT * CRUTCH_RATIO) * cos(SIGN_ANGLE)
+		- THICKNESS * sin(SIGN_ANGLE)
+	)
 	var crutch_angle := atan(crutch_y / crutch_z)
 	var crutch_vertices := PackedVector3Array([
 		Vector3(0.5 * WIDTH, -SPREAD + THICKNESS / cos(crutch_angle), 0),
@@ -1831,8 +1882,8 @@ func get_mesh_sign_speed() -> MeshInstance3D:
 		var angle := PI * (-0.5 + i / 6.0)
 		number_5_vertices.append_array([
 			Vector3(0.225, 0, 0).rotated(Vector3(0, 1, 0), angle) - Vector3(0, 0, 0.125),
-			Vector3(0.225 - number_thickness, 0, 0).rotated(Vector3(0, 1, 0), angle) \
-					- Vector3(0, 0, 0.125),
+			Vector3(0.225 - number_thickness, 0, 0).rotated(Vector3(0, 1, 0), angle)
+			- Vector3(0, 0, 0.125),
 		])
 	var number_5_indices := PackedInt32Array([
 		2, 1, 0, 1, 2, 3,
@@ -1876,31 +1927,39 @@ func get_mesh_sign_speed() -> MeshInstance3D:
 	for n in 2:
 		if n == 0:
 			number_vertices.append_array(
-				(number_8_vertices if index == InSim.AXOIndex.AXO_SIGN_SPEED_80 \
-				else number_5_vertices).duplicate()
+				(
+					number_8_vertices if index == InSim.AXOIndex.AXO_SIGN_SPEED_80
+					else number_5_vertices
+				).duplicate()
 			)
 			for v in number_vertices.size():
 				number_vertices[v] = number_vertices[v] + Vector3(-0.5 * number_width, 0, 0)
 			number_indices.append_array(
-				(number_8_indices if index == InSim.AXOIndex.AXO_SIGN_SPEED_80 \
-				else number_5_indices).duplicate()
+				(
+					number_8_indices if index == InSim.AXOIndex.AXO_SIGN_SPEED_80
+					else number_5_indices
+				).duplicate()
 			)
 		else:
 			var index_offset := number_vertices.size()
 			number_vertices.append_array(number_0_vertices.duplicate())
 			for v in number_0_vertices.size():
-				number_vertices[-1 - v] = number_vertices[-1 - v] \
-						+ Vector3(0.5 * number_width, 0, 0)
+				number_vertices[-1 - v] = (
+					number_vertices[-1 - v]
+					+ Vector3(0.5 * number_width, 0, 0)
+				)
 			number_indices.append_array(number_0_indices.duplicate())
 			for i in number_0_indices.size():
 				number_indices[-1 - i] = number_indices[-1 - i] + index_offset
 	var marking_height := 0.4 * HEIGHT
 	var marking_offset := 0.5 * SPREAD - marking_height * tan(PI / 2 - sign_angle)
 	for v in number_vertices.size():
-		number_vertices[v] = (number_vertices[v] * 2 / 3.0) \
-				.rotated(Vector3(0, 0, 1), PI) \
-				.rotated(Vector3(1, 0, 0), PI / 2 - sign_angle) \
-				+ Vector3(0, marking_offset + 0.01, marking_height)
+		number_vertices[v] = (
+			(number_vertices[v] * 2 / 3.0)
+			.rotated(Vector3(0, 0, 1), PI)
+			.rotated(Vector3(1, 0, 0), PI / 2 - sign_angle)
+			+ Vector3(0, marking_offset + 0.01, marking_height)
+		)
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
 	st.set_smooth_group(-1)
 	for i in number_indices.size():
@@ -2188,8 +2247,10 @@ func get_mesh_start_light() -> MeshInstance3D:
 		index_count = vertices_lights.size()
 		vertices_lights.append_array(vertices_cover.duplicate())
 		for v in vertices_cover.size():
-			vertices_lights[-1 - v] = vertices_lights[-1 - v] \
-					+ Vector3(0, 0, COVER_ALTITUDE + c * COVER_VERTICAL_OFFSET)
+			vertices_lights[-1 - v] = (
+				vertices_lights[-1 - v]
+				+ Vector3(0, 0, COVER_ALTITUDE + c * COVER_VERTICAL_OFFSET)
+			)
 		smooth_groups.append_array([
 			Vector2i(indices_lights.size(), 0),
 			Vector2i(indices_lights.size() + int(0.5 * indices_cover.size()), 1),

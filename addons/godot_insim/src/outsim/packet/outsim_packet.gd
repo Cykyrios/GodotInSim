@@ -88,8 +88,9 @@ func _decode_packet(packet_buffer: PackedByteArray) -> void:
 				buffer.append_array(temp_buffer.slice(-4))
 				buffer.append_array(temp_buffer.slice(0, -4))
 		else:
-			push_error("Wrong buffer size, expected %d or %d, got %d" % \
-					[OUTSIM_PACK1_SIZE, OUTSIM_PACK1_SIZE + OUTSIM_PACK1_ID_SIZE, buffer_size])
+			push_error("Wrong buffer size, expected %d or %d, got %d" % [
+				OUTSIM_PACK1_SIZE, OUTSIM_PACK1_SIZE + OUTSIM_PACK1_ID_SIZE, buffer_size
+			])
 			return
 	if outsim_options & OutSim.OutSimOpts.OSO_HEADER:
 		header = buffer.slice(data_offset, data_offset + 4).get_string_from_utf8()

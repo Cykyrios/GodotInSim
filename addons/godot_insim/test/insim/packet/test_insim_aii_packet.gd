@@ -31,8 +31,10 @@ func test_decode_packet(buffer: PackedByteArray, test_parameters := [
 	_test = assert_int(packet.type).is_equal(buffer.decode_u8(1))
 	_test = assert_int(packet.req_i).is_equal(buffer.decode_u8(2))
 	_test = assert_int(packet.plid).is_equal(buffer.decode_u8(3))
-	_test = assert_array(packet.outsim_data.get_buffer()) \
-			.is_equal(buffer.slice(4, 4 + OutSimMain.STRUCT_SIZE))
+	_test = (
+		assert_array(packet.outsim_data.get_buffer())
+		.is_equal(buffer.slice(4, 4 + OutSimMain.STRUCT_SIZE))
+	)
 	_test = assert_int(packet.flags).is_equal(buffer.decode_u8(OutSimMain.STRUCT_SIZE + 4))
 	_test = assert_int(packet.gear).is_equal(buffer.decode_u8(OutSimMain.STRUCT_SIZE + 5))
 	_test = assert_int(packet.sp2).is_equal(buffer.decode_u8(OutSimMain.STRUCT_SIZE + 6))

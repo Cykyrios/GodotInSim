@@ -44,5 +44,6 @@ func test_too_long_message(text: String, test_parameters := [
 	var packet := InSimMSTPacket.create(text)
 	packet.fill_buffer()
 	var _test := assert_str(packet.msg).is_not_equal(text)
-	_test = assert_str(packet.msg) \
-			.starts_with(text.left(mini(text.length(), InSimMSTPacket.MSG_MAX_LENGTH) - 1))
+	_test = assert_str(packet.msg).starts_with(
+		text.left(mini(text.length(), InSimMSTPacket.MSG_MAX_LENGTH) - 1)
+	)

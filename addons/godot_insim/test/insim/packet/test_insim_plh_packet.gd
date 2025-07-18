@@ -26,9 +26,12 @@ func test_decode_packet(buffer: PackedByteArray, test_parameters := buffers) -> 
 	_test = assert_int(packet.req_i).is_equal(buffer.decode_u8(2))
 	_test = assert_int(packet.nump).is_equal(buffer.decode_u8(3))
 	for i in packet.nump:
-		_test = assert_array(packet.hcaps[i].get_buffer()) \
-				.is_equal(buffer.slice(4 + i * PlayerHandicap.STRUCT_SIZE,
-				4 + (i + 1) * PlayerHandicap.STRUCT_SIZE))
+		_test = (
+			assert_array(packet.hcaps[i].get_buffer())
+			.is_equal(buffer.slice(
+				4 + i * PlayerHandicap.STRUCT_SIZE, 4 + (i + 1) * PlayerHandicap.STRUCT_SIZE
+			))
+		)
 	packet.fill_buffer()
 	_test = assert_array(packet.buffer).is_equal(buffer)
 
@@ -57,5 +60,7 @@ func test_trim_packet() -> void:
 		handicaps.append(handicap)
 	var count := 2
 	var packet := InSimPLHPacket.create(count, handicaps)
-	var _test := assert_int(packet.size) \
-			.is_equal(InSimPLHPacket.PACKET_BASE_SIZE + count * PlayerHandicap.STRUCT_SIZE)
+	var _test := (
+		assert_int(packet.size)
+		.is_equal(InSimPLHPacket.PACKET_BASE_SIZE + count * PlayerHandicap.STRUCT_SIZE)
+	)

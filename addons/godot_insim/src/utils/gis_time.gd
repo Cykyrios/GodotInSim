@@ -40,8 +40,10 @@ static func get_time_string_from_seconds(
 	var minutes := floori((time - 3600 * hours) / 60)
 	var seconds := time - 3600 * hours - 60 * minutes
 	var seconds_int := floori(seconds)
-	var seconds_decimals := 0 if decimal_places == 0 \
-			else roundi((seconds - seconds_int) * pow(10, decimal_places))
+	var seconds_decimals := (
+		0 if decimal_places == 0
+		else roundi((seconds - seconds_int) * pow(10, decimal_places))
+	)
 	if decimal_places > 0 and str(seconds_decimals).length() > decimal_places:
 		seconds_int += 1
 		seconds_decimals = 0

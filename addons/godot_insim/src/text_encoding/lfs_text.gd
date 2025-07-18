@@ -520,8 +520,10 @@ static func replace_ucid_with_name(
 	for i in results.size():
 		var result := results[results.size() - 1 - i]
 		var ucid := result.strings[1] as int
-		var connection: Connection = insim.connections[ucid] if insim.connections.has(ucid) \
-				else null
+		var connection: Connection = (
+			insim.connections[ucid] if insim.connections.has(ucid)
+			else null
+		)
 		if not connection and ucid != 255:
 			push_error("Failed to convert UCID %d, list is %s" % [ucid, insim.connections.keys()])
 		var nickname := (
@@ -535,7 +537,11 @@ static func replace_ucid_with_name(
 		)
 		output = regex.sub(output, "%s%s" % [
 			nickname,
-			"" if not connection or connection.username.is_empty() or not include_username \
+			"" if (
+				not connection
+				or connection.username.is_empty()
+				or not include_username
+			)
 			else " (%s)" % [connection.username]
 		], false, result.get_start())
 	return output

@@ -45,14 +45,18 @@ func test_decode_packet(buffer: PackedByteArray, test_parameters := buffers) -> 
 	_test = assert_int(packet.ucid).is_equal(buffer.decode_u8(4))
 	_test = assert_int(packet.player_type).is_equal(buffer.decode_u8(5))
 	_test = assert_int(packet.flags).is_equal(buffer.decode_u16(6))
-	_test = assert_str(packet.player_name) \
-			.is_equal(LFSText.lfs_bytes_to_unicode(buffer.slice(8, 32)))
-	_test = assert_str(packet.plate) \
-			.is_equal(LFSText.lfs_bytes_to_unicode(buffer.slice(32, 40), false))
-	_test = assert_str(packet.car_name) \
-			.is_equal(LFSText.car_name_from_lfs_bytes(buffer.slice(40, 44)))
-	_test = assert_str(packet.skin_name) \
-			.is_equal(LFSText.lfs_bytes_to_unicode(buffer.slice(44, 60)))
+	_test = assert_str(packet.player_name).is_equal(
+		LFSText.lfs_bytes_to_unicode(buffer.slice(8, 32))
+	)
+	_test = assert_str(packet.plate).is_equal(
+		LFSText.lfs_bytes_to_unicode(buffer.slice(32, 40), false)
+	)
+	_test = assert_str(packet.car_name).is_equal(
+		LFSText.car_name_from_lfs_bytes(buffer.slice(40, 44))
+	)
+	_test = assert_str(packet.skin_name).is_equal(
+		LFSText.lfs_bytes_to_unicode(buffer.slice(44, 60))
+	)
 	for i in packet.tyres.size():
 		_test = assert_int(packet.tyres[i]).is_equal(buffer.decode_u8(60 + i))
 	_test = assert_int(packet.h_mass).is_equal(buffer.decode_u8(64))

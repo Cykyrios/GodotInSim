@@ -35,8 +35,9 @@ func test_decode_packet(buffer: PackedByteArray, test_parameters := [
 	_test = assert_int(packet.sp2).is_equal(buffer.decode_u8(6))
 	_test = assert_int(packet.sp3).is_equal(buffer.decode_u8(7))
 	_test = assert_int(packet.time).is_equal(buffer.decode_u32(8))
-	_test = assert_float(packet.gis_time) \
-			.is_equal_approx(buffer.decode_u32(8) / InSimCSCPacket.TIME_MULTIPLIER, epsilon)
+	_test = assert_float(packet.gis_time).is_equal_approx(
+		buffer.decode_u32(8) / InSimCSCPacket.TIME_MULTIPLIER, epsilon
+	)
 	_test = assert_array(packet.object.get_buffer()).is_equal(buffer.slice(12))
 	packet.fill_buffer()
 	_test = assert_array(packet.buffer).is_equal(buffer)

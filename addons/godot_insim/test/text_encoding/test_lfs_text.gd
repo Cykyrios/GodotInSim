@@ -387,8 +387,10 @@ func test_get_mso_start(player_name: String, message: String, test_parameters :=
 				mso.msg = LFSText.strip_colors(mso.msg)
 				expected = LFSText.strip_colors(expected)
 			mso.text_start = 1 if test < 2 else 0
-			var _test := assert_str(mso.msg.substr(LFSText.get_mso_start(mso, insim))) \
-					.is_equal(expected)
+			var _test := (
+				assert_str(mso.msg.substr(LFSText.get_mso_start(mso, insim)))
+				.is_equal(expected)
+			)
 
 
 #region unicode/LFS
@@ -508,8 +510,10 @@ func test_replace_ucid_with_name() -> void:
 	).is_equal("Connections: Player ^71^9, Second ^^Player^^^9, Skipped ^1PLIDs^9")
 	_test = assert_str(
 		LFSText.replace_ucid_with_name("Connections: UCID 1, UCID 2, UCID 9", insim, true)
-	).is_equal("Connections: Player ^71^9 (SuperPlayer), Second ^^Player^^^9 (TestPlayer), " \
-			+ "Skipped ^1PLIDs^9 (AnotherPlayer)")
+	).is_equal(
+		"Connections: Player ^71^9 (SuperPlayer), Second ^^Player^^^9 (TestPlayer), "
+		+ "Skipped ^1PLIDs^9 (AnotherPlayer)"
+	)
 
 
 @warning_ignore("unused_parameter")

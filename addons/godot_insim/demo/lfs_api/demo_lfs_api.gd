@@ -35,19 +35,24 @@ func _ready() -> void:
 		image_texture = ImageTexture.create_from_image(image)
 		rich_text_label.add_image(image_texture)
 		rich_text_label.add_text("\n" + vehicle_info.description_short)
-		rich_text_label.add_text(("\n%d kW electric motor, %d N.m, %d kWh battery\n" % [
-			roundi(vehicle_info.power),
-			roundi(vehicle_info.torque),
-			roundi(vehicle_info.fuel_tank_size),
-		]) if vehicle_info.electric else ("\n%.1fL %s%d, " % [
-			vehicle_info.ice_cc / 1000.0,
-			((VehicleInfo.ICELayout.keys()[vehicle_info.ice_layout] as String).to_lower() + " ") \
-					if vehicle_info.ice_layout != VehicleInfo.ICELayout.V else "V",
-			vehicle_info.ice_num_cylinders,
-		] + "%d bhp @ %d RPM, %d N.m @ %d RPM, %d kg\n" % [
-			roundi(vehicle_info.bhp),
-			roundi(vehicle_info.max_power_rpm),
-			roundi(vehicle_info.torque),
-			roundi(vehicle_info.max_torque_rpm),
-			roundi(vehicle_info.mass),
-		]))
+		rich_text_label.add_text(
+			"\n%d kW electric motor, %d N.m, %d kWh battery\n" % [
+				roundi(vehicle_info.power),
+				roundi(vehicle_info.torque),
+				roundi(vehicle_info.fuel_tank_size),
+			] if vehicle_info.electric else (
+				"\n%.1fL %s%d, " % [
+					vehicle_info.ice_cc / 1000.0,
+					(
+						str(VehicleInfo.ICELayout.keys()[vehicle_info.ice_layout]).to_lower() + " "
+					) if vehicle_info.ice_layout != VehicleInfo.ICELayout.V else "V",
+					vehicle_info.ice_num_cylinders,
+				] + "%d bhp @ %d RPM, %d N.m @ %d RPM, %d kg\n" % [
+					roundi(vehicle_info.bhp),
+					roundi(vehicle_info.max_power_rpm),
+					roundi(vehicle_info.torque),
+					roundi(vehicle_info.max_torque_rpm),
+					roundi(vehicle_info.mass),
+				]
+			)
+		)

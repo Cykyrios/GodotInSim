@@ -95,11 +95,13 @@ static func create_no_mask(
 
 
 func _to_string() -> String:
-	return "Signals:" + "%d" % [signals if set_signals else -1] \
-			+ ", Lights:" + "%d" % [lights if set_lights else -1] \
-			+ ", FogRear:" + "%d" % [fog_rear if set_fog_rear else -1] \
-			+ ", FogFront:" + "%d" % [fog_front if set_fog_front else -1] \
-			+ ", Extra:" + "%d" % [extra if set_extra else -1]
+	return (
+		"Signals:%d" % [signals if set_signals else -1]
+		+ ", Lights:%d" % [lights if set_lights else -1]
+		+ ", FogRear:%d" % [fog_rear if set_fog_rear else -1]
+		+ ", FogFront:%d" % [fog_front if set_fog_front else -1]
+		+ ", Extra:%d" % [extra if set_extra else -1]
+	)
 
 
 ## Returns the integer value corresponding to the values set.

@@ -174,10 +174,11 @@ func update_outsim(outsim_packet: OutSimPacket) -> void:
 		outsim_label_1.text += "\n%s: %s" % ["Pos", outsim_main.pos]
 	if os_options & OutSim.OutSimOpts.OSO_INPUTS:
 		var outsim_inputs := outsim_packet.os_inputs
-		outsim_label_1.text += "\n%s: %.2f\n%s: %.2f\n%s: %.2f\n%s: %.2f\n%s: %.2f" % \
-				["Throttle", outsim_inputs.throttle, "Brake", outsim_inputs.brake,
-				"InputSteer", outsim_inputs.input_steer, "Clutch", outsim_inputs.clutch,
-				"Handbrake", outsim_inputs.handbrake]
+		outsim_label_1.text += "\n%s: %.2f\n%s: %.2f\n%s: %.2f\n%s: %.2f\n%s: %.2f" % [
+			"Throttle", outsim_inputs.throttle, "Brake", outsim_inputs.brake,
+			"InputSteer", outsim_inputs.input_steer, "Clutch", outsim_inputs.clutch,
+			"Handbrake", outsim_inputs.handbrake,
+		]
 	if os_options & OutSim.OutSimOpts.OSO_DRIVE:
 		var gear := outsim_packet.gear - 1
 		outsim_label_1.text += "\n%s: %s" % [

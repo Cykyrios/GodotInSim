@@ -227,8 +227,10 @@ func _get_mesh() -> MeshInstance3D:
 			index == InSim.AXOIndex.AXO_CONCRETE_SLAB_WALL
 			or index == InSim.AXOIndex.AXO_CONCRETE_SHORT_SLAB_WALL
 		):
-			var wall_length := gis_size_y if index == InSim.AXOIndex.AXO_CONCRETE_SHORT_SLAB_WALL \
-					else gis_length
+			var wall_length := (
+				gis_size_y if index == InSim.AXOIndex.AXO_CONCRETE_SHORT_SLAB_WALL
+				else gis_length
+			)
 			vertices = PackedVector3Array([
 				Vector3(-0.5 * THICKNESS, -0.5 * wall_length, 0),
 				Vector3(0.5 * THICKNESS, -0.5 * wall_length, 0),

@@ -26,10 +26,13 @@ var tan_slip_angle := 0.0  ## Tangent of the slip angle
 
 
 func _to_string() -> String:
-	return "SuspDeflect:%f, Steer:%f, XForce:%f, YForce:%f, VerticalLoad:%f, AngVel:%f, LeanRelToRoad:%f" % \
-			[susp_deflect, steer, x_force, y_force, vertical_load, ang_vel, lean_rel_to_road] \
-			+ ", AirTemp:%f, SlipFraction:%f, Touching:%f, Sp3:%f, SlipRatio:%f, TanSlipAngle:%f" % \
-			[air_temp, slip_fraction, touching, sp3, slip_ratio, tan_slip_angle]
+	return "SuspDeflect:%f, Steer:%f, XForce:%f, YForce:%f, VerticalLoad:%f" % [
+		susp_deflect, steer, x_force, y_force, vertical_load
+	] + ", AngVel:%f, LeanRelToRoad:%f, AirTemp:%f, SlipFraction:%f, Touching:%f" % [
+		ang_vel, lean_rel_to_road, air_temp, slip_fraction, touching
+	] + ", SlipRatio:%f, TanSlipAngle:%f" % [
+		slip_ratio, tan_slip_angle
+	]
 
 
 ## Sets the properties from the given [param buffer].

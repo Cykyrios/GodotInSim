@@ -59,8 +59,12 @@ func _get_mesh() -> MeshInstance3D:
 		for l in LOOPS:
 			var radius := radius_max if l in [1, 2] else radius_min
 			var chamfer_height := radius_max * CHAMFER
-			var loop_height := 0.0 if l == 0 else chamfer_height if l == 1 \
-			  else (tyre_width - chamfer_height) if l == 2 else tyre_width
+			var loop_height := (
+				0.0 if l == 0
+				else chamfer_height if l == 1
+				else (tyre_width - chamfer_height) if l == 2
+				else tyre_width
+			)
 			for i in SEGMENTS:
 				var _discard := vertices.push_back(Vector3(
 					radius * (1 - CHAMFER) * cos(2 * PI * i / SEGMENTS),
@@ -98,8 +102,9 @@ func _get_mesh() -> MeshInstance3D:
 	for i in SEGMENTS:
 		var _discard := indices.push_back(1)
 		_discard = indices.push_back(vertex_count - 1 - i)
-		_discard = indices.push_back(vertex_count - 2 - i \
-				+ (SEGMENTS if i == (SEGMENTS - 1) else 0))
+		_discard = indices.push_back(
+			vertex_count - 2 - i + (SEGMENTS if i == (SEGMENTS - 1) else 0)
+		)
 	var st := SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
 	st.set_smooth_group(0)

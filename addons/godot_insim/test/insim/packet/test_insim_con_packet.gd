@@ -29,14 +29,22 @@ func test_decode_packet(buffer: PackedByteArray, test_parameters := [
 	_test = assert_int(packet.req_i).is_equal(buffer.decode_u8(2))
 	_test = assert_int(packet.zero).is_equal(buffer.decode_u8(3))
 	_test = assert_int(packet.sp_close).is_equal(buffer.decode_u16(4))
-	_test = assert_float(packet.gis_closing_speed) \
+	_test = (
+		assert_float(packet.gis_closing_speed)
 		.is_equal_approx(packet.sp_close / InSimCONPacket.CLOSING_SPEED_MULTIPLIER, epsilon)
+	)
 	_test = assert_int(packet.time).is_equal(buffer.decode_u16(6))
-	_test = assert_float(packet.gis_time) \
+	_test = (
+		assert_float(packet.gis_time)
 		.is_equal_approx(packet.time / InSimCONPacket.TIME_MULTIPLIER, epsilon)
-	_test = assert_array(packet.car_a.get_buffer()) \
-			.is_equal(buffer.slice(8, 8 + CarContact.STRUCT_SIZE))
-	_test = assert_array(packet.car_b.get_buffer()) \
-			.is_equal(buffer.slice(8 + CarContact.STRUCT_SIZE))
+	)
+	_test = (
+		assert_array(packet.car_a.get_buffer())
+		.is_equal(buffer.slice(8, 8 + CarContact.STRUCT_SIZE))
+	)
+	_test = (
+		assert_array(packet.car_b.get_buffer())
+		.is_equal(buffer.slice(8 + CarContact.STRUCT_SIZE))
+	)
 	packet.fill_buffer()
 	_test = assert_array(packet.buffer).is_equal(buffer)
