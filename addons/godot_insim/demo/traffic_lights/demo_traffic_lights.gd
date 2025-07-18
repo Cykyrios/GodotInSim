@@ -76,7 +76,7 @@ func _ready() -> void:
 
 func send_system_message(message: String, sound: InSim.MessageSound) -> void:
 		if insim.lfs_state.flags & InSim.State.ISS_MULTI:
-			insim.send_message_to_connection(255, message, sound)
+			insim.send_message_to_connection(InSim.UCID_ALL, message, sound)
 		else:
 			insim.send_local_message(message, sound)
 

@@ -524,11 +524,11 @@ static func replace_ucid_with_name(
 			insim.connections[ucid] if insim.connections.has(ucid)
 			else null
 		)
-		if not connection and ucid != 255:
+		if not connection and ucid != InSim.UCID_ALL:
 			push_error("Failed to convert UCID %d, list is %s" % [ucid, insim.connections.keys()])
 		var nickname := (
 			connection.nickname + (get_color_code(ColorCode.DEFAULT) if reset_color else "")
-			if connection else "Everyone" if ucid == 255
+			if connection else "Everyone" if ucid == InSim.UCID_ALL
 			else "^%d%s%s" % [
 				LFSText.ColorCode.RED,
 				result.strings[0],

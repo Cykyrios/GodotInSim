@@ -7,8 +7,6 @@ extends RefCounted
 
 ## The maximum number of buttons across all InSim apps.
 const MAX_BUTTONS := 240
-## The UCID value corresponding to all players; you can use this when creating global buttons.
-const EVERYONE := 255
 
 ## A reference to the parent [InSim] instance, used to fetch [member InSim.connections] for
 ## per-player button management.
@@ -81,7 +79,7 @@ func add_button(
 	var global_button := false
 	# Allow UCID 255 if it is the only UCID passed to the function (for "true" global buttons
 	# that will update regardless of disabled_ucids).
-	if ucids.is_empty() or EVERYONE in ucids and ucids.size() > 1:
+	if ucids.is_empty() or InSim.UCID_ALL in ucids and ucids.size() > 1:
 		global_button = true
 		ucids = insim.connections.keys()
 		new_id = get_free_global_id()
@@ -280,15 +278,15 @@ func get_buttons_by_prefix(prefix: StringName, ucid: int) -> Array[InSimButton]:
 ## or [code]-1[/code] if no ID is available in the [member id_range].
 func get_free_id(for_ucid: int) -> int:
 	if (
-		for_ucid != EVERYONE
+		for_ucid != InSim.UCID_ALL
 		and not id_map.has(for_ucid)
-		and not id_map.has(EVERYONE)
+		and not id_map.has(InSim.UCID_ALL)
 	):
 		return id_range.x
-	if for_ucid == EVERYONE:
+	if for_ucid == InSim.UCID_ALL:
 		for i in id_range.y - id_range.x + 1:
 			var test_id := id_range.x + i
-			if id_map.has(EVERYONE) and id_map[EVERYONE].has(test_id):
+			if id_map.has(InSim.UCID_ALL) and id_map[InSim.UCID_ALL].has(test_id):
 				continue
 			var invalid_id := false
 			for ucid in id_map:
@@ -303,7 +301,7 @@ func get_free_id(for_ucid: int) -> int:
 			var test_id := id_range.x + i
 			if (
 				id_map.has(for_ucid) and id_map[for_ucid].has(test_id)
-				or id_map.has(EVERYONE) and id_map[EVERYONE].has(test_id)
+				or id_map.has(InSim.UCID_ALL) and id_map[InSim.UCID_ALL].has(test_id)
 			):
 				continue
 			return test_id
@@ -314,7 +312,7 @@ func get_free_id(for_ucid: int) -> int:
 ## or [code]-1[/code] if no ID is available in the [member id_range].
 func get_free_global_id() -> int:
 	var ucids := insim.connections.keys() as Array[int]
-	ucids.append(EVERYONE)
+	ucids.append(InSim.UCID_ALL)
 	for i in id_range.y - id_range.x + 1:
 		var test_id := id_range.x + i
 		var valid_id := true

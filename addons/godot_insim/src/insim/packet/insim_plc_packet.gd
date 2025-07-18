@@ -66,7 +66,7 @@ func _get_pretty_text() -> String:
 				car_array[i],
 			]
 	return "Allowed cars for %s: %s" % [
-		"everyone" if ucid == 255
+		"everyone" if ucid == InSim.UCID_ALL
 		else "host" if ucid == 0
 		else "UCID %d" % [ucid],
 		car_list,

@@ -53,7 +53,7 @@ func _exit_tree() -> void:
 		insim.send_message("Host InSim closed")
 
 
-func show_auto_buttons(for_ucid := 255) -> void:
+func show_auto_buttons(for_ucid := InSim.UCID_ALL) -> void:
 	insim.buttons.id_range = Vector2i(50, 80)
 	insim.add_button(
 		[for_ucid],
@@ -131,14 +131,14 @@ func show_global_button() -> void:
 
 func show_manual_buttons() -> void:
 	insim.send_packet(InSimBTNPacket.create(
-		255, 0, 0,
+		InSim.UCID_ALL, 0, 0,
 		InSim.ButtonStyle.ISB_LIGHT,
 		0,
 		manual_buttons_left, manual_buttons_top,
 		2 * manual_button_width, 9 * manual_button_height,
 	))
 	insim.send_packet(InSimBTNPacket.create(
-		255, 1, 0,
+		InSim.UCID_ALL, 1, 0,
 		InSim.ButtonColor.ISB_TITLE,
 		0,
 		manual_buttons_left, manual_buttons_top,
@@ -146,7 +146,7 @@ func show_manual_buttons() -> void:
 		"Manual Buttons"
 	))
 	insim.send_packet(InSimBTNPacket.create(
-		255, 2, 0,
+		InSim.UCID_ALL, 2, 0,
 		InSim.ButtonColor.ISB_LIGHT_GRAY,
 		0,
 		manual_buttons_left, manual_buttons_top + 2 * manual_button_height,
@@ -154,7 +154,7 @@ func show_manual_buttons() -> void:
 		"Default"
 	))
 	insim.send_packet(InSimBTNPacket.create(
-		255, 3, 0,
+		InSim.UCID_ALL, 3, 0,
 		InSim.ButtonColor.ISB_TITLE,
 		0,
 		manual_buttons_left + manual_button_width, manual_buttons_top + 2 * manual_button_height,
@@ -162,7 +162,7 @@ func show_manual_buttons() -> void:
 		"Title"
 	))
 	insim.send_packet(InSimBTNPacket.create(
-		255, 4, 0,
+		InSim.UCID_ALL, 4, 0,
 		InSim.ButtonColor.ISB_UNSELECTED,
 		0,
 		manual_buttons_left, manual_buttons_top + 3 * manual_button_height,
@@ -170,7 +170,7 @@ func show_manual_buttons() -> void:
 		"Unselected"
 	))
 	insim.send_packet(InSimBTNPacket.create(
-		255, 5, 0,
+		InSim.UCID_ALL, 5, 0,
 		InSim.ButtonColor.ISB_SELECTED,
 		0,
 		manual_buttons_left + manual_button_width, manual_buttons_top + 3 * manual_button_height,
@@ -178,7 +178,7 @@ func show_manual_buttons() -> void:
 		"Selected"
 	))
 	insim.send_packet(InSimBTNPacket.create(
-		255, 6, 0,
+		InSim.UCID_ALL, 6, 0,
 		InSim.ButtonColor.ISB_OK,
 		0,
 		manual_buttons_left, manual_buttons_top + 4 * manual_button_height,
@@ -186,7 +186,7 @@ func show_manual_buttons() -> void:
 		"OK"
 	))
 	insim.send_packet(InSimBTNPacket.create(
-		255, 7, 0,
+		InSim.UCID_ALL, 7, 0,
 		InSim.ButtonColor.ISB_CANCEL,
 		0,
 		manual_buttons_left + manual_button_width, manual_buttons_top + 4 * manual_button_height,
@@ -194,7 +194,7 @@ func show_manual_buttons() -> void:
 		"Cancel"
 	))
 	insim.send_packet(InSimBTNPacket.create(
-		255, 8, 0,
+		InSim.UCID_ALL, 8, 0,
 		InSim.ButtonColor.ISB_TEXT,
 		0,
 		manual_buttons_left, manual_buttons_top + 5 * manual_button_height,
@@ -202,7 +202,7 @@ func show_manual_buttons() -> void:
 		"Text String"
 	))
 	insim.send_packet(InSimBTNPacket.create(
-		255, 9, 0,
+		InSim.UCID_ALL, 9, 0,
 		InSim.ButtonColor.ISB_UNAVAILABLE,
 		0,
 		manual_buttons_left + manual_button_width, manual_buttons_top + 5 * manual_button_height,
@@ -210,7 +210,7 @@ func show_manual_buttons() -> void:
 		"Unavailable"
 	))
 	insim.send_packet(InSimBTNPacket.create(
-		255, 10, 0,
+		InSim.UCID_ALL, 10, 0,
 		InSim.ButtonStyle.ISB_DARK | InSim.ButtonStyle.ISB_CLICK | InSim.ButtonColor.ISB_OK,
 		0,
 		manual_buttons_left + roundi(0.5 * manual_button_width), manual_buttons_top + roundi(6.5 * manual_button_height),
@@ -218,7 +218,7 @@ func show_manual_buttons() -> void:
 		"Click"
 	))
 	insim.send_packet(InSimBTNPacket.create(
-		255, 11, 0,
+		InSim.UCID_ALL, 11, 0,
 		InSim.ButtonStyle.ISB_DARK | InSim.ButtonStyle.ISB_CLICK | InSim.ButtonColor.ISB_TEXT,
 		10,
 		manual_buttons_left + roundi(0.5 * manual_button_width), manual_buttons_top + roundi(7.5 * manual_button_height),
@@ -400,7 +400,7 @@ func _on_btt_received(packet: InSimBTTPacket) -> void:
 	]
 	if insim.lfs_state.flags & InSim.State.ISS_MULTI:
 		insim.send_message_to_connection(
-			255,
+			InSim.UCID_ALL,
 			message.replace(
 				"You",
 				insim.get_connection_nickname(packet.ucid)

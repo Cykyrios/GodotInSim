@@ -953,6 +953,10 @@ const TIMEOUT_DELAY := 10  ## Timeout if no reply to ping within this delay.
 
 const RELAY_ADDRESS := "isrelay.lfs.net"  ## InSim Relay address
 const RELAY_PORT := 47474  ## InSim Relay port
+
+## A UCID value of 255 has a special meaning for some packets, such as [InSimBTNPacket], which
+## causes the created button to be sent to everyone.
+const UCID_ALL := 255
 ## The ReqI value used by Godot InSim for packets that use a non-zero value.
 const GIS_REQI := 250
 
@@ -1291,7 +1295,7 @@ func add_button(
 ) -> void:
 	# Allow UCID 255 if it is the only UCID passed to he function; this results in
 	# "true" global buttons that by pass InSimButtons.disabled_ucids.
-	if buttons.EVERYONE in ucids and ucids.size() > 1:
+	if UCID_ALL in ucids and ucids.size() > 1:
 		ucids.clear()
 	if type_in > 0:
 		style |= InSim.ButtonStyle.ISB_CLICK
@@ -1321,7 +1325,7 @@ func add_global_button(
 ## to delete the button for every UCID in the current connection list. If [param max_id] is greater
 ## than [param click_id], all buttons from [param click_id] to [param max_id] are deleted.
 func delete_buttons_by_id(ucids: Array[int], click_id: int, max_id := 0, sender := "InSim") -> void:
-	if ucids.is_empty() or buttons.EVERYONE in ucids and ucids.size() > 1:
+	if ucids.is_empty() or UCID_ALL in ucids and ucids.size() > 1:
 		ucids = connections.keys()
 	for packet in buttons.delete_buttons_by_id(ucids, click_id, max_id):
 		send_packet(packet, sender)
@@ -1331,7 +1335,7 @@ func delete_buttons_by_id(ucids: Array[int], click_id: int, max_id := 0, sender 
 ## and sends the corresponding [InSimBFNPacket]s. If [param ucids] is empty, this function will try
 ## to delete buttons for every UCID in the current connection list.
 func delete_buttons_by_name(ucids: Array[int], button_name: StringName, sender := "InSim") -> void:
-	if ucids.is_empty() or buttons.EVERYONE in ucids and ucids.size() > 1:
+	if ucids.is_empty() or UCID_ALL in ucids and ucids.size() > 1:
 		ucids = connections.keys()
 	for packet in buttons.delete_buttons_by_name(ucids, button_name):
 		send_packet(packet, sender)
@@ -1341,7 +1345,7 @@ func delete_buttons_by_name(ucids: Array[int], button_name: StringName, sender :
 ## and sends the corresponding [InSimBFNPacket]s. If [param ucids] is empty, this function
 ## will try to delete buttons for every UCID in the current connection list.
 func delete_buttons_by_prefix(ucids: Array[int], prefix: StringName, sender := "InSim") -> void:
-	if ucids.is_empty() or buttons.EVERYONE in ucids and ucids.size() > 1:
+	if ucids.is_empty() or UCID_ALL in ucids and ucids.size() > 1:
 		ucids = connections.keys()
 	for packet in buttons.delete_buttons_by_prefix(ucids, prefix):
 		send_packet(packet, sender)
@@ -1351,7 +1355,7 @@ func delete_buttons_by_prefix(ucids: Array[int], prefix: StringName, sender := "
 ## and sends the corresponding [InSimBFNPacket]s. If [param ucids] is empty, this functions
 ## will try to delete buttons for every UCID in the current connection list.
 func delete_buttons_by_regex(ucids: Array[int], regex: RegEx, sender := "InSim") -> void:
-	if ucids.is_empty() or buttons.EVERYONE in ucids and ucids.size() > 1:
+	if ucids.is_empty() or UCID_ALL in ucids and ucids.size() > 1:
 		ucids = connections.keys()
 	for packet in buttons.delete_buttons_by_regex(ucids, regex):
 		send_packet(packet, sender)
