@@ -12,7 +12,7 @@ const config: Config = {
   favicon: 'img/logo.png',
 
   // Set the production url of your site here
-  url: 'https://cykyrios.gitlab.io',
+  url: 'https://godot-insim.gitlab.io',
   // Set the /<baseUrl>/ pathname under which your site is served
   // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/godot_insim/',
@@ -68,7 +68,7 @@ const config: Config = {
           label: 'Guides',
         },
         {
-          href: 'https://gitlab.com/Cykyrios/godot_insim',
+          href: 'https://gitlab.com/godot-insim/godot_insim',
           label: 'GitLab',
           position: 'right',
         },
@@ -95,7 +95,7 @@ const config: Config = {
           items: [
             {
               label: 'GitLab',
-              href: 'https://gitlab.com/Cykyrios/godot_insim',
+              href: 'https://gitlab.com/godot-insim/godot_insim',
             },
             {
               label: 'Live For Speed',
