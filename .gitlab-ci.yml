@@ -32,6 +32,7 @@ setup-project:
 
 run-tests:
   stage: test
+  image: registry.gitlab.com/cykyrios/godot-builder:4.4.1-editor
   script:
     - sed -E -i '/gdscript\/warnings\/.+?/a gdscript\/warnings\/redundant_await=0' project.godot
     - export GODOT_BIN=$(which godot)
