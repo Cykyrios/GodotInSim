@@ -5,8 +5,8 @@ const __source = "res://addons/godot_insim/src/insim/packet/insim_oco_packet.gd"
 
 var buffers := [
 	[PackedByteArray([2, 60, 0, 0, 4, 0, 0, 0])],
-	[PackedByteArray([2, 60, 0, 0, 5, 240, 255, 1])],
-	[PackedByteArray([2, 60, 0, 0, 5, 240, 255, 15])],
+	[PackedByteArray([2, 60, 0, 0, 5, InSim.OCO_INDEX_MAIN, 255, 1])],
+	[PackedByteArray([2, 60, 0, 0, 5, InSim.OCO_INDEX_MAIN, 255, 15])],
 	[PackedByteArray([2, 60, 0, 0, 5, 149, 255, 15])],
 ]
 

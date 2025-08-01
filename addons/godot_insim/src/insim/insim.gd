@@ -954,6 +954,8 @@ const TIMEOUT_DELAY := 10  ## Timeout if no reply to ping within this delay.
 const RELAY_ADDRESS := "isrelay.lfs.net"  ## InSim Relay address
 const RELAY_PORT := 47474  ## InSim Relay port
 
+const OCO_INDEX_MAIN := 240  ## Main start lights
+
 ## A UCID value of 255 has a special meaning for some packets, such as [InSimBTNPacket], which
 ## causes the created button to be sent to everyone.
 const UCID_ALL := 255
