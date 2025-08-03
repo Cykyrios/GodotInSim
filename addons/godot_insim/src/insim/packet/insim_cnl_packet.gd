@@ -42,7 +42,7 @@ func _get_data_dictionary() -> Dictionary:
 
 
 func _get_pretty_text() -> String:
-	return "%s disconnected" % ["host" if ucid == 0 else "UCID %d" % [ucid]]
+	return "UCID %d disconnected" % [ucid]
 
 
 func _set_data_from_dictionary(dict: Dictionary) -> void:

@@ -47,8 +47,8 @@ func _get_pretty_text() -> String:
 	for i in InSim.ButtonClick.size():
 		if click_flags & InSim.ButtonClick.values()[i]:
 			flags_string.append(InSim.ButtonClick.keys()[i])
-	return "Button clicked: %s, ID %d, %s" % [
-		"local" if ucid == 0 else "UCID %d" % [ucid],
+	return "Button clicked: UCID %d, ID %d, %s" % [
+		ucid,
 		click_id,
 		flags_string,
 	]
