@@ -49,8 +49,11 @@ func _get_data_dictionary() -> Dictionary:
 
 
 func _get_pretty_text() -> String:
-	return "Button type in (%s): ID %d, %s" % ["local" if ucid == 0 else "UCID %d" % [ucid],
-			click_id, text]
+	return "Button type in (%s): ID %d, %s" % [
+		"local" if ucid == 0 else "UCID %d" % [ucid],
+		click_id,
+		text,
+	]
 
 
 func _set_data_from_dictionary(dict: Dictionary) -> void:

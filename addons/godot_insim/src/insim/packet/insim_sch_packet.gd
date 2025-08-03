@@ -50,9 +50,13 @@ func _get_data_dictionary() -> Dictionary:
 
 
 func _get_pretty_text() -> String:
-	return "Sent single character %s%s" % [PackedByteArray([char_byte]).get_string_from_ascii(),
-			"" if flags == 0 else " (%s%s)" % ["+Shift" if flags & 0b01 else "",
-			"+Ctrl" if flags & 0b10 else ""]]
+	return "Sent single character %s%s" % [
+		PackedByteArray([char_byte]).get_string_from_ascii(),
+		"" if flags == 0 else " (%s%s)" % [
+			"+Shift" if flags & 0b01 else "",
+			"+Ctrl" if flags & 0b10 else ""
+		],
+	]
 
 
 func _set_data_from_dictionary(dict: Dictionary) -> void:

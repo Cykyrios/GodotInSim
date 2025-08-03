@@ -52,8 +52,9 @@ func fill_from_array(ip_array: PackedByteArray = [0, 0, 0, 0]) -> void:
 			value = 0
 		var _discard := address_array.append(value)
 	address_int = address_array.decode_u32(0)
-	address_string = "%d.%d.%d.%d" % [address_array[0], address_array[1],
-			address_array[2], address_array[3]]
+	address_string = "%d.%d.%d.%d" % [
+		address_array[0], address_array[1], address_array[2], address_array[3],
+	]
 
 
 ## Sets the IP address from the given [param ip_int].
@@ -65,8 +66,9 @@ func fill_from_int(ip_int := 0) -> void:
 	address_array.clear()
 	var _discard := address_array.resize(STRUCT_SIZE)
 	address_array.encode_u32(0, ip_int)
-	address_string = "%d.%d.%d.%d" % [address_array[0], address_array[1],
-			address_array[2], address_array[3]]
+	address_string = "%d.%d.%d.%d" % [
+		address_array[0], address_array[1], address_array[2], address_array[3],
+	]
 
 
 ## Sets the IP address from the given [param ip_string].

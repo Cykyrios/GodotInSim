@@ -70,8 +70,11 @@ func _get_pretty_text() -> String:
 		var car := InSim.Car.keys()[i + 1] as String
 		if car == str(InSim.Car.keys()[InSim.Car.values().find(InSim.Car.CAR_ALL)]):
 			break
-		handicaps.append("%s (%d/%d)" % [(car as String).split("_")[-1],
-				roundi(hcp.gis_mass), hcp.h_tres])
+		handicaps.append("%s (%d/%d)" % [
+			(car as String).split("_")[-1],
+			roundi(hcp.gis_mass),
+			hcp.h_tres,
+		])
 	return "Car handicaps (mass kg/intake %%): %s" % [handicaps]
 
 
