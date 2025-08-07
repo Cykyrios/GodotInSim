@@ -101,7 +101,8 @@
       "GISCamera",
       "GISTime",
       "GISUnit",
-      "GISViewer"
+      "GISViewer",
+      "Awaiter"
     ]
   },
   "File Formats": {
