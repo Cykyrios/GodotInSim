@@ -15,8 +15,6 @@ var num_mods := 0  ## number of mods in this packet
 
 var ucid := 0  ## unique id of the connection that updated the list
 var flags := 0  ## zero (for now)
-var sp2 := 0  ## Spare
-var sp3 := 0  ## Spare
 
 var skin_id: Array[int] = []  ## skin id of each mod in compressed format, 0 to [constant MAL_MAX_MODS]
 
@@ -55,8 +53,8 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	num_mods = read_byte()
 	ucid = read_byte()
 	flags = read_byte()
-	sp2 = read_byte()
-	sp3 = read_byte()
+	var _sp2 := read_byte()
+	var _sp3 := read_byte()
 	skin_id.clear()
 	for i in num_mods:
 		skin_id.append(read_unsigned())
@@ -69,8 +67,8 @@ func _fill_buffer() -> void:
 	add_byte(num_mods)
 	add_byte(ucid)
 	add_byte(flags)
-	add_byte(sp2)
-	add_byte(sp3)
+	add_byte(0)  # sp2
+	add_byte(0)  # sp3
 	resize_buffer(PACKET_MIN_SIZE + num_mods * MAL_DATA_SIZE)
 	for i in num_mods:
 		add_unsigned(skin_id[i])

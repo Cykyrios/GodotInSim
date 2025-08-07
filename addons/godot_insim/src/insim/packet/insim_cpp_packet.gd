@@ -13,7 +13,6 @@ const TIME_MULTIPLIER := 1000.0
 
 const PACKET_SIZE := 32  ## Packet size
 const PACKET_TYPE := InSim.Packet.ISP_CPP  ## The packet's type, see [enum InSim.Packet].
-var zero := 0  ## Zero byte
 
 var pos := Vector3i.ZERO  ## position vector
 
@@ -84,7 +83,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 		push_error("%s packet expected size %d, got %d." % [get_type_string(), size, packet_size])
 		return
 	super(packet)
-	zero = read_byte()
+	var _zero := read_byte()
 	pos.x = read_int()
 	pos.y = read_int()
 	pos.z = read_int()
@@ -100,7 +99,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 
 func _fill_buffer() -> void:
 	super()
-	add_byte(zero)
+	add_byte(0)  # zero
 	add_int(pos.x)
 	add_int(pos.y)
 	add_int(pos.z)

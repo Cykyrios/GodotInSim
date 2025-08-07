@@ -10,8 +10,6 @@ var ucid := 0  ## Connection's unique id (0 = host)
 
 var language := InSim.Language.LFS_ENGLISH  ## Language (see [enum InSim.Language])
 var license := 0  ## Player license (0:demo / 1:S1 ...)
-var sp2 := 0  ## Spare
-var sp3 := 0  ## Spare
 
 var user_id := 0  ## LFS UserID
 var ip_address := IPAddress.new()  ## Player's IP address
@@ -32,8 +30,8 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	ucid = read_byte()
 	language = read_byte() as InSim.Language
 	license = read_byte()
-	sp2 = read_byte()
-	sp3 = read_byte()
+	var _sp2 := read_byte()
+	var _sp3 := read_byte()
 	user_id = read_unsigned()
 	ip_address.fill_from_int(read_unsigned())
 

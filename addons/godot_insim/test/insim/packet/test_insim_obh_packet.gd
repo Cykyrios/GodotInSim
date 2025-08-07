@@ -44,7 +44,7 @@ func test_decode_packet(buffer: PackedByteArray, test_parameters := buffers) -> 
 		buffer.decode_s16(CarContObj.STRUCT_SIZE + 10) / InSimOBHPacket.POSITION_XY_MULTIPLIER,
 		buffer.decode_u8(CarContObj.STRUCT_SIZE + 12) / InSimOBHPacket.POSITION_Z_MULTIPLIER
 	), epsilon * Vector3.ONE)
-	_test = assert_int(packet.sp1).is_equal(buffer.decode_u8(CarContObj.STRUCT_SIZE + 13))
+	_test = assert_int(buffer.decode_u8(CarContObj.STRUCT_SIZE + 13)).is_zero()
 	_test = assert_int(packet.index).is_equal(buffer.decode_u8(CarContObj.STRUCT_SIZE + 14))
 	_test = assert_int(packet.obh_flags).is_equal(buffer.decode_u8(CarContObj.STRUCT_SIZE + 15))
 	packet.fill_buffer()

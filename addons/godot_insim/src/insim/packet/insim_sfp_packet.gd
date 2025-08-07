@@ -11,11 +11,8 @@ extends InSimPacket
 const PACKET_SIZE := 8  ## Packet size
 const PACKET_TYPE := InSim.Packet.ISP_SFP  ## The packet's type, see [enum InSim.Packet].
 
-var zero := 0  ## Zero byte
-
 var flag := InSim.State.ISS_SHIFTU_NO_OPT  ## The state flag to set
 var off_on := 0  ## 0 = off / 1 = on
-var sp3 := 0  ## Spare
 
 
 ## Creates and returns a new [InSimSFPPacket] from the given parameters.
@@ -34,10 +31,10 @@ func _init() -> void:
 
 func _fill_buffer() -> void:
 	super()
-	add_byte(zero)
+	add_byte(0)  # zero
 	add_word(flag)
 	add_byte(off_on)
-	add_byte(sp3)
+	add_byte(0)  # sp3
 
 
 func _get_data_dictionary() -> Dictionary:

@@ -19,7 +19,6 @@ var elapsed_time := 0  ## total time (ms)
 var laps_done := 0  ## laps completed
 var flags := 0  ## player flags
 
-var sp0 := 0  ## Spare
 var penalty := InSim.Penalty.PENALTY_NONE  ## current penalty value (see [enum InSim.Penalty])
 var num_stops := 0  ## number of pit stops
 var fuel200 := 0  ## /showfuel yes: double fuel percent / no: 255
@@ -46,7 +45,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	elapsed_time = read_unsigned()
 	laps_done = read_word()
 	flags = read_word()
-	sp0 = read_byte()
+	var _sp0 := read_byte()
 	penalty = read_byte() as InSim.Penalty
 	num_stops = read_byte()
 	fuel200 = read_byte()

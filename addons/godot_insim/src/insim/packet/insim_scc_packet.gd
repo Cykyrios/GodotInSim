@@ -7,12 +7,8 @@ extends InSimPacket
 const PACKET_SIZE := 8  ## Packet size
 const PACKET_TYPE := InSim.Packet.ISP_SCC  ## The packet's type, see [enum InSim.Packet].
 
-var zero := 0  ## Zero byte
-
 var view_plid := 255  ## Unique ID of player to view
 var ingame_cam := InSim.View.VIEW_MAX  ## As reported in [InSimSTAPacket]
-var sp2 := 0  ## Spare
-var sp3 := 0  ## Spare
 
 
 ## Creates and returns a new [InSimSCCPacket] from the given parameters.
@@ -31,11 +27,11 @@ func _init() -> void:
 
 func _fill_buffer() -> void:
 	super()
-	add_byte(zero)
+	add_byte(0)  # zero
 	add_byte(view_plid)
 	add_byte(ingame_cam)
-	add_byte(sp2)
-	add_byte(sp3)
+	add_byte(0)  # sp2
+	add_byte(0)  # sp3
 
 
 func _get_data_dictionary() -> Dictionary:

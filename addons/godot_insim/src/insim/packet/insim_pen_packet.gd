@@ -11,7 +11,6 @@ var plid := 0  ## Player's unique id
 var old_penalty := InSim.Penalty.PENALTY_NONE  ## Old penalty value (see [enum InSim.Penalty])
 var new_penalty := InSim.Penalty.PENALTY_NONE  ## New penalty value (see [enum InSim.Penalty])
 var reason := InSim.PenaltyReason.PENR_NUM  ## Penalty reason (see [enum InSim.PenaltyReason])
-var sp3 := 0  ## Spare
 
 
 func _init() -> void:
@@ -30,7 +29,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	old_penalty = read_byte() as InSim.Penalty
 	new_penalty = read_byte() as InSim.Penalty
 	reason = read_byte() as InSim.PenaltyReason
-	sp3 = read_byte()
+	var _sp3 := read_byte()
 
 
 func _get_data_dictionary() -> Dictionary:

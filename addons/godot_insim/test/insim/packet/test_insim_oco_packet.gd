@@ -19,7 +19,7 @@ func test_receivable_sendable() -> void:
 func test_encode_packet(buffer: PackedByteArray, test_parameters := buffers) -> void:
 	var packet := InSimOCOPacket.new()
 	packet.req_i = buffer.decode_u8(2)
-	packet.zero = buffer.decode_u8(3)
+	var _zero := buffer.decode_u8(3)
 	packet.action = buffer.decode_u8(4) as InSim.OCOAction
 	packet.index = buffer.decode_u8(5)
 	packet.identifier = buffer.decode_u8(6)

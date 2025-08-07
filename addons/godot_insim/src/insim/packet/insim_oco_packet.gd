@@ -6,7 +6,6 @@ extends InSimPacket
 
 const PACKET_SIZE := 8  ## Packet size
 const PACKET_TYPE := InSim.Packet.ISP_OCO  ## The packet's type, see [enum InSim.Packet].
-var zero := 0  ## Zero byte
 
 var action := InSim.OCOAction.OCO_NUM  ## OCO Action, see [enum InSim.OCOAction].
 var index := 0  ## Object index, see InSim documentation.
@@ -35,7 +34,7 @@ func _init() -> void:
 
 func _fill_buffer() -> void:
 	super()
-	add_byte(zero)
+	add_byte(0)  # zero
 	add_byte(action)
 	add_byte(index)
 	add_byte(identifier)
@@ -44,7 +43,6 @@ func _fill_buffer() -> void:
 
 func _get_data_dictionary() -> Dictionary:
 	return {
-		"Zero": zero,
 		"OCOAction": action,
 		"Index": index,
 		"Identifier": identifier,

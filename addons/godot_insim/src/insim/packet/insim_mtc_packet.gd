@@ -15,8 +15,6 @@ var sound := InSim.MessageSound.SND_SILENT  ## Sound effect (see [enum InSim.Mes
 
 var ucid := 0  ## Connection's unique id (0 = host / 255 = all)
 var plid := 0  ## Player's unique id (if zero, use [member ucid])
-var sp2 := 0  ## Spare
-var sp3 := 0  ## Spare
 
 var text := ""  ## Message contents, up to 128 characters of text - last byte must be zero.
 
@@ -46,8 +44,8 @@ func _fill_buffer() -> void:
 	add_byte(sound)
 	add_byte(ucid)
 	add_byte(plid)
-	add_byte(sp2)
-	add_byte(sp3)
+	add_byte(0)  # sp2
+	add_byte(0)  # sp3
 	text = LFSText.lfs_bytes_to_unicode(add_string_variable_length(
 			text, TEXT_MAX_LENGTH, SIZE_MULTIPLIER))
 	_trim_packet_size()

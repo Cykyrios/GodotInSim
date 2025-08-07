@@ -14,17 +14,10 @@ var outsim_data := OutSimMain.new()  ## AI car data, using [OutSimMain] format
 
 var flags := 0  ## Value to set
 var gear := 0  ## Reverse:0, Neutral:1, First:2...
-var sp2 := 0  ## Spare
-var sp3 := 0  ## Spare
 
 var rpm := 0.0  ## Engine RPM
-var spf0 := 0.0  ## Spare
-var spf1 := 0.0  ## Spare
 
 var show_lights := 0  ## Dash lights currently switched on (see [enum OutGaugePacket.DLFlags])
-var spu1 := 0  ## Spare
-var spu2 := 0  ## Spare
-var spu3 := 0  ## Spare
 
 
 func _init() -> void:
@@ -45,15 +38,15 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	data_offset += OutSimMain.STRUCT_SIZE
 	flags = read_byte()
 	gear = read_byte()
-	sp2 = read_byte()
-	sp3 = read_byte()
+	var _sp2 := read_byte()
+	var _sp3 := read_byte()
 	rpm = read_float()
-	spf0 = read_float()
-	spf1 = read_float()
+	var _spf0 := read_float()
+	var _spf1 := read_float()
 	show_lights = read_unsigned()
-	spu1 = read_unsigned()
-	spu2 = read_unsigned()
-	spu3 = read_unsigned()
+	var _spu1 := read_unsigned()
+	var _spu2 := read_unsigned()
+	var _spu3 := read_unsigned()
 
 
 func _get_data_dictionary() -> Dictionary:

@@ -17,7 +17,7 @@ func test_receivable_sendable() -> void:
 func test_encode_packet(buffer: PackedByteArray, test_parameters := buffers) -> void:
 	var packet := InSimMODPacket.new()
 	packet.req_i = buffer.decode_u8(2)
-	packet.zero = buffer.decode_u8(3)
+	var _zero := buffer.decode_u8(3)
 	packet.bits16 = buffer.decode_s32(4)
 	packet.refresh_rate = buffer.decode_s32(8)
 	packet.width = buffer.decode_s32(12)

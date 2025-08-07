@@ -32,10 +32,10 @@ func test_decode_packet(buffer: PackedByteArray, test_parameters := buffers) -> 
 	_test = assert_int(packet.fuel_add).is_equal(buffer.decode_u8(8))
 	_test = assert_int(packet.penalty).is_equal(buffer.decode_u8(9))
 	_test = assert_int(packet.num_stops).is_equal(buffer.decode_u8(10))
-	_test = assert_int(packet.sp3).is_equal(buffer.decode_u8(11))
+	_test = assert_int(buffer.decode_u8(11)).is_zero()
 	for i in packet.tyres.size():
 		_test = assert_int(packet.tyres[i]).is_equal(buffer.decode_u8(12 + i))
 	_test = assert_int(packet.work).is_equal(buffer.decode_u32(16))
-	_test = assert_int(packet.sp3).is_equal(buffer.decode_u32(20))
+	_test = assert_int(buffer.decode_u32(20)).is_zero()
 	packet.fill_buffer()
 	_test = assert_array(packet.buffer).is_equal(buffer)

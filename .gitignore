@@ -4,6 +4,7 @@
 # Submodule and plugin management
 .submodules/gdUnit4/
 addons/
+!addons/godot_insim/
 /addons/godot_insim/secrets/
 
 /build/

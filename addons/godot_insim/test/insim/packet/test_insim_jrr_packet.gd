@@ -22,8 +22,8 @@ func test_encode_packet(buffer: PackedByteArray, test_parameters := buffers) -> 
 	packet.plid = buffer.decode_u8(3)
 	packet.ucid = buffer.decode_u8(4)
 	packet.action = buffer.decode_u8(5)
-	packet.sp2 = buffer.decode_u8(6)
-	packet.sp3 = buffer.decode_u8(7)
+	var _sp2 := buffer.decode_u8(6)
+	var _sp3 := buffer.decode_u8(7)
 	var object_info := ObjectInfo.new()
 	object_info.set_from_buffer(buffer.slice(8))
 	packet.start_pos = object_info

@@ -32,7 +32,7 @@ func test_decode_packet(buffer: PackedByteArray, test_parameters := buffers) -> 
 	_test = assert_int(packet.size).is_equal(buffer.decode_u8(0) * InSimCPPPacket.SIZE_MULTIPLIER)
 	_test = assert_int(packet.type).is_equal(buffer.decode_u8(1))
 	_test = assert_int(packet.req_i).is_equal(buffer.decode_u8(2))
-	_test = assert_int(packet.zero).is_equal(buffer.decode_u8(3))
+	_test = assert_int(buffer.decode_u8(3)).is_zero()
 	_test = assert_vector(packet.pos).is_equal(Vector3i(
 		buffer.decode_s32(4),
 		buffer.decode_s32(8),
@@ -68,7 +68,7 @@ func test_decode_packet(buffer: PackedByteArray, test_parameters := buffers) -> 
 func test_encode_packet(buffer: PackedByteArray, test_parameters := buffers) -> void:
 	var packet := InSimCPPPacket.new()
 	packet.req_i = buffer.decode_u8(2)
-	packet.zero = buffer.decode_u8(3)
+	var _zero := buffer.decode_u8(3)
 	packet.pos = Vector3i(
 		buffer.decode_s32(4),
 		buffer.decode_s32(8),
@@ -93,7 +93,7 @@ func test_encode_packet(buffer: PackedByteArray, test_parameters := buffers) -> 
 func test_encode_packet_gis(buffer: PackedByteArray, test_parameters := buffers) -> void:
 	var packet := InSimCPPPacket.new()
 	packet.req_i = buffer.decode_u8(2)
-	packet.zero = buffer.decode_u8(3)
+	var _zero := buffer.decode_u8(3)
 	packet.gis_position = Vector3(
 		buffer.decode_s32(4),
 		buffer.decode_s32(8),

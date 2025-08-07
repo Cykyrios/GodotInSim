@@ -33,8 +33,6 @@ var passengers := 0  ## Passengers byte
 
 var rw_adjust := 0  ## Low 4 bits: tyre width reduction (rear)
 var fw_adjust := 0  ## Low 4 bits: tyre width reduction (front)
-var sp2 := 0  ## Spare
-var sp3 := 0  ## Spare
 
 var setup_flags := 0  ## Setup flags (see [enum InSim.Setup])
 var num_players := 0  ## Number in race - ZERO if this is a join request
@@ -71,8 +69,8 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	passengers = read_byte()
 	rw_adjust = read_byte()
 	fw_adjust = read_byte()
-	sp2 = read_byte()
-	sp3 = read_byte()
+	var _sp2 := read_byte()
+	var _sp3 := read_byte()
 	setup_flags = read_byte()
 	num_players = read_byte()
 	config = read_byte()

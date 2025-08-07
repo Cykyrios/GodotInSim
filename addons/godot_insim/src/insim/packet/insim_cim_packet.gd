@@ -13,7 +13,6 @@ var mode := InSim.InterfaceMode.CIM_NUM  ## mode identifier (see [enum InSim.Int
 ## [enum InSim.InterfaceShiftU])
 var submode := 0
 var sel_type := 0  ## selected object type or zero if unselected, can be an AXO_x or MARSH_x
-var sp3 := 0  ## Spare
 
 
 func _init() -> void:
@@ -32,7 +31,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	mode = read_byte() as InSim.InterfaceMode
 	submode = read_byte()
 	sel_type = read_byte()
-	sp3 = read_byte()
+	var _sp3 := read_byte()
 
 
 func _get_data_dictionary() -> Dictionary:

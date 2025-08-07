@@ -36,7 +36,7 @@ func test_decode_packet(buffer: PackedByteArray, test_parameters := buffers) -> 
 	)
 	_test = assert_int(packet.laps_done).is_equal(buffer.decode_u16(12))
 	_test = assert_int(packet.flags).is_equal(buffer.decode_u16(14))
-	_test = assert_int(packet.sp0).is_equal(buffer.decode_u8(16))
+	_test = assert_int(buffer.decode_u8(16)).is_zero()
 	_test = assert_int(packet.penalty).is_equal(buffer.decode_u8(17))
 	_test = assert_int(packet.num_stops).is_equal(buffer.decode_u8(18))
 	_test = assert_int(packet.fuel200).is_equal(buffer.decode_u8(19))

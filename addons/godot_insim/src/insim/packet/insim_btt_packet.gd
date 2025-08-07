@@ -13,7 +13,6 @@ var ucid := 0  ## connection that typed into the button (zero if local)
 var click_id := 0  ## button identifier originally sent in IS_BTN ([InSimBTNPacket])
 var inst := 0  ## used internally by InSim
 var type_in := 0  ## from original button specification
-var sp3 := 0  ## Spare
 
 var text := ""  ## typed text, zero to [member type_in] specified in IS_BTN ([InSimBTNPacket])
 
@@ -34,7 +33,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	click_id = read_byte()
 	inst = read_byte()
 	type_in = read_byte()
-	sp3 = read_byte()
+	var _sp3 := read_byte()
 	text = read_string(TEXT_MAX_LENGTH)
 
 

@@ -6,7 +6,6 @@ extends InSimPacket
 
 const PACKET_SIZE := 20  ## Packet size
 const PACKET_TYPE := InSim.Packet.ISP_MOD  ## The packet's type, see [enum InSim.Packet].
-var zero := 0  ## Zero byte
 
 var bits16 := 0  ## set to choose 16-bit
 var refresh_rate := 0  ## refresh rate - zero for default
@@ -34,7 +33,7 @@ func _init() -> void:
 
 func _fill_buffer() -> void:
 	super()
-	add_byte(zero)
+	add_byte(0)  # zero
 	add_int(bits16)
 	add_int(refresh_rate)
 	add_int(width)

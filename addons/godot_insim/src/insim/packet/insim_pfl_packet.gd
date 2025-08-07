@@ -9,7 +9,6 @@ const PACKET_TYPE := InSim.Packet.ISP_PFL  ## The packet's type, see [enum InSim
 var plid := 0  ## Player's unique id
 
 var flags := 0  ## New player flags (see [enum InSim.PlayerFlag])
-var spare := 0  ## Spare
 
 
 func _init() -> void:
@@ -26,7 +25,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	super(packet)
 	plid = read_byte()
 	flags = read_word()
-	spare = read_word()
+	var _spare := read_word()
 
 
 func _get_data_dictionary() -> Dictionary:

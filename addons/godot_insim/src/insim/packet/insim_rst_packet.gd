@@ -10,8 +10,6 @@ const TRACK_NAME_LENGTH := 6  ## Track name length
 const PACKET_SIZE := 28  ## Packet size
 const PACKET_TYPE := InSim.Packet.ISP_RST  ## The packet's type, see [enum InSim.Packet].
 
-var zero := 0  ## Zero byte
-
 var race_laps := 0  ## 0 if qualifying
 var qual_mins := 0  ## 0 if race
 var num_players := 0  ## Number of players in race
@@ -46,7 +44,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 		push_error("%s packet expected size %d, got %d." % [get_type_string(), size, packet_size])
 		return
 	super(packet)
-	zero = read_byte()
+	var _zero := read_byte()
 	race_laps = read_byte()
 	qual_mins = read_byte()
 	num_players = read_byte()

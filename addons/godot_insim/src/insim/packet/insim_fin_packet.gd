@@ -14,10 +14,8 @@ var plid := 0  ## player's unique id (0 = player left before result was sent)
 var race_time := 0  ## race time (ms)
 var best_lap := 0  ## best lap (ms)
 
-var sp_a := 0  ## Spare
 var num_stops := 0  ## number of pit stops
 var confirm := 0  ## confirmation flags: disqualified etc - see [enum InSim.Confirmation]
-var sp_b := 0  ## Spare
 
 var laps_done := 0  ## laps completed
 var flags := 0  ## player flags: help settings etc - see [enum InSim.PlayerFlag]
@@ -41,10 +39,10 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	plid = read_byte()
 	race_time = read_unsigned()
 	best_lap = read_unsigned()
-	sp_a = read_byte()
+	var _sp_a := read_byte()
 	num_stops = read_byte()
 	confirm = read_byte()
-	sp_b = read_byte()
+	var _sp_b := read_byte()
 	laps_done = read_word()
 	flags = read_word()
 

@@ -27,7 +27,7 @@ func test_decode_packet(buffer: PackedByteArray, test_parameters := [
 	_test = assert_int(packet.size).is_equal(buffer.decode_u8(0) * InSimCONPacket.SIZE_MULTIPLIER)
 	_test = assert_int(packet.type).is_equal(buffer.decode_u8(1))
 	_test = assert_int(packet.req_i).is_equal(buffer.decode_u8(2))
-	_test = assert_int(packet.zero).is_equal(buffer.decode_u8(3))
+	_test = assert_int(buffer.decode_u8(3)).is_zero()
 	_test = assert_int(packet.sp_close).is_equal(buffer.decode_u16(4))
 	_test = (
 		assert_float(packet.gis_closing_speed)

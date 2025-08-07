@@ -10,8 +10,6 @@ var plid := 0  ## Player's unique id
 
 var old_ucid := 0  ## Old connection's unique id
 var new_ucid := 0  ## New connection's unique id
-var sp2 := 0  ## Spare
-var sp3 := 0  ## Spare
 
 
 func _init() -> void:
@@ -29,8 +27,8 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	plid = read_byte()
 	old_ucid = read_byte()
 	new_ucid = read_byte()
-	sp2 = read_byte()
-	sp3 = read_byte()
+	var _sp2 := read_byte()
+	var _sp3 := read_byte()
 
 
 func _get_data_dictionary() -> Dictionary:

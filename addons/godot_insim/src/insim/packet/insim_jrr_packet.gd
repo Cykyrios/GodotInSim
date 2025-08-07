@@ -12,8 +12,6 @@ var plid := 0  ## ZERO when this is a reply to a join request - SET to move a ca
 
 var ucid := 0  ## set when this is a reply to a join request - ignored when moving a car
 var action := 0  ## 1 - allow / 0 - reject (should send message to user)
-var sp2 := 0  ## Spare
-var sp3 := 0  ## Spare
 
 var start_pos := ObjectInfo.new()  ## 0: use default start point / Flags = 0x80: set start point
 
@@ -41,8 +39,8 @@ func _fill_buffer() -> void:
 	add_byte(plid)
 	add_byte(ucid)
 	add_byte(action)
-	add_byte(sp2)
-	add_byte(sp3)
+	add_byte(0)  # sp2
+	add_byte(0)  # sp3
 	var start_pos_buffer := start_pos.get_buffer()
 	for byte in start_pos_buffer:
 		add_byte(byte)

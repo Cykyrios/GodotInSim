@@ -9,8 +9,6 @@ const _TRACK_NAME_LENGTH := 6  ## Track name length
 const PACKET_SIZE := 28  ## Packet size
 const PACKET_TYPE := InSim.Packet.ISP_STA  ## The packet's type, see [enum InSim.Packet].
 
-var zero := 0  ## Zero byte
-
 var replay_speed := 0.0  ## Replay speed - 1.0 is normal speed
 
 var flags := 0  ## State flags (see [enum InSim.State])
@@ -29,7 +27,6 @@ var qual_mins := 0  ## Qualifying duration
 ## 100-190: 100 to 1000 laps... laps = (rl - 100) * 10 + 100[br]
 ## 191-238: 1 to 48 hours... hours = rl - 190
 var race_laps := 0
-var sp2 := 0  ## Spare
 var server_status := 0  ## 0 = unknown / 1 = success / > 1 = fail
 
 var track := ""  ## Short name for track e.g. FE2R
@@ -49,7 +46,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 		push_error("%s packet expected size %d, got %d." % [get_type_string(), size, packet_size])
 		return
 	super(packet)
-	zero = read_byte()
+	var _zero := read_byte()
 	replay_speed = read_float()
 
 	flags = read_word()
@@ -63,7 +60,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 
 	qual_mins = read_byte()
 	race_laps = read_byte()
-	sp2 = read_byte()
+	var _sp2 := read_byte()
 	server_status = read_byte()
 
 	track = read_string(_TRACK_NAME_LENGTH)

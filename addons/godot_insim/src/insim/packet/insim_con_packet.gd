@@ -14,8 +14,6 @@ const TIME_MULTIPLIER := 100.0
 const PACKET_SIZE := 40  ## Packet size
 const PACKET_TYPE := InSim.Packet.ISP_CON  ## The packet's type, see [enum InSim.Packet].
 
-var zero := 0  ## Zero byte
-
 var sp_close := 0  ## high 4 bits: reserved / low 12 bits: closing speed (10 = 1 m/s)
 ## looping time stamp (hundredths - time since reset - like [constant InSim.Tiny.TINY_GTH]
 var time := 0
@@ -39,7 +37,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 		push_error("%s packet expected size %d, got %d." % [get_type_string(), size, packet_size])
 		return
 	super(packet)
-	zero = read_byte()
+	var _zero := read_byte()
 	sp_close = read_word()
 	time = read_word()
 	var struct_size := CarContact.STRUCT_SIZE

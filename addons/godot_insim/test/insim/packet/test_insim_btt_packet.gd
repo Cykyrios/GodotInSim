@@ -40,6 +40,6 @@ func test_decode_packet(buffer: PackedByteArray, test_parameters := [
 	_test = assert_int(packet.click_id).is_equal(buffer.decode_u8(4))
 	_test = assert_int(packet.inst).is_equal(buffer.decode_u8(5))
 	_test = assert_int(packet.type_in).is_equal(buffer.decode_u8(6))
-	_test = assert_int(packet.sp3).is_equal(buffer.decode_u8(7))
+	_test = assert_int(buffer.decode_u8(7)).is_zero()
 	_test = assert_str(packet.text).is_equal(LFSText.lfs_bytes_to_unicode(buffer.slice(8)))
 	_test = assert_array(packet.buffer).is_equal(buffer)

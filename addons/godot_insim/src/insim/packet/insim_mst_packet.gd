@@ -9,8 +9,6 @@ const PACKET_TYPE := InSim.Packet.ISP_MST  ## The packet's type, see [enum InSim
 ## Maximum message length
 const MSG_MAX_LENGTH := 64  # last byte must be zero, actual length is one character shorter
 
-var zero := 0  ## Zero byte
-
 var msg := ""  ## Message contents; last byte must be zero.
 
 
@@ -29,7 +27,7 @@ func _init() -> void:
 
 func _fill_buffer() -> void:
 	super()
-	add_byte(zero)
+	add_byte(0)  # zero
 	msg = LFSText.lfs_bytes_to_unicode(add_string(MSG_MAX_LENGTH, msg))
 	buffer.encode_u8(size - 1, 0)  # last byte must be zero
 

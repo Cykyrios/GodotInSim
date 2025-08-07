@@ -11,11 +11,6 @@ const PACKET_SIZE := 40  ## Packet size
 const PACKET_TYPE := InSim.Packet.ISP_SSH  ## The packet's type, see [enum InSim.Packet].
 var error := InSim.Screenshot.SSH_OK  ## 0 = OK / other values are listed in [enum InSim.Screenshot]
 
-var sp0 := 0  ## Spare
-var sp1 := 0  ## Spare
-var sp2 := 0  ## Spare
-var sp3 := 0  ## Spare
-
 var screenshot_name := ""  ## Name of screenshot file - last byte must be zero
 
 
@@ -44,20 +39,20 @@ func _decode_packet(packet: PackedByteArray) -> void:
 		return
 	super(packet)
 	error = read_byte() as InSim.Screenshot
-	sp0 = read_byte()
-	sp1 = read_byte()
-	sp2 = read_byte()
-	sp3 = read_byte()
+	var _sp0 := read_byte()
+	var _sp1 := read_byte()
+	var _sp2 := read_byte()
+	var _sp3 := read_byte()
 	screenshot_name = read_string(SCREENSHOT_NAME_MAX_LENGTH)
 
 
 func _fill_buffer() -> void:
 	super()
 	add_byte(error)
-	add_byte(sp0)
-	add_byte(sp1)
-	add_byte(sp2)
-	add_byte(sp3)
+	add_byte(0)  # sp0
+	add_byte(0)  # sp1
+	add_byte(0)  # sp2
+	add_byte(0)  # sp3
 	var _buffer := add_string(SCREENSHOT_NAME_MAX_LENGTH, screenshot_name)
 	add_byte(0, data_offset - 1)  # last byte in replay name must be zero
 

@@ -12,7 +12,6 @@ const PACKET_TYPE := InSim.Packet.ISP_HLV  ## The packet's type, see [enum InSim
 var plid := 0  ## player's unique id
 
 var hlvc := 0  ## 0: ground / 1: wall / 4: speeding / 5: out of bounds
-var sp1 := 0  ## Sapre
 ## looping time stamp (hundredths - time since reset - like [constant InSim.Tiny.TINY_GTH])
 var time := 0
 
@@ -35,7 +34,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	super(packet)
 	plid = read_byte()
 	hlvc = read_byte()
-	sp1 = read_byte()
+	var _sp1 := read_byte()
 	time = read_word()
 	var struct_size := CarContObj.STRUCT_SIZE
 	object.set_from_buffer(packet.slice(data_offset, data_offset + struct_size))

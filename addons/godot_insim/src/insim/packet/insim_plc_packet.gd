@@ -6,12 +6,8 @@ extends InSimPacket
 
 const PACKET_SIZE := 12  ## Packet size
 const PACKET_TYPE := InSim.Packet.ISP_PLC  ## The packet's type, see [enum InSim.Packet].
-var zero := 0  ## Zero byte
 
 var ucid := 0  ## Connection's unique id (0 = host / 255 = all)
-var sp1 := 0  ## Spare
-var sp2 := 0  ## Spare
-var sp3 := 0  ## Spare
 
 var cars := 0  ## Allowed cars - see [enum InSim.Car].
 
@@ -32,11 +28,11 @@ func _init() -> void:
 
 func _fill_buffer() -> void:
 	super()
-	add_byte(zero)
+	add_byte(0)  # zero
 	add_byte(ucid)
-	add_byte(sp1)
-	add_byte(sp2)
-	add_byte(sp3)
+	add_byte(0)  # sp1
+	add_byte(0)  # sp2
+	add_byte(0)  # sp3
 	add_unsigned(cars)
 
 

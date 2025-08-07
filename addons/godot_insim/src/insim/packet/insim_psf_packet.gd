@@ -12,7 +12,6 @@ const PACKET_TYPE := InSim.Packet.ISP_PSF  ## The packet's type, see [enum InSim
 var plid := 0  ## Player's unique id
 
 var stop_time := 0  ## Stop time (ms)
-var spare := 0  ## Spare
 
 var gis_stop_time := 0.0  ## Stop time in seconds
 
@@ -31,7 +30,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	super(packet)
 	plid = read_byte()
 	stop_time = read_unsigned()
-	spare = read_unsigned()
+	var _spare := read_unsigned()
 
 
 func _get_data_dictionary() -> Dictionary:

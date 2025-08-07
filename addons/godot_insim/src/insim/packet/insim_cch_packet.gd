@@ -16,9 +16,6 @@ const PACKET_TYPE := InSim.Packet.ISP_CCH  ## The packet's type, see [enum InSim
 var plid := 0  ## player's unique id
 
 var camera := InSim.View.VIEW_MAX  ## view identifier (see [enum InSim.View])
-var sp1 := 0  ## Spare
-var sp2 := 0  ## Spare
-var sp3 := 0  ## Spare
 
 
 func _init() -> void:
@@ -35,9 +32,9 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	super(packet)
 	plid = read_byte()
 	camera = read_byte() as InSim.View
-	sp1 = read_byte()
-	sp2 = read_byte()
-	sp3 = read_byte()
+	var _sp1 := read_byte()
+	var _sp2 := read_byte()
+	var _sp3 := read_byte()
 
 
 func _get_data_dictionary() -> Dictionary:

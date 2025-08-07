@@ -18,7 +18,6 @@ var error := 0  ## Error code - 0 or 1 = OK / other values are listed in [enum I
 var mpr := 0  ## 0 = SPR / 1 = MPR
 var paused := 0  ## Request: pause on arrival / reply: paused state
 var options := 0  ## Various options - see [enum InSim.ReplayOption]
-var sp3 := 0  ## Spare
 
 var c_time := 0  ## (hundredths) request: destination / reply: position
 var t_time := 0  ## (hundredths) request: zero / reply: replay length
@@ -83,7 +82,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	mpr = read_byte()
 	paused = read_byte()
 	options = read_byte()
-	sp3 = read_byte()
+	var _sp3 := read_byte()
 	c_time = read_unsigned()
 	t_time = read_unsigned()
 	replay_name = read_string(REPLAY_NAME_MAX_LENGTH)
@@ -95,7 +94,7 @@ func _fill_buffer() -> void:
 	add_byte(mpr)
 	add_byte(paused)
 	add_byte(options)
-	add_byte(sp3)
+	add_byte(0)  # sp3
 	add_unsigned(c_time)
 	add_unsigned(t_time)
 	var _buffer := add_string(REPLAY_NAME_MAX_LENGTH, replay_name)

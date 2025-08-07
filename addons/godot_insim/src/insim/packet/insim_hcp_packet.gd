@@ -9,8 +9,6 @@ const MAX_CARS := 32  ## Maximum number of player handicaps per packet.
 const PACKET_SIZE := 68  ## Packet size
 const PACKET_TYPE := InSim.Packet.ISP_HCP  ## The packet's type, see [enum InSim.Packet].
 
-var zero := 0  ## Zero byte
-
 ## h_mass and h_tres for each car: XF GTI = 0 / XR GT = 1 etc[br]
 ## Subtract 1 from the [enum InSim.Car] enum if using it for array index,
 ## e.g. [code]InSim.Car.CAR_FBM - 1[/code].
@@ -48,7 +46,7 @@ func _init() -> void:
 
 func _fill_buffer() -> void:
 	super()
-	add_byte(zero)
+	add_byte(0)  # zero
 	for i in car_hcp.size():
 		add_byte(car_hcp[i].h_mass)
 		add_byte(car_hcp[i].h_tres)

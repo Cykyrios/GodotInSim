@@ -35,7 +35,6 @@ var x := 0  ## as in [ObjectInfo]
 var y := 0  ## as in [ObjectInfo]
 
 var z := 0  ## if [constant Flag.OBH_LAYOUT] is set: as in [ObjectInfo]
-var sp1 := 0  ## Spare
 var index := 0  ## AXO_x as in [ObjectInfo] or zero if it is an unknown object
 var obh_flags := 0  ## Flags, see [enum Flag]
 
@@ -64,7 +63,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	x = read_short()
 	y = read_short()
 	z = read_byte()
-	sp1 = read_byte()
+	var _sp1 := read_byte()
 	index = read_byte()
 	obh_flags = read_byte()
 

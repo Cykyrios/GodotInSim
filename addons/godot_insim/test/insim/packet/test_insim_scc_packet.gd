@@ -18,11 +18,11 @@ func test_receivable_sendable() -> void:
 func test_encode_packet(buffer: PackedByteArray, test_parameters := buffers) -> void:
 	var packet := InSimSCCPacket.new()
 	packet.req_i = buffer.decode_u8(2)
-	packet.zero = buffer.decode_u8(3)
+	var _zero := buffer.decode_u8(3)
 	packet.view_plid = buffer.decode_u8(4)
 	packet.ingame_cam = buffer.decode_u8(5) as InSim.View
-	packet.sp2 = buffer.decode_u8(6)
-	packet.sp3 = buffer.decode_u8(7)
+	var _sp2 := buffer.decode_u8(6)
+	var _sp3 := buffer.decode_u8(7)
 	packet.fill_buffer()
 	if packet.type != buffer.decode_u8(1):
 		fail("Incorrect packet type")

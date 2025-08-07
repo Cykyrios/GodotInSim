@@ -11,10 +11,7 @@ const PACKET_SIZE := 28  ## Packet size
 const PACKET_TYPE := InSim.Packet.ISP_UCO  ## The packet's type, see [enum InSim.Packet].
 var plid := 0  ## Player's unique id
 
-var sp0 := 0  ## Spare
 var uco_action := InSim.UCOAction.UCO_CIRCLE_ENTER  ## UCO Action, see [enum InSim.UCOAction].
-var sp2 := 0  ## Spare
-var sp3 := 0  ## Spare
 
 var time := 0  ## Hundredths of a second since start (as in [constant InSim.Small.SMALL_RTP])
 var object := CarContObj.new()  ## Info about the car
@@ -36,10 +33,10 @@ func _decode_packet(packet: PackedByteArray) -> void:
 		return
 	super(packet)
 	plid = read_byte()
-	sp0 = read_byte()
+	var _sp0 := read_byte()
 	uco_action = read_byte() as InSim.UCOAction
-	sp2 = read_byte()
-	sp3 = read_byte()
+	var _sp2 := read_byte()
+	var _sp3 := read_byte()
 	time = read_unsigned()
 	var struct_size := CarContObj.STRUCT_SIZE
 	object.set_from_buffer(packet.slice(data_offset, data_offset + struct_size))

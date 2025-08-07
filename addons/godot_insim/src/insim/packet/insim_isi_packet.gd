@@ -39,7 +39,6 @@ const NAME_LENGTH := 16  ## Maximum size of the application [member i_name].
 const PACKET_SIZE := 44  ## Packet size
 const PACKET_TYPE := InSim.Packet.ISP_ISI  ## The packet's type, see [enum InSim.Packet].
 const REQ_I := 1  ## If non-zero LFS will send an IS_VER packet
-var zero := 0  ## Zero byte
 
 var udp_port := 0  ## Port for UDP replies from LFS (0 to 65535)
 var flags := 0  ## Bit flags for options (see [enum InSim.InitFlag])
@@ -77,7 +76,7 @@ func _init() -> void:
 
 func _fill_buffer() -> void:
 	super()
-	add_byte(zero)
+	add_byte(0)  # zero
 	add_word(udp_port)
 	add_word(flags)
 

@@ -27,7 +27,7 @@ func test_decode_packet(buffer: PackedByteArray, test_parameters := buffers) -> 
 	_test = assert_int(packet.req_i).is_equal(buffer.decode_u8(2))
 	_test = assert_int(packet.plid).is_equal(buffer.decode_u8(3))
 	_test = assert_int(packet.hlvc).is_equal(buffer.decode_u8(4))
-	_test = assert_int(packet.sp1).is_equal(buffer.decode_u8(5))
+	_test = assert_int(buffer.decode_u8(5)).is_zero()
 	_test = assert_int(packet.time).is_equal(buffer.decode_u16(6))
 	_test = assert_float(packet.gis_time).is_equal_approx(
 		buffer.decode_u16(6) / InSimHLVPacket.TIME_MULTIPLIER, epsilon

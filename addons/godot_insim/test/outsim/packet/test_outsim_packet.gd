@@ -96,9 +96,9 @@ func test_decode_packet(
 		offset += OutSimInputs.STRUCT_SIZE
 	if packet.outsim_options & OutSim.OutSimOpts.OSO_DRIVE:
 		_test = assert_int(packet.gear).is_equal(buffer.decode_u8(offset))
-		_test = assert_int(packet.sp1).is_equal(buffer.decode_u8(offset + 1))
-		_test = assert_int(packet.sp2).is_equal(buffer.decode_u8(offset + 2))
-		_test = assert_int(packet.sp3).is_equal(buffer.decode_u8(offset + 3))
+		_test = assert_int(buffer.decode_u8(offset + 1)).is_zero()
+		_test = assert_int(buffer.decode_u8(offset + 2)).is_zero()
+		_test = assert_int(buffer.decode_u8(offset + 3)).is_zero()
 		_test = (
 			assert_float(packet.engine_ang_vel)
 			.is_equal_approx(buffer.decode_float(offset + 4), epsilon)
@@ -168,6 +168,5 @@ func test_decode_packet(
 			.is_equal_approx(buffer.decode_float(offset), epsilon)
 		)
 		_test = (
-			assert_float(packet.spare)
-			.is_equal_approx(buffer.decode_float(offset + 4), epsilon)
+			assert_float(buffer.decode_float(offset + 4)).is_zero()
 		)

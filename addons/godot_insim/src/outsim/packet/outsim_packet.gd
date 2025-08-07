@@ -36,9 +36,6 @@ var os_main := OutSimMain.new()  ## OutSim main data struct
 var os_inputs := OutSimInputs.new()  ## OutSim inputs data struct
 
 var gear := 0  ## Current gear
-var sp1 := 0  ## Spare byte 1
-var sp2 := 0  ## Spare byte 2
-var sp3 := 0  ## Spare byte 3
 ## Engine speed in radians/s; use [method GISUnit.convert_angular_speed] to get the RPM value.
 var engine_ang_vel := 0.0
 ## Maximum torque at the current engine speed, in N.m.
@@ -54,7 +51,6 @@ var os_wheels: Array[OutSimWheel] = []  ## An array containing each wheel's data
 
 ## The torque currently applied at the steering rack (there is no power steering in LFS).
 var steer_torque := 0.0
-var spare := 0.0  ## Spare float
 
 ## The time, in seconds, corresponding to the [member time] timestamp.
 var gis_time := 0.0
@@ -110,9 +106,9 @@ func _decode_packet(packet_buffer: PackedByteArray) -> void:
 		data_offset += OutSimInputs.STRUCT_SIZE
 	if outsim_options & OutSim.OutSimOpts.OSO_DRIVE:
 		gear = buffer.decode_u8(data_offset)
-		sp1 = buffer.decode_u8(data_offset + 1)
-		sp2 = buffer.decode_u8(data_offset + 2)
-		sp3 = buffer.decode_u8(data_offset + 3)
+		var _sp1 := buffer.decode_u8(data_offset + 1)
+		var _sp2 := buffer.decode_u8(data_offset + 2)
+		var _sp3 := buffer.decode_u8(data_offset + 3)
 		data_offset += 4
 		engine_ang_vel = buffer.decode_float(data_offset)
 		max_torque_at_vel = buffer.decode_float(data_offset + 4)
@@ -133,5 +129,5 @@ func _decode_packet(packet_buffer: PackedByteArray) -> void:
 			os_wheels.append(OutSimWheel.new())
 	if outsim_options & OutSim.OutSimOpts.OSO_EXTRA_1:
 		steer_torque = buffer.decode_float(data_offset)
-		spare = buffer.decode_float(data_offset + 4)
+		var _spare := buffer.decode_float(data_offset + 4)
 		data_offset += 8

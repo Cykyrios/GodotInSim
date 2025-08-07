@@ -23,10 +23,8 @@ var car_name := ""  ## Skin prefix
 var total_time := 0  ## (ms) Race or autocross: total time / qualify: session time
 var best_lap := 0  ## (ms) Best lap
 
-var sp_a := 0  ## Spare
 var num_stops := 0  ## Number of pit stops
 var confirm := 0  ## Confirmation flags: disqualified etc - see [enum InSim.Confirmation]
-var sp_b := 0  ## Spare
 
 var laps_done := 0  ## Number of laps completed
 var flags := 0  ## Player flags: help settings etc - see [enum InSim.PlayerFlag]
@@ -58,10 +56,10 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	car_name = read_car_name()
 	total_time = read_unsigned()
 	best_lap = read_unsigned()
-	sp_a = read_byte()
+	var _sp_a := read_byte()
 	num_stops = read_byte()
 	confirm = read_byte()
-	sp_b = read_byte()
+	var _sp_b := read_byte()
 	laps_done = read_word()
 	flags = read_word()
 	result_num = read_byte()

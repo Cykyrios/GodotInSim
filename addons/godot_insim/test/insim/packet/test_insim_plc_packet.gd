@@ -18,11 +18,11 @@ func test_receivable_sendable() -> void:
 func test_encode_packet(buffer: PackedByteArray, test_parameters := buffers) -> void:
 	var packet := InSimPLCPacket.new()
 	packet.req_i = buffer.decode_u8(2)
-	packet.zero = buffer.decode_u8(3)
+	var _zero := buffer.decode_u8(3)
 	packet.ucid = buffer.decode_u8(4)
-	packet.sp1 = buffer.decode_u8(5)
-	packet.sp2 = buffer.decode_u8(6)
-	packet.sp3 = buffer.decode_u8(7)
+	var _sp1 := buffer.decode_u8(5)
+	var _sp2 := buffer.decode_u8(6)
+	var _sp3 := buffer.decode_u8(7)
 	packet.cars = buffer.decode_u32(8)
 	packet.fill_buffer()
 	if packet.type != buffer.decode_u8(1):

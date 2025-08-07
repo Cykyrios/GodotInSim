@@ -27,8 +27,8 @@ func test_decode_packet(buffer: PackedByteArray, test_parameters := buffers) -> 
 	_test = assert_int(packet.num_mods).is_equal(buffer.decode_u8(3))
 	_test = assert_int(packet.ucid).is_equal(buffer.decode_u8(4))
 	_test = assert_int(packet.flags).is_equal(buffer.decode_u8(5))
-	_test = assert_int(packet.sp2).is_equal(buffer.decode_u8(6))
-	_test = assert_int(packet.sp3).is_equal(buffer.decode_u8(7))
+	_test = assert_int(buffer.decode_u8(6)).is_zero()
+	_test = assert_int(buffer.decode_u8(7)).is_zero()
 	var skin_buffer := PackedByteArray()
 	var _resize := skin_buffer.resize(4 * packet.num_mods)
 	for i in packet.num_mods:
@@ -45,8 +45,8 @@ func test_encode_packet(buffer: PackedByteArray, test_parameters := buffers) -> 
 	packet.num_mods = buffer.decode_u8(3)
 	packet.ucid = buffer.decode_u8(4)
 	packet.flags = buffer.decode_u8(5)
-	packet.sp2 = buffer.decode_u8(6)
-	packet.sp3 = buffer.decode_u8(7)
+	var _sp2 := buffer.decode_u8(6)
+	var _sp3 := buffer.decode_u8(7)
 	for i in packet.num_mods:
 		packet.skin_id.append(buffer.decode_u32(8 + 4 * i))
 	packet.fill_buffer()

@@ -14,11 +14,6 @@ const PACKET_MAX_SIZE := PACKET_BASE_SIZE + IPB_DATA_SIZE * IPB_MAX_BANS  ## Max
 const PACKET_TYPE := InSim.Packet.ISP_IPB  ## The packet's type, see [enum InSim.Packet].
 var numb := 0  ## number of bans in this packet
 
-var sp0 := 0  ## Spare
-var sp1 := 0  ## Spare
-var sp2 := 0  ## Spare
-var sp3 := 0  ## Spare
-
 var ban_ips: Array[IPAddress] = []  ## IP addresses, 0 to [constant IPB_MAX_BANS] ([member numb])
 
 
@@ -51,10 +46,10 @@ func _decode_packet(packet: PackedByteArray) -> void:
 		return
 	super(packet)
 	numb = read_byte()
-	sp0 = read_byte()
-	sp1 = read_byte()
-	sp2 = read_byte()
-	sp3 = read_byte()
+	var _sp0 := read_byte()
+	var _sp1 := read_byte()
+	var _sp2 := read_byte()
+	var _sp3 := read_byte()
 	ban_ips.clear()
 	for i in numb:
 		var ip_address := IPAddress.new()
@@ -71,10 +66,10 @@ func _fill_buffer() -> void:
 	if ban_ips.size() > numb:
 		var _resize := ban_ips.resize(numb)
 	add_byte(numb)
-	add_byte(sp0)
-	add_byte(sp1)
-	add_byte(sp2)
-	add_byte(sp3)
+	add_byte(0)  # sp0
+	add_byte(0)  # sp1
+	add_byte(0)  # sp2
+	add_byte(0)  # sp3
 	resize_buffer(PACKET_BASE_SIZE + numb * IPB_DATA_SIZE)
 	for i in numb:
 		var ip := ban_ips[i].address_array

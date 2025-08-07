@@ -33,8 +33,8 @@ func test_encode_packet(buffer: PackedByteArray, test_parameters := buffers) -> 
 	packet.sound = buffer.decode_u8(3) as InSim.MessageSound
 	packet.ucid = buffer.decode_u8(4)
 	packet.plid = buffer.decode_u8(5)
-	packet.sp2 = buffer.decode_u8(6)
-	packet.sp3 = buffer.decode_u8(7)
+	var _sp2 := buffer.decode_u8(6)
+	var _sp3 := buffer.decode_u8(7)
 	packet.text = LFSText.lfs_bytes_to_unicode(buffer.slice(8))
 	packet.fill_buffer()
 	if packet.type != buffer.decode_u8(1):

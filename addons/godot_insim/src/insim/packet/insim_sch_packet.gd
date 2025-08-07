@@ -11,12 +11,8 @@ extends InSimPacket
 const PACKET_SIZE := 8  ## Packet size
 const PACKET_TYPE := InSim.Packet.ISP_SCH  ## The packet's type, see [enum InSim.Packet].
 
-var zero := 0  ## Zero byte
-
 var char_byte := 0  ## Key to press
 var flags := 0  ## Bit 0: SHIFT / bit 1: CTRL
-var spare2 := 0  ## Spare
-var spare3 := 0  ## Spare
 
 
 ## Creates and returns a new [InSimSCHPacket] from the given parameters.
@@ -35,11 +31,11 @@ func _init() -> void:
 
 func _fill_buffer() -> void:
 	super()
-	add_byte(zero)
+	add_byte(0)  # zero
 	add_byte(char_byte)
 	add_byte(flags)
-	add_byte(spare2)
-	add_byte(spare3)
+	add_byte(0)  # spare2
+	add_byte(0)  # spare3
 
 
 func _get_data_dictionary() -> Dictionary:

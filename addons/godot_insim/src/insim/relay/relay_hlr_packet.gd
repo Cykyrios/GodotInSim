@@ -7,8 +7,6 @@ extends InSimRelayPacket
 const PACKET_SIZE := 4  ## Packet size
 const PACKET_TYPE := InSim.Packet.IRP_HLR  ## The packet's type, see [enum InSim.Packet].
 
-var sp0 := 0  ## Spare
-
 
 ## Creates and returns a new [RelayHLRPacket] with the given [param reqi].
 static func create(reqi: int) -> RelayHLRPacket:
@@ -25,10 +23,8 @@ func _init() -> void:
 
 func _fill_buffer() -> void:
 	super()
-	add_byte(sp0)
+	add_byte(0)  # sp0
 
 
 func _get_data_dictionary() -> Dictionary:
-	return {
-		"Sp0": sp0,
-	}
+	return {}

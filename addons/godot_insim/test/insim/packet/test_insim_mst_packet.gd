@@ -24,7 +24,7 @@ func test_receivable_sendable() -> void:
 func test_encode_packet(buffer: PackedByteArray, test_parameters := buffers) -> void:
 	var packet := InSimMSTPacket.new()
 	packet.req_i = buffer.decode_u8(2)
-	packet.zero = buffer.decode_u8(3)
+	var _zero := buffer.decode_u8(3)
 	packet.msg = LFSText.lfs_bytes_to_unicode(buffer.slice(4))
 	packet.fill_buffer()
 	if packet.type != buffer.decode_u8(1):

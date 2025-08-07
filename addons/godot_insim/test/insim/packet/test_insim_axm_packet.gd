@@ -41,7 +41,7 @@ func test_decode_packet(buffer: PackedByteArray, test_parameters := params_decod
 	_test = assert_int(packet.ucid).is_equal(buffer.decode_u8(4))
 	_test = assert_int(packet.pmo_action).is_equal(buffer.decode_u8(5))
 	_test = assert_int(packet.pmo_flags).is_equal(buffer.decode_u8(6))
-	_test = assert_int(packet.sp3).is_equal(buffer.decode_u8(7))
+	_test = assert_int(buffer.decode_u8(7)).is_zero()
 	var object_infos := buffer.slice(8)
 	for i in int(object_infos.size() as float / ObjectInfo.STRUCT_SIZE):
 		var info := ObjectInfo.new()
@@ -70,7 +70,7 @@ func test_encode_packet(buffer: PackedByteArray, test_parameters := params_encod
 	packet.ucid = buffer.decode_u8(4)
 	packet.pmo_action = buffer.decode_u8(5) as InSim.PMOAction
 	packet.pmo_flags = buffer.decode_u8(6)
-	packet.sp3 = buffer.decode_u8(7)
+	var _sp3 := buffer.decode_u8(7)
 	var object_infos := buffer.slice(8)
 	for i in int(object_infos.size() as float / ObjectInfo.STRUCT_SIZE):
 		var info := ObjectInfo.new()

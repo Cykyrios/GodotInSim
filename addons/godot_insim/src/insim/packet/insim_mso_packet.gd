@@ -9,8 +9,6 @@ const PACKET_MAX_SIZE := 136  ## Maximum packet size
 const PACKET_TYPE := InSim.Packet.ISP_MSO  ## The packet's type, see [enum InSim.Packet].
 const MSG_MAX_LENGTH := 128  ## Maximum message length
 
-var zero := 0  ## Zero byte
-
 var ucid := 0  ## Connection's unique id (0 = host)
 var plid := 0  ## Player's unique id (if zero, use [member ucid])
 ## Message type, see [enum InSim.MessageUserValue]
@@ -41,7 +39,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 		])
 		return
 	super(packet)
-	zero = read_byte()
+	var _zero := read_byte()
 	ucid = read_byte()
 	plid = read_byte()
 	user_type = read_byte() as InSim.MessageUserValue

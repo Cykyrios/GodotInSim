@@ -17,7 +17,6 @@ var player_name := ""  ## Nickname
 var admin := 0  ## Admin status; 1 if admin.
 var total := 0  ## Number of connections including host
 var flags := 0  ## Flags; bit 2: remote.
-var sp3 := 0  ## Spare
 
 
 func _init() -> void:
@@ -38,7 +37,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	admin = read_byte()
 	total = read_byte()
 	flags = read_byte()
-	sp3 = read_byte()
+	var _sp3 := read_byte()
 
 
 func _get_data_dictionary() -> Dictionary:

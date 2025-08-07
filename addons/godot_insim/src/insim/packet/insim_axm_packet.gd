@@ -18,7 +18,6 @@ var num_objects := 0  ## Number of objects in this packet
 var ucid := 0  ## unique id of the connection that sent the packet
 var pmo_action := InSim.PMOAction.PMO_NUM  ## see [enum InSim.PMOAction]
 var pmo_flags := 0  ## see [enum InSim.PMOFlags]
-var sp3 := 0  ## Spare
 
 var info: Array[ObjectInfo] = []  ## Object info for all objects in this packet
 
@@ -61,7 +60,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	ucid = read_byte()
 	pmo_action = read_byte() as InSim.PMOAction
 	pmo_flags = read_byte()
-	sp3 = read_byte()
+	var _sp3 := read_byte()
 	info.clear()
 	var struct_size := ObjectInfo.STRUCT_SIZE
 	for i in num_objects:
@@ -78,7 +77,7 @@ func _fill_buffer() -> void:
 	add_byte(ucid)
 	add_byte(pmo_action)
 	add_byte(pmo_flags)
-	add_byte(sp3)
+	add_byte(0)  # sp3
 	resize_buffer(PACKET_BASE_SIZE + num_objects * ObjectInfo.STRUCT_SIZE)
 	for i in num_objects:
 		var info_buffer := info[i].get_buffer()

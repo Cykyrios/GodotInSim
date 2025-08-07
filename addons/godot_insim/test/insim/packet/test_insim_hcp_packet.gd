@@ -25,7 +25,7 @@ func test_receivable_sendable() -> void:
 func test_encode_packet(buffer: PackedByteArray, test_parameters := buffers) -> void:
 	var packet := InSimHCPPacket.new()
 	packet.req_i = buffer.decode_u8(2)
-	packet.zero = buffer.decode_u8(3)
+	var _zero := buffer.decode_u8(3)
 	var info_buffer := buffer.slice(4)
 	for i in int(info_buffer.size() as float / CarHandicap.STRUCT_SIZE):
 		var h_mass := info_buffer.decode_u8(i * CarHandicap.STRUCT_SIZE)

@@ -9,12 +9,8 @@ const PACKET_MAX_SIZE := 72  ## Maximum packet size
 const PACKET_TYPE := InSim.Packet.ISP_III  ## The packet's type, see [enum InSim.Packet].
 const MSG_MAX_LENGTH := 64  ## Maximum message length
 
-var zero := 0  ## Zero byte
-
 var ucid := 0  ## connection's unique id (0 = host)
 var plid := 0  ## player's unique id (if zero, use [member ucid])
-var sp2 := 0  ## Spare
-var sp3 := 0  ## Spare
 
 var msg := ""  ## 4, 8, 12... 64 characters - last byte is zero
 
@@ -37,11 +33,11 @@ func _decode_packet(packet: PackedByteArray) -> void:
 		])
 		return
 	super(packet)
-	zero = read_byte()
+	var _zero := read_byte()
 	ucid = read_byte()
 	plid = read_byte()
-	sp2 = read_byte()
-	sp3 = read_byte()
+	var _sp2 := read_byte()
+	var _sp3 := read_byte()
 	msg = read_string(packet_size - data_offset)
 
 

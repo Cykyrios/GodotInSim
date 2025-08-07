@@ -10,8 +10,6 @@ const LAYOUT_MAX_LENGTH := 32  ## Layout name maximum length
 const PACKET_SIZE := 40  ## Packet size
 const PACKET_TYPE := InSim.Packet.ISP_AXI  ## The packet's type, see [enum InSim.Packet].
 
-var zero := 0  ## Zero byte
-
 var ax_start := 0  ## autocross start position
 var num_checkpoints := 0  ## number of checkpoints
 var num_objects := 0  ## number of objects
@@ -31,7 +29,7 @@ func _decode_packet(packet: PackedByteArray) -> void:
 		push_error("%s packet expected size %d, got %d." % [get_type_string(), size, packet_size])
 		return
 	super(packet)
-	zero = read_byte()
+	var _zero := read_byte()
 	ax_start = read_byte()
 	num_checkpoints = read_byte()
 	num_objects = read_word()
