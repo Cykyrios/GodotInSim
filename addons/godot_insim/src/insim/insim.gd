@@ -1023,10 +1023,12 @@ func _ready() -> void:
 	_discard = isp_ism_received.connect(_on_ism_packet_received)
 	_discard = isp_ncn_received.connect(_on_ncn_packet_received)
 	_discard = isp_npl_received.connect(_on_npl_packet_received)
+	_discard = isp_pfl_received.connect(_on_pfl_packet_received)
 	_discard = isp_pll_received.connect(_on_pll_packet_received)
 	_discard = isp_small_received.connect(_on_small_packet_received)
 	_discard = isp_sta_received.connect(_on_sta_packet_received)
 	_discard = isp_tiny_received.connect(_on_tiny_packet_received)
+	_discard = isp_toc_received.connect(_on_toc_packet_received)
 	_discard = isp_ver_received.connect(_read_version_packet)
 	_discard = tiny_clr_received.connect(_on_tiny_clr_received)
 	_discard = tiny_mpe_received.connect(_on_tiny_mpe_received)
@@ -1808,7 +1810,7 @@ func _on_npl_packet_received(packet: InSimNPLPacket) -> void:
 func _on_pfl_packet_received(packet: InSimPFLPacket) -> void:
 	var plid := packet.plid
 	if not players.has(plid):
-		push_warning("%s: No player found with PLID %d" % [Packet.keys()[packet.type], plid])
+		push_error("%s: No player found with PLID %d" % [Packet.keys()[packet.type], plid])
 		return
 	var player := players[plid]
 	player.flags = packet.flags
@@ -1821,6 +1823,16 @@ func _on_pll_packet_received(packet: InSimPLLPacket) -> void:
 
 func _on_sta_packet_received(packet: InSimSTAPacket) -> void:
 	lfs_state.set_from_sta_packet(packet)
+
+
+func _on_toc_packet_received(packet: InSimTOCPacket) -> void:
+	var plid := packet.plid
+	if not players.has(plid):
+		push_error("%s: No player found with PLID %d" % [Packet.keys()[packet.type], plid])
+		return
+	var player := players[plid]
+	player.ucid = packet.new_ucid
+	player.player_name = get_connection_nickname(player.ucid)
 
 
 func _on_tiny_clr_received(_packet: InSimTinyPacket) -> void:
