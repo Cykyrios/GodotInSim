@@ -71,7 +71,7 @@ print_rich(LFSText.get_display_string(LFSText.get_mso_message(packet, insim)))
 
 This will print the following:
 
-> <span style={{color: "white"}}>Player :</span>
+> <span style={{color: "white"}}>Player</span>
 >
 > <span style={{color: "lime"}}>Hello</span> <span style={{color: "red"}}>InSim</span>!
 > <span style={{color: "white"}}>This</span> is a <span style={{color: "magenta"}}>very</span>
