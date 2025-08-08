@@ -11,6 +11,7 @@ config_version=5
 [application]
 
 config/name="GodotInSim"
+config/tags=PackedStringArray("godot_insim")
 config/features=PackedStringArray("4.5")
 config/icon="uid://e0lf5wuickv6"
 run/main_scene.demo_telemetry="uid://c8gvhn7hsl08b"
@@ -28,6 +29,7 @@ LFSAPI="*res://addons/godot_insim/src/lfs_api/lfs_api.gd"
 [debug]
 
 file_logging/enable_file_logging=true
+gdscript/warnings/exclude_addons=false
 gdscript/warnings/untyped_declaration=2
 gdscript/warnings/unsafe_property_access=1
 gdscript/warnings/unsafe_method_access=1
@@ -46,7 +48,6 @@ enabled=PackedStringArray("res://addons/gdUnit4/plugin.cfg", "res://addons/godot
 
 [gdunit4]
 
-ui/toolbar/run_overall=true
 templates/testsuite/GDScript="extends GdUnitTestSuite
 
 # TestSuite generated from
