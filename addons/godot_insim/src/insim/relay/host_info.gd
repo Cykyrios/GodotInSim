@@ -19,6 +19,26 @@ func _to_string() -> String:
 	return "HName:%s, Track:%s, Flags:%d, NumConns:%d" % [host_name, track, flags, num_conns]
 
 
+func _get_buffer() -> PackedByteArray:
+	var buffer := PackedByteArray()
+	buffer.append_array(LFSText.unicode_to_lfs_bytes(host_name))
+	var _resize := buffer.resize(HOST_NAME_LENGTH)
+	buffer.append_array(LFSText.unicode_to_lfs_bytes(track))
+	_resize = buffer.resize(STRUCT_SIZE)
+	buffer.encode_u8(HOST_NAME_LENGTH + TRACK_NAME_LENGTH, flags)
+	buffer.encode_u8(HOST_NAME_LENGTH + TRACK_NAME_LENGTH + 1, num_conns)
+	return buffer
+
+
+func _get_dictionary() -> Dictionary:
+	return {
+		"HName": host_name,
+		"Track": track,
+		"Flags": flags,
+		"NumConns": num_conns,
+	}
+
+
 func _set_from_buffer(buffer: PackedByteArray) -> void:
 	if buffer.size() != STRUCT_SIZE:
 		push_error("Wrong buffer size, expected %d, got %d" % [STRUCT_SIZE, buffer.size()])

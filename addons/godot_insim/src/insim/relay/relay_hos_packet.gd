@@ -44,7 +44,10 @@ func _decode_packet(packet: PackedByteArray) -> void:
 
 
 func _get_data_dictionary() -> Dictionary:
+	var host_info_dicts: Array[Dictionary] = []
+	for host in host_info:
+		host_info_dicts.append(host.get_dictionary())
 	return {
 		"NumHosts": num_hosts,
-		"Info": host_info,
+		"Info": host_info_dicts,
 	}
