@@ -11,6 +11,7 @@ var admin := 0  ## Admin status
 
 
 func _init() -> void:
+	super()
 	size = PACKET_SIZE
 	type = PACKET_TYPE
 	receivable = true

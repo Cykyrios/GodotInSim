@@ -14,8 +14,10 @@ extends LFSPacket
 ## Data: the first data byte[br]
 ## Spare bytes and Zero bytes must be filled with ZERO.
 
-const SIZE_MULTIPLIER := 4  ## Packet size multiplier
+const INSIM_SIZE_MULTIPLIER := 4  ## Packet size multiplier
 const HEADER_SIZE := 4  ## Header size
+
+var size_multiplier := INSIM_SIZE_MULTIPLIER  ## Packet size multiplier
 
 var receivable := false  ## Whether the packet is receivable
 var sendable := false  ## Whether the packet is sendable
@@ -261,7 +263,7 @@ func decode_header(packet_buffer: PackedByteArray) -> void:
 		push_error("Buffer is smaller than InSim packet header.")
 		return
 	data_offset = 0
-	size = read_byte() * SIZE_MULTIPLIER
+	size = read_byte() * size_multiplier
 	type = read_byte() as InSim.Packet
 	req_i = read_byte()
 
@@ -280,7 +282,7 @@ func resize_buffer(new_size: int) -> void:
 	size = new_size
 	_adjust_packet_size()
 	var _discard := buffer.resize(size)
-	buffer.encode_u8(0, int(size / float(SIZE_MULTIPLIER)))
+	buffer.encode_u8(0, int(size / float(size_multiplier)))
 
 
 ## Encodes the packet's [member req_i] in the [member LFSPacket.buffer].
@@ -292,7 +294,7 @@ func update_req_i() -> void:
 func write_header() -> void:
 	resize_buffer(size)
 	data_offset = 0
-	add_byte(int(size / float(SIZE_MULTIPLIER)))
+	add_byte(int(size / float(INSIM_SIZE_MULTIPLIER)))
 	add_byte(type)
 	add_byte(req_i)
 	add_byte(0)
@@ -301,9 +303,9 @@ func write_header() -> void:
 
 # All packets have a size equal to a multiple of 4
 func _adjust_packet_size() -> void:
-	var remainder := size % SIZE_MULTIPLIER
+	var remainder := size % INSIM_SIZE_MULTIPLIER
 	if remainder > 0:
-		size += SIZE_MULTIPLIER - remainder
+		size += INSIM_SIZE_MULTIPLIER - remainder
 
 
 # For use in _set_data_from_dictionary()

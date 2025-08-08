@@ -20,7 +20,7 @@ func test_decode_packet(buffer: PackedByteArray, test_parameters := buffers) -> 
 	var _test: GdUnitAssert = assert_object(packet).is_instanceof(InSimRESPacket)
 	if is_failure():
 		return
-	_test = assert_int(packet.size).is_equal(buffer.decode_u8(0) * InSimRESPacket.SIZE_MULTIPLIER)
+	_test = assert_int(packet.size).is_equal(buffer.decode_u8(0) * packet.size_multiplier)
 	_test = assert_int(packet.type).is_equal(buffer.decode_u8(1))
 	_test = assert_int(packet.req_i).is_equal(buffer.decode_u8(2))
 	_test = (

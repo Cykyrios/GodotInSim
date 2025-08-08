@@ -8,10 +8,12 @@ var stream := StreamPeerTCP.new()  ## TCP peer handling I/O
 var is_insim_relay := false  ## Whether this connection represents an InSim relay.
 
 
+func _init(insim_relay := false) -> void:
+	is_insim_relay = insim_relay
+
+
 func _connect_to_host(c_address: String, c_port: int, c_udp_port := 0) -> void:
 	super(c_address, c_port, c_udp_port)
-	if address == InSim.RELAY_ADDRESS and port == InSim.RELAY_PORT:
-		is_insim_relay = true
 	var error := stream.connect_to_host(address, port)
 	if error != OK:
 		push_error("Connection error: %d" % [error])
@@ -57,20 +59,20 @@ func _get_incoming_packets() -> void:
 		var stream_data := stream.get_data(InSimPacket.HEADER_SIZE)
 		_discard = stream_data[0] as Error
 		var packet_header := stream_data[1] as PackedByteArray
-		var packet_size := packet_header[0]
-		if is_insim_relay:
-			packet_header[0] = int(packet_size / float(InSimPacket.SIZE_MULTIPLIER))
-		else:
-			packet_size *= InSimPacket.SIZE_MULTIPLIER
+		# See issue #5 for future plans if LFS changes Relay packet size behavior.
+		var packet_size := packet_header[0] * (
+			InSimRelayPacket.RELAY_SIZE_MULTIPLIER if is_insim_relay
+			else InSimPacket.INSIM_SIZE_MULTIPLIER
+		)
 		packet_buffer = packet_header.duplicate()
-		packet_buffer.append_array(stream.get_data(packet_size - InSimPacket.HEADER_SIZE)[1] as PackedByteArray)
+		packet_buffer.append_array(
+			stream.get_data(packet_size - InSimPacket.HEADER_SIZE)[1] as PackedByteArray
+		)
 		packet_received.emit(packet_buffer)
 		_discard = stream.poll()
 
 
 func _send_packet(packet: PackedByteArray) -> bool:
-	if is_insim_relay:
-		packet[0] = packet[0] * InSimPacket.SIZE_MULTIPLIER
 	var error := stream.put_data(packet)
 	if error != OK:
 		push_error("Error sending packet: %d" % [error])

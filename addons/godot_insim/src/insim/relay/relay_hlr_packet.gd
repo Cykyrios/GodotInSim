@@ -16,6 +16,7 @@ static func create(reqi: int) -> RelayHLRPacket:
 
 
 func _init() -> void:
+	super()
 	size = PACKET_SIZE
 	type = PACKET_TYPE
 	sendable = true

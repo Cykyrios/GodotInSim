@@ -1130,8 +1130,13 @@ func get_player_name(plid: int) -> String:
 func initialize(
 	address: String, port: int, init_data: InSimInitializationData, use_udp := false
 ) -> void:
+	is_relay = (
+		not use_udp
+		and address == RELAY_ADDRESS
+		and port == RELAY_PORT
+	)
 	initialization_data = init_data
-	if (
+	if lfs_connection and (
 		use_udp and lfs_connection is LFSConnectionTCP
 		or not use_udp and lfs_connection is LFSConnectionUDP
 	):
@@ -1144,13 +1149,9 @@ func initialize(
 		if use_udp:
 			lfs_connection = LFSConnectionUDP.new()
 		else:
-			lfs_connection = LFSConnectionTCP.new()
+			lfs_connection = LFSConnectionTCP.new(is_relay)
 		add_child(lfs_connection)
 		_connect_lfs_connection_signals()
-	is_relay = (
-		address == RELAY_ADDRESS
-		and port == RELAY_PORT
-	)
 	_initializing = true
 	lfs_connection._connect_to_host(address, port, initialization_data.udp_port)
 
@@ -1252,6 +1253,9 @@ func send_packet(packet: InSimPacket, sender := "InSim") -> void:
 	):
 		push_error("Cannot send packet: InSim is not connected.")
 	packet.fill_buffer()
+	# See issue #5, remove this once Relay packets use the same size multiplier.
+	if is_relay and packet is not InSimRelayPacket:
+		packet.buffer[0] = packet.buffer[0] * InSimPacket.INSIM_SIZE_MULTIPLIER
 	var packet_sent_successfully := lfs_connection._send_packet(packet.buffer)
 	if packet_sent_successfully:
 		packet_sent.emit(packet, sender)

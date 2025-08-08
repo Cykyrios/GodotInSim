@@ -11,6 +11,7 @@ var error := InSim.RelayError.IR_ERR_PACKET  ## Relay error, see [enum InSim.Rel
 
 
 func _init() -> void:
+	super()
 	size = PACKET_SIZE
 	type = PACKET_TYPE
 	receivable = true

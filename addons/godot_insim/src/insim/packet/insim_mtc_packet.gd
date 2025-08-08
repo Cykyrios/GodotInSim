@@ -47,7 +47,7 @@ func _fill_buffer() -> void:
 	add_byte(0)  # sp2
 	add_byte(0)  # sp3
 	text = LFSText.lfs_bytes_to_unicode(add_string_variable_length(
-			text, TEXT_MAX_LENGTH, SIZE_MULTIPLIER))
+			text, TEXT_MAX_LENGTH, INSIM_SIZE_MULTIPLIER))
 	_trim_packet_size()
 
 

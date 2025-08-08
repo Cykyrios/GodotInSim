@@ -13,7 +13,7 @@ func test_decode_header(buffer: PackedByteArray, test_parameters := [
 	var packet := InSimPacket.new()
 	packet.buffer = buffer
 	packet.decode_header(buffer)
-	var _test := assert_int(packet.size).is_equal(buffer[0] * InSimPacket.SIZE_MULTIPLIER)
+	var _test := assert_int(packet.size).is_equal(buffer[0] * packet.size_multiplier)
 	_test = assert_int(packet.type).is_equal(buffer[1])
 	_test = assert_int(packet.req_i).is_equal(buffer[2])
 
@@ -26,7 +26,7 @@ func test_decode_packet(buffer: PackedByteArray, test_parameters := [
 ]) -> void:
 	var packet := InSimPacket.create_packet_from_buffer(buffer)
 	var _test: GdUnitAssert = assert_int(packet.size).is_equal(
-		buffer[0] * InSimPacket.SIZE_MULTIPLIER
+		buffer[0] * packet.size_multiplier
 	)
 	_test = assert_int(packet.type).is_equal(buffer[1])
 	_test = assert_int(packet.req_i).is_equal(buffer[2])

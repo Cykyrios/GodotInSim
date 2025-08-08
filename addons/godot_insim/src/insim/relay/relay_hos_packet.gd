@@ -14,6 +14,7 @@ var host_info: Array[HostInfo] = []  ## Array of host info
 
 
 func _init() -> void:
+	super()
 	size = PACKET_BASE_SIZE
 	type = PACKET_TYPE
 	receivable = true
@@ -26,10 +27,10 @@ func _decode_packet(packet: PackedByteArray) -> void:
 	if (
 		packet_size < min_size
 		or packet_size > max_size
-		or packet_size % SIZE_MULTIPLIER != 0
+		or packet_size % INSIM_SIZE_MULTIPLIER != 0
 	):
 		push_error("%s packet expected size [%d..%d step %d], got %d." % [
-			get_type_string(), min_size, max_size, SIZE_MULTIPLIER, packet_size
+			get_type_string(), min_size, max_size, INSIM_SIZE_MULTIPLIER, packet_size
 		])
 		return
 	super(packet)

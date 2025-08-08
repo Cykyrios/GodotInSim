@@ -37,7 +37,7 @@ func test_decode_packet(buffer: PackedByteArray, test_parameters := receivable_b
 	var _test: GdUnitAssert = assert_object(packet).is_instanceof(InSimSmallPacket)
 	if is_failure():
 		return
-	_test = assert_int(packet.size).is_equal(buffer.decode_u8(0) * InSimSmallPacket.SIZE_MULTIPLIER)
+	_test = assert_int(packet.size).is_equal(buffer.decode_u8(0) * packet.size_multiplier)
 	_test = assert_int(packet.type).is_equal(buffer.decode_u8(1))
 	_test = assert_int(packet.req_i).is_equal(buffer.decode_u8(2))
 	_test = assert_int(packet.sub_type).is_equal(buffer.decode_u8(3))

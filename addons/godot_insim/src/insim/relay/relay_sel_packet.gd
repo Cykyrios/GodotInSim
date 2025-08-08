@@ -26,6 +26,7 @@ static func create(reqi: int, sel_host: String, sel_admin := "", sel_spec := "")
 
 
 func _init() -> void:
+	super()
 	size = PACKET_SIZE
 	type = PACKET_TYPE
 	sendable = true

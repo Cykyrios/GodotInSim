@@ -72,8 +72,9 @@ func _fill_buffer() -> void:
 		var _caption := add_string(mini(caption_length, CAPTION_MAX_LENGTH), caption, false)
 		add_byte(0)
 		caption_length += 2
-	var _buffer := add_string_variable_length(text, TEXT_MAX_LENGTH - caption_length,
-			SIZE_MULTIPLIER)
+	var _buffer := add_string_variable_length(
+		text, TEXT_MAX_LENGTH - caption_length, INSIM_SIZE_MULTIPLIER
+	)
 	_trim_packet_size()
 
 
