@@ -21,7 +21,6 @@ variables:
 setup-project:
   stage: setup
   script:
-    - mv .submodules/gdUnit4/addons/gdUnit4 addons/
     - rm -rf addons/gdUnit4/test
     - godot --headless -v --import
   artifacts:
@@ -78,7 +77,6 @@ generate-docs:
   image: registry.gitlab.com/cykyrios/godot-builder:4.5-beta4-docs-generator
   script:
     - apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y git
-    - mv .submodules/gdscript_xml_converter/addons/gdscript_xml_converter addons/
     - godot --headless -v --import
     - godot --headless -s ./docs_generator/generate_docs.gd
   artifacts:
