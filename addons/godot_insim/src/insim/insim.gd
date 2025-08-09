@@ -1301,8 +1301,8 @@ func add_button(
 	ucids: Array[int], position: Vector2i, size: Vector2i, style: int, text: Variant,
 	button_name := "", type_in := 0, caption := "", show_everywhere := false, sender := "InSim",
 ) -> void:
-	# Allow UCID 255 if it is the only UCID passed to he function; this results in
-	# "true" global buttons that by pass InSimButtons.disabled_ucids.
+	# Allow UCID 255 if it is the only UCID passed to the function; this results in
+	# "true" global buttons that bypass InSimButtons.disabled_ucids.
 	if UCID_ALL in ucids and ucids.size() > 1:
 		ucids.clear()
 	if type_in > 0:

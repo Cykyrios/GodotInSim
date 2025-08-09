@@ -34,7 +34,7 @@ var id_map: Dictionary[int, Array] = {}
 ## and [InSimBFNPacket] to keep this dictionary as up to date as possible, using
 ## [code]req_i[/code] to distinguish buttons created by other apps.
 var buttons: Dictionary[int, InSimButtonDictionary] = {}
-## The list of current global button IDs, i.e. buttons that were creating with a UCID of 255;
+## The list of current global button IDs, i.e. buttons that were created with a UCID of 255;
 ## those are converted to individual buttons for each UCID in the server, and the buttons'
 ## clickIDs become reserved overall until the corresponding buttons are cleared. The dictionary's
 ## keys are the button clickIDs, and the values are the lists of UCIDs displaying buttons with
