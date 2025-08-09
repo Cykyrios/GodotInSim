@@ -74,8 +74,10 @@ const COLORS: Array[Color] = [
 	Color(0.58, 0.58, 0.58),  ## 8 - also resets code page
 	Color(0.58, 0.58, 0.58),  ## 9 - default color (context-dependent in LFS, gray here)
 ]
-## The character used to replace broken characters: �
-const FALLBACK_CHARACTER := "\ufffd"
+## The character used to replace broken characters in Unicode strings.
+const UNICODE_FALLBACK := "�"
+## The character used to replace broken characters in LFS.
+const LFS_FALLBACK := "?"
 
 ## The list of code page keys, concatenated from [constant CODE_PAGES] and with the leading
 ## circumflex characters removed.
@@ -561,7 +563,7 @@ static func split_message(message: String, max_length: int) -> Array[String]:
 		and first_message.ends_with("^")
 	):
 		first_message = first_message.trim_suffix("^")
-	var size := first_message.find(LFSText.FALLBACK_CHARACTER)
+	var size := first_message.find(LFSText.UNICODE_FALLBACK)
 	if size != -1:
 		first_message = first_message.left(size)
 	var second_message := message.right(
@@ -643,7 +645,7 @@ static func unicode_to_lfs_bytes(text: String, keep_utf16 := false) -> PackedByt
 					buffer.append_array(temp_bytes)
 					break
 			if not code_page_found:
-				buffer.append_array(_translate_specials(FALLBACK_CHARACTER).to_utf16_buffer())
+				buffer.append_array(_translate_specials(LFS_FALLBACK).to_utf16_buffer())
 	if not keep_utf16:
 		buffer = _remove_inner_zeros(buffer)
 	if buffer.is_empty():
@@ -712,9 +714,9 @@ static func _get_string_from_bytes(buffer: PackedByteArray, code_page: String) -
 				text += char(LFSCodePages.CODE_PAGE_TABLES[sub_page][sub_code] as int)
 				skip_next = true
 			else:
-				text += FALLBACK_CHARACTER
+				text += UNICODE_FALLBACK
 		else:
-			text += FALLBACK_CHARACTER
+			text += UNICODE_FALLBACK
 	return text
 
 
