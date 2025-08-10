@@ -74,6 +74,18 @@ const COLORS: Array[Color] = [
 	Color(0.58, 0.58, 0.58),  ## 8 - also resets code page
 	Color(0.58, 0.58, 0.58),  ## 9 - default color (context-dependent in LFS, gray here)
 ]
+## The list of colors used for text in standard buttons. See [enum InSim.ButtonColor]
+## for details and color types/names.
+const BUTTON_COLORS: Array[Color] = [
+	Color("c8c8c8"),  ## ISB_LIGHT_GRAY,
+	Color("daff57"),  ## ISB_TITLE,
+	Color("000000"),  ## ISB_UNSELECTED,
+	Color("ffffff"),  ## ISB_SELECTED,
+	Color("75b34d"),  ## ISB_OK,
+	Color("d26220"),  ## ISB_CANCEL,
+	Color("30a6ec"),  ## ISB_TEXT,
+	Color("72726f"),  ## ISB_UNAVAILABLE,
+]
 ## The character used to replace broken characters in Unicode strings.
 const UNICODE_FALLBACK := "�"
 ## The character used to replace broken characters in LFS.
@@ -318,6 +330,10 @@ static func convert_colors(text: String, to: ColorType, from := ColorType.LFS) -
 		if from == ColorType.BBCODE:
 			return colors_bbcode_to_lfs(text)
 	return ""
+
+
+static func get_button_color(button_style: int) -> Color:
+	return BUTTON_COLORS[button_style & 0b0111]
 
 
 ## Returns a color code string (^0 to ^9).
