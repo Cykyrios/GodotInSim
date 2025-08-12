@@ -7,8 +7,8 @@ workflow:
       when: never
 
 stages:
-  - setup
   - test
+  - export
   - docs
   - deploy
 
@@ -18,21 +18,12 @@ variables:
   GIT_SUBMODULE_STRATEGY: recursive
   GIT_SUBMODULE_FORCE_HTTPS: "true"
 
-setup-project:
-  stage: setup
-  script:
-    - rm -rf addons/gdUnit4/test
-    - godot --headless -v --import
-  artifacts:
-    expire_in: 20 minutes
-    paths:
-      - .godot/
-      - addons/gdUnit4/
-
 run-tests:
   stage: test
   image: registry.gitlab.com/cykyrios/godot-builder:4.4.1-editor
   script:
+    - rm -rf addons/gdUnit4/test
+    - godot --headless -v --import
     - sed -E -i '/gdscript\/warnings\/.+?/a gdscript\/warnings\/redundant_await=0' project.godot
     - export GODOT_BIN=$(which godot)
     - ./addons/gdUnit4/runtest.sh --headless --ignoreHeadlessMode -c -a addons/godot_insim/test
@@ -40,12 +31,13 @@ run-tests:
     when: always
     name: "Test Report"
     paths:
-      - reports/*
+      - reports/
     reports:
       junit: reports/**/results.xml
 
 export-demos:
-  stage: deploy
+  stage: export
+  needs: [run-tests]
   image: registry.gitlab.com/cykyrios/godot-builder:4.5-beta4-desktop
   rules:
     - if: $CI_COMMIT_TAG
@@ -54,6 +46,7 @@ export-demos:
   before_script:
     - apt-get update && apt-get install -y curl zip
   script:
+    - godot --headless -v --import
     - sh ./export_demos.sh
     - |
       cd build
@@ -73,6 +66,7 @@ export-demos:
 
 generate-docs:
   stage: docs
+  needs: []
   ## The image used here contains a doctool fix, see Godot PR #106256.
   image: registry.gitlab.com/cykyrios/godot-builder:4.5-beta4-docs-generator
   script:
@@ -85,11 +79,24 @@ generate-docs:
       - website/docs/class_ref/*.mdx
 
 build-site:
-  stage: deploy
+  stage: docs
+  needs: [generate-docs]
   image: node:lts-alpine3.20
   script:
     - cd website
     - npm install
     - npm run build
+  artifacts:
+    paths:
+      - website/build/
+
+deploy-site:
+  stage: deploy
+  needs: [build-site]
+  image: alpine:3.20
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+  script:
+    - echo "Deploying to GitLab Pages"
   pages:
     publish: website/build
