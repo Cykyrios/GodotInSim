@@ -1,6 +1,8 @@
 [submodule ".submodules/gdUnit4"]
 	path = .submodules/gdUnit4
-	url = https://github.com/MikeSchulze/gdUnit4
+	url = https://github.com/MikeSchulze/gdUnit4.git
+	ignore = dirty
 [submodule ".submodules/gdscript_xml_converter"]
 	path = .submodules/gdscript_xml_converter
 	url = https://gitlab.com/Cykyrios/gdscript-xml-converter.git
+	ignore = dirty
