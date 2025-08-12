@@ -42,9 +42,10 @@ func _ready() -> void:
 	await insim.connected
 	if insim.is_host():
 		insim.send_message("Host InSim started")
+	insim.button_manager.id_range = Vector2i(50, 80)
 	show_manual_buttons()
-	show_auto_buttons()
 	show_global_button()
+	show_auto_buttons()
 	update_auto_buttons()
 
 
@@ -54,11 +55,10 @@ func _exit_tree() -> void:
 
 
 func show_auto_buttons(for_ucid := -1) -> void:
-	insim.buttons.id_range = Vector2i(50, 80)
 	var ucid_array: Array[int] = []
 	if for_ucid > -1:
 		ucid_array.append(for_ucid)
-	insim.add_button(
+	insim.add_multi_button(
 		ucid_array,
 		Vector2i(auto_buttons_left, auto_buttons_top),
 		Vector2i(2 * auto_button_width, 9 * auto_button_height),
@@ -66,7 +66,7 @@ func show_auto_buttons(for_ucid := -1) -> void:
 		"",
 		"auto/background",
 	)
-	insim.add_button(
+	insim.add_multi_button(
 		ucid_array,
 		Vector2i(auto_buttons_left, auto_buttons_top),
 		Vector2i(2 * auto_button_width, roundi(1.5 * auto_button_height)),
@@ -74,17 +74,17 @@ func show_auto_buttons(for_ucid := -1) -> void:
 		"Auto Buttons",
 		"auto/title",
 	)
-	insim.add_button(
+	insim.add_multi_button(
 		ucid_array,
 		Vector2i(auto_buttons_left, auto_buttons_top + 2 * auto_button_height),
 		Vector2i(2 * auto_button_width, auto_button_height),
 		0,
 		"Custom clickID range: %d-%d" % [
-			insim.buttons.id_range.x, insim.buttons.id_range.y
+			insim.button_manager.id_range.x, insim.button_manager.id_range.y
 		],
 		"auto/range",
 	)
-	insim.add_button(
+	insim.add_multi_button(
 		ucid_array,
 		Vector2i(auto_buttons_left, auto_buttons_top + 3 * auto_button_height),
 		Vector2i(2 * auto_button_width, auto_button_height),
@@ -92,11 +92,16 @@ func show_auto_buttons(for_ucid := -1) -> void:
 		"test",
 		"auto/test",
 	)
-	var button := insim.get_button_by_name("auto/test", for_ucid)
+	var button := insim.get_button_by_name(
+		insim.connections.keys()[0] as int, "auto/test"
+	) as InSimMultiButton
 	if button:
-		button.text = "ID=%d, name=%s" % [button.click_id, button.name]
-		insim.send_packet(button.get_btn_packet(true))
-	insim.add_button(
+		var test_callable := func(ucid: int) -> String:
+			var mapping := button.get_ucid_mapping(ucid)
+			var click_id_string := str(mapping.click_id) if mapping else "###"
+			return "ID=%s, name=%s" % [click_id_string, button.name]
+		insim.update_multi_button(button, test_callable)
+	insim.add_multi_button(
 		ucid_array,
 		Vector2i(auto_buttons_left + 2, auto_buttons_top + 4 * auto_button_height),
 		Vector2i(2 * auto_button_width - 4, auto_button_height),
@@ -104,7 +109,7 @@ func show_auto_buttons(for_ucid := -1) -> void:
 		func(ucid: int) -> String: return insim.get_connection_nickname(ucid),
 		"auto/player_name",
 	)
-	insim.add_button(
+	insim.add_multi_button(
 		ucid_array,
 		Vector2i(auto_buttons_left + 2, auto_buttons_top + 5 * auto_button_height),
 		Vector2i(2 * auto_button_width - 4, auto_button_height),
@@ -112,7 +117,7 @@ func show_auto_buttons(for_ucid := -1) -> void:
 		"Time",
 		"auto/clock",
 	)
-	insim.add_button(
+	insim.add_multi_button(
 		ucid_array,
 		Vector2i(auto_buttons_left + 2, auto_buttons_top + 7 * auto_button_height),  # 6 is blink
 		Vector2i(2 * auto_button_width - 4, auto_button_height),
@@ -123,8 +128,8 @@ func show_auto_buttons(for_ucid := -1) -> void:
 
 
 func show_global_button() -> void:
-	insim.add_button(
-		[InSim.UCID_ALL],
+	insim.add_solo_button(
+		InSim.UCID_ALL,
 		Vector2i(50, 1),
 		Vector2i(50, 5),
 		InSim.ButtonStyle.ISB_DARK | InSim.ButtonStyle.ISB_CLICK,
@@ -235,45 +240,51 @@ func show_manual_buttons() -> void:
 func toggle_menu(for_ucid: int) -> void:
 	if menu_open.has(for_ucid):
 		menu_open.erase(for_ucid)
-		insim.delete_buttons_by_prefix([for_ucid], "menu/")
-		insim.update_button_text(insim.get_button_by_name("auto/menu", for_ucid), "Show menu")
+		insim.delete_buttons(insim.get_buttons_by_prefix(for_ucid, "menu/"))
+		insim.update_multi_button(
+			insim.get_button_by_name(for_ucid, "auto/menu") as InSimMultiButton,
+			"Show menu",
+		)
 		return
 	menu_open.append(for_ucid)
-	insim.update_button_text(insim.get_button_by_name("auto/menu", for_ucid), "Close menu")
-	insim.add_button(
-		[for_ucid],
+	insim.update_multi_button(
+		insim.get_button_by_name(for_ucid, "auto/menu") as InSimMultiButton,
+		"Close menu",
+	)
+	insim.add_solo_button(
+		for_ucid,
 		Vector2i(menu_buttons_left, menu_buttons_top),
 		Vector2i(2 * menu_button_width, 5 * menu_button_height),
 		InSim.ButtonStyle.ISB_LIGHT,
 		"",
 		"menu/background",
 	)
-	insim.add_button(
-		[for_ucid],
+	insim.add_solo_button(
+		for_ucid,
 		Vector2i(menu_buttons_left + 2, menu_buttons_top),
 		Vector2i(2 * menu_button_width - 4, 2 * menu_button_height),
 		InSim.ButtonColor.ISB_TITLE,
 		"Menu",
 		"menu/title",
 	)
-	insim.add_button(
-		[for_ucid],
+	insim.add_solo_button(
+		for_ucid,
 		Vector2i(menu_buttons_left + 2 * menu_button_width - 4, menu_buttons_top),
 		Vector2i(4, menu_button_height),
 		InSim.ButtonStyle.ISB_DARK | InSim.ButtonStyle.ISB_CLICK,
 		LFSText.get_color_code(LFSText.ColorCode.RED) + "X",
 		"menu/close",
 	)
-	insim.add_button(
-		[for_ucid],
+	insim.add_solo_button(
+		for_ucid,
 		Vector2i(menu_buttons_left + 2, menu_buttons_top + 2 * menu_button_height),
 		Vector2i(2 * menu_button_width - 4, menu_button_height),
 		InSim.ButtonStyle.ISB_DARK | InSim.ButtonStyle.ISB_CLICK,
 		"Item 1",
 		"menu/item_1",
 	)
-	insim.add_button(
-		[for_ucid],
+	insim.add_solo_button(
+		for_ucid,
 		Vector2i(menu_buttons_left + 2, menu_buttons_top + 3 * menu_button_height),
 		Vector2i(2 * menu_button_width - 4, menu_button_height),
 		InSim.ButtonStyle.ISB_DARK | InSim.ButtonStyle.ISB_CLICK,
@@ -289,15 +300,15 @@ func update_auto_buttons() -> void:
 	var loop := 0
 	while true:
 		await get_tree().create_timer(1).timeout
-		var buttons := insim.get_global_button_by_name("auto/clock")
-		if not buttons.is_empty():
-			insim.update_global_button_text(
-				buttons[0].click_id,
-				Time.get_time_string_from_system(true),
+		var button := insim.get_button_by_name(0, "auto/clock") as InSimMultiButton
+		if button:
+			insim.update_multi_button(
+				button,
+				Time.get_time_string_from_system(),
 			)
 		loop += 1
 		if loop % 2:
-			insim.add_button(
+			insim.add_multi_button(
 				[],
 				Vector2i(auto_buttons_left + 2, auto_buttons_top + 6 * auto_button_height),
 				Vector2i(2 * auto_button_width - 4, auto_button_height),
@@ -305,36 +316,40 @@ func update_auto_buttons() -> void:
 				"",
 				"auto/blink",
 			)
-			var click_id := insim.buttons.get_global_button_id_from_name("auto/blink")
-			if click_id != -1:
-				insim.update_global_button_text(click_id, "ID=%d, name=%s" % [
-					click_id, "auto/blink"
-				])
+			button = insim.get_button_by_name(0, "auto/blink")
+			if button:
+				var get_click_id := func(ucid: int) -> String:
+					var mapping := button.get_ucid_mapping(ucid)
+					var click_id_string := str(mapping.click_id) if mapping else "###"
+					return "ID=%s, name=%s" % [click_id_string, "auto/blink"]
+				insim.update_multi_button(button, get_click_id)
 		else:
-			insim.delete_global_button_by_name("auto/blink")
+			insim.delete_button(insim.get_button_by_name(0, "auto/blink"))
 
 
 func update_last_clicker_button(clicker_ucid: int) -> void:
-	var button := insim.get_button_by_name("global/last_clicker", InSim.UCID_ALL)
+	var button := insim.get_button_by_name(InSim.UCID_ALL, "global/last_clicker") as InSimSoloButton
 	if not button:
 		return
-	insim.update_button_text(
+	insim.update_solo_button(
 		button,
 		"Last clicker: %s" % [insim.get_connection_nickname(clicker_ucid)]
 	)
 
 
 func update_player_name_button(ucid: int) -> void:
-	var button := insim.get_button_by_name("auto/player_name", ucid)
+	var button := insim.get_button_by_name(ucid, "auto/player_name") as InSimMultiButton
 	if button and button.name == "auto/player_name":
-		button.text = (
-			"ID=%d, name=%s" % [
-				button.click_id,
-				button.name,
-			] if button.text == insim.get_connection_nickname(button.ucid)
-			else insim.get_connection_nickname(button.ucid)
-		)
-		insim.send_packet(button.get_btn_packet(true))
+		var get_text := func(for_ucid: int) -> String:
+			var mapping := button.get_ucid_mapping(for_ucid)
+			return (
+				"ID=%d, name=%s" % [
+					mapping.click_id,
+					button.name,
+				] if mapping.text == insim.get_connection_nickname(for_ucid)
+				else insim.get_connection_nickname(for_ucid)
+			)
+		insim.update_multi_button(button, get_text)
 
 
 func _on_bfn_received(packet: InSimBFNPacket) -> void:
@@ -362,14 +377,14 @@ func _on_bfn_received(packet: InSimBFNPacket) -> void:
 
 
 func _on_btc_received(packet: InSimBTCPacket) -> void:
-	# Note that buttons created manually are not tracked in InSimButtons; you can either
-	# add them manually (insim.buttons[ucid] = InSimButtonDictionary.new(), then
-	# add a manually created InSimButton to it), or keep track of manual buttons yourself.
-	# For click_id == 10 below, we check packet.click_id instead of button.click_id for
-	# that reason.
-	var button := insim.get_button_by_id(packet.click_id, packet.ucid)
+	# Note that buttons created manually are not tracked by [InSimButtonManager]; you can
+	# either add them manually (insim.button_manager[ucid] = InSimButtonDictionary.new(),
+	# then add a manually created InSimButton to it), or keep track of manual buttons
+	# yourself. For click_id == 10 below, we check packet.click_id instead of button.click_id
+	# for that reason.
+	var button := insim.get_button_by_id(packet.ucid, packet.click_id)
 	if not button:
-		button = insim.get_button_by_id(packet.click_id, InSim.UCID_ALL)
+		button = insim.get_button_by_id(InSim.UCID_ALL, packet.click_id)
 	var flags := packet.click_flags
 	var message := "You clicked %s (%s)." % [
 		"the ^2Click^8 button in the Manual Buttons category" if packet.click_id == 10
