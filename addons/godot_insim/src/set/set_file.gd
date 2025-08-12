@@ -385,6 +385,7 @@ func load_from_file(path: String) -> void:
 	if not file:
 		var error := FileAccess.get_open_error()
 		push_error("File open error %d" % [error])
+		header = ""
 		return
 	decode_setup_buffer(file.get_buffer(file.get_length()))
 
