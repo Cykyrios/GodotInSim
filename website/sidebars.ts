@@ -19,6 +19,7 @@ const sidebars: SidebarsConfig = {
       items: [
         "guides/getting_started/installation",
         "guides/getting_started/insim",
+        "guides/getting_started/insim_buttons/insim_buttons",
         "guides/getting_started/outgauge",
         "guides/getting_started/outsim/outsim",
         "guides/getting_started/relay",

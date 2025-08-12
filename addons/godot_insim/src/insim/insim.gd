@@ -1415,24 +1415,14 @@ func get_buttons_by_regex(ucid: int, regex: RegEx) -> Array[InSimButton]:
 	return button_manager.get_buttons_by_regex(ucid, regex)
 
 
-## Sends all [member InSimButtonManager._global_buttons] to the player associated
-## with the given [param ucid], and emits the [signal global_buttons_restored], which
-## you can connect to in order to update those buttons' contents.
+## Sends all global buttons (see [method InSimButtonManager.get_global_buttons])
+## to the player associated with the given [param ucid], and emits the
+## [signal global_buttons_restored], which you can connect to in order to update
+## those buttons' contents.
 func restore_global_buttons(ucid: int) -> void:
 	for packet in button_manager.get_global_button_packets(ucid):
 		send_packet(packet)
 	global_buttons_restored.emit(ucid)
-
-
-## Updates the contents of the [param button] using the given [param text] and
-## [param caption].
-func update_solo_button(
-	button: InSimSoloButton, text: String, caption := "", sender := "InSim"
-) -> void:
-	if not button:
-		push_error("Cannot update button text, button is null.")
-		return
-	send_packet(button_manager.update_solo_button(button, text, caption), sender)
 
 
 ## Updates the text of the [param button] with the given [param text], [param caption],
@@ -1446,6 +1436,17 @@ func update_multi_button(
 ) -> void:
 	for packet in button_manager.update_multi_button(button, text, caption, type_in):
 		send_packet(packet, sender)
+
+
+## Updates the contents of the [param button] using the given [param text] and
+## [param caption].
+func update_solo_button(
+	button: InSimSoloButton, text: String, caption := "", sender := "InSim"
+) -> void:
+	if not button:
+		push_error("Cannot update button text, button is null.")
+		return
+	send_packet(button_manager.update_solo_button(button, text, caption), sender)
 #endregion
 
 

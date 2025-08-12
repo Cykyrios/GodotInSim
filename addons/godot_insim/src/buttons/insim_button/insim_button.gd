@@ -7,7 +7,7 @@ extends RefCounted
 ## Any change made should be followed by sending a new [InSimBTNPacket] to update the actual
 ## InSim button, which can be done by calling [method get_btn_packet].[br]
 ## [b]Note:[/b] This class is not intended to be used directly, you should use [InSimSoloButton]
-## and [InSimMultiButton] instead when interacting with [InSimButtonManager].
+## and [InSimMultiButton] instead when interacting with the [InSimButtonManager].
 
 ## If set in [member inst], the button will display everywhere - this is typically best avoided.
 const INST_ALWAYS_ON := 0x80

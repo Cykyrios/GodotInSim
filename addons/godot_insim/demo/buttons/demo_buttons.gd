@@ -377,11 +377,10 @@ func _on_bfn_received(packet: InSimBFNPacket) -> void:
 
 
 func _on_btc_received(packet: InSimBTCPacket) -> void:
-	# Note that buttons created manually are not tracked by [InSimButtonManager]; you can
-	# either add them manually (insim.button_manager[ucid] = InSimButtonDictionary.new(),
-	# then add a manually created InSimButton to it), or keep track of manual buttons
-	# yourself. For click_id == 10 below, we check packet.click_id instead of button.click_id
-	# for that reason.
+	# Note that buttons created manually are not tracked by [InSimButtonManager],
+	# so you need to keep track of them yourself; this is why we check
+	# packet.click_id == 10 below (we don't need 11 as that button uses IS_BTT
+	# instead, see _on_btt_received).
 	var button := insim.get_button_by_id(packet.ucid, packet.click_id)
 	if not button:
 		button = insim.get_button_by_id(InSim.UCID_ALL, packet.click_id)

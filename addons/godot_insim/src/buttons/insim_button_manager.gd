@@ -3,7 +3,10 @@ extends RefCounted
 ## InSimButton manager
 ##
 ## This class keeps track of existing [InSimButton]s and allows manipulating buttons.
-## An instance is included in the [InSim] object.
+## An instance is included in the [InSim] object.[br]
+## [b]Note:[/b] This class is mostly intended for internal use. You should always prefer
+## using functions exposed to [InSim] where possible, and otherwise treat all properties
+## as read-only.
 
 ## The maximum number of buttons across all InSim apps.
 const MAX_BUTTONS := 240
@@ -38,16 +41,7 @@ var buttons: Array[InSimButton] = []
 ## are sent to everyone.
 var disabled_ucids: Array[int] = []
 
-## The list of current broadcast buttons, i.e. [InSimSoloButton] buttons that were
-## created with a UCID of [constant InSim.UCID_ALL]; all buttons in this list are
-## sent again when a player connects to the server.
 var _broadcast_buttons: Array[InSimSoloButton] = []
-## The list of current global buttons, i.e. [InSimMultiButton] buttons that were
-## created with an empty UCID array, or were declared global by calling
-## [method set_global_multi_button]; those are sent to all connected UCIDs as individual
-## packets. When a player connects, they receive all currently existing global buttons,
-## and their UCID is added to the buttons' mappings; conversely, when a player
-## disconnects, their UCID is removed from all buttons.
 var _global_buttons: Array[InSimMultiButton] = []
 
 
@@ -235,6 +229,7 @@ func forget_buttons_for_ucid(ucid: int) -> void:
 
 
 ## Returns an array of [InSimSoloButton] created with [constant InSim.UCID_ALL].
+## All buttons in this list are sent again when a player connects to the server.
 func get_broadcast_buttons() -> Array[InSimSoloButton]:
 	return _broadcast_buttons
 
@@ -329,7 +324,12 @@ func get_buttons_by_regex(ucid: int, regex: RegEx) -> Array[InSimButton]:
 
 
 ## Returns all global buttons as an array of [InSimBTNPacket]s targetting the given
-## [param for_ucid], to be sent to the corresponding player.
+## [param for_ucid], to be sent to the corresponding player. Global buttons are defined
+## as [InSimMultiButton] buttons that were created with an empty UCID array, or were
+## set global by calling [method set_global_multi_button]; those are sent to all
+## connected UCIDs as individual packets. When a player connects, they receive all
+## currently existing global buttons, and their UCID is added to the buttons' mappings;
+## conversely, when a player disconnects, their UCID is removed from all buttons.
 func get_global_button_packets(for_ucid: int) -> Array[InSimBTNPacket]:
 	var packets: Array[InSimBTNPacket] = []
 	for button in _global_buttons:
