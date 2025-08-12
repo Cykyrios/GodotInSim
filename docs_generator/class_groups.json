@@ -37,10 +37,9 @@
     "label": "OutSim",
     "items": [
       "OutSim",
-      "OutSimPacket",
-      "OutSimMain",
       "OutSimInputs",
-      "OutSimPack",
+      "OutSimMain",
+      "OutSimPacket",
       "OutSimWheel"
     ]
   },
@@ -70,22 +69,15 @@
           ]
         }
       },
-      {
-        "Other Packets": {
-          "label": "Other Packets",
-          "items": [
-            "LFSPacket"
-          ]
-        }
-      }
+      "LFSPacket"
     ]
   },
   "InSim Buttons": {
     "label": "InSim Buttons",
     "items": [
       "InSimButton",
-      "InSimButtons",
-      "InSimButtonDictionary"
+      "InSimButtonManager",
+      "UCIDMapping"
     ]
   },
   "Text Encoding": {
@@ -98,11 +90,11 @@
   "Utilities": {
     "label": "Utilities",
     "items": [
+      "Awaiter",
       "GISCamera",
       "GISTime",
       "GISUnit",
-      "GISViewer",
-      "Awaiter"
+      "GISViewer"
     ]
   },
   "File Formats": {
@@ -112,8 +104,8 @@
         "CAR_info": {
           "label": "CAR_info",
           "items": [
-            "CarInfo",
             "AeroInfo",
+            "CarInfo",
             "WheelInfo"
           ]
         }

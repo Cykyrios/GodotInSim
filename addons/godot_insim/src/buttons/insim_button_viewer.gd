@@ -1,7 +1,7 @@
 @tool
 class_name InSimButtonViewer
 extends AspectRatioContainer
-
+## nodoc
 
 @export var aspect_ratio := 16 / 9.0:
 	set(value):
