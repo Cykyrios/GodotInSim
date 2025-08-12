@@ -28,11 +28,22 @@ const plugin = (options) => {
             },
           };
         } else if (node.name === "godot") {
-          const text = node.children[0].value;
+          const text: String = node.children[0].value;
+          const target_class = node.attributes.target ? node.attributes.target : text.toLowerCase();
+          const fragment = node.attributes.fragment ? `#${node.attributes.fragment}` : "";
           node.data = {
             hName: "a",
             hProperties: {
-              href: `https://docs.godotengine.org/en/stable/classes/class_${text.toLowerCase()}.html`,
+              href: `https://docs.godotengine.org/en/stable/classes/class_${target_class}.html${fragment}`,
+            },
+          };
+        } else if (node.name === "class_ref") {
+          const text: String = node.children[0].value;
+          const target = node.attributes.target ? node.attributes.target : text;
+          node.data = {
+            hName: "a",
+            hProperties: {
+              href: `/docs/class_ref/${target}`,
             },
           };
         } else if (node.name === "kbd") {
