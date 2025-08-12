@@ -105,10 +105,10 @@ in the server, while handling clickIDs automatically, within an ID range you can
 ### Creating buttons
 
 :class_ref[InSim] exposes two functions to create an :class_ref[InSimButton]:
-- :class_ref[add_solo_button()]{target="InSim#method_add_solo_button"}: Creates an :class_ref[InsimSoloButton];
+- :class_ref[add_solo_button()]{target="InSim#method_add_solo_button"}: Creates an :class_ref[InSimSoloButton];
 	this is the closest to the raw `IS_BTN` packet, as this object is assigned to a single UCID, and holds
 	a single clickID.
-- :class_ref[add_multi_button()]{target="InSim#method_add_multi_button"}: Creates an :class_ref[InsimMultiButton],
+- :class_ref[add_multi_button()]{target="InSim#method_add_multi_button"}: Creates an :class_ref[InSimMultiButton],
 	which can hold multiple :class_ref[UCIDMapping]s, i.e. button information for a given UCID, including
 	the clickID, text, caption, and type_in value.
 
@@ -121,8 +121,8 @@ player. On the other hand, :class_ref[InSimMultiButton] allows for more interest
 - The button can also be global, which means every player connected to the server will receive it, and players who
 	connect later will also receive it upon joining the server.
 - You can add and remove UCID mappings after creating the button, with
-	:class_ref[add_ucid_mapping()]{target="InsimMultiButton#method_add_ucid_mapping"} and
-	:class_ref[remove_ucid_mapping()]{target="InsimMultiButton#method_remove_ucid_mapping"}.
+	:class_ref[add_ucid_mapping()]{target="InSimMultiButton#method_add_ucid_mapping"} and
+	:class_ref[remove_ucid_mapping()]{target="InSimMultiButton#method_remove_ucid_mapping"}.
 - You can tailor the button's contents to every UCID mapping, which can allow you to:
 	- include the player's name or vehicle in the button, or any value specific to that UCID
 	- assign randomly-generated values to each UCID

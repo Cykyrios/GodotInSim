@@ -37,8 +37,7 @@ var id_map: Dictionary[int, Array] = {}
 var buttons: Array[InSimButton] = []
 ## The list of UCIDs corresponding to players who have disabled InSim buttons (by
 ## pressing [kbd]Shift + I[/kbd]); adding and updating buttons should be disabled
-## for those, with the exception of [member _broadcast_buttons], which by nature
-## are sent to everyone.
+## for those, with the exception of broadcast buttons, which by nature are sent to everyone.
 var disabled_ucids: Array[int] = []
 
 var _broadcast_buttons: Array[InSimSoloButton] = []
@@ -352,8 +351,10 @@ func set_click_id_range(min_id: int, max_id: int) -> void:
 	id_range = Vector2i(min_id, max_id)
 
 
-## Sets the given [param button] as a global button, or unsets it.
-## See [member _global_buttons] for more info.
+## Sets the given [param button] as a global button, or unsets it. Global buttons are sent
+## to every player on the server, and players who join the server will be sent every
+## global button upon connecting. If you need to customize the buttons for new players,
+## you can connect to the [signal InSim.global_buttons_restored] signal.
 func set_global_multi_button(button: InSimMultiButton, global: bool) -> void:
 	if global and button not in _global_buttons:
 		_global_buttons.append(button)

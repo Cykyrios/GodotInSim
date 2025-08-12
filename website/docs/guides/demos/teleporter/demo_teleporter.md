@@ -36,7 +36,7 @@ Upon teleport, a message is sent to the player with the destination coordinates,
 
 :::tip
 
-For a better user experience, add [InSim buttons](../buttons/demo_buttons) to display the list
+For a better user experience, add [InSim buttons](../buttons/demo_buttons.md) to display the list
 of available teleport points.
 
 :::
