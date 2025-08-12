@@ -1,3 +1,7 @@
+---
+slug: ../mixed_tcp_udp
+---
+
 # Mixed TCP/UDP
 
 This demo showcases using both TCP and UDP in a single InSim app.

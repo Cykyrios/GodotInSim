@@ -1,3 +1,7 @@
+---
+slug: ../insim_buttons
+---
+
 # InSim Buttons
 
 This demo showcases InSim buttons.

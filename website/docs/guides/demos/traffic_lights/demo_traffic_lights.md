@@ -1,3 +1,7 @@
+---
+slug: ../traffic_lights
+---
+
 # Traffic Lights
 
 This demo showcases using [InSimOCOPacket](/class_ref/InSimOCOPacket.mdx) for light control

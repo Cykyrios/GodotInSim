@@ -1,3 +1,7 @@
+---
+slug: ../basic_telemetry
+---
+
 # Basic Telemetry
 
 This demo showcases the use of [OutSim](/class_ref/OutSim.mdx) and

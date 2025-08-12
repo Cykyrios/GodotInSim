@@ -1,3 +1,7 @@
+---
+slug: ../teleporter
+---
+
 # Teleporter
 
 This demo showcases using [InSimJRRPacket](/class_ref/InSimJRRPacket.mdx) for teleporting,

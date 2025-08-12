@@ -1,3 +1,7 @@
+---
+slug: ../insim_relay
+---
+
 # InSim Relay
 
 This demo showcases using the `InSim Relay` to show a list of hosts and connect to one.

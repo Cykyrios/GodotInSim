@@ -1,3 +1,7 @@
+---
+slug: ../packet_logger
+---
+
 # Packet Logger
 
 This demo showcases InSim packet handling and sending messages.

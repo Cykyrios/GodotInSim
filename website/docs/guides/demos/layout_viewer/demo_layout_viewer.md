@@ -1,3 +1,7 @@
+---
+slug: ../layout_viewer
+---
+
 # Layout Viewer
 
 This demo showcases [SMX](/class_ref/SMXFile.mdx) parsing and 3D mesh generation, as well as

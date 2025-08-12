@@ -1,3 +1,7 @@
+---
+slug: ../rest_api
+---
+
 # LFS REST API
 
 This demo showcases requests to the [LFS REST API](/class_ref/LFSAPI.mdx).

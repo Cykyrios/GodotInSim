@@ -1,3 +1,7 @@
+---
+slug: ../multiple_protocols
+---
+
 # Multiple Protocols
 
 This demo showcases using InSim, OutSim, and OutGauge in a single InSim app.

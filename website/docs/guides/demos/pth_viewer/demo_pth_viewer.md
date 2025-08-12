@@ -1,3 +1,7 @@
+---
+slug: ../pth_viewer
+---
+
 # PTH Viewer
 
 This demo showcases PTH parsing and 3D mesh generation.
