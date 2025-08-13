@@ -7,9 +7,7 @@ while true; do
 	esac
 done
 
-if [ -z "$GODOT_BIN" ]; then
-	export GODOT_BIN=godot
-fi
+export GODOT_BIN="${GODOT_BIN:-godot}"
 
 platforms=(
 	"linux"
