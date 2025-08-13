@@ -92,9 +92,7 @@ func show_auto_buttons(for_ucid := -1) -> void:
 		"test",
 		"auto/test",
 	)
-	var button := insim.get_button_by_name(
-		insim.connections.keys()[0] as int, "auto/test"
-	) as InSimMultiButton
+	var button := insim.get_button_by_name("auto/test") as InSimMultiButton
 	if button:
 		var test_callable := func(ucid: int) -> String:
 			var mapping := button.get_ucid_mapping(ucid)
@@ -240,15 +238,15 @@ func show_manual_buttons() -> void:
 func toggle_menu(for_ucid: int) -> void:
 	if menu_open.has(for_ucid):
 		menu_open.erase(for_ucid)
-		insim.delete_buttons(insim.get_buttons_by_prefix(for_ucid, "menu/"))
+		insim.delete_buttons(insim.get_buttons_by_prefix("menu/", [for_ucid]))
 		insim.update_multi_button(
-			insim.get_button_by_name(for_ucid, "auto/menu") as InSimMultiButton,
+			insim.get_button_by_name("auto/menu", for_ucid) as InSimMultiButton,
 			"Show menu",
 		)
 		return
 	menu_open.append(for_ucid)
 	insim.update_multi_button(
-		insim.get_button_by_name(for_ucid, "auto/menu") as InSimMultiButton,
+		insim.get_button_by_name("auto/menu", for_ucid) as InSimMultiButton,
 		"Close menu",
 	)
 	insim.add_solo_button(
@@ -300,7 +298,7 @@ func update_auto_buttons() -> void:
 	var loop := 0
 	while true:
 		await get_tree().create_timer(1).timeout
-		var button := insim.get_button_by_name(0, "auto/clock") as InSimMultiButton
+		var button := insim.get_button_by_name("auto/clock") as InSimMultiButton
 		if button:
 			insim.update_multi_button(
 				button,
@@ -316,7 +314,7 @@ func update_auto_buttons() -> void:
 				"",
 				"auto/blink",
 			)
-			button = insim.get_button_by_name(0, "auto/blink")
+			button = insim.get_button_by_name("auto/blink")
 			if button:
 				var get_click_id := func(ucid: int) -> String:
 					var mapping := button.get_ucid_mapping(ucid)
@@ -324,11 +322,13 @@ func update_auto_buttons() -> void:
 					return "ID=%s, name=%s" % [click_id_string, "auto/blink"]
 				insim.update_multi_button(button, get_click_id)
 		else:
-			insim.delete_button(insim.get_button_by_name(0, "auto/blink"))
+			insim.delete_button(insim.get_button_by_name("auto/blink"))
 
 
 func update_last_clicker_button(clicker_ucid: int) -> void:
-	var button := insim.get_button_by_name(InSim.UCID_ALL, "global/last_clicker") as InSimSoloButton
+	var button := insim.get_button_by_name(
+		"global/last_clicker", InSim.UCID_ALL
+	) as InSimSoloButton
 	if not button:
 		return
 	insim.update_solo_button(
@@ -338,7 +338,7 @@ func update_last_clicker_button(clicker_ucid: int) -> void:
 
 
 func update_player_name_button(ucid: int) -> void:
-	var button := insim.get_button_by_name(ucid, "auto/player_name") as InSimMultiButton
+	var button := insim.get_button_by_name("auto/player_name", ucid) as InSimMultiButton
 	if button and button.name == "auto/player_name":
 		var get_text := func(for_ucid: int) -> String:
 			var mapping := button.get_ucid_mapping(for_ucid)
@@ -381,9 +381,7 @@ func _on_btc_received(packet: InSimBTCPacket) -> void:
 	# so you need to keep track of them yourself; this is why we check
 	# packet.click_id == 10 below (we don't need 11 as that button uses IS_BTT
 	# instead, see _on_btt_received).
-	var button := insim.get_button_by_id(packet.ucid, packet.click_id)
-	if not button:
-		button = insim.get_button_by_id(InSim.UCID_ALL, packet.click_id)
+	var button := insim.get_button_by_id(packet.click_id, packet.ucid, true)
 	var flags := packet.click_flags
 	var message := "You clicked %s (%s)." % [
 		"the ^2Click^8 button in the Manual Buttons category" if packet.click_id == 10

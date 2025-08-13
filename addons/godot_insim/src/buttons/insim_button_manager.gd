@@ -234,11 +234,10 @@ func get_broadcast_buttons() -> Array[InSimSoloButton]:
 
 
 ## Returns the [InSimButton] matching the given [param click_id] for the given [param ucid],
-## or [code]null[/code] if no matching button is found.[br]
-## [b]Important:[/b] If a single UCID mapping from an [InSimMultiButton] matches,
-## the complete button is returned; if you are using this method to delete buttons,
-## make sure not to delete more buttons than intended.
-func get_button_by_id(ucid: int, click_id: int) -> InSimButton:
+## or [code]null[/code] if no matching button is found. If [param retry_with_ucid_all]
+## is [code]true[/code], and no button was found, attempts to find the [param click_id]
+## for [constant InSim.UCID_ALL].
+func get_button_by_id(click_id: int, ucid: int, retry_with_ucid_all := false) -> InSimButton:
 	if not id_map.has(ucid) or not id_map[ucid].has(click_id):
 		return null
 	for button in buttons:
@@ -251,74 +250,118 @@ func get_button_by_id(ucid: int, click_id: int) -> InSimButton:
 			if multi_button.ucid_mappings.has(ucid):
 				if multi_button.ucid_mappings[ucid].click_id == click_id:
 					return button
+	if retry_with_ucid_all:
+		return get_button_by_id(click_id, InSim.UCID_ALL, false)
+	return null
+
+
+## Returns the first [InSimButton] matching the given [param button_name], filtered by
+## the given [param ucid], or [code]null[/code] if no matching button is found.
+## If [param ucid] is equal to [code]-1[/code], all UCIDs are valid for matching the button.
+func get_button_by_name(button_name: StringName, ucid := -1) -> InSimButton:
+	if ucid != -1 and not id_map.has(ucid):
+		return null
+	for button in buttons:
+		if button.name != button_name:
+			continue
+		if (
+			ucid == -1
+			or (
+				button is InSimSoloButton
+				and (button as InSimSoloButton).ucid == ucid
+			)
+			or (
+				button is InSimMultiButton
+				and ucid in (button as InSimMultiButton).ucid_mappings
+			)
+		):
+			return button
 	return null
 
 
 ## Returns all [InSimButton] buttons in the given range of [param click_id] to
-## [param click_max] (both ends inclusive) for the given [param ucid], or an empty
-## array if no matching button is found.[br]
-## [b]Important:[/b] If a single UCID mapping from an [InSimMultiButton] matches,
-## the complete button is included in the array; if you are using this method to delete
-## buttons, make sure not to delete more buttons than intended.
-func get_buttons_by_id_range(ucid: int, click_id: int, click_max := 0) -> Array[InSimButton]:
-	if not id_map.has(ucid) or not id_map[ucid].has(click_id):
-		return []
+## [param click_max] (both ends inclusive) for the given [param ucids], or an empty
+## array if no matching button is found. [param click_max] cannot be smaller than
+## [param click_id]. If [param ucids] is empty, alls UCIDs are valid for matching.
+func get_buttons_by_id_range(
+	click_id: int, click_max := 0, ucids: Array[int] = []
+) -> Array[InSimButton]:
+	if click_max < click_id:
+		click_max = click_id
 	var matching_buttons: Array[InSimButton] = []
 	for button in buttons:
 		if button is InSimSoloButton:
 			var solo_button := button as InSimSoloButton
 			if (
-				solo_button.ucid == ucid
+				(ucids.is_empty() or solo_button.ucid in ucids)
 				and solo_button.click_id >= click_id
 				and solo_button.click_id <= click_max
 			):
-				matching_buttons.append(solo_button)
+				matching_buttons.append(button)
 		elif button is InSimMultiButton:
 			var multi_button := button as InSimMultiButton
-			if (
-				multi_button.ucid_mappings.has(ucid)
-				and multi_button.ucid_mappings[ucid].click_id >= click_id
-				and multi_button.ucid_mappings[ucid].click_id <= click_max
-				and multi_button not in matching_buttons
-			):
-				matching_buttons.append(multi_button)
+			for ucid in multi_button.ucid_mappings:
+				if (
+					(ucids.is_empty() or ucid in ucids)
+					and multi_button.ucid_mappings[ucid].click_id >= click_id
+					and multi_button.ucid_mappings[ucid].click_id <= click_max
+				):
+					matching_buttons.append(button)
+					break
 	return matching_buttons
 
 
-## Returns the first [InSimButton] matching the given [param name] for the given [param ucid],
-## or [code]null[/code] if no matching button is found.[br]
-## [b]Note:[/b] If multiple buttons have the same name, the returned button may not be
-## the expected one; you should always make sure to give unique names to your buttons.
-func get_button_by_name(ucid: int, name: StringName) -> InSimButton:
-	if not id_map.has(ucid):
-		return null
-	for button in buttons:
-		if button.name == name:
-			return button
-	return null
-
-
 ## Returns all [InSimButton]s whose name starts with the given [param prefix] for
-## the given [param ucid], or an empty array if no matching button is found.
-func get_buttons_by_prefix(ucid: int, prefix: StringName) -> Array[InSimButton]:
-	if not id_map.has(ucid):
-		return []
+## the given [param ucids], or an empty array if no matching button is found.
+## If [param ucids] is empty, all UCIDs are valid for matching.
+func get_buttons_by_prefix(prefix: StringName, ucids: Array[int] = []) -> Array[InSimButton]:
 	var matching_buttons: Array[InSimButton] = []
 	for button in buttons:
-		if button.name.begins_with(prefix):
+		if not button.name.begins_with(prefix):
+			continue
+		if (
+			button is InSimSoloButton
+			and (
+				ucids.is_empty()
+				or (button as InSimSoloButton).ucid in ucids
+			)
+		):
 			matching_buttons.append(button)
+		elif button is InSimMultiButton:
+			for ucid in (button as InSimMultiButton).ucid_mappings:
+				if (
+					ucids.is_empty()
+					or ucid in ucids
+				):
+					matching_buttons.append(button)
+					break
 	return matching_buttons
 
 
 ## Returns all [InSimButton]s whose name matches the given [param regex] for the
-## given [param ucid], or an empty array if no matching button is found.
-func get_buttons_by_regex(ucid: int, regex: RegEx) -> Array[InSimButton]:
-	if not id_map.has(ucid):
-		return []
+## given [param ucids], or an empty array if no matching button is found.
+## If [param ucids] is empty, all UCIDs are valid for matching.
+func get_buttons_by_regex(regex: RegEx, ucids: Array[int] = []) -> Array[InSimButton]:
 	var matching_buttons: Array[InSimButton] = []
 	for button in buttons:
-		if regex.search(button.name):
+		if not regex.search(button.name):
+			continue
+		if (
+			button is InSimSoloButton
+			and (
+				ucids.is_empty()
+				or (button as InSimSoloButton).ucid in ucids
+			)
+		):
 			matching_buttons.append(button)
+		elif button is InSimMultiButton:
+			for ucid in (button as InSimMultiButton).ucid_mappings:
+				if (
+					ucids.is_empty()
+					or ucid in ucids
+				):
+					matching_buttons.append(button)
+					break
 	return matching_buttons
 
 

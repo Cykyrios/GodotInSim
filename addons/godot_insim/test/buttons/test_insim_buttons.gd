@@ -116,13 +116,13 @@ func test_get_button_by_id() -> void:
 	var button := insim.get_button_by_id(1, 1)
 	var _test: GdUnitAssert = assert_object(button).is_not_null()
 	_test = assert_object(button).is_instanceof(InSimMultiButton)
-	button = insim.get_button_by_id(2, 1)
-	_test = assert_object(button).is_not_null()
-	_test = assert_object(button).is_instanceof(InSimMultiButton)
 	button = insim.get_button_by_id(1, 2)
 	_test = assert_object(button).is_not_null()
+	_test = assert_object(button).is_instanceof(InSimMultiButton)
+	button = insim.get_button_by_id(2, 1)
+	_test = assert_object(button).is_not_null()
 	_test = assert_object(button).is_instanceof(InSimSoloButton)
-	button = insim.get_button_by_id(3, 2)
+	button = insim.get_button_by_id(2, 3)
 	_test = assert_object(button).is_null()
 
 
@@ -131,21 +131,23 @@ func test_get_button_by_id_range() -> void:
 	insim.add_multi_button([2, 3], Vector2i.ONE, Vector2i.ONE, 0, "", "test_button")
 	insim.add_multi_button([1, 2], Vector2i.ONE, Vector2i.ONE, 0, "", "hello")
 	insim.add_solo_button(1, Vector2i.ONE, Vector2i.ONE, 0, "", "another_button")
-	var buttons := insim.get_buttons_by_id_range(1, 1, 2)
-	var _test: GdUnitAssert = assert_int(buttons.size()).is_equal(2)
+	var buttons := insim.get_buttons_by_id_range(1, 2, [1])
+	var _test: GdUnitAssert = assert_array(buttons).has_size(2)
 	_test = assert_object(buttons[0]).is_not_null()
 	_test = assert_object(buttons[0]).is_instanceof(InSimMultiButton)
 	_test = assert_object(buttons[1]).is_not_null()
 	_test = assert_object(buttons[1]).is_instanceof(InSimSoloButton)
 	var multi_button := buttons[0] as InSimMultiButton
 	_test = assert_int(multi_button.ucid_mappings[1].click_id).is_equal(1)
+	buttons = insim.get_buttons_by_id_range(1, 2)
+	_test = assert_array(buttons).has_size(3)  # 2 multi-buttons + 1 solo-button
 
 
 func test_get_buttons_by_name() -> void:
 	insim.add_multi_button([1, 2], Vector2i.ONE, Vector2i.ONE, 0, "", "button")
 	insim.add_multi_button([2, 3], Vector2i.ONE, Vector2i.ONE, 0, "", "test_button")
 	insim.add_multi_button([1, 2], Vector2i.ONE, Vector2i.ONE, 0, "", "hello")
-	var button := insim.button_manager.get_button_by_name(2, "button")
+	var button := insim.button_manager.get_button_by_name("button")
 	var _test: GdUnitAssert = assert_object(button).is_not_null()
 	_test = assert_object(button).is_instanceof(InSimMultiButton)
 
@@ -154,7 +156,7 @@ func test_get_buttons_by_prefix() -> void:
 	insim.add_multi_button([1, 2], Vector2i.ONE, Vector2i.ONE, 0, "", "a/b")
 	insim.add_multi_button([2, 3], Vector2i.ONE, Vector2i.ONE, 0, "", "c/d/e")
 	insim.add_multi_button([1, 2], Vector2i.ONE, Vector2i.ONE, 0, "", "c/desktop")
-	var buttons := insim.button_manager.get_buttons_by_prefix(2, "c/d")
+	var buttons := insim.button_manager.get_buttons_by_prefix("c/d")
 	var _test: GdUnitAssert = assert_array(buttons).has_size(2)
 	_test = assert_object(buttons[0]).is_not_null()
 	_test = assert_object(buttons[1]).is_not_null()
@@ -166,9 +168,9 @@ func test_get_buttons_by_regex() -> void:
 	insim.add_multi_button([1, 2], Vector2i.ONE, Vector2i.ONE, 0, "", "a/b")
 	insim.add_multi_button([2, 3], Vector2i.ONE, Vector2i.ONE, 0, "", "c/d/e")
 	insim.add_multi_button([1, 2], Vector2i.ONE, Vector2i.ONE, 0, "", "no_category")
-	var buttons := insim.button_manager.get_buttons_by_regex(2, RegEx.create_from_string(".+?/.+"))
+	var buttons := insim.button_manager.get_buttons_by_regex(RegEx.create_from_string(".+?/.+"))
 	var _test: GdUnitAssert = assert_array(buttons).has_size(2)
-	buttons = insim.button_manager.get_buttons_by_regex(2, RegEx.create_from_string(".+?_cat.*?"))
+	buttons = insim.button_manager.get_buttons_by_regex(RegEx.create_from_string(".+?_cat.*?"))
 	_test = assert_array(buttons).has_size(1)
 
 

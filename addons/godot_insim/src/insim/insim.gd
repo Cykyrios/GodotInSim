@@ -1382,37 +1382,52 @@ func enable_buttons_for_ucid(ucid: int) -> void:
 	button_manager.enable_buttons_for_ucid(ucid)
 
 
-## Returns the [InSimButton] matching the given [param ucid] and [param click_id], or
-## [code]null[/code] if no matching button is found.
-func get_button_by_id(ucid: int, click_id: int) -> InSimButton:
-	return button_manager.get_button_by_id(ucid, click_id)
+## Returns the [InSimButton] matching the given [param click_id] and [param ucid], or
+## [code]null[/code] if no matching button is found. If [param retry_with_ucid_all]
+## is [code]true[/code], and no button was found, attempts to find the [param click_id]
+## for [constant UCID_ALL].[br]
+## [b]Important:[/b] If a single UCID mapping from an [InSimMultiButton] matches,
+## the button is returned, including all UCID mappings; if you are using this method
+## to delete buttons, make sure not to delete more buttons than intended.
+func get_button_by_id(click_id: int, ucid: int, retry_with_ucid_all := false) -> InSimButton:
+	return button_manager.get_button_by_id(click_id, ucid, retry_with_ucid_all)
 
 
-## Returns the first [InSimButton] matching the given [param ucid] and [param button_name],
-## or [code]null[/code] if no matching button is found.[br]
+## Returns the first [InSimButton] matching the given [param button_name], filtered by
+## the given [param ucid], or [code]null[/code] if no matching button is found.
+## If [param ucid] is equal to [code]-1[/code], it is ignored, and all UCIDs become valid
+## for matching the button.[br]
 ## [b]Note:[/b] If multiple buttons have the same name, the returned button may not be
 ## the expected one; you should always make sure to give unique names to your buttons.
-func get_button_by_name(ucid: int, button_name: StringName) -> InSimButton:
-	return button_manager.get_button_by_name(ucid, button_name)
+func get_button_by_name(button_name: StringName, ucid := -1) -> InSimButton:
+	return button_manager.get_button_by_name(button_name, ucid)
 
 
 ## Returns an [InSimButton] [Array] containing all buttons with clickIDs in the range
 ## defined by [param click_id] and [param click_max] (both ends inclusive) for the
-## given [param ucid], or an empty array if no matching button is found.
-func get_buttons_by_id_range(ucid: int, click_id: int, click_max := 0) -> Array[InSimButton]:
-	return button_manager.get_buttons_by_id_range(ucid, click_id, click_max)
+## given [param ucids], or an empty array if no matching button is found. If [param ucids]
+## is empty, all UCIDs are valid for matching.[br]
+## [b]Important:[/b] If a single UCID mapping from an [InSimMultiButton] matches,
+## the complete button is included in the array; if you are using this method to delete
+## buttons, make sure not to delete more buttons than intended.
+func get_buttons_by_id_range(
+	click_id: int, click_max := 0, ucids: Array[int] = []
+) -> Array[InSimButton]:
+	return button_manager.get_buttons_by_id_range(click_id, click_max, ucids)
 
 
 ## Returns all [InSimButton]s whose name starts with the given [param prefix] for
-## the given [param ucid], or an empty array if no matching button is found.
-func get_buttons_by_prefix(ucid: int, prefix: StringName) -> Array[InSimButton]:
-	return button_manager.get_buttons_by_prefix(ucid, prefix)
+## the given [param ucids], or an empty array if no matching button is found.
+## If [param ucids] is empty, all UCIDs are valid for matching.
+func get_buttons_by_prefix(prefix: StringName, ucids: Array[int] = []) -> Array[InSimButton]:
+	return button_manager.get_buttons_by_prefix(prefix, ucids)
 
 
 ## Returns all [InSimButton]s whose name matches the given [param regex] for the
-## given [param ucid], or an empty array if no matching button is found.
-func get_buttons_by_regex(ucid: int, regex: RegEx) -> Array[InSimButton]:
-	return button_manager.get_buttons_by_regex(ucid, regex)
+## given [param ucids], or an empty array if no matching button is found.
+## If [param ucids] is empty, all UCIDs are valid for matching.
+func get_buttons_by_regex(regex: RegEx, ucids: Array[int] = []) -> Array[InSimButton]:
+	return button_manager.get_buttons_by_regex(regex, ucids)
 
 
 ## Sends all global buttons (see [method InSimButtonManager.get_global_buttons])

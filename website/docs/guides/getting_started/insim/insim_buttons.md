@@ -186,8 +186,10 @@ to retrieve the button objects. There are a few different ways to find created b
 For instance, we can get both buttons with the following call:
 
 ```gdscript
-var buttons := insim.get_buttons_by_prefix(0, "my_")
+var buttons := insim.get_buttons_by_prefix("my_")
 ```
+
+All of the above methods allow filtering by UCID, and default to not filtering at all.
 
 :::tip
 
