@@ -19,7 +19,7 @@ which you can do by typing `/insim 29999` in LFS.
 The demo is a host InSim program, so it works in multiplayer too. Two panel containing various
 buttons are displayed: the **Manual Buttons** panel contains buttons created by sending the
 corresponding :class_ref[InSimBTNPacket]s; the **Auto Buttons** panel
-contains buttons created using InSim's :class_ref[add_multi_button()]{target="InSim#method_add_multi_button"}
+contains buttons created using InSim's :class_ref[add_solo_button()]{target="InSim#method_add_solo_button"}
 and :class_ref[add_multi_button()]{target="InSim#method_add_multi_button"}, allowing for more concise
 declaration, button naming for later identification, as well as mapping a button's text to each connection,
 e.g. to display each player's name through a single button definition.

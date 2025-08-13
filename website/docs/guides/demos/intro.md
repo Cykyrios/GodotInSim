@@ -5,6 +5,9 @@ import DocCardList from "@theme/DocCardList";
 Following are details about the demos included in GodotInSim. Each demo provides an overview
 of the showcased features, specific prerequisites, and a description of the demo itself.
 
+You can find the code for all demos
+[on the GitLab repository](https://gitlab.com/godot-insim/godot_insim/-/tree/main/addons/godot_insim/demo).
+
 ## General prerequisites
 
 Unless stated otherwise, each demo needs to have InSim listening on port 29999 in LFS. There are

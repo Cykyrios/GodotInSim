@@ -146,4 +146,4 @@ Emoji and a number of Unicode symbols are not supported by LFS.
 > insim.send_message("⚠ Warning ⚠")
 > ```
 >
-> LFS displays: <span style={{color: "white"}}>Player : </span>ýÿ Warning ýÿ
+> LFS displays: <span style={{color: "white"}}>Player : </span>? Warning ?

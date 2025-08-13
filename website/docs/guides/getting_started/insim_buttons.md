@@ -1,7 +1,3 @@
----
-slug: ../insim_buttons
----
-
 # InSim Buttons
 
 You can build custom user interfaces with Godot InSim in two different ways:
@@ -192,6 +188,17 @@ For instance, we can get both buttons with the following call:
 ```gdscript
 var buttons := insim.get_buttons_by_prefix(0, "my_")
 ```
+
+:::tip
+
+Name your buttons! As we just saw, Godot InSim provides 3 methods to find buttons from their names,
+or part of their names. Take advantage of this to organize your buttons in meaningful hierarchies,
+using prefixes like you would use folders.
+
+Also make sure to avoid duplicate names, as it can affect the returned value from
+:class_ref[get_button_by_name()]{target="InSim#method_get_button_by_name"}.
+
+:::
 
 ### Updating buttons
 
