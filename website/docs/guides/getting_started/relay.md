@@ -3,7 +3,7 @@ import TabItem from "@theme/TabItem";
 
 # InSim Relay
 
-InSim Relay works in much the same way as standard [InSim](./insim.md) does: after establishing a
+InSim Relay works in much the same way as standard [InSim](./insim) does: after establishing a
 connection (to a specific IP/port), you can send and receive packets from the relay. The main
 differences are the additional packet types that are specific to the relay, and the standard InSim
 packets you are allowed to send through the relay.

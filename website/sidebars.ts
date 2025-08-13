@@ -18,8 +18,19 @@ const sidebars: SidebarsConfig = {
       },
       items: [
         "guides/getting_started/installation",
-        "guides/getting_started/insim",
-        "guides/getting_started/insim_buttons",
+        {
+          type: "category",
+          label: "InSim",
+          link: {
+            type: "doc",
+            id: "guides/getting_started/insim/intro",
+          },
+          items: [
+            "guides/getting_started/insim/insim_basics",
+            "guides/getting_started/insim/insim_utilities",
+            "guides/getting_started/insim/insim_buttons",
+          ],
+        },
         "guides/getting_started/outgauge",
         "guides/getting_started/outsim/outsim",
         "guides/getting_started/relay",

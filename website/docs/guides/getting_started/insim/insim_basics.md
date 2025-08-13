@@ -1,13 +1,13 @@
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 
-# InSim
+# InSim Basics
 
-Using InSim from Godot is straightforward: add an [InSim](/class_ref/InSim.mdx) node to your scene
-and initialize it, then you can connect to one of its many signals to listen for specific packets,
-and send packets manually or using the provided helper functions.
+In this guide, we will learn the basics of using Godot InSim, and create a very simple test app.
+This guide assumes no prior knowledge of Godot InSim, but it does expect you to be familiar with
+[GDScript](https://docs.godotengine.org/en/stable/tutorials/scripting/gdscript/gdscript_basics.html).
 
-## Your first InSim app
+## Your first Godot InSim app
 
 ### Hello InSim
 

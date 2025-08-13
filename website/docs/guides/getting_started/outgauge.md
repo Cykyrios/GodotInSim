@@ -51,7 +51,7 @@ func _on_packet_received(packet: OutGaugePacket) -> void:
 	print("OutGauge packet received!")
 ```
 
-Just like [InSim](./insim.md), you can create an OutGauge instance entirely from code, or add it
+Just like [InSim](./insim), you can create an OutGauge instance entirely from code, or add it
 as a node in your scene and use `@onready`.
 
 Initialization is even simpler than InSim: you only need to provide the address and port, and you

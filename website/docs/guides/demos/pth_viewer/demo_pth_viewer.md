@@ -13,7 +13,7 @@ This demo showcases PTH parsing and 3D mesh generation.
 This demo requires setting the path to the `data/smx` folder of your LFS install, in the
 scene's root node inspector.
 
-It also needs [InSim](/guides/getting_started/insim.md) to be listening on port `29999`,
+It also needs [InSim](/guides/getting_started/insim/intro.md) to be listening on port `29999`,
 which you can do by typing `/insim 29999` in LFS.
 
 ## The demo

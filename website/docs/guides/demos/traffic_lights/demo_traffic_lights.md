@@ -15,7 +15,7 @@ layout objects via [InSimAXMPackets](/class_ref/InSimAXMPacket.mdx).
 This demo is intended to run on a Westhill open configuration (WE1X, WE2Y, etc.). If any other
 environment is loaded, you will be prompted to load Westhill and the demo will close immediately.
 
-This demo only needs [InSim](/guides/getting_started/insim.md) to be listening on port `29999`,
+This demo only needs [InSim](/guides/getting_started/insim/intro.md) to be listening on port `29999`,
 which you can do by typing `/insim 29999` in LFS.
 
 ## The demo

@@ -10,7 +10,7 @@ This demo showcases using both TCP and UDP in a single InSim app.
 
 ## Prerequisites
 
-This demo only requires [InSim](/guides/getting_started/insim.md) to be listening on port `29999`,
+This demo only requires [InSim](/guides/getting_started/insim/intro.md) to be listening on port `29999`,
 which you can do by typing `/insim 29999` in LFS. UDP packets will be sent on port `30000`.
 
 ## The demo

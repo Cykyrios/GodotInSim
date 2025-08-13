@@ -12,7 +12,7 @@ as well as InSim message handling by parsing commands received via
 
 ## Prerequisites
 
-This demo only needs [InSim](/guides/getting_started/insim.md) to be listening on port `29999`,
+This demo only needs [InSim](/guides/getting_started/insim/intro.md) to be listening on port `29999`,
 which you can do by typing `/insim 29999` in LFS.
 
 ## The demo

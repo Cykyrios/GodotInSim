@@ -986,11 +986,11 @@ var ping_timer: Timer = null
 var timeout_timer: Timer = null
 
 ## Current state of the game, as per IS_STA documentation. Updated automatically upon
-## receiving an IS_STA packet. Does not include packet header.
+## receiving an [InSimSTAPacket]. Does not include packet header.
 var lfs_state := LFSState.new()
-## Dictionary of UCID/license name pairs, updated automatically.
+## Dictionary of UCID/[Connection] pairs, updated automatically.
 var connections: Dictionary[int, Connection] = {}
-## Dictionary of PLID/UCID pairs, updated automatically.
+## Dictionary of PLID/[Player] pairs, updated automatically.
 var players: Dictionary[int, Player] = {}
 ## Manager object for all known/registered [InSimButton] objects.
 var button_manager: InSimButtonManager = null

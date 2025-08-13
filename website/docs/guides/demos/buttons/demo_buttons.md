@@ -11,7 +11,7 @@ This demo showcases InSim buttons. You can find the code
 
 ## Prerequisites
 
-This demo only requires [InSim](/guides/getting_started/insim.md) to be listening on port `29999`,
+This demo only requires [InSim](/guides/getting_started/insim/intro.md) to be listening on port `29999`,
 which you can do by typing `/insim 29999` in LFS.
 
 ## The demo
