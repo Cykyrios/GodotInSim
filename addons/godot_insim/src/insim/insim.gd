@@ -23,8 +23,7 @@ extends Node
 
 
 ## Emitted when InSim has successfully connected, after receiving an [InSimVERPacket] response
-## from [method initialize]. When using a Relay connection, this signal is emitted as soon as
-## the TCP connection is established.
+## from [method initialize].
 signal connected
 ## Emitted when InSim disconnects, which happens when calling [method close] or after a
 ## [signal timeout].
@@ -42,9 +41,6 @@ signal packet_received(packet: InSimPacket)
 ## to identify the source of the packet (InSim itself, or the user application),
 ## and defaults to [code]"InSim"[/code] in [method send_packet].
 signal packet_sent(packet: InSimPacket, sender: String)
-signal irp_arp_received(packet: RelayARPPacket)  ## Emitted when a [RelayARPPacket] is received.
-signal irp_err_received(packet: RelayERRPacket)  ## Emitted when a [RelayERRPacket] is received.
-signal irp_hos_received(packet: RelayHOSPacket)  ## Emitted when a [RelayHOSPacket] is received.
 signal isp_acr_received(packet: InSimACRPacket)  ## Emitted when an [InSimACRPacket] is received.
 signal isp_aic_received(packet: InSimAICPacket)  ## Emitted when an [InSimAICPacket] is received.
 signal isp_aii_received(packet: InSimAIIPacket)  ## Emitted when an [InSimAIIPacket] is received.
@@ -215,12 +211,6 @@ enum Packet {
 	ISP_IPB,  ## 67 - both ways: set IP bans
 	ISP_AIC,  ## 68 - instruction: set AI control values
 	ISP_AII,  ## 69 - info: info about AI car
-	IRP_ARQ = 250,  ## Send : request if we are host admin (after connecting to a host)
-	IRP_ARP,  ## Receive : replies if you are admin (after connecting to a host)
-	IRP_HLR,  ## Send : To request a hostlist
-	IRP_HOS,  ## Receive : Hostlist info
-	IRP_SEL,  ## Send : To select a host
-	IRP_ERR,  ## Receive : An error number
 }
 enum Tiny {
 	TINY_NONE,  ## 0 - keep alive: see "maintaining the connection"
@@ -273,23 +263,6 @@ enum TTC {
 	TTC_SEL,  ## 1 - info request: send IS_AXM for a layout editor selection
 	TTC_SEL_START,  ## 2 - info request: send IS_AXM every time the selection changes
 	TTC_SEL_STOP,  ## 3 - instruction: switch off IS_AXM requested by TTC_SEL_START
-}
-enum RelayError {
-	IR_ERR_PACKET = 1,  ## Invalid packet sent by client (wrong structure / length)
-	IR_ERR_PACKET2,  ## Invalid packet sent by client (packet was not allowed to be forwarded to host)
-	IR_ERR_HOSTNAME,  ## Wrong hostname given by client
-	IR_ERR_ADMIN,  ## Wrong admin pass given by client
-	IR_ERR_SPEC,  ## Wrong spec pass given by client
-	IR_ERR_NOSPEC,  ## Spectator pass required, but none given
-}
-enum RelayFlag {
-	HOS_SPECPASS = 1,  ## Host requires a spectator password
-	HOS_LICENSED = 2,  ## Bit is set if host is licensed
-	HOS_S1 = 4,  ## Bit is set if host is S1
-	HOS_S2 = 8,  ## Bit is set if host is S2
-	HOS_CRUISE = 32,  ## Bit is set if host is Cruise
-	HOS_FIRST = 64,  ## Indicates the first host in the list
-	HOS_LAST = 128,  ## Indicates the last host in the list
 }
 
 ## See [AIInputVal] for more details
@@ -951,9 +924,6 @@ const VERSION := 9  ## Current supported InSim version
 const PING_INTERVAL := 31  ## Interval between pings, if no packet is received before that.
 const TIMEOUT_DELAY := 10  ## Timeout if no reply to ping within this delay.
 
-const RELAY_ADDRESS := "isrelay.lfs.net"  ## InSim Relay address
-const RELAY_PORT := 47474  ## InSim Relay port
-
 const OCO_INDEX_MAIN := 240  ## Main start lights
 
 ## A UCID value of 255 has a special meaning for some packets, such as [InSimBTNPacket], which
@@ -965,7 +935,6 @@ const GIS_REQI := 250
 var lfs_connection: LFSConnection = null  ## Internal connection for TCP/UDP communication
 ## UDP connection used specifically for receiving NLP or MCI packets, see [InSimISIPacket].
 var nlp_mci_connection: LFSConnectionUDP = null
-var is_relay := false  ## Whether this is a Relay connection, do not set manually.
 var _is_host := false  ## Whether this is a host InSim application, do not set manually.
 ## Helper struct for InSim initialization, see [InSimISIPacket].
 var initialization_data := InSimInitializationData.new()
@@ -1130,11 +1099,6 @@ func get_player_name(plid: int) -> String:
 func initialize(
 	address: String, port: int, init_data: InSimInitializationData, use_udp := false
 ) -> void:
-	is_relay = (
-		not use_udp
-		and address == RELAY_ADDRESS
-		and port == RELAY_PORT
-	)
 	initialization_data = init_data
 	if lfs_connection and (
 		use_udp and lfs_connection is LFSConnectionTCP
@@ -1149,16 +1113,11 @@ func initialize(
 		if use_udp:
 			lfs_connection = LFSConnectionUDP.new()
 		else:
-			lfs_connection = LFSConnectionTCP.new(is_relay)
+			lfs_connection = LFSConnectionTCP.new()
 		add_child(lfs_connection)
 		_connect_lfs_connection_signals()
 	_initializing = true
 	lfs_connection._connect_to_host(address, port, initialization_data.udp_port)
-
-
-## Attempts to connect to the InSim Relay.
-func initialize_relay() -> void:
-	initialize(RELAY_ADDRESS, RELAY_PORT, InSimInitializationData.new())
 
 
 ## Returns [code]true[/code] if this InSim instance is a host application (remote connected
@@ -1243,19 +1202,14 @@ func send_packet(packet: InSimPacket, sender := "InSim") -> void:
 	if (
 		not insim_connected
 		and not _initializing
-		and not is_relay
 		and packet.type != Packet.ISP_ISI
 		and not (
 			packet.type == Packet.ISP_TINY
 			and (packet as InSimTinyPacket).sub_type == Tiny.TINY_PING
 		)
-		and packet.type < Packet.IRP_ARQ
 	):
 		push_error("Cannot send packet: InSim is not connected.")
 	packet.fill_buffer()
-	# See issue #5, remove this once Relay packets use the same size multiplier.
-	if is_relay and packet is not InSimRelayPacket:
-		packet.buffer[0] = packet.buffer[0] * InSimPacket.INSIM_SIZE_MULTIPLIER
 	var packet_sent_successfully := lfs_connection._send_packet(packet.buffer)
 	if packet_sent_successfully:
 		packet_sent.emit(packet, sender)
@@ -1568,25 +1522,20 @@ func _send_ping() -> void:
 
 
 func _on_connected_to_host() -> void:
-	if is_relay:
-		insim_connected = true
-		_initializing = false
-		connected.emit.call_deferred()
-	else:
-		send_packet(InSimISIPacket.create(
-			initialization_data.udp_port,
-			initialization_data.flags,
-			initialization_data.prefix,
-			initialization_data.interval,
-			initialization_data.admin,
-			initialization_data.i_name
-		))
-		nlp_mci_connection._disconnect_from_host()
-		if initialization_data.udp_port != 0:
-			nlp_mci_connection._connect_to_host(
-				lfs_connection.address, lfs_connection.udp_port, 0, true
-			)
-		_reset_timeout_timer()
+	send_packet(InSimISIPacket.create(
+		initialization_data.udp_port,
+		initialization_data.flags,
+		initialization_data.prefix,
+		initialization_data.interval,
+		initialization_data.admin,
+		initialization_data.i_name
+	))
+	nlp_mci_connection._disconnect_from_host()
+	if initialization_data.udp_port != 0:
+		nlp_mci_connection._connect_to_host(
+			lfs_connection.address, lfs_connection.udp_port, 0, true
+		)
+	_reset_timeout_timer()
 
 
 func _on_connection_failed() -> void:
@@ -1705,12 +1654,6 @@ func _on_packet_received(packet_buffer: PackedByteArray) -> void:
 			isp_aic_received.emit(packet)
 		Packet.ISP_AII:
 			isp_aii_received.emit(packet)
-		Packet.IRP_ARP:
-			irp_arp_received.emit(packet)
-		Packet.IRP_HOS:
-			irp_hos_received.emit(packet)
-		Packet.IRP_ERR:
-			irp_err_received.emit(packet)
 		_:
 			_push_error_unknown_packet_type(packet.type)
 

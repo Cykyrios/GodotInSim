@@ -2,8 +2,7 @@
 
 This project aims to provide an API to build apps with the
 [Godot game engine](https://godotengine.org/) that can communicate with
-[Live For Speed](https://www.lfs.net) through its InSim protocol, as well as OutSim,
-OutGauge and InSimRelay.
+[Live For Speed](https://www.lfs.net) through its InSim protocol, as well as OutSim and OutGauge.
 
 ## Implementation and compatibility
 
@@ -15,7 +14,6 @@ more closely to Godot's GDScript style guide.
 
 Enums and bitflags are implemented as enums in `InSim`, `OutSim` and `OutGauge` as appropriate,
 some enums specific to a single type of packet can be included in the corresponding packet directly.
-`InSimRelay` is included directly in the `InSim` class.
 
 ## Installation
 
@@ -41,8 +39,8 @@ If you wish to connect to multiple InSim instances, you will need to create and 
 You first have to initialize InSim by sending an IS_ISI packet, which is done by calling
 `initialize` on your `InSim` instance and passing the address and port you want to connect to,
 as well as some initialization data that will set the packet accordingly, such as flags to enable
-receiving certain packets. You can also set whether this connection is a relay, and the protocol
-to use (TCP or UDP).  
+receiving certain packets. You can also set the protocol to use (TCP or UDP).
+
 OutGauge and OutSim work similarly, but only need the address and port.
 
 ### Sending packets
@@ -94,11 +92,6 @@ Direct OutSim communication can be enabled without InSim by setting the appropri
 your `cfg.txt` file. Initialize the OutSim socket with `initialize(outsim_options)` on your `OutSim`
 instance to receive packets. The `outsim_options` must be the same as the OutSimOpts in `cfg.txt`.
 
-## InSimRelay
-
-You can connect to InSimRelay by connecting to InSim with the corresponding option. Relay packets
-can be sent just like normal InSim packets.
-
 ## Text handling
 
 Text is automatically converted from UTF8 to LFS's format and vice versa. The unicode text includes
@@ -138,4 +131,4 @@ Demos showcasing some of `GodotInSim`'s features are available in the
 
 ![Live Telemetry](./addons/godot_insim/demo/basic_telemetry/screenshots/telemetry_2.jpg)
 
-![InSim Relay](./addons/godot_insim/demo/relay/screenshots/relay.jpg)
+![Layout Viewer](./addons/godot_insim/demo/layout_viewer/screenshots/layout_viewer_gis.jpg)

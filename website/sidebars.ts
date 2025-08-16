@@ -54,7 +54,6 @@ const sidebars: SidebarsConfig = {
         "guides/demos/multiple_protocols/demo_multiple_protocols",
         "guides/demos/packet_logger/demo_packet_logger",
         "guides/demos/pth_viewer/demo_pth_viewer",
-        "guides/demos/relay/demo_relay",
         "guides/demos/teleporter/demo_teleporter",
         "guides/demos/traffic_lights/demo_traffic_lights",
       ],
