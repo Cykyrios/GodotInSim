@@ -103,10 +103,17 @@ func _get_pretty_text() -> String:
 		"everyone" if ucid == InSim.UCID_ALL
 		else "UCID %d" % [ucid]
 	)
+	var button_text := text
+	var button_color := button_style & 0b0111
+	if button_color != 0:
+		button_text = "[color=%s]%s[/color]" % [
+			LFSText.get_button_color(button_color).to_html(false),
+			text,
+		]
 	return "Button for %s: ID %d, %s, %d-%d:%dx%d, \"%s\"" % [
 		target, click_id, button_flags,
 		left, top, width, height,
-		text + "^9" + (" (%s^9)" % [caption] if caption else ""),
+		button_text + "^9" + (" (%s^9)" % [caption] if caption else ""),
 	]
 
 
