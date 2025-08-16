@@ -2,9 +2,9 @@
 
 This project aims to provide an API to build apps with the [Godot game engine](https://godotengine.org/)
 that can communicate with [Live For Speed](https://www.lfs.net) through its [InSim](/docs/guides/getting_started/insim)
-protocol, as well as [OutSim](/docs/guides/getting_started/outsim), [OutGauge](/docs/guides/getting_started/outgauge)
-and [InSimRelay](/docs/guides/getting_started/relay). It also contains tools to read and write various LFS file
-formats, and provides access to the [REST API](/docs/guides/getting_started/rest_api).
+protocol, as well as [OutSim](/docs/guides/getting_started/outsim) and [OutGauge](/docs/guides/getting_started/outgauge).
+It also contains tools to read and write various LFS file formats, and provides access to the
+[REST API](/docs/guides/getting_started/rest_api).
 
 ## Installation and usage
 
@@ -21,8 +21,7 @@ more closely to Godot's
 
 Enums and bitflags are implemented as enums in [InSim](/docs/class_ref/InSim), [OutSim](/docs/class_ref/OutSim),
 and [OutGauge](/docs/class_ref/OutGauge) as appropriate, some enums specific to a single type of packet can be
-included in the corresponding packet directly. InSimRelay is handled directly by
-[InSim](/docs/class_ref/InSim#property_is_relay).
+included in the corresponding packet directly.
 
 Utility classes [GISCamera](/docs/class_ref/GISCamera), [GISTime](/docs/class_ref/GISTime), and
 [GISUnit](/docs/class_ref/GISUnit) provide functions to convert data and manipulate Godot cameras.
@@ -44,5 +43,3 @@ The following images are from some of those demos.
 ![Traffic Lights](/img/homepage/traffic_lights_2.jpg)
 
 ![Layout Viewer](/img/homepage/layout_viewer_gis.jpg)
-
-![InSim Relay](/img/homepage/relay.jpg)

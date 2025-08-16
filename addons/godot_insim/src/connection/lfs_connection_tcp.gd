@@ -5,11 +5,6 @@ extends LFSConnection
 ## Implements the TCP protocol for LFS I/O.
 
 var stream := StreamPeerTCP.new()  ## TCP peer handling I/O
-var is_insim_relay := false  ## Whether this connection represents an InSim relay.
-
-
-func _init(insim_relay := false) -> void:
-	is_insim_relay = insim_relay
 
 
 func _connect_to_host(c_address: String, c_port: int, c_udp_port := 0) -> void:
@@ -59,11 +54,7 @@ func _get_incoming_packets() -> void:
 		var stream_data := stream.get_data(InSimPacket.HEADER_SIZE)
 		_discard = stream_data[0] as Error
 		var packet_header := stream_data[1] as PackedByteArray
-		# See issue #5 for future plans if LFS changes Relay packet size behavior.
-		var packet_size := packet_header[0] * (
-			InSimRelayPacket.RELAY_SIZE_MULTIPLIER if is_insim_relay
-			else InSimPacket.INSIM_SIZE_MULTIPLIER
-		)
+		var packet_size := packet_header[0] * InSimPacket.INSIM_SIZE_MULTIPLIER
 		packet_buffer = packet_header.duplicate()
 		packet_buffer.append_array(
 			stream.get_data(packet_size - InSimPacket.HEADER_SIZE)[1] as PackedByteArray

@@ -180,18 +180,6 @@ static func create_packet_from_type(packet_type: InSim.Packet) -> InSimPacket:
 			packet = InSimVERPacket.new()
 		InSim.Packet.ISP_VTN:
 			packet = InSimVTNPacket.new()
-		InSim.Packet.IRP_ARP:
-			packet = RelayARPPacket.new()
-		InSim.Packet.IRP_ARQ:
-			packet = RelayARQPacket.new()
-		InSim.Packet.IRP_ERR:
-			packet = RelayERRPacket.new()
-		InSim.Packet.IRP_HLR:
-			packet = RelayHLRPacket.new()
-		InSim.Packet.IRP_HOS:
-			packet = RelayHOSPacket.new()
-		InSim.Packet.IRP_SEL:
-			packet = RelaySELPacket.new()
 	return packet
 
 
