@@ -332,8 +332,10 @@ static func convert_colors(text: String, to: ColorType, from := ColorType.LFS) -
 	return ""
 
 
-static func get_button_color(button_style: int) -> Color:
-	return BUTTON_COLORS[button_style & 0b0111]
+## Returns the [Color] corresponding to the default font color for the given
+## [param button_color].
+static func get_button_color(button_color: InSim.ButtonColor) -> Color:
+	return BUTTON_COLORS[button_color & 0b0111]
 
 
 ## Returns a color code string (^0 to ^9).
