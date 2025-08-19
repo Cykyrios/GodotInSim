@@ -66,9 +66,7 @@ func _get_data_dictionary() -> Dictionary:
 
 func _get_pretty_text() -> String:
 	return "Screenshot: %s - %s" % [
-		str(InSim.Screenshot.keys()[error]) if (
-			error in InSim.Screenshot.values()
-		) else "INVALID ERROR",
+		str(InSim.Screenshot.find_key(error)),
 		screenshot_name,
 	]
 

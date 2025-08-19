@@ -96,9 +96,9 @@ func _get_data_dictionary() -> Dictionary:
 
 func _get_pretty_text() -> String:
 	var button_flags: Array[String] = []
-	for i in InSim.ButtonStyle.size():
-		if button_style & InSim.ButtonStyle.values()[i]:
-			button_flags.append(InSim.ButtonStyle.keys()[i])
+	for key: String in InSim.ButtonStyle:
+		if button_style & InSim.ButtonStyle[key]:
+			button_flags.append(key)
 	var target := (
 		"everyone" if ucid == InSim.UCID_ALL
 		else "UCID %d" % [ucid]

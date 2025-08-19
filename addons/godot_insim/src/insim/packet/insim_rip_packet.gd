@@ -119,7 +119,7 @@ func _get_pretty_text() -> String:
 		"S" if mpr == 0 else "M",
 		replay_name,
 		GISTime.get_time_string_from_seconds(gis_t_time),
-		" (%s)" % [InSim.Replay.keys()[error]],
+		" (%s)" % [InSim.Replay.find_key(error)],
 	]
 
 

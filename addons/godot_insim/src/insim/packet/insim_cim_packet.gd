@@ -70,8 +70,8 @@ func _get_pretty_text() -> String:
 			key_string = enum_keys[idx]
 		return key_string
 	var get_selection := func get_selection(value: int) -> String:
-		var idx := InSim.AXOIndex.values().find(value)
-		return InSim.AXOIndex.keys()[idx] if idx != -1 else "no selection"
+		var key: Variant = InSim.AXOIndex.find_key(value)
+		return key if key else "no selection"
 
 	var submode_string := " (%s%s)" % [
 		get_submode_string.call(mode, submode),
@@ -82,7 +82,7 @@ func _get_pretty_text() -> String:
 	]
 	return "UCID %d: %s%s" % [
 		ucid,
-		InSim.InterfaceMode.keys()[mode],
+		InSim.InterfaceMode.find_key(mode),
 		submode_string if mode in submode_filter else "",
 	]
 

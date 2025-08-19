@@ -65,8 +65,8 @@ func _get_pretty_text() -> String:
 	var handicaps: Array[String] = []
 	for i in car_hcp.size():
 		var hcp := car_hcp[i]
-		var car := InSim.Car.keys()[i + 1] as String
-		if car == str(InSim.Car.keys()[InSim.Car.values().find(InSim.Car.CAR_ALL)]):
+		var car := str(InSim.Car.keys()[i + 1])
+		if car == str(InSim.Car.find_key(InSim.Car.CAR_ALL)):
 			break
 		handicaps.append("%s (%d/%d)" % [
 			(car as String).split("_")[-1],

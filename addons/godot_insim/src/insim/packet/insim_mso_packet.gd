@@ -58,7 +58,7 @@ func _get_data_dictionary() -> Dictionary:
 
 
 func _get_pretty_text() -> String:
-	return "(%s) %s" % [InSim.MessageUserValue.keys()[user_type], msg]
+	return "(%s) %s" % [InSim.MessageUserValue.find_key(user_type), msg]
 
 
 func _set_data_from_dictionary(dict: Dictionary) -> void:

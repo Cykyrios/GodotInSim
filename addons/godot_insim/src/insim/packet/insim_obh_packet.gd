@@ -84,12 +84,12 @@ func _get_data_dictionary() -> Dictionary:
 
 func _get_pretty_text() -> String:
 	var flags: Array[String] = []
-	for i in InSim.OBHFlag.size():
-		if obh_flags & InSim.OBHFlag.values()[i]:
-			flags.append(InSim.OBHFlag.keys()[i])
+	for key: String in InSim.OBHFlag:
+		if obh_flags & InSim.OBHFlag[key]:
+			flags.append(key)
 	return "PLID %d hit an object: %s (%s) at coordinates %.1v (closing speed %s m/s)" % [
 		plid,
-		InSim.AXOIndex.keys()[index] if index in InSim.AXOIndex.values() else "INVALID INDEX",
+		InSim.AXOIndex.find_key(index),
 		flags,
 		gis_position,
 		gis_closing_speed,

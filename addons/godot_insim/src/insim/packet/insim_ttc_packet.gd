@@ -94,7 +94,7 @@ func _get_pretty_text() -> String:
 			ttc_description = "disable info for every selection change"
 	return "(ReqI %d) %s (UCID %d B1=%d B2=%d B3=%d) - %s" % [
 		req_i,
-		str(InSim.TTC.keys()[sub_type]) if sub_type in InSim.TTC.values() else "INVALID SUBTYPE",
+		str(InSim.TTC.find_key(sub_type)),
 		ucid,
 		b1, b2, b3,
 		ttc_description,

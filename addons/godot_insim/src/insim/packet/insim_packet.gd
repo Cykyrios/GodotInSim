@@ -262,7 +262,7 @@ func get_type_string() -> String:
 	var index := InSim.Packet.values().find(type)
 	if index == -1:
 		return "UNKNOWN"
-	return InSim.Packet.keys()[index]
+	return InSim.Packet.find_key(index)
 
 
 ## Resizes the packet's [member LFSPacket.buffer].

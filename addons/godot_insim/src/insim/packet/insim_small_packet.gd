@@ -104,7 +104,7 @@ func _get_pretty_text() -> String:
 			small_description = "get local AI info"
 	return "(ReqI %d) %s (Value %d) - %s" % [
 		req_i,
-		InSim.Small.keys()[sub_type] if sub_type in InSim.Small.values() else "INVALID SUBTYPE",
+		InSim.Small.find_key(sub_type),
 		value,
 		small_description,
 	]

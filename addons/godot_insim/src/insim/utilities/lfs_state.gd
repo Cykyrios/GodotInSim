@@ -24,9 +24,8 @@ var wind := 0  ## Current wind level
 ## [member flags].
 func get_flags_changes(new_flags: int) -> Dictionary[String, String]:
 	var changes: Dictionary[String, String] = {}
-	for i in InSim.State.size():
-		var key := InSim.State.keys()[i] as String
-		var value := InSim.State.values()[i] as int
+	for key: String in InSim.State:
+		var value := InSim.State[key] as int
 		if new_flags & value != flags & value:
 			changes[key] = "ON" if new_flags & value else "OFF"
 	return changes
@@ -41,7 +40,7 @@ func get_state_changes(state_packet: InSimSTAPacket) -> Dictionary[String, Varia
 	if state_packet.flags != flags:
 		changes["Flags"] = get_flags_changes(state_packet.flags)
 	if state_packet.ingame_cam != ingame_cam:
-		changes["InGame Cam"] = InSim.View.keys()[InSim.View.values().find(state_packet.ingame_cam)]
+		changes["InGame Cam"] = InSim.View.find_key(state_packet.ingame_cam)
 	if state_packet.view_plid != view_plid:
 		changes["View PLID"] = state_packet.view_plid
 	if state_packet.num_players != num_players:

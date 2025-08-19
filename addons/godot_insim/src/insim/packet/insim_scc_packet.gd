@@ -44,7 +44,7 @@ func _get_data_dictionary() -> Dictionary:
 func _get_pretty_text() -> String:
 	return "PLID %d set camera to %s" % [
 		view_plid,
-		str(InSim.View.keys()[ingame_cam]) if ingame_cam in InSim.View.values() else "INVALID VIEW",
+		str(InSim.View.find_key(ingame_cam)),
 	]
 
 

@@ -51,7 +51,7 @@ func _get_pretty_text() -> String:
 		ucid,
 		user_id,
 		"demo" if license == 0 else "S%d" % [license],
-		(InSim.Language.keys()[language] as String).trim_prefix("LFS_").capitalize(),
+		str(InSim.Language.find_key(language)).trim_prefix("LFS_").capitalize(),
 		ip_address.address_string
 	]
 

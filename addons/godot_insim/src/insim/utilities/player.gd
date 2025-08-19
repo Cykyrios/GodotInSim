@@ -53,9 +53,8 @@ static func create_from_npl_packet(packet: InSimNPLPacket) -> Player:
 ## Returns a dictionary show the changed flags between [param new_flags] and [member flags].
 func get_flags_changes(new_flags: int) -> Dictionary[String, String]:
 	var changes: Dictionary[String, String] = {}
-	for i in InSim.PlayerFlag.size():
-		var key := InSim.PlayerFlag.keys()[i] as String
-		var value := InSim.PlayerFlag.values()[i] as int
+	for key: String in InSim.PlayerFlag:
+		var value := InSim.PlayerFlag[key] as int
 		if new_flags & value != flags & value:
 			changes[key] = "ON" if new_flags & value else "OFF"
 	return changes

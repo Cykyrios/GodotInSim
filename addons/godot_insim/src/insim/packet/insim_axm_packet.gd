@@ -101,14 +101,12 @@ func _get_data_dictionary() -> Dictionary:
 
 func _get_pretty_text() -> String:
 	var flags: Array[String] = []
-	for i in InSim.PMOFlags.size():
-		if pmo_flags & InSim.PMOFlags.values()[i]:
-			flags.append(InSim.PMOFlags.keys()[i])
+	for key: String in InSim.PMOFlags:
+		if pmo_flags & InSim.PMOFlags[key]:
+			flags.append(key)
 	return "UCID %d: %s for %d object%s%s" % [
 		ucid,
-		str(InSim.PMOAction.keys()[pmo_action]) if (
-			pmo_action in InSim.PMOAction.values()
-		) else "INVALID ACTION",
+		str(InSim.PMOAction.find_key(pmo_action)),
 		num_objects,
 		"" if num_objects < 2 else "s",
 		"" if pmo_flags == 0 else " (%s)" % [flags],
