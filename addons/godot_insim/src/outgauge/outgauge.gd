@@ -9,7 +9,7 @@ extends Node
 ## Emitted when a packet is received. You should connect to this signal if you plan to use OutGauge.
 signal packet_received(packet: OutGaugePacket)
 
-var _lfs_connection := LFSConnectionUDP.new()
+var _lfs_connection: LFSConnectionUDP = null
 
 
 ## Creates and returns an [OutGaugePacket] from the given [param packet_buffer]. This method is
@@ -23,6 +23,7 @@ static func create_packet_from_buffer(packet_buffer: PackedByteArray) -> OutGaug
 
 
 func _ready() -> void:
+	_lfs_connection = LFSConnectionUDP.new()
 	add_child(_lfs_connection)
 	var _discard := _lfs_connection.packet_received.connect(_on_packet_received)
 

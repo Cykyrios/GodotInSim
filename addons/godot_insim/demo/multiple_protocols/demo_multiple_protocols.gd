@@ -1,12 +1,12 @@
 extends MarginContainer
 
 
-var insim := InSim.new()
-var outsim := OutSim.new()
-var outgauge := OutGauge.new()
+var insim: InSim = null
+var outsim: OutSim = null
+var outgauge: OutGauge = null
 
-var car_lights_timer := Timer.new()
-var car_switches_timer := Timer.new()
+var car_lights_timer: Timer = null
+var car_switches_timer: Timer = null
 
 @onready var insim_button: Button = %InSimButton
 @onready var car_lights_button: Button = %CarLightsButton
@@ -22,14 +22,17 @@ func _ready() -> void:
 	_discard = car_lights_button.pressed.connect(_on_car_lights_button_pressed)
 	_discard = car_switches_button.pressed.connect(_on_car_switches_button_pressed)
 
+	outgauge = OutGauge.new()
 	add_child(outgauge)
 	outgauge.initialize()
+	outsim = OutSim.new()
 	add_child(outsim)
 	outsim.initialize(0x1ff)
 	_discard = outgauge.packet_received.connect(update_outgauge)
 	_discard = outsim.packet_received.connect(update_outsim)
 	initialize_timers()
 
+	insim = InSim.new()
 	add_child(insim)
 
 
@@ -41,7 +44,9 @@ func _exit_tree() -> void:
 
 
 func initialize_timers() -> void:
+	car_lights_timer = Timer.new()
 	add_child(car_lights_timer)
+	car_switches_timer = Timer.new()
 	add_child(car_switches_timer)
 	var _connect := car_lights_timer.timeout.connect(send_random_lights)
 	_connect = car_switches_timer.timeout.connect(send_random_switches)

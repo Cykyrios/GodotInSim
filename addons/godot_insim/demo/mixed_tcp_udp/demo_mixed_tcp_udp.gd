@@ -1,6 +1,6 @@
 extends Control
 
-var insim := InSim.new()
+var insim: InSim = null
 
 var tcp_packets: Array[String] = []
 
@@ -9,6 +9,7 @@ var tcp_packets: Array[String] = []
 
 
 func _ready() -> void:
+	insim = InSim.new()
 	add_child(insim)
 	var _connect := insim.packet_received.connect(_on_packet_received)
 	_connect = insim.udp_mci_received.connect(_on_udp_mci_received)

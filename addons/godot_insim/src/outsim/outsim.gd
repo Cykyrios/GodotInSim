@@ -26,7 +26,7 @@ enum OutSimOpts {
 
 var outsim_options := 0  ## The current value for InSim options
 
-var _lfs_connection := LFSConnectionUDP.new()
+var _lfs_connection: LFSConnectionUDP = null
 
 
 ## Creates and returns an [OutSimPacket] from the given [param packet_buffer]. This method is
@@ -38,6 +38,7 @@ static func create_packet_from_buffer(options: int, packet_buffer: PackedByteArr
 
 
 func _ready() -> void:
+	_lfs_connection = LFSConnectionUDP.new()
 	add_child(_lfs_connection)
 	var _discard := _lfs_connection.packet_received.connect(_on_packet_received)
 
