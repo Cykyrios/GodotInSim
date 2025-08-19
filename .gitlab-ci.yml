@@ -44,8 +44,9 @@ export-demos:
   before_script:
     - apt-get update && apt-get install -y curl zip
   script:
+    - rm -rf addons/gdUnit4
     - godot --headless -v --import
-    - sh ./export_demos.sh
+    - bash ./bin/export_demos.sh
     - |
       cd build
       for demo in */; do
