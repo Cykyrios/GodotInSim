@@ -26,7 +26,6 @@ for platform in "${platforms[@]}"; do
 done
 
 demos=(
-	"InSimRelay"
 	"Layout Viewer"
 	"Packet Logger"
 	"PTH Viewer"
