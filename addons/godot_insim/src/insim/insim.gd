@@ -986,21 +986,21 @@ func _ready() -> void:
 	timeout_timer.one_shot = true
 	_discard = timeout_timer.timeout.connect(_handle_timeout)
 
-	_discard = isp_bfn_received.connect(_on_bfn_packet_received)
-	_discard = isp_cnl_received.connect(_on_cnl_packet_received)
-	_discard = isp_cpr_received.connect(_on_cpr_packet_received)
-	_discard = isp_ism_received.connect(_on_ism_packet_received)
-	_discard = isp_ncn_received.connect(_on_ncn_packet_received)
-	_discard = isp_npl_received.connect(_on_npl_packet_received)
-	_discard = isp_pfl_received.connect(_on_pfl_packet_received)
-	_discard = isp_pll_received.connect(_on_pll_packet_received)
+	_discard = isp_bfn_received.connect(_on_isp_bfn_received)
+	_discard = isp_cnl_received.connect(_on_isp_cnl_received)
+	_discard = isp_cpr_received.connect(_on_isp_cpr_received)
+	_discard = isp_ism_received.connect(_on_isp_ism_received)
+	_discard = isp_ncn_received.connect(_on_isp_ncn_received)
+	_discard = isp_npl_received.connect(_on_isp_npl_received)
+	_discard = isp_pfl_received.connect(_on_isp_pfl_received)
+	_discard = isp_pll_received.connect(_on_isp_pll_received)
+	_discard = isp_sta_received.connect(_on_isp_sta_received)
+	_discard = isp_toc_received.connect(_on_isp_toc_received)
 	_discard = isp_small_received.connect(_on_small_packet_received)
-	_discard = isp_sta_received.connect(_on_sta_packet_received)
 	_discard = isp_tiny_received.connect(_on_tiny_packet_received)
-	_discard = isp_toc_received.connect(_on_toc_packet_received)
-	_discard = isp_ver_received.connect(_read_version_packet)
 	_discard = tiny_clr_received.connect(_on_tiny_clr_received)
 	_discard = tiny_mpe_received.connect(_on_tiny_mpe_received)
+	_discard = isp_ver_received.connect(_read_version_packet)
 
 
 ## Awaits and returns a packet of the given [param type]. The returned packet must have the
@@ -1704,7 +1704,7 @@ func _on_udp_packet_received(packet_buffer: PackedByteArray) -> void:
 
 
 #region InSim event management: connections, players, state, buttons
-func _on_bfn_packet_received(packet: InSimBFNPacket) -> void:
+func _on_isp_bfn_received(packet: InSimBFNPacket) -> void:
 	var ucid := packet.ucid
 	match packet.subtype:
 		InSim.ButtonFunction.BFN_USER_CLEAR:
@@ -1715,17 +1715,17 @@ func _on_bfn_packet_received(packet: InSimBFNPacket) -> void:
 			connection_requested_buttons.emit(ucid)
 
 
-func _on_cnl_packet_received(packet: InSimCNLPacket) -> void:
+func _on_isp_cnl_received(packet: InSimCNLPacket) -> void:
 	var _discard := connections.erase(packet.ucid)
 	button_manager.forget_buttons_for_ucid(packet.ucid)
 	lfs_state.num_connections = packet.total
 
 
-func _on_cpr_packet_received(packet: InSimCPRPacket) -> void:
+func _on_isp_cpr_received(packet: InSimCPRPacket) -> void:
 	connections[packet.ucid].nickname = packet.player_name
 
 
-func _on_ism_packet_received(packet: InSimISMPacket) -> void:
+func _on_isp_ism_received(packet: InSimISMPacket) -> void:
 	if packet.req_i == 0:
 		connections.clear()
 		players.clear()
@@ -1733,7 +1733,7 @@ func _on_ism_packet_received(packet: InSimISMPacket) -> void:
 	send_packet(InSimTinyPacket.create(GIS_REQI, InSim.Tiny.TINY_NPL))
 
 
-func _on_ncn_packet_received(packet: InSimNCNPacket) -> void:
+func _on_isp_ncn_received(packet: InSimNCNPacket) -> void:
 	if packet.req_i not in [0, GIS_REQI]:
 		return
 	var ucid := packet.ucid
@@ -1744,13 +1744,13 @@ func _on_ncn_packet_received(packet: InSimNCNPacket) -> void:
 		restore_global_buttons(ucid)
 
 
-func _on_npl_packet_received(packet: InSimNPLPacket) -> void:
+func _on_isp_npl_received(packet: InSimNPLPacket) -> void:
 	players[packet.plid] = Player.create_from_npl_packet(packet)
 	if packet.num_players > 0:
 		lfs_state.num_players = packet.num_players
 
 
-func _on_pfl_packet_received(packet: InSimPFLPacket) -> void:
+func _on_isp_pfl_received(packet: InSimPFLPacket) -> void:
 	var plid := packet.plid
 	if not players.has(plid):
 		push_error("%s: No player found with PLID %d" % [Packet.keys()[packet.type], plid])
@@ -1759,16 +1759,16 @@ func _on_pfl_packet_received(packet: InSimPFLPacket) -> void:
 	player.flags = packet.flags
 
 
-func _on_pll_packet_received(packet: InSimPLLPacket) -> void:
+func _on_isp_pll_received(packet: InSimPLLPacket) -> void:
 	var _discard := players.erase(packet.plid)
 	lfs_state.num_players -= 1
 
 
-func _on_sta_packet_received(packet: InSimSTAPacket) -> void:
+func _on_isp_sta_received(packet: InSimSTAPacket) -> void:
 	lfs_state.set_from_sta_packet(packet)
 
 
-func _on_toc_packet_received(packet: InSimTOCPacket) -> void:
+func _on_isp_toc_received(packet: InSimTOCPacket) -> void:
 	var plid := packet.plid
 	if not players.has(plid):
 		push_error("%s: No player found with PLID %d" % [Packet.keys()[packet.type], plid])
