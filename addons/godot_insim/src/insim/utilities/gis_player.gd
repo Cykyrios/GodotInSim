@@ -1,4 +1,4 @@
-class_name Player
+class_name GISPlayer
 extends RefCounted
 ## InSim driving player
 ##
@@ -29,9 +29,9 @@ var setup_flags := 0  ## Setup flags, see [enum InSim.Setup].
 var config := 0  ## Vehicle configuration
 
 
-## Creates and returns a new [Player] object from the given [param packet].
-static func create_from_npl_packet(packet: InSimNPLPacket) -> Player:
-	var new_player := Player.new()
+## Creates and returns a new [GISPlayer] object from the given [param packet].
+static func create_from_npl_packet(packet: InSimNPLPacket) -> GISPlayer:
+	var new_player := GISPlayer.new()
 	new_player.plid = packet.plid
 	new_player.ucid = packet.ucid
 	new_player.player_type = packet.player_type

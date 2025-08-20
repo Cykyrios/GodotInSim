@@ -10,22 +10,22 @@ as well as get the game's current state.
 
 Godot InSim uses the same terminology as the official InSim documentation. The main concept to grasp
 about players is the distinction between *connected* players and *driving* players. They are defined as follows:
-- A :class_ref[Connection] represents a player connected to the server. Each Connection is attributed a **UCID**,
+- A :class_ref[GISConnection] represents a player connected to the server. Each connection is attributed a **UCID**,
 	or Unique Connection ID. This UCID is assigned when the player joins, and will uniquely identify them until
 	they leave the server; at that point, another player joining the server may use the same UCID.
-- A :class_ref[Player] represents a player who is currently driving. Each Player is attributed a **PLID**,
+- A :class_ref[GISPlayer] represents a player who is currently driving. Each player is attributed a **PLID**,
 	or PLayer ID. Like UCIDs, the PLID uniquely identifies the current driver, who will also have a reference
-	to their corresponding Connection through their UCID.
+	to their corresponding connection through their UCID.
 
-Note that LFS itself does not have a concept of Connection or Player; instead, it only uses UCIDs and PLIDs,
+Note that LFS itself does not have a concept of connection or player; instead, it only uses UCIDs and PLIDs,
 and expects InSim developers to maintain lists of those values for identification (this is what Godot InSim
-handles for you through the :class_ref[Connection] and :class_ref[Player] objects).
+handles for you through the :class_ref[GISConnection] and :class_ref[GISPlayer] objects).
 
 ## Connections
 
 You can get the list of current connections through the
 :class_ref[InSim.connections]{target="InSim#property_connections"} property, which is a :godot[Dictionary] mapping
-UCIDs to :class_ref[Connection] objects. Using those, you can get the names (username and nickname) of all players
+UCIDs to :class_ref[GISConnection] objects. Using those, you can get the names (username and nickname) of all players
 currently connected to the server, check whether they are admins, and get their current flags.
 
 The most useful things to retrieve are probably the username or nickname (using the UCID that you can read from
@@ -42,9 +42,9 @@ your app. You can do this in a few different ways:
 ```gdscript
 player_name = insim.connections[ucid].nickname if ucid in insim.connections else "UCID not found"
 player_name = insim.connections[ucid].nickname if insim.connections.has(ucid) else "UCID not found"
-player_name = insim.connections.get(ucid, Connection.new()).nickname  # empty string if missing UCID
+player_name = insim.connections.get(ucid, GISConnection.new()).nickname  # empty string if missing UCID
 
-# You can also check the Connection object exists before trying to access its properties
+# You can also check the GISConnection object exists before trying to access its properties
 var connection := insim.connections.get(ucid, null)
 var player_name := connection.nickname if connection else "UCID %d not found" % [ucid]
 ```
@@ -74,8 +74,8 @@ message typed by someone else.
 
 Similarly to connections, you can get the list of currently driving players through the
 :class_ref[InSim.players]{target="InSim#property_players"} property, which is a :godot[Dictionary] mapping PLIDs
-to :class_ref[Player] objects. Using those, you can get a player's UCID, their name, the vehicle they are driving,
-or any property available in the :class_ref[Player] class. This class also provides a few utility functions to
+to :class_ref[GISPlayer] objects. Using those, you can get a player's UCID, their name, the vehicle they are driving,
+or any property available in the :class_ref[GISPlayer] class. This class also provides a few utility functions to
 parse the player flags, and check whether they are human or AI, local or remote, male or female (based on their
 in-game character model).
 

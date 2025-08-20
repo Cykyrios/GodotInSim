@@ -540,10 +540,7 @@ static func replace_ucid_with_name(
 	for i in results.size():
 		var result := results[results.size() - 1 - i]
 		var ucid := result.strings[1] as int
-		var connection: Connection = (
-			insim.connections[ucid] if insim.connections.has(ucid)
-			else null
-		)
+		var connection := insim.connections.get(ucid) as GISConnection
 		if not connection and ucid != InSim.UCID_ALL:
 			push_error("Failed to convert UCID %d, list is %s" % [ucid, insim.connections.keys()])
 		var nickname := (

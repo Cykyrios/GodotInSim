@@ -957,10 +957,10 @@ var timeout_timer: Timer = null
 ## Current state of the game, as per IS_STA documentation. Updated automatically upon
 ## receiving an [InSimSTAPacket]. Does not include packet header.
 var lfs_state := LFSState.new()
-## Dictionary of UCID/[Connection] pairs, updated automatically.
-var connections: Dictionary[int, Connection] = {}
-## Dictionary of PLID/[Player] pairs, updated automatically.
-var players: Dictionary[int, Player] = {}
+## Dictionary of UCID/[GISConnection] pairs, updated automatically.
+var connections: Dictionary[int, GISConnection] = {}
+## Dictionary of PLID/[GISPlayer] pairs, updated automatically.
+var players: Dictionary[int, GISPlayer] = {}
 ## Manager object for all known/registered [InSimButton] objects.
 var button_manager: InSimButtonManager = null
 
@@ -1722,10 +1722,10 @@ func _on_isp_cnl_received(packet: InSimCNLPacket) -> void:
 
 
 func _on_isp_cpr_received(packet: InSimCPRPacket) -> void:
-	var connection := connections.get(packet.ucid, null) as Connection
+	var connection := connections.get(packet.ucid, null) as GISConnection
 	if connection:
 		connection.nickname = packet.player_name
-	for player: Player in players.values():
+	for player: GISPlayer in players.values():
 		if player.ucid == packet.ucid:
 			player.player_name = packet.player_name
 			player.plate = packet.plate
@@ -1743,7 +1743,7 @@ func _on_isp_ncn_received(packet: InSimNCNPacket) -> void:
 	if packet.req_i not in [0, GIS_REQI]:
 		return
 	var ucid := packet.ucid
-	connections[ucid] = Connection.create_from_ncn_packet(packet)
+	connections[ucid] = GISConnection.create_from_ncn_packet(packet)
 	lfs_state.num_connections = packet.total
 	if packet.req_i == 0:
 		button_manager._add_global_button_mapping(ucid)
@@ -1751,7 +1751,7 @@ func _on_isp_ncn_received(packet: InSimNCNPacket) -> void:
 
 
 func _on_isp_npl_received(packet: InSimNPLPacket) -> void:
-	players[packet.plid] = Player.create_from_npl_packet(packet)
+	players[packet.plid] = GISPlayer.create_from_npl_packet(packet)
 	if packet.num_players > 0:
 		lfs_state.num_players = packet.num_players
 

@@ -317,10 +317,10 @@ func test_get_mso_message(message: String, expected: String, test_parameters := 
 	var insim := auto_free(InSim.new()) as InSim
 	insim.initialization_data.flags |= InSim.InitFlag.ISF_MSO_COLS
 	# We need some Connections to test this
-	var connection := Connection.new()
+	var connection := GISConnection.new()
 	connection.nickname = "Player"
 	insim.connections[1] = connection
-	connection = Connection.new()
+	connection = GISConnection.new()
 	connection.nickname = "^7Cyk"
 	insim.connections[2] = connection
 	var packet := InSimMSOPacket.new()
@@ -340,11 +340,11 @@ func test_get_mso_sender(message: String, expected: String, test_parameters := [
 ]) -> void:
 	var insim := auto_free(InSim.new()) as InSim
 	insim.initialization_data.flags |= InSim.InitFlag.ISF_MSO_COLS
-	# We need a Connection to test this
-	var connection := Connection.new()
+	# We need a GISConnection to test this
+	var connection := GISConnection.new()
 	connection.nickname = "Player"
 	insim.connections[1] = connection
-	connection = Connection.new()
+	connection = GISConnection.new()
 	connection.nickname = "^7Cyk"
 	insim.connections[2] = connection
 	var packet := InSimMSOPacket.new()
@@ -362,10 +362,10 @@ func test_get_mso_start(player_name: String, message: String, test_parameters :=
 	const UCID := 1
 	const PLID := 2
 	var insim := auto_free(InSim.new()) as InSim
-	var connection := Connection.new()
+	var connection := GISConnection.new()
 	connection.nickname = player_name
 	insim.connections = {UCID: connection}
-	var player := Player.new()
+	var player := GISPlayer.new()
 	player.player_name = player_name
 	player.ucid = UCID
 	insim.players = {PLID: player}
@@ -473,11 +473,11 @@ func test_code_page_reset() -> void:
 
 func test_replace_plid_with_name() -> void:
 	var insim := auto_free(InSim.new()) as InSim
-	var player_1 := Player.new()
+	var player_1 := GISPlayer.new()
 	player_1.player_name = "Player ^71"
-	var player_2 := Player.new()
+	var player_2 := GISPlayer.new()
 	player_2.player_name = "Second ^^Player^^"
-	var player_9 := Player.new()
+	var player_9 := GISPlayer.new()
 	player_9.player_name = "Skipped ^1PLIDs"
 	insim.players = {
 		1: player_1,
@@ -491,13 +491,13 @@ func test_replace_plid_with_name() -> void:
 
 func test_replace_ucid_with_name() -> void:
 	var insim := auto_free(InSim.new()) as InSim
-	var connection_1 := Connection.new()
+	var connection_1 := GISConnection.new()
 	connection_1.nickname = "Player ^71"
 	connection_1.username = "SuperPlayer"
-	var connection_2 := Connection.new()
+	var connection_2 := GISConnection.new()
 	connection_2.nickname = "Second ^^Player^^"
 	connection_2.username = "TestPlayer"
-	var connection_9 := Connection.new()
+	var connection_9 := GISConnection.new()
 	connection_9.nickname = "Skipped ^1PLIDs"
 	connection_9.username = "AnotherPlayer"
 	insim.connections = {

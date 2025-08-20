@@ -2,7 +2,7 @@ class_name InSimTOCPacket
 extends InSimPacket
 ## Take Over Car packet
 ##
-## This packet is received when a new [Connection] takes over a car.
+## This packet is received when a new [GISConnection] takes over a car.
 
 const PACKET_SIZE := 8  ## Packet size
 const PACKET_TYPE := InSim.Packet.ISP_TOC  ## The packet's type, see [enum InSim.Packet].

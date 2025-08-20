@@ -2,8 +2,8 @@ class_name InSimMTCPacket
 extends InSimPacket
 ## Msg To Connection packet - hosts only - send to a connection / a player / all
 ##
-## This packet is sent by the host to display a message to a specific [Connection] or [Player],
-## or to everyone.
+## This packet is sent by the host to display a message to a specific [GISConnection]
+## or [GISPlayer], or to everyone.
 
 const PACKET_MIN_SIZE := 12  ## Minimum packet size
 const PACKET_MAX_SIZE := 136  ## Maximum packet size

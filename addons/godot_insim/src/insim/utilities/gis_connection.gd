@@ -1,4 +1,4 @@
-class_name Connection
+class_name GISConnection
 extends RefCounted
 ## InSim player connection
 ##
@@ -16,9 +16,9 @@ var admin := false  ## Whether the player is an admin.
 var flags := 0  ## Connection flags, see [enum Flags].
 
 
-## Creates and returns a new [Connection] object from the given [param packet].
-static func create_from_ncn_packet(packet: InSimNCNPacket) -> Connection:
-	var new_connection := Connection.new()
+## Creates and returns a new [GISConnection] object from the given [param packet].
+static func create_from_ncn_packet(packet: InSimNCNPacket) -> GISConnection:
+	var new_connection := GISConnection.new()
 	new_connection.ucid = packet.ucid
 	new_connection.username = packet.user_name
 	new_connection.nickname = packet.player_name
@@ -29,7 +29,7 @@ static func create_from_ncn_packet(packet: InSimNCNPacket) -> Connection:
 
 ## Returns [code]true[/code] if the given [param connection_flags] represent a local connection.
 static func is_connection_local(connection_flags: int) -> bool:
-	return Connection._is_local(connection_flags)
+	return GISConnection._is_local(connection_flags)
 
 
 static func _is_local(connection_flags: int) -> bool:

@@ -75,7 +75,7 @@ when calling `InSim.initialize()`, that you can check for InSim version compatib
 Upon connection, `GodotInSim` will automatically send `TINY_NCN`, `TINY_NPL`, and `TINY_SST` packets
 in order to receive an initial game state and a list of connections/players. Those can be accessed
 via the `lfs_state` variable as well as the `connections` and `players` dictionaries, where the keys
-correspond to the UCID/PLID of a each player, and the values are `Connection` and `Player` objects
+correspond to the UCID/PLID of a each player, and the values are `GISConnection` and `GISPlayer` objects
 containing info obtained in the `IS_NCN` and `IS_NPL` packets.
 
 All other packets are left to the user to handle.

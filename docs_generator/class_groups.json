@@ -18,8 +18,8 @@
         "Utilities": {
           "label": "Utilities",
           "items": [
-            "Connection",
-            "Player",
+            "GISConnection",
+            "GISPlayer",
             "LFSState"
           ]
         }
