@@ -10,6 +10,7 @@ enum PlayerType {
 	REMOTE = 4,
 }
 
+var plid := 0  ## PLID assigned to this player
 var ucid := 0  ## UCID associated to this player
 var player_type := 0  ## Player type (female, AI and remote flags)
 var flags := 0  ## Player flags, see [enum InSim.PlayerFlag].
@@ -31,6 +32,7 @@ var config := 0  ## Vehicle configuration
 ## Creates and returns a new [Player] object from the given [param packet].
 static func create_from_npl_packet(packet: InSimNPLPacket) -> Player:
 	var new_player := Player.new()
+	new_player.plid = packet.plid
 	new_player.ucid = packet.ucid
 	new_player.player_type = packet.player_type
 	new_player.flags = packet.flags
