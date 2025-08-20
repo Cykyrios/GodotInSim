@@ -1722,7 +1722,13 @@ func _on_isp_cnl_received(packet: InSimCNLPacket) -> void:
 
 
 func _on_isp_cpr_received(packet: InSimCPRPacket) -> void:
-	connections[packet.ucid].nickname = packet.player_name
+	var connection := connections.get(packet.ucid, null) as Connection
+	if connection:
+		connection.nickname = packet.player_name
+	for player: Player in players.values():
+		if player.ucid == packet.ucid:
+			player.player_name = packet.player_name
+			player.plate = packet.plate
 
 
 func _on_isp_ism_received(packet: InSimISMPacket) -> void:
