@@ -127,10 +127,10 @@ func add_buffer(data: PackedByteArray, at_position := -1) -> void:
 func add_byte(data: int, at_position := -1) -> void:
 	if data > 0xFF:
 		push_error("Data too large for unsigned byte, max 255, got %d." % [data])
-		return
+		data = 0
 	if data < 0:
 		push_error("Data cannot be negative, got %d." % [data])
-		return
+		data = 0
 	if at_position != -1:
 		data_offset = at_position
 	buffer.encode_u8(data_offset, data)
@@ -159,10 +159,10 @@ func add_int(data: int, at_position := -1) -> void:
 	var max_value := 0x7FFF_FFFF
 	if data > max_value:
 		push_error("Data too large for signed integer, max %d, got %d." % [max_value, data])
-		return
+		data = 0
 	if data < min_value:
 		push_error("Data too small for signed integer, min %d, got %d." % [min_value, data])
-		return
+		data = 0
 	if at_position != -1:
 		data_offset = at_position
 	buffer.encode_s32(data_offset, data)
@@ -176,10 +176,10 @@ func add_short(data: int, at_position := -1) -> void:
 	var max_value := 0x7FFF
 	if data > max_value:
 		push_error("Data too large for short integer, max %d, got %d." % [max_value, data])
-		return
+		data = 0
 	if data < min_value:
 		push_error("Data too small for short integer, min %d, got %d." % [min_value, data])
-		return
+		data = 0
 	if at_position != -1:
 		data_offset = at_position
 	buffer.encode_s16(data_offset, data)
@@ -252,10 +252,10 @@ func add_unsigned(data: int, at_position := -1) -> void:
 	var max_value := 0xFFFF_FFFF
 	if data > max_value:
 		push_error("Data too large for unsigned integer, max %d, got %d." % [max_value, data])
-		return
+		data = 0
 	if data < min_value:
 		push_error("Data cannot be negative, got %d." % [data])
-		return
+		data = 0
 	if at_position != -1:
 		data_offset = at_position
 	buffer.encode_u32(data_offset, data)
@@ -269,10 +269,10 @@ func add_word(data: int, at_position := -1) -> void:
 	var max_value := 0xFFFF
 	if data > max_value:
 		push_error("Data too large for unsigned word, max %d, got %d." % [max_value, data])
-		return
+		data = 0
 	if data < min_value:
 		push_error("Data cannot be negative, got %d." % [data])
-		return
+		data = 0
 	if at_position != -1:
 		data_offset = at_position
 	buffer.encode_u16(data_offset, data)
