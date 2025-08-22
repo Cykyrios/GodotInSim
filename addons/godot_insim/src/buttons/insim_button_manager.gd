@@ -412,10 +412,18 @@ func set_global_multi_button(button: InSimMultiButton, global: bool) -> void:
 ## [param type_in], and returns an [InSimBTNPacket] to be sent. A value of [code]-1[/code]
 ## for [param type_in] will leave it unchanged. To avoid changing the [param caption],
 ## this function should pass [code]button.caption[/code] to [param caption].
+## Returns the [InSimBTNPacket] corresponding to the updated button; if the button
+## hasn't changed, [code]null[/code] is returned instead.
 func update_solo_button(
 	button: InSimSoloButton, text: String, caption := "", type_in := -1
 ) -> InSimBTNPacket:
 	if button.ucid in disabled_ucids:
+		return null
+	if (
+		text != button.text
+		or caption != button.caption
+		or type_in > -1 and type_in != button.type_in
+	):
 		return null
 	button.text = text
 	button.caption = caption

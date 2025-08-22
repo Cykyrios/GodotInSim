@@ -1407,15 +1407,18 @@ func update_multi_button(
 		send_packet(packet, sender)
 
 
-## Updates the contents of the [param button] using the given [param text] and
-## [param caption].
+## Updates the contents of the [param button] using the given [param text],
+## [param caption], and optional [param type_in]. An [InSimBTNPacket] corresponding to
+## the updated button is sent automatically, unless the button was not modified.
 func update_solo_button(
-	button: InSimSoloButton, text: String, caption := "", sender := "InSim"
+	button: InSimSoloButton, text: String, caption := "", type_in := -1, sender := "InSim"
 ) -> void:
 	if not button:
 		push_error("Cannot update button text, button is null.")
 		return
-	send_packet(button_manager.update_solo_button(button, text, caption), sender)
+	var packet := button_manager.update_solo_button(button, text, caption, type_in)
+	if packet:
+		send_packet(packet, sender)
 #endregion
 
 
