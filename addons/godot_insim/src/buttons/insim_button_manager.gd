@@ -438,9 +438,9 @@ func update_solo_button(
 	button: InSimSoloButton, text: String, caption := "", type_in := -1
 ) -> InSimBTNPacket:
 	if (
-		text != button.text
-		or caption != button.caption
-		or type_in > -1 and type_in != button.type_in
+		text == button.text
+		and caption == button.caption
+		and (type_in == -1 or type_in == button.type_in)
 	):
 		return null
 	button.text = text
