@@ -408,6 +408,26 @@ func set_global_multi_button(button: InSimMultiButton, global: bool) -> void:
 		_global_buttons.erase(button)
 
 
+## Updates the [param text] of the given [param button], its [param caption], and optionally
+## its [param type_in] (see [method update_solo_button] for more details), and returns
+## an array of [InSimBTNPacket]s to be sent by [InSim]. As for [method add_multi_button],
+## you can pass a [Callable] to [param text], [param caption], and [param type_in] for
+## values tailored to each UCID.[br]
+## [b]Note:[/b] The returned array only contains packets corresponding to buttons that
+## were actually updated, to avoid sending unnecessary packets.
+func update_multi_button(
+	button: InSimMultiButton, text: Variant, caption: Variant = "", type_in: Variant = -1
+) -> Array[InSimBTNPacket]:
+	var packets: Array[InSimBTNPacket]
+	for ucid in button.ucid_mappings:
+		_apply_multi_button_input(
+			button, ucid, button.ucid_mappings[ucid].click_id, text, caption, type_in
+		)
+		if button.get_ucid_mapping(ucid).dirty_flag and ucid not in disabled_ucids:
+			packets.append(button.get_btn_packet(ucid, true))
+	return packets
+
+
 ## Updates the given [param button]'s [param text] and [param caption], and optionally its
 ## [param type_in], and returns an [InSimBTNPacket] to be sent. A value of [code]-1[/code]
 ## for [param type_in] will leave it unchanged. To avoid changing the [param caption],
@@ -430,26 +450,6 @@ func update_solo_button(
 	if button.ucid in disabled_ucids:
 		return null
 	return button.get_btn_packet(true)
-
-
-## Updates the [param text] of the given [param button], its [param caption], and optionally
-## its [param type_in] (see [method update_solo_button] for more details), and returns
-## an array of [InSimBTNPacket]s to be sent by [InSim]. As for [method add_multi_button],
-## you can pass a [Callable] to [param text], [param caption], and [param type_in] for
-## values tailored to each UCID.[br]
-## [b]Note:[/b] The returned array only contains packets corresponding to buttons that
-## were actually updated, to avoid sending unnecessary packets.
-func update_multi_button(
-	button: InSimMultiButton, text: Variant, caption: Variant = "", type_in: Variant = -1
-) -> Array[InSimBTNPacket]:
-	var packets: Array[InSimBTNPacket]
-	for ucid in button.ucid_mappings:
-		_apply_multi_button_input(
-			button, ucid, button.ucid_mappings[ucid].click_id, text, caption, type_in
-		)
-		if button.get_ucid_mapping(ucid).dirty_flag and ucid not in disabled_ucids:
-			packets.append(button.get_btn_packet(ucid, true))
-	return packets
 
 
 # Intended for use by [InSim] only, when a new player joins the server.
