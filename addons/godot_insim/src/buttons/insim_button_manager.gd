@@ -417,8 +417,6 @@ func set_global_multi_button(button: InSimMultiButton, global: bool) -> void:
 func update_solo_button(
 	button: InSimSoloButton, text: String, caption := "", type_in := -1
 ) -> InSimBTNPacket:
-	if button.ucid in disabled_ucids:
-		return null
 	if (
 		text != button.text
 		or caption != button.caption
@@ -429,6 +427,8 @@ func update_solo_button(
 	button.caption = caption
 	if type_in > -1:
 		button.type_in = type_in
+	if button.ucid in disabled_ucids:
+		return null
 	return button.get_btn_packet(true)
 
 
@@ -447,7 +447,7 @@ func update_multi_button(
 		_apply_multi_button_input(
 			button, ucid, button.ucid_mappings[ucid].click_id, text, caption, type_in
 		)
-		if button.get_ucid_mapping(ucid).dirty_flag:
+		if button.get_ucid_mapping(ucid).dirty_flag and ucid not in disabled_ucids:
 			packets.append(button.get_btn_packet(ucid, true))
 	return packets
 
