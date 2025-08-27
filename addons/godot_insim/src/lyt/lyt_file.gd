@@ -17,80 +17,6 @@ var flags := 0  ## Layout flags, always equal to 7 for recent files.
 var objects: Array[LYTObject] = []  ## An array containing the objects in the layout.
 
 
-## Converts the given [param object_info] object from [ObjectInfo] to [LYTObject]
-static func convert_object_info_to_layout_object(object_info: ObjectInfo) -> LYTObject:
-	return create_object_from_buffer(object_info.get_buffer())
-
-
-## Creates and returns a [LYTObject] from the given [param object_buffer].
-static func create_object_from_buffer(object_buffer: PackedByteArray) -> LYTObject:
-	if object_buffer.size() != LYTObject.STRUCT_SIZE:
-		push_error("Wrong buffer size, expected %d, got %d" % [
-			LYTObject.STRUCT_SIZE,
-			object_buffer.size(),
-		])
-		return LYTObject.new()
-	var object: LYTObject = LYTObject.create_from_buffer(object_buffer)
-	if object.index == InSim.AXOIndex.AXO_NULL:
-		var control_object := LYTObjectControl.create(
-			object.x, object.y, object.z, object.heading, object.flags, object.index
-		)
-		object = control_object
-	elif (
-		object.index >= InSim.AXOIndex.AXO_CHALK_LINE
-		and object.index <= InSim.AXOIndex.AXO_CHALK_RIGHT3
-	):
-		var chalk_object := LYTObjectChalk.create(
-			object.x, object.y, object.z, object.heading, object.flags, object.index
-		)
-		object = chalk_object
-	elif (
-		object.index >= InSim.AXOIndex.AXO_TYRE_SINGLE
-		and object.index <= InSim.AXOIndex.AXO_TYRE_STACK4_BIG
-	):
-		var tyre_object := LYTObjectTyre.create(
-			object.x, object.y, object.z, object.heading, object.flags, object.index
-		)
-		object = tyre_object
-	elif (
-		object.index >= InSim.AXOIndex.AXO_CONCRETE_SLAB
-		and object.index <= InSim.AXOIndex.AXO_CONCRETE_WEDGE
-	):
-		var concrete_object := LYTObjectConcrete.create(
-			object.x, object.y, object.z, object.heading, object.flags, object.index
-		)
-		object = concrete_object
-	elif (
-		object.index >= InSim.AXOIndex.AXO_START_POSITION
-		and object.index <= InSim.AXOIndex.AXO_PIT_START_POINT
-	):
-		var start_object := LYTObjectStart.create(
-			object.x, object.y, object.z, object.heading, object.flags, object.index
-		)
-		object = start_object
-	elif object.index == InSim.AXOIndex.AXO_IS_CP:
-		var checkpoint_object := LYTObjectCheckpoint.create(
-			object.x, object.y, object.z, object.heading, object.flags, object.index
-		)
-		object = checkpoint_object
-	elif object.index == InSim.AXOIndex.AXO_IS_AREA:
-		var circle_object := LYTObjectCircle.create(
-			object.x, object.y, object.z, object.heading, object.flags, object.index
-		)
-		object = circle_object
-	elif object.index == InSim.AXOIndex.AXO_MARSHAL:
-		var marshal_object := LYTObjectMarshal.create(
-			object.x, object.y, object.z, object.heading, object.flags, object.index
-		)
-		object = marshal_object
-	elif object.index == InSim.AXOIndex.AXO_ROUTE:
-		var route_object := LYTObjectRoute.create(
-			object.x, object.y, object.z, object.heading, object.flags, object.index
-		)
-		object = route_object
-	return object
-
-
 ## Reads the layout file at [param path] and returns a [LYTFile] object. Objects in the layout
 ## are made into specific [LYTObject] subtypes if their index matches specific object types.
 static func load_from_file(path: String) -> LYTFile:
@@ -122,7 +48,7 @@ static func load_from_file(path: String) -> LYTFile:
 		return layout
 	for i in layout.num_objects:
 		layout.objects.append(
-			create_object_from_buffer(layout.read_buffer(LYTObject.STRUCT_SIZE))
+			LYTObject.create_from_buffer(layout.read_buffer(LYTObject.STRUCT_SIZE))
 		)
 	return layout
 

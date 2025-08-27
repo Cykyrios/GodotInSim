@@ -42,14 +42,74 @@ static func create(
 	return object
 
 
-## Returns a [LYTObject] from the provided [param buffer]. Returns a blank object if [param buffer]
-## is the wrong size.
+## Creates and returns a [LYTObject] from the given [param object_buffer].
+## Returns a default, empty object if the [param object_buffer] is not valid.
 static func create_from_buffer(buffer: PackedByteArray) -> LYTObject:
-	if buffer.size() != STRUCT_SIZE:
-		push_warning("Buffer size does not match LYTObject struct size.")
+	if buffer.size() != LYTObject.STRUCT_SIZE:
+		push_error("Wrong buffer size, expected %d, got %d" % [
+			LYTObject.STRUCT_SIZE,
+			buffer.size(),
+		])
 		return LYTObject.new()
 	var object := LYTObject.new()
 	object.set_from_buffer(buffer)
+	if object.index == InSim.AXOIndex.AXO_NULL:
+		var control_object := LYTObjectControl.create(
+			object.x, object.y, object.z, object.heading, object.flags, object.index
+		)
+		return control_object
+	if (
+		object.index >= InSim.AXOIndex.AXO_CHALK_LINE
+		and object.index <= InSim.AXOIndex.AXO_CHALK_RIGHT3
+	):
+		var chalk_object := LYTObjectChalk.create(
+			object.x, object.y, object.z, object.heading, object.flags, object.index
+		)
+		return chalk_object
+	if (
+		object.index >= InSim.AXOIndex.AXO_TYRE_SINGLE
+		and object.index <= InSim.AXOIndex.AXO_TYRE_STACK4_BIG
+	):
+		var tyre_object := LYTObjectTyre.create(
+			object.x, object.y, object.z, object.heading, object.flags, object.index
+		)
+		return tyre_object
+	if (
+		object.index >= InSim.AXOIndex.AXO_CONCRETE_SLAB
+		and object.index <= InSim.AXOIndex.AXO_CONCRETE_WEDGE
+	):
+		var concrete_object := LYTObjectConcrete.create(
+			object.x, object.y, object.z, object.heading, object.flags, object.index
+		)
+		return concrete_object
+	if (
+		object.index >= InSim.AXOIndex.AXO_START_POSITION
+		and object.index <= InSim.AXOIndex.AXO_PIT_START_POINT
+	):
+		var start_object := LYTObjectStart.create(
+			object.x, object.y, object.z, object.heading, object.flags, object.index
+		)
+		return start_object
+	if object.index == InSim.AXOIndex.AXO_IS_CP:
+		var checkpoint_object := LYTObjectCheckpoint.create(
+			object.x, object.y, object.z, object.heading, object.flags, object.index
+		)
+		return checkpoint_object
+	if object.index == InSim.AXOIndex.AXO_IS_AREA:
+		var circle_object := LYTObjectCircle.create(
+			object.x, object.y, object.z, object.heading, object.flags, object.index
+		)
+		return circle_object
+	if object.index == InSim.AXOIndex.AXO_MARSHAL:
+		var marshal_object := LYTObjectMarshal.create(
+			object.x, object.y, object.z, object.heading, object.flags, object.index
+		)
+		return marshal_object
+	if object.index == InSim.AXOIndex.AXO_ROUTE:
+		var route_object := LYTObjectRoute.create(
+			object.x, object.y, object.z, object.heading, object.flags, object.index
+		)
+		return route_object
 	return object
 
 
@@ -65,6 +125,11 @@ static func create_from_gis(
 	object.index = obj_index as InSim.AXOIndex
 	object.set_from_gis_values()
 	return object
+
+
+## Converts the given [param object_info] object from [ObjectInfo] to [LYTObject]
+static func create_from_object_info(object_info: ObjectInfo) -> LYTObject:
+	return create_from_buffer(object_info.get_buffer())
 
 
 ## Override to return a [MeshInstance3D] corresponding to the object. Returns an
