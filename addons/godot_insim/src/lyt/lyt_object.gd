@@ -76,99 +76,69 @@ func _get_mesh() -> MeshInstance3D:
 		or index >= InSim.AXOIndex.AXO_CONE_PTR_RED
 		and index <= InSim.AXOIndex.AXO_CONE_PTR_YELLOW
 	):
-		return get_mesh_cone()
+		return _get_mesh_cone()
 	elif (
 		index >= InSim.AXOIndex.AXO_MARKER_CURVE_L
 		and index <= InSim.AXOIndex.AXO_MARKER_U_R
 		or index >= InSim.AXOIndex.AXO_DIST25
 		and index <= InSim.AXOIndex.AXO_DIST250
 	):
-		return get_mesh_marker()
+		return _get_mesh_marker()
 	elif (
 		index >= InSim.AXOIndex.AXO_ARMCO1
 		and index <= InSim.AXOIndex.AXO_ARMCO5
 	):
-		return get_mesh_armco()
+		return _get_mesh_armco()
 	elif (
 		index >= InSim.AXOIndex.AXO_BARRIER_LONG
 		and index <= InSim.AXOIndex.AXO_BARRIER_WHITE
 	):
-		return get_mesh_barrier()
+		return _get_mesh_barrier()
 	elif (
 		index >= InSim.AXOIndex.AXO_BANNER1
 		and index <= InSim.AXOIndex.AXO_BANNER2
 	):
-		return get_mesh_banner()
+		return _get_mesh_banner()
 	elif (
 		index >= InSim.AXOIndex.AXO_RAMP1
 		and index <= InSim.AXOIndex.AXO_RAMP2
 	):
-		return get_mesh_ramp()
+		return _get_mesh_ramp()
 	elif (
 		index >= InSim.AXOIndex.AXO_SPEED_HUMP_10M
 		and index <= InSim.AXOIndex.AXO_SPEED_HUMP_6M
 	):
-		return get_mesh_speed_hump()
+		return _get_mesh_speed_hump()
 	elif (
 		index >= InSim.AXOIndex.AXO_POST_GREEN
 		and index <= InSim.AXOIndex.AXO_POST_WHITE
 	):
-		return get_mesh_post()
+		return _get_mesh_post()
 	elif index == InSim.AXOIndex.AXO_BALE:
-		return get_mesh_bale()
+		return _get_mesh_bale()
 	elif index == InSim.AXOIndex.AXO_RAILING:
-		return get_mesh_railing()
+		return _get_mesh_railing()
 	elif index == InSim.AXOIndex.AXO_START_LIGHTS:
-		return get_mesh_start_light()
+		return _get_mesh_start_light()
 	elif (
 		index >= InSim.AXOIndex.AXO_SIGN_KEEP_LEFT
 		and index <= InSim.AXOIndex.AXO_SIGN_KEEP_RIGHT
 	):
-		return get_mesh_sign_direction()
+		return _get_mesh_sign_direction()
 	elif (
 		index >= InSim.AXOIndex.AXO_SIGN_SPEED_80
 		and index <= InSim.AXOIndex.AXO_SIGN_SPEED_50
 	):
-		return get_mesh_sign_speed()
+		return _get_mesh_sign_speed()
 	elif index == InSim.AXOIndex.AXO_START_POSITION:
-		return get_mesh_start_position()
+		return _get_mesh_start_position()
 	elif index == InSim.AXOIndex.AXO_PIT_START_POINT:
-		return get_mesh_arrow(Color.WHITE)
+		return _get_mesh_arrow(Color.WHITE)
 	elif index == InSim.AXOIndex.AXO_PIT_STOP_BOX:
-		return get_mesh_pit_box()
+		return _get_mesh_pit_box()
 
 	# If no mesh is found, create and return a generic one.
-	var color := Color.MAGENTA  # used as default color for unknown objects
-	var dimensions := Vector3(0.5, 0.5, 1)
-	var vertices := PackedVector3Array([
-		Vector3(-0.5 * dimensions.x, -0.5 * dimensions.y, 0),
-		Vector3(0.5 * dimensions.x, -0.5 * dimensions.y, 0),
-		Vector3(-0.5 * dimensions.x, 0.5 * dimensions.y, 0),
-		Vector3(0.5 * dimensions.x, 0.5 * dimensions.y, 0),
-		Vector3(-0.5 * dimensions.x, -0.5 * dimensions.y, dimensions.z),
-		Vector3(0.5 * dimensions.x, -0.5 * dimensions.y, dimensions.z),
-		Vector3(-0.5 * dimensions.x, 0.5 * dimensions.y, dimensions.z),
-		Vector3(0.5 * dimensions.x, 0.5 * dimensions.y, dimensions.z),
-	])
-	var indices := PackedInt32Array([
-		0, 1, 2, 3, 2, 1,  # Z- face
-		6, 5, 4, 5, 6, 7,  # Z+ face
-		4, 1, 0, 1, 4, 5,  # Y- face
-		2, 3, 6, 7, 6, 3,  # Y+ face
-		0, 2, 4, 6, 4, 2,  # X- face
-		5, 3, 1, 3, 5, 7,  # X+ face
-	])
-	var st := SurfaceTool.new()
-	st.begin(Mesh.PRIMITIVE_TRIANGLES)
-	for i in indices.size():
-		st.add_vertex(vertices[indices[i]])
-	var mesh := st.commit()
-	var mat := generate_default_material()
-	mat.albedo_color = color
-	mesh.surface_set_material(0, mat)
-	var mesh_instance := MeshInstance3D.new()
-	mesh_instance.mesh = mesh
-	return mesh_instance
+	return _get_mesh_generic()
 
 
 ## Override this function to update the value of [member flags] based on the object-specific
@@ -210,8 +180,50 @@ func get_mesh() -> MeshInstance3D:
 	return _get_mesh()
 
 
-## Creates and returns a mesh for Armco barriers.
-func get_mesh_armco() -> MeshInstance3D:
+## Sets the object's variables from the given [param buffer]. Also updates [code]gis_*[/code]
+## variables (see [method update_gis_values] for details).
+func set_from_buffer(buffer: PackedByteArray) -> void:
+	x = buffer.decode_s16(0)
+	y = buffer.decode_s16(2)
+	z = buffer.decode_u8(4)
+	flags = buffer.decode_u8(5)
+	index = buffer.decode_u8(6) as InSim.AXOIndex
+	heading = buffer.decode_u8(7)
+	update_gis_values()
+
+
+## Uses the [code]gis_*[/code] variables to set LFS-style variables.
+func set_from_gis_values() -> void:
+	x = roundi(gis_position.x * XY_MULTIPLIER)
+	y = roundi(gis_position.y * XY_MULTIPLIER)
+	z = roundi(gis_position.z * Z_MULTIPLIER)
+	heading = roundi((rad_to_deg(gis_heading) + 180) * HEADING_MULTIPLIER)
+
+
+## Updates [member flags] to reflect the values of the object's specific variables.
+## Define update logic in [method _update_flags].
+func update_flags() -> void:
+	_update_flags()
+
+
+## Updates LFS-style sub-variables corresponding to the object's [member flags], based on the
+## corresponding [code]gis_*[/code] values. See [method _update_flags_from_gis].
+func update_flags_from_gis() -> void:
+	_update_flags_from_gis()
+
+
+## Updates the [code]gis_*[/code] variables from LFS-style values.
+func update_gis_values() -> void:
+	gis_position = Vector3(
+		x / XY_MULTIPLIER,
+		y / XY_MULTIPLIER,
+		z / Z_MULTIPLIER
+	)
+	gis_heading = deg_to_rad(heading / HEADING_MULTIPLIER - 180)
+
+
+# Creates and returns a mesh for Armco barriers.
+func _get_mesh_armco() -> MeshInstance3D:
 	const SPAN := 3.2
 	const TIP_RADIUS := 0.15
 	const TIP_OFFSET := 0.15
@@ -339,8 +351,8 @@ func get_mesh_armco() -> MeshInstance3D:
 	return mesh_instance
 
 
-## Creates and returns a mesh for arrows.
-func get_mesh_arrow(color: Color) -> MeshInstance3D:
+# Creates and returns a mesh for arrows.
+func _get_mesh_arrow(color: Color) -> MeshInstance3D:
 	if (
 		index != InSim.AXOIndex.AXO_PIT_START_POINT
 		and (
@@ -468,8 +480,8 @@ func get_mesh_arrow(color: Color) -> MeshInstance3D:
 	return mesh_instance
 
 
-## Creates and returns a mesh for bales.
-func get_mesh_bale() -> MeshInstance3D:
+# Creates and returns a mesh for bales.
+func _get_mesh_bale() -> MeshInstance3D:
 	const WIDTH := 1.52
 	const LENGTH := 0.67
 	const HEIGHT := 0.63
@@ -506,8 +518,8 @@ func get_mesh_bale() -> MeshInstance3D:
 	return mesh_instance
 
 
-## Creates and returns a mesh for banners.
-func get_mesh_banner() -> MeshInstance3D:
+# Creates and returns a mesh for banners.
+func _get_mesh_banner() -> MeshInstance3D:
 	const WIDTH := 5.95
 	const SPREAD := 0.85
 	const HEIGHT := 1.0
@@ -558,8 +570,8 @@ func get_mesh_banner() -> MeshInstance3D:
 	return mesh_instance
 
 
-## Creates and returns a mesh for red/white/long barriers.
-func get_mesh_barrier() -> MeshInstance3D:
+# Creates and returns a mesh for red/white/long barriers.
+func _get_mesh_barrier() -> MeshInstance3D:
 	const LENGTH := 1.38
 	const BASE_WIDTH := 0.35
 	const TOP_WIDTH := 0.15
@@ -640,8 +652,8 @@ func get_mesh_barrier() -> MeshInstance3D:
 	return mesh_instance
 
 
-## Creates and returns a mesh for checkpoint control objects.
-func get_mesh_checkpoint(half_width: int) -> MeshInstance3D:
+# Creates and returns a mesh for checkpoint control objects.
+func _get_mesh_checkpoint(half_width: int) -> MeshInstance3D:
 	var vertices := PackedVector3Array()
 	for i in 2:
 		var x_sign := -1 if i == 0 else 1
@@ -676,8 +688,8 @@ func get_mesh_checkpoint(half_width: int) -> MeshInstance3D:
 	return mesh_instance
 
 
-## Creates and returns a mesh for circle control objects.
-func get_mesh_circle(radius: int) -> MeshInstance3D:
+# Creates and returns a mesh for circle control objects.
+func _get_mesh_circle(radius: int) -> MeshInstance3D:
 	const SEGMENTS := 32
 	var vertices := PackedVector3Array()
 	var _resize := vertices.resize(2 * SEGMENTS)
@@ -721,8 +733,8 @@ func get_mesh_circle(radius: int) -> MeshInstance3D:
 	return mesh_instance
 
 
-## Creates and returns a mesh for cones.
-func get_mesh_cone() -> MeshInstance3D:
+# Creates and returns a mesh for cones.
+func _get_mesh_cone() -> MeshInstance3D:
 	const SEGMENTS := 8
 	const CHAMFER := 0.02
 	const THICKNESS := 0.04
@@ -872,8 +884,43 @@ func get_mesh_cone() -> MeshInstance3D:
 	return mesh_instance
 
 
-## Creates and returns a mesh for markers (turn and distance signs).
-func get_mesh_marker() -> MeshInstance3D:
+# Creates and returns a generic mesh for objects that don't have a proper model.
+func _get_mesh_generic() -> MeshInstance3D:
+	var color := Color.MAGENTA  # used as default color for unknown objects
+	var dimensions := Vector3(0.5, 0.5, 1)
+	var vertices := PackedVector3Array([
+		Vector3(-0.5 * dimensions.x, -0.5 * dimensions.y, 0),
+		Vector3(0.5 * dimensions.x, -0.5 * dimensions.y, 0),
+		Vector3(-0.5 * dimensions.x, 0.5 * dimensions.y, 0),
+		Vector3(0.5 * dimensions.x, 0.5 * dimensions.y, 0),
+		Vector3(-0.5 * dimensions.x, -0.5 * dimensions.y, dimensions.z),
+		Vector3(0.5 * dimensions.x, -0.5 * dimensions.y, dimensions.z),
+		Vector3(-0.5 * dimensions.x, 0.5 * dimensions.y, dimensions.z),
+		Vector3(0.5 * dimensions.x, 0.5 * dimensions.y, dimensions.z),
+	])
+	var indices := PackedInt32Array([
+		0, 1, 2, 3, 2, 1,  # Z- face
+		6, 5, 4, 5, 6, 7,  # Z+ face
+		4, 1, 0, 1, 4, 5,  # Y- face
+		2, 3, 6, 7, 6, 3,  # Y+ face
+		0, 2, 4, 6, 4, 2,  # X- face
+		5, 3, 1, 3, 5, 7,  # X+ face
+	])
+	var st := SurfaceTool.new()
+	st.begin(Mesh.PRIMITIVE_TRIANGLES)
+	for i in indices.size():
+		st.add_vertex(vertices[indices[i]])
+	var mesh := st.commit()
+	var mat := generate_default_material()
+	mat.albedo_color = color
+	mesh.surface_set_material(0, mat)
+	var mesh_instance := MeshInstance3D.new()
+	mesh_instance.mesh = mesh
+	return mesh_instance
+
+
+# Creates and returns a mesh for markers (turn and distance signs).
+func _get_mesh_marker() -> MeshInstance3D:
 	const WIDTH := 1.42
 	const BASE_THICKNESS := 0.39
 	const TOP_THICKNESS := 0.15
@@ -1230,8 +1277,8 @@ func get_mesh_marker() -> MeshInstance3D:
 	return mesh_instance
 
 
-## Creates and returns a mesh for pit boxes.
-func get_mesh_pit_box() -> MeshInstance3D:
+# Creates and returns a mesh for pit boxes.
+func _get_mesh_pit_box() -> MeshInstance3D:
 	var vertices := PackedVector3Array()
 	for i in 2:
 		var x_sign := -1 if i == 0 else 1
@@ -1277,8 +1324,8 @@ func get_mesh_pit_box() -> MeshInstance3D:
 	return mesh_instance
 
 
-## Creates and returns a mesh for posts.
-func get_mesh_post() -> MeshInstance3D:
+# Creates and returns a mesh for posts.
+func _get_mesh_post() -> MeshInstance3D:
 	const SEGMENTS := 8
 	const THICKNESS := 0.06
 	const BASE := 0.2
@@ -1367,8 +1414,8 @@ func get_mesh_post() -> MeshInstance3D:
 	return mesh_instance
 
 
-## Creates and returns a mesh for railings.
-func get_mesh_railing() -> MeshInstance3D:
+# Creates and returns a mesh for railings.
+func _get_mesh_railing() -> MeshInstance3D:
 	const RAIL_SEGMENTS := 6
 	const SPAN := 2.28
 	const RADIUS := 0.04
@@ -1554,8 +1601,8 @@ func get_mesh_railing() -> MeshInstance3D:
 	return mesh_instance
 
 
-## Creates and returns a mesh for ramps.
-func get_mesh_ramp() -> MeshInstance3D:
+# Creates and returns a mesh for ramps.
+func _get_mesh_ramp() -> MeshInstance3D:
 	const LENGTH := 11.26
 	const HEIGHT := 0.87
 	const THICKNESS := 0.16
@@ -1623,8 +1670,8 @@ func get_mesh_ramp() -> MeshInstance3D:
 	return mesh_instance
 
 
-## Creates and returns a mesh for direction signs.
-func get_mesh_sign_direction() -> MeshInstance3D:
+# Creates and returns a mesh for direction signs.
+func _get_mesh_sign_direction() -> MeshInstance3D:
 	const SPREAD := 0.65
 	const WIDTH := 0.8
 	const HEIGHT := 0.8
@@ -1793,8 +1840,8 @@ func get_mesh_sign_direction() -> MeshInstance3D:
 	return mesh_instance
 
 
-## Creates and returns a mesh for speed signs.
-func get_mesh_sign_speed() -> MeshInstance3D:
+# Creates and returns a mesh for speed signs.
+func _get_mesh_sign_speed() -> MeshInstance3D:
 	const WIDTH := 1.05
 	const SPREAD := 1.23
 	const TOP_LENGTH := 0.095
@@ -1974,8 +2021,8 @@ func get_mesh_sign_speed() -> MeshInstance3D:
 	return mesh_instance
 
 
-## Creates and returns a mesh for speed humps.
-func get_mesh_speed_hump() -> MeshInstance3D:
+# Creates and returns a mesh for speed humps.
+func _get_mesh_speed_hump() -> MeshInstance3D:
 	const END_SEGMENTS := 5
 	const BASE_WIDTH := 0.5
 	const TOP_WIDTH := 0.18
@@ -2105,8 +2152,8 @@ func get_mesh_speed_hump() -> MeshInstance3D:
 	return mesh_instance
 
 
-## Creates and returns a mesh for start lights.
-func get_mesh_start_light() -> MeshInstance3D:
+# Creates and returns a mesh for start lights.
+func _get_mesh_start_light() -> MeshInstance3D:
 	const BASE_WIDTH := 0.4
 	const BASE_LENGTH := 0.6
 	const BASE_HEIGHT := 0.4
@@ -2275,8 +2322,8 @@ func get_mesh_start_light() -> MeshInstance3D:
 	return mesh_instance
 
 
-## Creates and returns a mesh for start positions.
-func get_mesh_start_position() -> MeshInstance3D:
+# Creates and returns a mesh for start positions.
+func _get_mesh_start_position() -> MeshInstance3D:
 	var vertices := PackedVector3Array()
 	for i in 2:
 		var x_sign := -1 if i == 0 else 1
@@ -2308,45 +2355,3 @@ func get_mesh_start_position() -> MeshInstance3D:
 	var mesh_instance := MeshInstance3D.new()
 	mesh_instance.mesh = mesh
 	return mesh_instance
-
-
-## Sets the object's variables from the given [param buffer]. Also updates [code]gis_*[/code]
-## variables (see [method update_gis_values] for details).
-func set_from_buffer(buffer: PackedByteArray) -> void:
-	x = buffer.decode_s16(0)
-	y = buffer.decode_s16(2)
-	z = buffer.decode_u8(4)
-	flags = buffer.decode_u8(5)
-	index = buffer.decode_u8(6) as InSim.AXOIndex
-	heading = buffer.decode_u8(7)
-	update_gis_values()
-
-
-## Uses the [code]gis_*[/code] variables to set LFS-style variables.
-func set_from_gis_values() -> void:
-	x = roundi(gis_position.x * XY_MULTIPLIER)
-	y = roundi(gis_position.y * XY_MULTIPLIER)
-	z = roundi(gis_position.z * Z_MULTIPLIER)
-	heading = roundi((rad_to_deg(gis_heading) + 180) * HEADING_MULTIPLIER)
-
-
-## Updates [member flags] to reflect the values of the object's specific variables.
-## Define update logic in [method _update_flags].
-func update_flags() -> void:
-	_update_flags()
-
-
-## Updates LFS-style sub-variables corresponding to the object's [member flags], based on the
-## corresponding [code]gis_*[/code] values. See [method _update_flags_from_gis].
-func update_flags_from_gis() -> void:
-	_update_flags_from_gis()
-
-
-## Updates the [code]gis_*[/code] variables from LFS-style values.
-func update_gis_values() -> void:
-	gis_position = Vector3(
-		x / XY_MULTIPLIER,
-		y / XY_MULTIPLIER,
-		z / Z_MULTIPLIER
-	)
-	gis_heading = deg_to_rad(heading / HEADING_MULTIPLIER - 180)

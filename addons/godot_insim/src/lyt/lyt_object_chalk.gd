@@ -36,7 +36,7 @@ static func create(
 
 func _get_mesh() -> MeshInstance3D:
 	if index >= InSim.AXOIndex.AXO_CHALK_AHEAD:
-		return get_mesh_arrow(COLORS[color])
+		return _get_mesh_arrow(COLORS[color])
 	var width := 8.0 if index == InSim.AXOIndex.AXO_CHALK_LINE else 0.2
 	var length := 0.25 if index == InSim.AXOIndex.AXO_CHALK_LINE else 4.8
 	var vertices := PackedVector3Array([

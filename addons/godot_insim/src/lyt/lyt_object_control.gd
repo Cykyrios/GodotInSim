@@ -77,7 +77,7 @@ func _get_mesh() -> MeshInstance3D:
 		mesh_instance.mesh = mesh
 		return mesh_instance
 	else:
-		var mesh_instance := get_mesh_checkpoint(half_width)
+		var mesh_instance := _get_mesh_checkpoint(half_width)
 		var mat := mesh_instance.mesh.surface_get_material(0) as StandardMaterial3D
 		mat.albedo_color = COLORS[type]
 		return mesh_instance
