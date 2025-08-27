@@ -8,10 +8,10 @@ const __source = "res://addons/godot_insim/src/lyt/lyt_file.gd"
 func test_create_from_object_info(object: ObjectInfo, test_parameters := [
 	[ObjectInfo.create(0, 0, 128, 255, 0, InSim.AXOIndex.AXO_CHALK_LINE)],
 	[ObjectInfo.create(-1234, 1234, 42, 10, 0x80, InSim.AXOIndex.AXO_TYRE_STACK3)],
-	[ObjectInfo.create(-1234, 1234, 42, 10, 0, InSim.AXOIndex.AXO_IS_AREA)],
+	[ObjectInfo.create(-1234, 1234, 42, 10, 12, InSim.AXOIndex.AXO_IS_AREA)],
 ]) -> void:
 	var lyt_object := LYTObject.create_from_object_info(object)
-	var _test := assert_array(object.get_buffer()).is_equal(lyt_object.get_buffer())
+	var _test := assert_array(lyt_object.get_buffer()).is_equal(object.get_buffer())
 
 
 func test_create_object_from_buffer() -> void:

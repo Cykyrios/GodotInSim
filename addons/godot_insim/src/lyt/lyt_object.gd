@@ -183,13 +183,9 @@ func _get_mesh() -> MeshInstance3D:
 ## Override to update the object's data from the given [param info] object.
 ## [code]super(info)[/code] should be called to allow generic [LYTObject] data
 ## and [code]gis_*[/code] values to be updated.
+@warning_ignore("unused_parameter")
 func _set_from_object_info(info: ObjectInfo) -> void:
-	x = info.x
-	y = info.y
-	z = info.z
-	flags = info.flags
-	index = info.index as InSim.AXOIndex
-	heading = info.heading
+	pass
 
 
 ## Override this function to update the value of [member flags] based on the object-specific
@@ -222,7 +218,10 @@ func generate_default_material() -> StandardMaterial3D:
 ## Returns the object's complete data buffer.
 func get_buffer(use_gis_values := false) -> PackedByteArray:
 	if use_gis_values:
-		update_gis_values()
+		set_from_gis_values()
+		update_flags_from_gis()
+	else:
+		update_flags()
 	var buffer := PackedByteArray()
 	var _resize := buffer.resize(STRUCT_SIZE)
 	buffer.encode_s16(0, x)
@@ -269,6 +268,12 @@ func set_from_gis_values() -> void:
 ## Sets the object's variables from the given [param info] object.
 ## See [method _set_from_object_info] for implementation.
 func set_from_object_info(info: ObjectInfo) -> void:
+	x = info.x
+	y = info.y
+	z = info.z
+	flags = info.flags
+	index = info.index as InSim.AXOIndex
+	heading = info.heading
 	_set_from_object_info(info)
 	update_gis_values()
 
