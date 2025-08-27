@@ -11,16 +11,8 @@ var radius := 0:
 		radius = clampi(value, 1, 31)
 
 
-## Creates and returns a new [LYTObjectCircle] from the given parameters.
-static func create(
-	obj_x: int, obj_y: int, obj_z: int, obj_heading: int, obj_flags: int, obj_index: int
-) -> LYTObjectCircle:
-	var object := super(obj_x, obj_y, obj_z, obj_heading, obj_flags, obj_index)
-	var circle_object := LYTObjectCircle.new()
-	circle_object.set_from_buffer(object.get_buffer())
-	circle_object.circle_index = circle_object.heading
-	circle_object.radius = (circle_object.flags >> 2) & 0b0001_1111
-	return circle_object
+func _apply_flags() -> void:
+	radius = (flags >> 2) & 0b0001_1111
 
 
 func _get_mesh() -> MeshInstance3D:
@@ -28,6 +20,10 @@ func _get_mesh() -> MeshInstance3D:
 	var mat := mesh_instance.mesh.surface_get_material(0) as StandardMaterial3D
 	mat.albedo_color = Color.YELLOW.lightened(0.5)
 	return mesh_instance
+
+
+func _set_from_object_info(info: ObjectInfo) -> void:
+	circle_index = info.heading
 
 
 func _update_flags() -> void:

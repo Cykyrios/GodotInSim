@@ -68,19 +68,13 @@ var gis_pitch := 0.0  ## Customizable pitch in standard units
 var gis_angle := 0.0  ## Customizable angle in standard units
 
 
-## Creates and returns a concrete object from the given parameters.
-static func create(
-	obj_x: int, obj_y: int, obj_z: int, obj_heading: int, obj_flags: int, obj_index: int
-) -> LYTObjectConcrete:
-	var object := super(obj_x, obj_y, obj_z, obj_heading, obj_flags, obj_index)
-	var concrete_object := LYTObjectConcrete.new()
-	concrete_object.set_from_buffer(object.get_buffer())
-	if concrete_object.index in [
+func _apply_flags() -> void:
+	if index in [
 		InSim.AXOIndex.AXO_CONCRETE_SLAB,
 		InSim.AXOIndex.AXO_CONCRETE_RAMP,
 	]:
-		concrete_object.width = (concrete_object.flags & 0x03) >> 0
-	if concrete_object.index in [
+		width = (flags & 0x03) >> 0
+	if index in [
 		InSim.AXOIndex.AXO_CONCRETE_SLAB,
 		InSim.AXOIndex.AXO_CONCRETE_RAMP,
 		InSim.AXOIndex.AXO_CONCRETE_WALL,
@@ -88,42 +82,41 @@ static func create(
 		InSim.AXOIndex.AXO_CONCRETE_RAMP_WALL,
 		InSim.AXOIndex.AXO_CONCRETE_WEDGE,
 	]:
-		concrete_object.length = (concrete_object.flags & 0x0c) >> 2
-	if concrete_object.index in [
+		length = (flags & 0x0c) >> 2
+	if index in [
 		InSim.AXOIndex.AXO_CONCRETE_PILLAR,
 	]:
-		concrete_object.size_x = (concrete_object.flags & 0x03) >> 0
-	if concrete_object.index in [
+		size_x = (flags & 0x03) >> 0
+	if index in [
 		InSim.AXOIndex.AXO_CONCRETE_PILLAR,
 		InSim.AXOIndex.AXO_CONCRETE_SHORT_SLAB_WALL,
 	]:
-		concrete_object.size_y = (concrete_object.flags & 0x0c) >> 2
-	if concrete_object.index in [
+		size_y = (flags & 0x0c) >> 2
+	if index in [
 		InSim.AXOIndex.AXO_CONCRETE_RAMP,
 		InSim.AXOIndex.AXO_CONCRETE_WALL,
 		InSim.AXOIndex.AXO_CONCRETE_PILLAR,
 		InSim.AXOIndex.AXO_CONCRETE_RAMP_WALL,
 	]:
-		concrete_object.height = (concrete_object.flags & 0xf0) >> 4
-	if concrete_object.index in [
+		height = (flags & 0xf0) >> 4
+	if index in [
 		InSim.AXOIndex.AXO_CONCRETE_SLAB,
 		InSim.AXOIndex.AXO_CONCRETE_SLAB_WALL,
 		InSim.AXOIndex.AXO_CONCRETE_SHORT_SLAB_WALL,
 	]:
-		concrete_object.pitch = (concrete_object.flags & 0xf0) >> 4
-	if concrete_object.index in [
+		pitch = (flags & 0xf0) >> 4
+	if index in [
 		InSim.AXOIndex.AXO_CONCRETE_WALL,
 		InSim.AXOIndex.AXO_CONCRETE_SLAB_WALL,
 		InSim.AXOIndex.AXO_CONCRETE_RAMP_WALL,
 		InSim.AXOIndex.AXO_CONCRETE_SHORT_SLAB_WALL,
 		InSim.AXOIndex.AXO_CONCRETE_WEDGE,
 	]:
-		concrete_object.color = (concrete_object.flags & 0x03) >> 0 as ConcreteColor
-	if concrete_object.index in [
+		color = (flags & 0x03) >> 0 as ConcreteColor
+	if index in [
 		InSim.AXOIndex.AXO_CONCRETE_WEDGE,
 	]:
-		concrete_object.angle = (concrete_object.flags & 0xf0) >> 4
-	return concrete_object
+		angle = (flags & 0xf0) >> 4
 
 
 func _get_mesh() -> MeshInstance3D:

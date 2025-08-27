@@ -31,15 +31,9 @@ var gis_heading := 0.0  ## The object's heading, in radians.
 static func create(
 	obj_x: int, obj_y: int, obj_z: int, obj_heading: int, obj_flags: int, obj_index: int
 ) -> LYTObject:
-	var object := LYTObject.new()
-	object.x = obj_x
-	object.y = obj_y
-	object.z = obj_z
-	object.flags = obj_flags
-	object.index = obj_index as InSim.AXOIndex
-	object.heading = obj_heading
-	object.update_gis_values()
-	return object
+	return create_from_object_info(
+		ObjectInfo.create(obj_x, obj_y, obj_z, obj_heading, obj_flags, obj_index)
+	)
 
 
 ## Creates and returns a [LYTObject] from the given [param object_buffer].
@@ -51,66 +45,9 @@ static func create_from_buffer(buffer: PackedByteArray) -> LYTObject:
 			buffer.size(),
 		])
 		return LYTObject.new()
-	var object := LYTObject.new()
-	object.set_from_buffer(buffer)
-	if object.index == InSim.AXOIndex.AXO_NULL:
-		var control_object := LYTObjectControl.create(
-			object.x, object.y, object.z, object.heading, object.flags, object.index
-		)
-		return control_object
-	if (
-		object.index >= InSim.AXOIndex.AXO_CHALK_LINE
-		and object.index <= InSim.AXOIndex.AXO_CHALK_RIGHT3
-	):
-		var chalk_object := LYTObjectChalk.create(
-			object.x, object.y, object.z, object.heading, object.flags, object.index
-		)
-		return chalk_object
-	if (
-		object.index >= InSim.AXOIndex.AXO_TYRE_SINGLE
-		and object.index <= InSim.AXOIndex.AXO_TYRE_STACK4_BIG
-	):
-		var tyre_object := LYTObjectTyre.create(
-			object.x, object.y, object.z, object.heading, object.flags, object.index
-		)
-		return tyre_object
-	if (
-		object.index >= InSim.AXOIndex.AXO_CONCRETE_SLAB
-		and object.index <= InSim.AXOIndex.AXO_CONCRETE_WEDGE
-	):
-		var concrete_object := LYTObjectConcrete.create(
-			object.x, object.y, object.z, object.heading, object.flags, object.index
-		)
-		return concrete_object
-	if (
-		object.index >= InSim.AXOIndex.AXO_START_POSITION
-		and object.index <= InSim.AXOIndex.AXO_PIT_START_POINT
-	):
-		var start_object := LYTObjectStart.create(
-			object.x, object.y, object.z, object.heading, object.flags, object.index
-		)
-		return start_object
-	if object.index == InSim.AXOIndex.AXO_IS_CP:
-		var checkpoint_object := LYTObjectCheckpoint.create(
-			object.x, object.y, object.z, object.heading, object.flags, object.index
-		)
-		return checkpoint_object
-	if object.index == InSim.AXOIndex.AXO_IS_AREA:
-		var circle_object := LYTObjectCircle.create(
-			object.x, object.y, object.z, object.heading, object.flags, object.index
-		)
-		return circle_object
-	if object.index == InSim.AXOIndex.AXO_MARSHAL:
-		var marshal_object := LYTObjectMarshal.create(
-			object.x, object.y, object.z, object.heading, object.flags, object.index
-		)
-		return marshal_object
-	if object.index == InSim.AXOIndex.AXO_ROUTE:
-		var route_object := LYTObjectRoute.create(
-			object.x, object.y, object.z, object.heading, object.flags, object.index
-		)
-		return route_object
-	return object
+	var object_info := ObjectInfo.new()
+	object_info.set_from_buffer(buffer)
+	return create_from_object_info(object_info)
 
 
 ## Creates and returns a [LYTObject] based on the given parameters, using [code]gis_*[/code]
@@ -118,18 +55,55 @@ static func create_from_buffer(buffer: PackedByteArray) -> LYTObject:
 static func create_from_gis(
 	obj_position: Vector3, obj_heading: float, obj_flags: int, obj_index: int
 ) -> LYTObject:
-	var object: LYTObject = LYTObject.new()
-	object.gis_position = obj_position
-	object.gis_heading = obj_heading
-	object.flags = obj_flags
-	object.index = obj_index as InSim.AXOIndex
-	object.set_from_gis_values()
+	return create_from_object_info(
+		ObjectInfo.create_from_gis(obj_position, obj_heading, obj_flags, obj_index)
+	)
+
+
+## Creates and returns a new [LYTObject] from the given [param info] [ObjectInfo].
+static func create_from_object_info(info: ObjectInfo) -> LYTObject:
+	var object: LYTObject = null
+	if info.index == InSim.AXOIndex.AXO_NULL:
+		object = LYTObjectControl.new()
+	elif (
+		info.index >= InSim.AXOIndex.AXO_CHALK_LINE
+		and info.index <= InSim.AXOIndex.AXO_CHALK_RIGHT3
+	):
+		object = LYTObjectChalk.new()
+	elif (
+		info.index >= InSim.AXOIndex.AXO_TYRE_SINGLE
+		and info.index <= InSim.AXOIndex.AXO_TYRE_STACK4_BIG
+	):
+		object = LYTObjectTyre.new()
+	elif (
+		info.index >= InSim.AXOIndex.AXO_CONCRETE_SLAB
+		and info.index <= InSim.AXOIndex.AXO_CONCRETE_WEDGE
+	):
+		object = LYTObjectConcrete.new()
+	elif (
+		info.index >= InSim.AXOIndex.AXO_START_POSITION
+		and info.index <= InSim.AXOIndex.AXO_PIT_START_POINT
+	):
+		object = LYTObjectStart.new()
+	elif info.index == InSim.AXOIndex.AXO_IS_CP:
+		object = LYTObjectCheckpoint.new()
+	elif info.index == InSim.AXOIndex.AXO_IS_AREA:
+		object = LYTObjectCircle.new()
+	elif info.index == InSim.AXOIndex.AXO_MARSHAL:
+		object = LYTObjectMarshal.new()
+	elif info.index == InSim.AXOIndex.AXO_ROUTE:
+		object = LYTObjectRoute.new()
+	else:
+		object = LYTObject.new()
+	object.set_from_object_info(info)
+	object.apply_flags()
 	return object
 
 
-## Converts the given [param object_info] object from [ObjectInfo] to [LYTObject]
-static func create_from_object_info(object_info: ObjectInfo) -> LYTObject:
-	return create_from_buffer(object_info.get_buffer())
+## Override to update the properties that should be updated to match the current
+## [member flags].
+func _apply_flags() -> void:
+	pass
 
 
 ## Override to return a [MeshInstance3D] corresponding to the object. Returns an
@@ -206,6 +180,18 @@ func _get_mesh() -> MeshInstance3D:
 	return _get_mesh_generic()
 
 
+## Override to update the object's data from the given [param info] object.
+## [code]super(info)[/code] should be called to allow generic [LYTObject] data
+## and [code]gis_*[/code] values to be updated.
+func _set_from_object_info(info: ObjectInfo) -> void:
+	x = info.x
+	y = info.y
+	z = info.z
+	flags = info.flags
+	index = info.index as InSim.AXOIndex
+	heading = info.heading
+
+
 ## Override this function to update the value of [member flags] based on the object-specific
 ## variables.
 func _update_flags() -> void:
@@ -220,6 +206,12 @@ func _update_flags_from_gis() -> void:
 	pass
 
 
+## Updates all properties of this [LYTObject] that are defined by the current
+## [member flags]. Override [method _apply_flags] for implementation.
+func apply_flags() -> void:
+	_apply_flags()
+
+
 ## Generates and returns a [StandardMaterial3D] as a default [LYTObject] material.
 func generate_default_material() -> StandardMaterial3D:
 	var mat := StandardMaterial3D.new()
@@ -228,7 +220,9 @@ func generate_default_material() -> StandardMaterial3D:
 
 
 ## Returns the object's complete data buffer.
-func get_buffer() -> PackedByteArray:
+func get_buffer(use_gis_values := false) -> PackedByteArray:
+	if use_gis_values:
+		update_gis_values()
 	var buffer := PackedByteArray()
 	var _resize := buffer.resize(STRUCT_SIZE)
 	buffer.encode_s16(0, x)
@@ -243,6 +237,13 @@ func get_buffer() -> PackedByteArray:
 ## Returns the object's 3D mesh as a [MeshInstance3D]. Define the mesh via [method _get_mesh].
 func get_mesh() -> MeshInstance3D:
 	return _get_mesh()
+
+
+## Returns the [ObjectInfo] corresponding to this [LYTObject].
+func get_object_info(use_gis_values := false) -> ObjectInfo:
+	var object_info := ObjectInfo.new()
+	object_info.set_from_buffer(get_buffer(use_gis_values))
+	return object_info
 
 
 ## Sets the object's variables from the given [param buffer]. Also updates [code]gis_*[/code]
@@ -263,6 +264,13 @@ func set_from_gis_values() -> void:
 	y = roundi(gis_position.y * XY_MULTIPLIER)
 	z = roundi(gis_position.z * Z_MULTIPLIER)
 	heading = roundi((rad_to_deg(gis_heading) + 180) * HEADING_MULTIPLIER)
+
+
+## Sets the object's variables from the given [param info] object.
+## See [method _set_from_object_info] for implementation.
+func set_from_object_info(info: ObjectInfo) -> void:
+	_set_from_object_info(info)
+	update_gis_values()
 
 
 ## Updates [member flags] to reflect the values of the object's specific variables.

@@ -28,16 +28,9 @@ var half_width := 0:
 		half_width = clampi(value, 0, 31)
 
 
-## Creates and returns a control object from the given parameters.
-static func create(
-	obj_x: int, obj_y: int, obj_z: int, obj_heading: int, obj_flags: int, obj_index: int
-) -> LYTObjectControl:
-	var object := super(obj_x, obj_y, obj_z, obj_heading, obj_flags, obj_index)
-	var control_object := LYTObjectControl.new()
-	control_object.set_from_buffer(object.get_buffer())
-	control_object.type = control_object.flags & 0b11 as Type
-	control_object.half_width = (control_object.flags >> 2) & 0b0001_1111
-	return control_object
+func _apply_flags() -> void:
+	type = flags & 0b11 as Type
+	half_width = (flags >> 2) & 0b0001_1111
 
 
 func _get_mesh() -> MeshInstance3D:

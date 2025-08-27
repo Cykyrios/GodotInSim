@@ -19,16 +19,9 @@ var half_width := 0:
 		half_width = clampi(value, 1, 31)
 
 
-## Creates and returns a new [LYTObjectCheckpoint] from the given parameters.
-static func create(
-	obj_x: int, obj_y: int, obj_z: int, obj_heading: int, obj_flags: int, obj_index: int
-) -> LYTObjectCheckpoint:
-	var object := super(obj_x, obj_y, obj_z, obj_heading, obj_flags, obj_index)
-	var checkpoint_object := LYTObjectCheckpoint.new()
-	checkpoint_object.set_from_buffer(object.get_buffer())
-	checkpoint_object.type = checkpoint_object.flags & 0b11 as Type
-	checkpoint_object.half_width = (checkpoint_object.flags >> 2) & 0b0001_1111
-	return checkpoint_object
+func _apply_flags() -> void:
+	type = flags & 0b11 as Type
+	half_width = (flags >> 2) & 0b0001_1111
 
 
 func _get_mesh() -> MeshInstance3D:
@@ -40,4 +33,4 @@ func _get_mesh() -> MeshInstance3D:
 
 func _update_flags() -> void:
 	flags = (flags & ~0b11) | type
-	flags = (flags & ~(0b1111 << 2)) | (half_width << 2)
+	flags = (flags & ~(0b0001_1111 << 2)) | (half_width << 2)

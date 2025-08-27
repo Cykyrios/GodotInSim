@@ -19,16 +19,9 @@ var radius := 0:
 		radius = clampi(value, 0 if is_marshal_visible() else 1, 31)
 
 
-## Creates and returns a marshal object from the given parameters.
-static func create(
-	obj_x: int, obj_y: int, obj_z: int, obj_heading: int, obj_flags: int, obj_index: int
-) -> LYTObjectMarshal:
-	var object := super(obj_x, obj_y, obj_z, obj_heading, obj_flags, obj_index)
-	var marshal_object := LYTObjectMarshal.new()
-	marshal_object.set_from_buffer(object.get_buffer())
-	marshal_object.marshal = marshal_object.flags & 0b11 as Marshal
-	marshal_object.radius = (marshal_object.flags >> 2) & 0b0001_1111
-	return marshal_object
+func _apply_flags() -> void:
+	marshal = flags & 0b11 as Marshal
+	radius = (flags >> 2) & 0b0001_1111
 
 
 func _get_mesh() -> MeshInstance3D:

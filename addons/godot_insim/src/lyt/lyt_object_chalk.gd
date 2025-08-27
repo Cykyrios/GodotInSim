@@ -23,15 +23,8 @@ const COLORS: Array[Color] = [
 var color := ChalkColor.WHITE  ## This object's chalk color.
 
 
-## Creates and returns a new [LYTObjectChalk] from the given parameters.
-static func create(
-	obj_x: int, obj_y: int, obj_z: int, obj_heading: int, obj_flags: int, obj_index: int
-) -> LYTObjectChalk:
-	var object := super(obj_x, obj_y, obj_z, obj_heading, obj_flags, obj_index)
-	var chalk_object := LYTObjectChalk.new()
-	chalk_object.set_from_buffer(object.get_buffer())
-	chalk_object.color = object.flags & 0b11 as ChalkColor
-	return chalk_object
+func _apply_flags() -> void:
+	color = flags & 0b11 as ChalkColor
 
 
 func _get_mesh() -> MeshInstance3D:

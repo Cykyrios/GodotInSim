@@ -106,7 +106,7 @@ func _on_axi_packet_received(packet: InSimAXIPacket) -> void:
 func _on_axm_packet_received(packet: InSimAXMPacket) -> void:
 	if packet.pmo_action == InSim.PMOAction.PMO_ADD_OBJECTS:
 		for object_info in packet.info:
-			var object := LYTFile.create_object_from_buffer(object_info.get_buffer())
+			var object := LYTObject.create_from_buffer(object_info.get_buffer())
 			var object_mesh := object.get_mesh()
 			object_mesh.position = object.gis_position
 			object_mesh.rotation.z = object.gis_heading

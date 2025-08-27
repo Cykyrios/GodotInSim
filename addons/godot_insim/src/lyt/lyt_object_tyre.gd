@@ -27,15 +27,8 @@ const COLORS: Array[Color] = [
 var color := TyreColor.BLACK  ## Tyre color
 
 
-## Creates and returns a tyre object from the given parameters.
-static func create(
-	obj_x: int, obj_y: int, obj_z: int, obj_heading: int, obj_flags: int, obj_index: int
-) -> LYTObjectTyre:
-	var object := super(obj_x, obj_y, obj_z, obj_heading, obj_flags, obj_index)
-	var tyre_object := LYTObjectTyre.new()
-	tyre_object.set_from_buffer(object.get_buffer())
-	tyre_object.color = tyre_object.flags & 0b111 as TyreColor
-	return tyre_object
+func _apply_flags() -> void:
+	color = flags & 0b111 as TyreColor
 
 
 func _get_mesh() -> MeshInstance3D:
