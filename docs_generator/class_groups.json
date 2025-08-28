@@ -51,6 +51,9 @@
   "Packets": {
     "label": "Packets",
     "items": [
+      "LFSPacket",
+      "OutGaugePacket",
+      "OutSimPacket",
       {
         "InSim Packets": {
           "label": "InSim Packets",
@@ -58,10 +61,7 @@
             "InSimPacket"
           ]
         }
-      },
-      "LFSPacket",
-      "OutGaugePacket",
-      "OutSimPacket"
+      }
     ]
   },
   "InSim Buttons": {
