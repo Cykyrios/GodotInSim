@@ -75,8 +75,7 @@
   "Text Encoding": {
     "label": "Text Encoding",
     "items": [
-      "LFSText",
-      "LFSCodePages"
+      "LFSText"
     ]
   },
   "Utilities": {
