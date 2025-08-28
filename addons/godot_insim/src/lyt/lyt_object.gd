@@ -36,8 +36,8 @@ static func create(
 	)
 
 
-## Creates and returns a [LYTObject] from the given [param object_buffer].
-## Returns a default, empty object if the [param object_buffer] is not valid.
+## Creates and returns a [LYTObject] from the given [param buffer].
+## Returns a default, empty object if the [param buffer] is not valid.
 static func create_from_buffer(buffer: PackedByteArray) -> LYTObject:
 	if buffer.size() != LYTObject.STRUCT_SIZE:
 		push_error("Wrong buffer size, expected %d, got %d" % [
