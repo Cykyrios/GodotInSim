@@ -937,7 +937,7 @@ var lfs_connection: LFSConnection = null  ## Internal connection for TCP/UDP com
 var nlp_mci_connection: LFSConnectionUDP = null
 var _is_host := false  ## Whether this is a host InSim application, do not set manually.
 ## Helper struct for InSim initialization, see [InSimISIPacket].
-var initialization_data := InSimInitializationData.new()
+var initialization_data: InSimInitializationData = null
 ## This boolean controls whether connecting to InSim versions other than [constant VERSION]
 ## is allowed. If you know the target version is compatible with the current [constant VERSION],
 ## enable this, but be aware that issues may occur.
@@ -956,7 +956,7 @@ var timeout_timer: Timer = null
 
 ## Current state of the game, as per IS_STA documentation. Updated automatically upon
 ## receiving an [InSimSTAPacket]. Does not include packet header.
-var lfs_state := LFSState.new()
+var lfs_state: LFSState = null
 ## Dictionary of UCID/[GISConnection] pairs, updated automatically.
 var connections: Dictionary[int, GISConnection] = {}
 ## Dictionary of PLID/[GISPlayer] pairs, updated automatically.
@@ -969,6 +969,8 @@ var _initializing := false
 
 
 func _init() -> void:
+	initialization_data = InSimInitializationData.new()
+	lfs_state = LFSState.new()
 	button_manager = InSimButtonManager.new(self)
 	nlp_mci_connection = LFSConnectionUDP.new()
 	add_child(nlp_mci_connection)

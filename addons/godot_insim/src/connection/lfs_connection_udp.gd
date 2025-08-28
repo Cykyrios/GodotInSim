@@ -4,7 +4,11 @@ extends LFSConnection
 ##
 ## Implements the UDP protocol for LFS I/O.
 
-var socket := PacketPeerUDP.new()  ## UDP socket handling I/O
+var socket: PacketPeerUDP = null  ## UDP socket handling I/O
+
+
+func _init() -> void:
+	socket = PacketPeerUDP.new()
 
 
 func _connect_to_host(c_address: String, c_port: int, c_udp_port := 0, is_out := false) -> void:

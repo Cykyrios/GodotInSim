@@ -4,7 +4,11 @@ extends LFSConnection
 ##
 ## Implements the TCP protocol for LFS I/O.
 
-var stream := StreamPeerTCP.new()  ## TCP peer handling I/O
+var stream: StreamPeerTCP = null  ## TCP peer handling I/O
+
+
+func _init() -> void:
+	stream = StreamPeerTCP.new()
 
 
 func _connect_to_host(c_address: String, c_port: int, c_udp_port := 0) -> void:
