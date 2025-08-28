@@ -29,8 +29,7 @@
   "OutGauge": {
     "label": "OutGauge",
     "items": [
-      "OutGauge",
-      "OutGaugePacket"
+      "OutGauge"
     ]
   },
   "OutSim": {
@@ -39,7 +38,6 @@
       "OutSim",
       "OutSimInputs",
       "OutSimMain",
-      "OutSimPacket",
       "OutSimWheel"
     ]
   },
@@ -61,7 +59,9 @@
           ]
         }
       },
-      "LFSPacket"
+      "LFSPacket",
+      "OutGaugePacket",
+      "OutSimPacket"
     ]
   },
   "InSim Buttons": {
