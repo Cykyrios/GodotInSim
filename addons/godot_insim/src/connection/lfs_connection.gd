@@ -10,9 +10,12 @@ extends Node
 ## and [member InSim.insim_connected] instead if you need to check connection status.
 
 @warning_ignore_start("unused_signal")
-signal connection_failed
+signal connection_failed  ## Emitted when the connection cannot be established.
+## Emitted when the connection is established.[br]
+## [b]Note:[/b] This is the internal connection, not the InSim connection itself.
 signal connected
-signal disconnected
+signal disconnected  ## Emitted when the connection is closed.
+## Emitted when a [param packet] can be parsed from the data received.
 signal packet_received(packet: PackedByteArray)
 @warning_ignore_restore("unused_signal")
 

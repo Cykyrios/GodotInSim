@@ -25,6 +25,8 @@ var gis_position := Vector3.ZERO  ## Position vector in meters
 var gis_heading := 0.0  ## Heading in radians
 
 
+## Creates and returns a new [ObjectInfo] from the given parameters. The internal format
+## is compatible with [LYTObject].
 static func create(
 	obj_x: int, obj_y: int, obj_z: int, obj_heading: int, obj_flags: int, obj_index: int
 ) -> ObjectInfo:
@@ -45,6 +47,8 @@ static func create(
 	return object
 
 
+## Creates and returns a new [ObjectInfo]. Same as [method create], but using the
+## [code]gis_*[/code] format.
 static func create_from_gis(
 	obj_position: Vector3, obj_heading: float, obj_flags: int, obj_index: int
 ) -> ObjectInfo:

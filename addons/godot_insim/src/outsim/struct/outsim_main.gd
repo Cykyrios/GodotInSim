@@ -49,6 +49,7 @@ func get_buffer() -> PackedByteArray:
 	return buffer
 
 
+## Returns a [Dictionary] containing the current data, mainly for printing.
 func get_dictionary() -> Dictionary:
 	return {
 		"AngVel": ang_vel,
@@ -78,6 +79,7 @@ func set_from_buffer(buffer: PackedByteArray) -> void:
 	gis_angles = Vector3(pitch, roll, heading)
 
 
+## Updates the data from the contents of the given [param dict].
 func set_from_dictionary(dict: Dictionary) -> void:
 	if not dict.has_all(["AngVel", "Heading", "Pitch", "Roll", "Accel", "Vel", "Pos"]):
 		push_error("Cannot set data from dictionary: missing keys")

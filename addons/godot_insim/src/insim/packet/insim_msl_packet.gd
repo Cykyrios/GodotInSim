@@ -6,7 +6,7 @@ extends InSimPacket
 
 const PACKET_SIZE := 132  ## Packet size
 const PACKET_TYPE := InSim.Packet.ISP_MSL  ## The packet's type, see [enum InSim.Packet].
-const MSG_MAX_LENGTH := 128  # last byte must be zero, actual length is one character shorter
+const MSG_MAX_LENGTH := 128  ## last byte must be zero, actual length is one character shorter
 
 var sound := InSim.MessageSound.SND_SILENT  ## Sound effect (see [enum InSim.MessageSound])
 
