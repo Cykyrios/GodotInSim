@@ -4,9 +4,8 @@ slug: ../traffic_lights
 
 # Traffic Lights
 
-This demo showcases using [InSimOCOPacket](/class_ref/InSimOCOPacket.mdx) for light control
-and [InSimUCOPacket](/class_ref/InSimUCOPacket.mdx) for car detection, as well as adding
-layout objects via [InSimAXMPackets](/class_ref/InSimAXMPacket.mdx).
+This demo showcases using :class_ref[InSimOCOPacket] for light control and :class_ref[InSimUCOPacket]
+for car detection, as well as adding layout objects via :class_ref[InSimAXMPacket].
 
 ![Traffic lights](./traffic_lights_2.jpg)
 

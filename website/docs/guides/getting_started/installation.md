@@ -30,4 +30,4 @@ From there, you can manually create and manage [InSim](./insim), [OutSim](./outs
 [OutGauge](./outgauge.md) nodes to communicate with LFS.
 
 If you wish to connect to multiple InSim instances, you will need to create and manage several
-[InSim](/class_ref/InSim.mdx) nodes.
+:class_ref[InSim] nodes.

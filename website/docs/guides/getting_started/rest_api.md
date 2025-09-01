@@ -40,9 +40,9 @@ control; put the file outside of your project entirely, or at the very least add
 
 The REST API currently supports 2 request types:
 
-* `LFSAPI.get_mod_list()` to retrieve the entire list of currently available mods, including basic
+* <Code>LFSAPI.get_mod_list()</Code> to retrieve the entire list of currently available mods, including basic
     info like the mod's ID and name, its version, WIP status, the vehicle type, etc.
-* `LFSAPI.get_mod_details(skin_id)` to retrieve complete details about a single mod, including
+* <Code>LFSAPI.get_mod_details(skin_id)</Code> to retrieve complete details about a single mod, including
     detailed engine specifications.
 
 :::tip

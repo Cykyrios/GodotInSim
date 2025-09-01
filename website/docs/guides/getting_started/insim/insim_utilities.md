@@ -60,7 +60,7 @@ for ucid in insim.connections:
 	break
 ```
 
-In the above example, you should of course ensure the `player_ucid` is valid, i.e. not `-1`.
+In the above example, you should of course ensure the <Code>player_ucid</Code> is valid, i.e. not `-1`.
 
 :::note
 

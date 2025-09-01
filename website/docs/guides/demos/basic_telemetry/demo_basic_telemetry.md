@@ -4,9 +4,8 @@ slug: ../basic_telemetry
 
 # Basic Telemetry
 
-This demo showcases the use of [OutSim](/class_ref/OutSim.mdx) and
-[OutGauge](/class_ref/OutGauge.mdx) to retrieve live data about your car.
-[InSim](/class_ref/InSim.mdx) is not used at all here.
+This demo showcases the use of :class_ref[OutSim] and :class_ref[OutGauge] to retrieve live data
+about your car. :class_ref[InSim] is not used at all here.
 
 ![Telemetry](./telemetry_2.jpg)
 
