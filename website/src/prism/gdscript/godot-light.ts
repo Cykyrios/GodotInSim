@@ -6,6 +6,12 @@ const theme: PrismTheme = {
     backgroundColor: "#FFFFFF",
   },
   styles: [
+    {
+      types: ["region"],
+      style: {
+        color: "#AD75C4",
+      },
+    },
 //    {
 //      types: ["comment"],
 //      style: {

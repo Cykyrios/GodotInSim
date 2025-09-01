@@ -111,6 +111,9 @@ const escapes = /\\(?:u[a-zA-Z\d]{4}|U[a-zA-Z\d]{6}|[abfntrv"'\\])/;
 
 
 Prism.languages.gdscript = {
+	'region': {
+		pattern: /^(#(?:end)?region(?: +.*)?$)/m,
+	},
 	'doc-comment': {
 		pattern: /##.*$/m,
 		alias: 'comment',
@@ -258,6 +261,10 @@ Prism.languages.gdscript = {
 		/(?:\b|-)(?:\d|(?<=\d)_)+j?/,
 	],
 	'function': /\b[a-zA-Z_]\w*(?=[ \t]*\()/,
+	'dots': {
+		pattern: /\.{2,3}/,
+		alias: 'punctuation',
+	},
 	'property': {
 		pattern: /(\.)[a-zA-Z_]\w*/,
 		lookbehind: true,
