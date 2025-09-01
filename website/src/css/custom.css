@@ -29,11 +29,14 @@
   --ifm-color-primary-lightest: #4fddbf;
   --docusaurus-highlighted-code-line-bg: rgba(255, 255, 255, 0.15);
 }
+
 html[data-theme='light'] {
   --ifm-background-color: #fafafa;
+  --ifm-code-background: #ffffff;
 }
 html[data-theme='dark'] {
   --ifm-background-color: #22201f;
+  --ifm-code-background: #141414;
 }
 
 @font-face {
@@ -59,17 +62,18 @@ html[class*="docs-doc-id-class_ref"] {
   }
 }
 
-pre {
+.prism-code {
   font-family: "CommitMono-Bold";
 }
 
 code {
   font-family: "CommitMono-Regular";
   vertical-align: initial;
+  border: 0.1rem solid rgba(0, 0, 0, 0.15);
 }
 html[data-theme="dark"] {
   code {
-    border: 0.1rem solid rgba(255, 255, 255, 0.1);
+    border: 0.1rem solid rgba(255, 255, 255, 0.2);
   }
 }
 
