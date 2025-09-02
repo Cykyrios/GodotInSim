@@ -12,7 +12,7 @@ Refer to the [guides](/docs/guides) to get started.
 
 ## Implementation and compatibility
 
-Godot InSim currently supports **InSim version 9** as of **LFS 0.7F5**.
+Godot InSim currently supports **InSim version 9** as of **LFS 0.7G**.
 
 InSim packets are implemented while keeping naming conventions as close as reasonably possible
 to LFS's InSim documentation, although some variable names are made more readable to adhere

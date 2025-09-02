@@ -227,7 +227,7 @@ Running this first app produces the following output in Godot:
 ```text
 TCP connecting...
 TCP status: connected - 127.0.0.1:29999
-Connected to LFS 0.7F S3
+Connected to LFS 0.7G S3
 Game InSim version matches local version (9)
 Initializing Godot InSim...
 Godot InSim is ready
