@@ -65,10 +65,6 @@ html[class*="docs-doc-id-class_ref"] {
   }
 }
 
-.prism-code {
-  font-family: "CommitMono-Bold";
-}
-
 code {
   font-family: "CommitMono-Regular";
   vertical-align: initial;
@@ -84,4 +80,8 @@ hr[class="section"] {
   border: 3px solid var(--ifm-color-primary);
   border-radius: 3px;
   opacity: 0.5;
+}
+
+code.prism-code span, pre.prism-code code span {
+  font-family: "CommitMono-Bold";
 }
