@@ -1,5 +1,5 @@
 import type {SidebarsConfig} from "@docusaurus/plugin-content-docs";
-import { default as classrefSidebar } from "./classref_sidebar.ts"
+import { default as classrefSidebar } from "./classref_sidebar"
 
 const sidebars: SidebarsConfig = {
   "classrefSidebar": classrefSidebar,
