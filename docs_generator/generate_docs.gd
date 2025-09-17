@@ -24,7 +24,7 @@ func execute_or_exit(callable: Callable) -> void:
 
 func generate_docs() -> int:
 	var dict := OS.execute_with_pipe(
-		"/bin/bash", ["-c", "./docs_generator/generate_docs.sh"], false
+		"/bin/bash", ["./docs_generator/generate_docs.sh"], false
 	)
 	var pid := dict.pid as int
 	var stdio := dict.stdio as FileAccess
@@ -35,7 +35,6 @@ func generate_docs() -> int:
 		if stderr.is_open():
 			printraw(stderr.get_buffer(stderr.get_length()).get_string_from_utf8())
 	var exit_code := OS.get_process_exit_code(pid)
-	print(exit_code)
 	if exit_code > 0:
 		push_error("Doc generation failed with code %d" % [exit_code])
 	return exit_code
