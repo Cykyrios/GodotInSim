@@ -42,6 +42,7 @@ window/size/viewport_width=1280
 window/size/viewport_height=720
 window/per_pixel_transparency/allowed.transparency=true
 window/size/transparent.transparency=true
+window/vsync/vsync_mode.transparency=0
 
 [editor_plugins]
 
