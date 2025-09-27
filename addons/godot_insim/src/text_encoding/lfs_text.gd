@@ -139,6 +139,8 @@ static func car_get_short_name(full_name: String) -> String:
 ## Converts an LFS-encoded car name to a readable text string, in the 3-letter format for
 ## official cars (e.g. FBM), or the 6-character hexadecimal code for mods (e.g. DBF12E).
 static func car_name_from_lfs_bytes(buffer: PackedByteArray) -> String:
+	if buffer == PackedByteArray([0, 0, 0, 0]):
+		return ""
 	var is_alphanumeric := func is_alphanumeric(character: int) -> bool:
 		var string := String.chr(character)
 		if (
@@ -155,7 +157,7 @@ static func car_name_from_lfs_bytes(buffer: PackedByteArray) -> String:
 		and is_alphanumeric.call(buffer[1])
 		and is_alphanumeric.call(buffer[2])
 	):
-		car_name = buffer.get_string_from_utf8()
+		car_name = buffer.get_string_from_ascii()
 	else:
 		var _discard := buffer.resize(3)
 		buffer.reverse()
@@ -450,11 +452,19 @@ static func lfs_bytes_to_unicode(bytes: PackedByteArray, zero_terminated := true
 			block_end += 2
 			skip_next = true
 		elif buffer[i] == 0x5e:  # Found "^"
+			# Check for NUL character. This should never happen,
+			# except at the end of the buffer when splitting a message.
+			if buffer[i + 1] == 0:
+				block_end += 2
+				skip_next = true
+				continue
 			var code_page_check := "^%s" % [char(buffer[i + 1])]
 			if CODE_PAGES.has(code_page_check):
 				if block_start < block_end:
-					message += _get_string_from_bytes(buffer.slice(block_start, block_end),
-							current_code_page)
+					message += _get_string_from_bytes(
+						buffer.slice(block_start, block_end),
+						current_code_page,
+					)
 				current_code_page = code_page_check
 				if buffer[i + 1] == 0x38:
 					block_start = i
@@ -710,12 +720,14 @@ static func _get_string_from_bytes(buffer: PackedByteArray, code_page: String) -
 		page = page.substr(1, 1)
 
 	var skip_next := false
-	for i in buffer.size():
+	var buffer_size := buffer.size()
+	for i in buffer_size:
 		if skip_next:
 			skip_next = false
 			continue
 		if buffer[i] < 128:
-			text += char(buffer[i])
+			if buffer[i] != 0 or i < buffer_size - 1:
+				text += char(buffer[i])
 			continue
 		if LFSCodePages.CODE_PAGE_TABLES.has(page):
 			var page_dict := LFSCodePages.CODE_PAGE_TABLES[page] as Dictionary
