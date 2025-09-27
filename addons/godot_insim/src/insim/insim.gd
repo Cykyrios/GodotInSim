@@ -1057,8 +1057,8 @@ func close() -> void:
 		return
 	send_packet(InSimTinyPacket.create(0, Tiny.TINY_CLOSE))
 	print("Closing InSim connection.")
-	lfs_connection._disconnect_from_host()
-	nlp_mci_connection._disconnect_from_host()
+	lfs_connection.disconnect_from_host()
+	nlp_mci_connection.disconnect_from_host()
 	insim_connected = false
 	ping_timer.stop()
 	_initializing = false
@@ -1110,7 +1110,7 @@ func initialize(
 		lfs_connection.queue_free()
 		await get_tree().process_frame
 	if lfs_connection:
-		lfs_connection._disconnect_from_host()
+		lfs_connection.disconnect_from_host()
 	else:
 		if use_udp:
 			lfs_connection = LFSConnectionUDP.new()
@@ -1119,7 +1119,7 @@ func initialize(
 		add_child(lfs_connection)
 		_connect_lfs_connection_signals()
 	_initializing = true
-	lfs_connection._connect_to_host(address, port, initialization_data.udp_port)
+	lfs_connection.connect_to_host(address, port, initialization_data.udp_port)
 
 
 ## Returns [code]true[/code] if this InSim instance is a host application (remote connected
@@ -1212,7 +1212,7 @@ func send_packet(packet: InSimPacket, sender := "InSim") -> void:
 	):
 		push_error("Cannot send packet: InSim is not connected.")
 	packet.fill_buffer()
-	var packet_sent_successfully := lfs_connection._send_packet(packet.buffer)
+	var packet_sent_successfully := lfs_connection.send_packet(packet.buffer)
 	if packet_sent_successfully:
 		packet_sent.emit(packet, sender)
 
@@ -1535,9 +1535,9 @@ func _on_connected_to_host() -> void:
 		initialization_data.admin,
 		initialization_data.i_name
 	))
-	nlp_mci_connection._disconnect_from_host()
+	nlp_mci_connection.disconnect_from_host()
 	if initialization_data.udp_port != 0:
-		nlp_mci_connection._connect_to_host(
+		nlp_mci_connection.connect_to_host(
 			lfs_connection.address, lfs_connection.udp_port, 0, true
 		)
 	_reset_timeout_timer()

@@ -3,11 +3,21 @@ extends GdUnitTestSuite
 # TestSuite generated from
 const __source = "res://addons/godot_insim/src/insim/insim.gd"
 
+var tcp_server: TCPServer = null
+var insim: InSim = null
+
+
+func before_test() -> void:
+	tcp_server = auto_free(TCPServer.new())
+	var _error := tcp_server.listen(29_999, "127.0.0.1")
+	insim = mock(InSim, CALL_REAL_FUNC)
+	var lfs_connection := auto_free(LFSConnectionTCP.new()) as LFSConnectionTCP
+	insim.add_child(lfs_connection)
+	insim.lfs_connection = lfs_connection
+	insim.initialize("127.0.0.1", 29_999, InSimInitializationData.new())
+
 
 func test_send_message() -> void:
-	var insim := mock(InSim, CALL_REAL_FUNC) as InSim
-	insim.lfs_connection = auto_free(LFSConnection.new())
-	insim.insim_connected = true
 	insim.send_message("message")
 	@warning_ignore("unsafe_method_access")
 	var _interaction: GdUnitObjectInteractions = verify(insim, 1).send_message("message")
@@ -118,9 +128,6 @@ func test_send_message_split_long_messages(
 		],
 	]
 ) -> void:
-	var insim := mock(InSim, CALL_REAL_FUNC) as InSim
-	insim.lfs_connection = auto_free(LFSConnection.new())
-	insim.insim_connected = true
 	insim.send_message(message)
 	for split in splits:
 		@warning_ignore("unsafe_method_access")

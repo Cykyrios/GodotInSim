@@ -11,8 +11,10 @@ func _init() -> void:
 	stream = StreamPeerTCP.new()
 
 
-func _connect_to_host(c_address: String, c_port: int, c_udp_port := 0) -> void:
-	super(c_address, c_port, c_udp_port)
+func connect_to_host(c_address: String, c_port: int, c_udp_port := 0) -> void:
+	address = c_address
+	port = c_port
+	udp_port = c_udp_port
 	var error := stream.connect_to_host(address, port)
 	if error != OK:
 		push_error("Connection error: %d" % [error])
@@ -40,11 +42,11 @@ func _connect_to_host(c_address: String, c_port: int, c_udp_port := 0) -> void:
 		connection_failed.emit()
 
 
-func _disconnect_from_host() -> void:
+func disconnect_from_host() -> void:
 	stream.disconnect_from_host()
 
 
-func _get_incoming_packets() -> void:
+func get_incoming_packets() -> void:
 	if not stream:
 		return
 	var packet_buffer := PackedByteArray()
@@ -67,7 +69,7 @@ func _get_incoming_packets() -> void:
 		_discard = stream.poll()
 
 
-func _send_packet(packet: PackedByteArray) -> bool:
+func send_packet(packet: PackedByteArray) -> bool:
 	var error := stream.put_data(packet)
 	if error != OK:
 		push_error("Error sending packet: %d" % [error])
