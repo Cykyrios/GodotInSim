@@ -18,7 +18,7 @@ variables:
 
 run-tests:
   stage: test
-  image: registry.gitlab.com/cykyrios/godot-builder:4.4.1-editor
+  image: registry.gitlab.com/cykyrios/godot-builder:4.5-stable-editor
   script:
     - rm -rf addons/gdUnit4/test
     - godot --headless -v --import
@@ -36,7 +36,7 @@ run-tests:
 export-demos:
   stage: export
   needs: [run-tests]
-  image: registry.gitlab.com/cykyrios/godot-builder:4.5-beta4-desktop
+  image: registry.gitlab.com/cykyrios/godot-builder:4.5-stable-desktop
   rules:
     - if: $CI_COMMIT_TAG
   variables:
@@ -67,7 +67,7 @@ generate-docs:
   stage: docs
   needs: []
   ## The image used here contains a doctool fix, see Godot PR #106256.
-  image: registry.gitlab.com/cykyrios/godot-builder:4.5-beta4-docs-generator
+  image: registry.gitlab.com/cykyrios/godot-builder:4.5-stable-docs-generator
   script:
     - apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y git
     - godot --headless -v --import
