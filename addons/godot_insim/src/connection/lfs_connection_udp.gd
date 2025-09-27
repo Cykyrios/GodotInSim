@@ -11,8 +11,12 @@ func _init() -> void:
 	socket = PacketPeerUDP.new()
 
 
-func _connect_to_host(c_address: String, c_port: int, c_udp_port := 0, is_out := false) -> void:
-	super(c_address, c_port, c_udp_port)
+func connect_to_host(
+	c_address: String, c_port: int, c_udp_port := 0, is_out := false
+) -> void:
+	address = c_address
+	port = c_port
+	udp_port = c_udp_port
 	var error := -1
 	# I honestly have no idea why I have to do this, but socket.connect_to_host() doesn't work for
 	# OutGauge/OutSim, packets aren't received. OTOH, socket.bind() returns 2 for InSim...
@@ -27,11 +31,11 @@ func _connect_to_host(c_address: String, c_port: int, c_udp_port := 0, is_out :=
 		connection_failed.emit()
 
 
-func _disconnect_from_host() -> void:
+func disconnect_from_host() -> void:
 	socket.close()
 
 
-func _get_incoming_packets() -> void:
+func get_incoming_packets() -> void:
 	var packet_buffer := PackedByteArray()
 	while socket.get_available_packet_count() > 0:
 		packet_buffer = socket.get_packet()
@@ -42,7 +46,7 @@ func _get_incoming_packets() -> void:
 		packet_received.emit(packet_buffer)
 
 
-func _send_packet(packet: PackedByteArray) -> bool:
+func send_packet(packet: PackedByteArray) -> bool:
 	if not socket.is_socket_connected():
 		await connected
 	var error := socket.put_packet(packet)

@@ -47,13 +47,13 @@ func _ready() -> void:
 ## [b]Note:[/b] As OutSim data is transmitted over UDP, there is no connection per se; this simply
 ## means the [OutSim] instance will stop listening to packets.
 func close() -> void:
-	_lfs_connection._disconnect_from_host()
+	_lfs_connection.disconnect_from_host()
 
 
 ## Enables packet listening over UDP with the given [param address] and [param port].
 func initialize(options: int, address := "127.0.0.1", port := 29_997) -> void:
 	outsim_options = options
-	_lfs_connection._connect_to_host(address, port, 0, true)
+	_lfs_connection.connect_to_host(address, port, 0, true)
 
 
 func _on_packet_received(packet_buffer: PackedByteArray) -> void:

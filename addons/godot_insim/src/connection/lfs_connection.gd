@@ -1,4 +1,4 @@
-class_name LFSConnection
+@abstract class_name LFSConnection
 extends Node
 ## Base class for connection and data I/O with LFS
 ##
@@ -25,29 +25,21 @@ var udp_port := 0  ## Dedicated UDP port for responses, see [code]docs/InSim.txt
 
 
 func _process(_delta: float) -> void:
-	_get_incoming_packets()
+	get_incoming_packets()
 
 
-## Virtual function to be overridden, starting with a call to [code]super[/code].
 ## Connects to the host at the given [param c_address] and [param c_port]; [param c_udp_port] can
 ## be used for TCP connections expecting UDP responses on a different port.
-func _connect_to_host(c_address: String, c_port: int, c_udp_port := 0) -> void:
-	address = c_address
-	port = c_port
-	udp_port = c_udp_port
+@abstract func connect_to_host(c_address: String, c_port: int, c_udp_port := 0) -> void
 
 
-## Virtual function to be overridden. Disconnects from the host.
-func _disconnect_from_host() -> void:
-	pass
+## Disconnects from the host.
+@abstract func disconnect_from_host() -> void
 
 
-## Virtual function to be overridden. Reads incoming packets.
-func _get_incoming_packets() -> void:
-	pass
+## Reads incoming packets.
+@abstract func get_incoming_packets() -> void
 
 
-## Virtual function to be overridden. Sends a raw [param packet].
-@warning_ignore("unused_parameter")
-func _send_packet(packet: PackedByteArray) -> bool:
-	return false
+## Sends a raw [param packet].
+@abstract func send_packet(packet: PackedByteArray) -> bool
