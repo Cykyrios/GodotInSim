@@ -5,6 +5,10 @@ This project aims to provide an API to build apps with the
 [Live For Speed](https://www.lfs.net) through its InSim protocol, as well as OutSim,
 OutGauge and InSimRelay.
 
+> [!important]
+> The project moved to GitLab a while ago, this repository is not up to date anymore.
+> Please [go to the project's GitLab repository](https://gitlab.com/godot-insim/godot_insim) for the latest release.
+
 ## Implementation and compatibility
 
 Godot InSim currently supports InSim version 9 as of LFS 0.7F5.
